@@ -1,8 +1,10 @@
 
 
+dynkinToPartition = method(
+    TypicalValue=>List
+);
 
-
-dynkinToPartition = (v) -> (
+dynkinToPartition(List) := v -> (
     n:=#v;
     append(apply(n, i -> sum apply(n-i, j -> v_(n-1-j))),0)
 );
@@ -77,7 +79,11 @@ gtp = (L) -> (
     new GTPattern from join({"shape"=>lambda,"entries"=>L,"content"=>mu,"weight"=>nu},apply(#gtI, t -> gtI_t => L_t))
 );
 
-gtPatternFromEntries = L -> gtp(L)
+gtPatternFromEntries = method(
+    TypicalValue=>List
+);
+
+gtPatternFromEntries(List) := L -> gtp(L)
 
 
 
@@ -106,7 +112,11 @@ peek GTP0
 
 -- Following Molev 2018 pages 8-9
 
-gtPolytope = (lambda) -> (
+gtPolytope = method(
+    TypicalValue=>List
+);
+
+gtPolytope(List) := (lambda) -> (
     n:=#lambda;
     gtI:=gtIndices(n);
     gtItoZ:=new HashTable from apply(#gtI, t -> {gtI_t,t});
@@ -131,7 +141,12 @@ gtPolytope = (lambda) -> (
 
 
 -- This returns a list of the entries
-gtPatterns = memoize((lambda) -> (
+
+gtPatterns = method(
+    TypicalValue=>List
+);
+
+gtPatterns(List) := memoize((lambda) -> (
     P:=gtPolytope(lambda);
     lp:=latticePoints(P);
     reverse sort apply(lp, M -> flatten entries M)

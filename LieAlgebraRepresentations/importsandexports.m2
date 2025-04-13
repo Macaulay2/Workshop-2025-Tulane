@@ -71,7 +71,7 @@ export {
     "symmetricPowerRepresentation",
     "exteriorPowerRepresentation",
     "tensorProductRepresentation",
-    "isLieAlgebraHomomorphism"    
+    "isLieAlgebraRepresentation"    
     }
 
 

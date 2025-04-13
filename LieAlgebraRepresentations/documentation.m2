@@ -1172,7 +1172,7 @@ doc ///
 
 TEST ///
 CB=chevalleyBasis("A",2);
-assert(keys(CB)=={"LieAlgebra", "LoweringOperatorIndices", "DualBasis", "BasisElements", "WriteInBasis", "RaisingOperatorIndices", "Weights", "Labels"})
+assert(sort keys(CB)=={"BasisElements","Bracket","DualBasis","Labels","LieAlgebra","LoweringOperatorIndices","RaisingOperatorIndices","Weights","WriteInBasis"})
 assert(CB#"LieAlgebra"#"RootSystemType"=="A")
 assert(CB#"LieAlgebra"#"LieAlgebraRank"==2)
 assert(CB#"LoweringOperatorIndices"=={5, 6, 7})
@@ -1221,6 +1221,179 @@ doc ///
 	    peek V
 	    peek (V.cache)
 ///
+
+
+doc ///
+    Key
+        dynkinToPartition
+	(dynkinToPartition,List)
+    Headline
+        converts a highest weight written in the basis of fundamental dominant weights for type A into a partition
+    Usage
+        dynkinToPartition(lambda)
+    Inputs 
+        lambda:List
+    Outputs
+        L:List
+    Description
+        Text
+            There are at least two popular ways to describe irreducible $\gl_n$ and $sl_n$ modules. We can either give its highest weight as a linear combination of the fundamental dominant weights $\omega_i$, or describe it as a partition. This function allows us to convert from the first convention to the second.
+
+        Text
+	    In the example below, we convert the weight $\lambda = (1,2,0,0,1) =  \omega_1 + 2\omega_2 + \omega_5$ for $sl_6$ into a partition. 
+	    
+	Example
+	    lambda = {1,2,0,0,1}
+	    dynkinToPartition(lambda)
+///
+
+TEST ///
+    assert(dynkinToPartition({1,2,0,0,1}) === {4,3,1,1,1,0})
+///
+
+
+doc ///
+    Key
+        GTPattern
+    Headline
+        class for a Gelfand-Tsetlin pattern
+    Description
+        Text
+    	    A Gelfand-Tsetlin pattern is a type of combinatorial object that is useful in representation theory.  We follow the definitions given in Molev, "Gelfand-Tsetlin bases for classical Lie algebras", 2018.
+
+	    Let $\lambda$ be a partition with $n$ parts, written in nonincreasing order. A Gelfand-Tsetlin pattern of shape  $\lambda$ is a triangular array of the following form:
+
+	    $\begin{array}{ccccccccc} x_{n,1} & & x_{n,2} & & x_{n,3} & & \cdots && x_{n,n} \\ &x_{n-1,1} & & x_{n-1,2} & & \cdots & x_{n-1,n-1} & \\ && \ddots \\ && & x_{2,1} && x_{2,2} \\ &&&& x_{1,1}\end{array}$
+
+           Each entry $x_{i,j}$ is a nonnegative integer, the top row $x_{n,i}$ corresponds to $\lambda$, and the entries satisfy the inequalities $x_{k,i} \geq x_{k-1,i} \geq x_{k,i+1}$. 
+
+            The Gelfand-Tsetlin patterns of shape $\lambda$ form a basis of the irreducible $sl_n$ module with highest weight $\lambda$, and there are explicit formulae for the actions of a Chevalley basis of $sl_n$ on this basis.
+
+            The Gelfand-Tsetlin patterns correspond to the integer points of a polytope called the Gelfand-Tsetlin polytope. The @TT "LieAlgebraRepresentations"@ package can create this polytope with the function @TO (gtPolytope,List)@.
+
+             A @TT "GTPattern"@ is a hash table with keys recording the shape, entries, content, and weight of the pattern. 
+
+	Text    
+	    Currently only implemented for type A.
+
+
+///
+
+
+
+doc ///
+    Key
+        gtPolytope
+	(gtPolytope,List)
+    Headline
+        the polytope defined by the inequalities and equations appearing in the definition of Gelfand-Tsetlin patterns
+    Usage
+        gtPolytope(lambda)
+    Inputs 
+        lambda:List
+    Outputs
+        P:Polyhedron
+    Description
+        Text
+            Currently only supported for $\mathfrak{g} = sl_n$.
+        Text
+            Let $\lambda$ be a partition with $n$ parts, written in nonincreasing order. A Gelfand-Tsetlin pattern of shape  $\lambda$ is a triangular array of the following form:
+
+	    $\begin{array}{ccccccccc} x_{n,1} & & x_{n,2} & & x_{n,3} & & \cdots && x_{n,n} \\ &x_{n-1,1} & & x_{n-1,2} & & \cdots & x_{n-1,n-1} & \\ && \ddots \\ && & x_{2,1} && x_{2,2} \\ &&&& x_{1,1}\end{array}$
+
+           Each entry $x_{i,j}$ is a nonnegative integer, the top row $x_{n,i}$ corresponds to $\lambda$, and the entries satisfy the inequalities $x_{k,i} \geq x_{k-1,i} \geq x_{k,i+1}$. 
+	    
+        Text
+	    This function outputs the polytope defined by these inequalities and equations.
+	    
+	Example
+	    P=gtPolytope({2,0,0})
+	    dim P
+	    halfspaces(P)
+	    hyperplanes(P)
+	    vertices(P)
+
+///
+
+TEST ///
+    P=gtPolytope({2,0,0})
+    assert(dim P === 2)
+    assert(sort transpose entries vertices(P) === {{2/1,0/1,0/1,0/1,0/1,0/1},{2/1,0/1,0/1,2/1,0/1,0/1},{2/1,0/1,0/1,2/1,0/1,2/1}})
+///
+
+
+doc ///
+    Key
+        gtPatterns
+	(gtPatterns,List)
+    Headline
+        a list of Gelfand-Tsetlin patterns of shape lambda
+    Usage
+        gtPattern(lambda)
+    Inputs 
+        lambda:List
+    Outputs
+        L:List
+    Description
+        Text
+            Currently only supported for $\mathfrak{g} = sl_n$.
+        Text
+            This function computes a list of Gelfand-Tsetlin patterns of shape $\lambda$ by computing the lattice points of the Gelfand-Tsetlin polytope.  See the documentation for @TO "GTPattern"@ and @TO (gtPolytope,List)@ for more details.
+	    
+	    
+	Example
+	    gtPatterns({2,0,0})
+
+	Text
+	    We compare this to the lattice points of the Gelfand-Tsetlin polytope for this shape.
+	    
+	Example
+            P = gtPolytope({2,0,0})
+	    latticePoints(P)
+///
+
+TEST ///
+    assert(gtPatterns({2,0,0}) === {{2, 0, 0, 2, 0, 2}, {2, 0, 0, 2, 0, 1}, {2, 0, 0, 2, 0, 0}, {2, 0, 0, 1, 0, 1}, {2, 0, 0, 1, 0, 0}, {2, 0, 0, 0, 0, 0}})
+///
+
+
+doc ///
+    Key
+        gtPatternFromEntries
+	(gtPatternFromEntries,List)
+    Headline
+        creates an object of type GTPattern from a list of entries
+    Usage
+        gtPatternFromEntries(L)
+    Inputs 
+        L:List
+    Outputs
+        P:GTPattern
+    Description
+        Text
+            Currently only supported for $\mathfrak{g} = sl_n$.
+        Text
+            This function creates an object of type GTPattern from a list of entries.  In doing so it computes the content and weight associated to the pattern with these entries, and makes the entries accessible from their indices.
+	    
+	    
+	Example
+	    x = gtPatternFromEntries({2, 0, 0, 2, 0, 2})
+            peek x
+	    x#(2,2)
+
+///
+
+TEST ///
+    x = gtPatternFromEntries({2, 0, 0, 2, 0, 2})
+    assert(keys(x) === {"entries","shape","weight","content",(1,1),(2,1),(2,2),(3,1),(3,2),(3,3)})
+    assert(x#"entries"==={2, 0, 0, 2, 0, 2})
+    assert(x#"shape"==={2,0,0})
+    assert(x#"weight"==={2,0})
+    assert(x#"content"==={2, 0, 0})
+///
+
+
+
 
 
 doc ///
@@ -1398,6 +1571,128 @@ TEST ///
     U = tensorProductRepresentation(V,W);
     assert((U.cache#representation)_1_0==new SparseMatrix from {"Entries" => new HashTable from {(20,20) => 1/1, (4,4) => -2/1, (5,5) => -1/1, (6,6) => 3/1, (22,22) => -2/1, (23,23) => -1/1, (7,7) => 1/1, (8,8) => 2/1, (9,9) => 1/1, (10,10) => -1/1, (12,12) => -1/1, (13,13) => -3/1, (14,14) => -2/1, (15,15) => 1/1, (0,0) => 2/1, (16,16) => -1/1, (2,2) => 1/1, (18,18) => 2/1}, "NumberOfRows" => 24, "BaseRing" => QQ, "NumberOfColumns" => 24})
 ///
+
+
+doc ///
+    Key
+        isLieAlgebraRepresentation
+	(isLieAlgebraRepresentation,ChevalleyBasis,List)
+    Headline
+        checks whether a list of matrices defines a Lie algebra representation
+    Usage
+        isLieAlgebraRepresentation(CB,L)
+    Inputs 
+        CB:ChevalleyBasis
+	L:List
+    Outputs
+        b:Boolean
+    Description
+        Text
+	    Let CB be a Chevalley basis of $\mathfrak{g}$, and let $L$ be a list of $n \times n$ matrices with $\#L = \#CB$.  Let $\rho: \mathfrak{g} \rightarrow \mathbb{C}^n$ be the linear transformation defined by mapping $B_i$ in CB to $L_i$. This function checks whether $\rho$ preserves the Lie bracket; that is, for each pair of indices $i,j$, if $[B_i,B_j] = \sum c_{ijk} B_k$, then is $[\rho(B_i),\rho(B_j)] = \sum c_{ijk} \rho(B_k)$?
+	     
+	Text
+	    In the example below, we compute the adjoint representation of $sl_3$ directly, and check that the list of matrices we obtain defines a Lie algebra representation.
+	    
+	Example
+            sl3 = simpleLieAlgebra("A",2);
+            CB = chevalleyBasis("A",2);
+	    br = CB#"Bracket";
+	    writeInBasis = CB#"WriteInBasis";
+	    B = CB#"BasisElements"
+	    ad = X -> transpose matrix apply(B, Y -> writeInBasis br(X,Y))
+            L1 = apply(B, X -> ad X)
+	    isLieAlgebraRepresentation(CB,L1)
+	    
+        Text
+            Next, we present an example where the linear transformation $\rho: sl_3 \rightarrow \mathfrak{gl}(\mathbb{C}^8)$ does not preserve the Lie bracket.
+
+	Example
+	    L2 = apply(#L1, i -> if i==6 then -2*L1_i else L1_i)
+	    isLieAlgebraRepresentation(CB,L2)
+	    
+
+///
+
+-- TO DO: Check this result by hand
+TEST ///
+    sl3 = simpleLieAlgebra("A",2);
+    CB = chevalleyBasis("A",2);
+    br = CB#"Bracket";
+    writeInBasis = CB#"WriteInBasis";
+    B = CB#"BasisElements";
+    ad = X -> transpose matrix apply(B, Y -> writeInBasis br(X,Y));
+    L1 = apply(B, X -> ad X);
+    assert(isLieAlgebraRepresentation(CB,L1))
+    L2 = apply(#L1, i -> if i==6 then -2*L1_i else L1_i);
+    assert(not isLieAlgebraRepresentation(CB,L2))
+///
+
+
+
+
+doc ///
+    Key
+        representationWeights
+	(representationWeights,LieAlgebraModule)
+    Headline
+        computes the weights of the basis of $V(\lambda)$ used to define a representation
+    Usage
+        representationWeights(V)
+    Inputs 
+        V:LieAlgebraModule
+    Outputs
+        L:List
+    Description
+        Text
+	    Let @TT "V"@ be a LieAlgebraModule with a representation installed. Computing @TT "weightDiagram(V)"@ will give a VirtualTally of the weights of $V$ and their multiplicities, but this aggregated report does not tell us the weight of each basis element used to define the matrices in the representation.
+
+	Text
+            Instead, this function first checks that for the Cartan subalgebra elements $H_i$ in the Chevallay basis of $\mathfrak{g}$, the image $\rho(H_i)$ is a diagonal matrix. If not, this function returns an error that the basis of $V(\lambda) is not an eigenbasis for the Cartan subalgebra. Otherwise, this function returns the list of weights of these basis elements, which are obtained from the diagonal entries of the matrices $\rho(H_i)$.
+
+	Text
+	    In the example below, we compute the weights of the Gelfand-Tsetlin basis for the adjoint representation of $sl_3$.
+	    
+	Example
+            sl3 = simpleLieAlgebra("A",2);
+            CB = chevalleyBasis("A",2);
+            V=irreducibleLieAlgebraModule({1,1},sl3);
+            installRepresentation(V,CB,GTrepresentationMatrices(V));
+            L1 = representationWeights(V)
+	    
+        Text
+            We can check that this agrees with the weight of the Gelfand-Tsetlin pattern labelling each basis element.
+
+	Example
+	    dynkinToPartition({1,1})
+	    L2 = gtPatterns({2,1,0})
+	    
+        Text
+	    Right now, the entries of L2 are just lists. We turn them into objects of type GTPattern, and then get their weights.
+
+	Example
+	    L2 = apply(L2, x -> (gtPatternFromEntries(x))#"weight")
+	    L1==L2
+
+	Text
+	    Finally, we check that this agrees with the weight diagram of V.
+
+	Example
+	    tally(L2)
+	    weightDiagram(V)
+	    weightDiagram(V) === new VirtualTally from tally(L2)
+///
+
+-- TO DO: Check this result by hand
+TEST ///
+    sl3 = simpleLieAlgebra("A",2);
+    CB = chevalleyBasis("A",2);
+    V=irreducibleLieAlgebraModule({1,1},sl3);
+    installRepresentation(V,CB,GTrepresentationMatrices(V));
+    L = basisWordsFromMatrixGenerators(V)
+    assert(apply(L,w -> w#"Terms") == {{{{}, 1}}, {{{0}, 1}}, {{{2}, 1}}, {{{0, 2}, 1}}, {{{0, 1}, -2}}, {{{1}, 2}, {{0, 2}, 1}}, {{{1, 2}, 3}}, {{{1, 1}, -3/2}}});
+///
+
+
 
 
 doc ///
@@ -1667,6 +1962,6 @@ undocumented ( {
     (killingForm,String,ZZ,List,List),(killingForm,Sequence,Sequence,List,List),
     (starInvolution,List,LieAlgebra),(starInvolution,Vector,LieAlgebra),(starInvolution,LieAlgebra,List),(starInvolution,LieAlgebra,Vector),(starInvolution,String,ZZ,List),(starInvolution,Sequence,Sequence,List),
     (casimirScalar,String,ZZ,List),(casimirScalar,Sequence,Sequence,List),
-    (highestRoot,String,ZZ),(highestRoot,Sequence,Sequence),
+    (highestRoot,String,ZZ),(highestRoot,Sequence,Sequence)
     })
 

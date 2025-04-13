@@ -274,7 +274,7 @@ tensorProductRepresentation(LieAlgebraModule,LieAlgebraModule) := (V,W) -> (
     R2:=(sparse(rho2_1_0))#"BaseRing";
     if R1 =!= R2 then error "The representations do not have the same base ring" << endl;
     CB:=rho1_0;
-    installRepresentation(U,CB,apply(#CB, i -> XactionOnTensorProduct(sparse((rho1_1_i)),sparse ((rho2_1)_i))));
+    installRepresentation(U,CB,apply(#(CB#"BasisElements"), i -> XactionOnTensorProduct(sparse((rho1_1_i)),sparse ((rho2_1)_i))));
     U
 );
 
@@ -290,18 +290,23 @@ tensorProductRepresentation(LieAlgebraModule,LieAlgebraModule) := (V,W) -> (
 --------------------------------------------
 
 
-checkLieAlgHomOnPair = (B, rhoB, br1,br2,i, j, writeInBasisFunction) -> (
-    gbracket := br1(B_i,B_j);    
-    Wbracket := br2(rhoB_i,rhoB_j);
-    c := writeInBasisFunction(gbracket);
+checkLieAlgRepOnPair = (CB, rhoB, i, j) -> (
+    B:=CB#"BasisElements";
+    gbracket := (CB#"Bracket")(B_i,B_j);    
+    Wbracket := (rhoB_i)*(rhoB_j)-(rhoB_j)*(rhoB_i);
+    c := (CB#"WriteInBasis")(gbracket);
     Wbracket == sum apply(#rhoB, i -> c_i*rhoB_i)
 );
 
 
-isLieAlgebraHomomorphism = (B, rhoB, br1,br2,writeInBasisFunction) -> (
-    for i from 0 to #B-2 do (
-        for j from i+1 to #B-1 do (
-	    if not checkLieAlgHomOnPair(B,rhoB,br1,br2,i,j,writeInBasisFunction) then (
+
+isLieAlgebraRepresentation = method(
+    TypicalValue=>Boolean
+);
+isLieAlgebraRepresentation(ChevalleyBasis,List) := (CB, rhoB) -> (
+    for i from 0 to #(CB#"BasisElements")-2 do (
+        for j from i+1 to #(CB#"BasisElements")-1 do (
+	    if not checkLieAlgRepOnPair(CB,rhoB,i,j) then (
 	        print concatenate("Brackets not compatible on basis elements ",toString({i,j})) << endl;
 		return false
 	    )
@@ -311,16 +316,8 @@ isLieAlgebraHomomorphism = (B, rhoB, br1,br2,writeInBasisFunction) -> (
 );	
 
 
--*
-isDiagonalMatrix = (M) -> (
-    for i from 0 to numRows(M)-1 do (
-        for j from 0 to numColumns(M)-1 do (
-	    if j!=i and M_(i,j)!=0 then return false
-	)
-    );
-    return true
-);
-*-
+
+
 
 
 

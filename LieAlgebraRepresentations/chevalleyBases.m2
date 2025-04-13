@@ -131,6 +131,7 @@ writeInslnBasis = (M) -> (
     flatten {Hcoeffs,Xcoeffs,Ycoeffs}
 );
 
+br = (A,B) -> A*B-B*A
 
 
 -- Lie algebra
@@ -147,6 +148,7 @@ slnBasis = (n) -> (
     new ChevalleyBasis from {
 	"LieAlgebra"=>simpleLieAlgebra("A",n-1),
         "BasisElements"=>B,
+	"Bracket"=>br,
 	"DualBasis"=>slnDualBasis(n,B),
         "Weights"=>slnBasisWeights(n),
 	"Labels"=>slnBasisLabels(n),
