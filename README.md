@@ -1,7 +1,6 @@
-# Workshop-2025-Tulane
+# Gaussian Mixture Models
 
-## Welcome to the Tulane 2025 Workshop Repository!
-
-Please use this repository throughout the workshop to track and contribute to the projects. You can also keep using this repository after the workshop has ended to continue collaborating on your projects.
-
-See the [wiki tab](https://github.com/Macaulay2/Workshop-2025-Tulane/wiki) for project descriptions, schedules, guides, etc. You can also use the [projects tab](https://github.com/Macaulay2/Workshop-2025-Tulane/projects) to keep track of remaining tasks in your project.
+Some references:
+1. Moment Varieties of Gaussian Mixtures (https://arxiv.org/abs/1510.04654)
+2. Estimating Gaussian mixtures using sparse polynomial moment systems (https://arxiv.org/abs/2106.15675)
+3. Method of moments for Gaussian mixtures: Implementations and benchmarks (https://arxiv.org/abs/2502.07648)
