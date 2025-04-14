@@ -32,6 +32,9 @@ solveGaussianSystem(Matrix, List, Ring) := List => (A, m, R) -> (
     newtonIds := newtonIdentitySymmetry(n);
     subvalues := mutableMatrix(1 | (vars R)_{1..n} | 1 | transpose psSolved);
     partialSolveNewtonIds := apply(newtonIds, e -> sub(e,matrix subvalues));
-    for idx from 0 to length partialSolveNewtonIds - 1 list subvalues_(0,idx) = sub(partialSolveNewtonIds_idx, matrix subvalues)
+    solvedEs := for idx from 0 to length partialSolveNewtonIds - 1 list subvalues_(0,idx) = sub(partialSolveNewtonIds_idx, matrix subvalues);
+    use QQ[y];
+    f := sum(for i from 0 to n list (-1)^(i)*(lift(solvedEs_i,QQ))*y^(n-i));
+    roots(f)
 )
 solveGaussianSystem(Matrix, List) := List => (A, m) -> solveGaussianSystem(A, m, QQ[e_0..e_(numRows A), p_0..p_(numRows A)])
