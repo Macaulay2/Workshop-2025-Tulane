@@ -1,12 +1,33 @@
 
 # Auxillary Algebras for spaces of tensors
 
-## Using algeras to study 
+## Inviariant properties from the algebra of endomophisms 
+Square matrices represent endomorphisms of a vector space. The space of endomophisms forms an algebra that has a Jordan decompostion. This is a powerful tool for describing the essential properties of the matrix. 
+
+$`M = P^{-1} J P`$, with $`J`$ in Jordan normal form. The eigenvalues and block structure of $J$ describes the geometry of $M$.
+
+We'd like to do the same thing with tensors, but even cubic format tensors (elements of $`\mathbb{C}^{n\times n \times n}`$) don't represent endomophisms very often. 
+
+The basic idea of this project is to build algebras that contain tensors of interest:
+
+Let $`T\in V`$ with $`V`$ a space of tensors and a Lie group action $`G`$ on $`V`$ that preserves the tensor structure (think products of $`\operatorname{SL}`$'s). Let $`\mathfrak g`$ be the Lie algebra of $`G`$. Form an algebra:
+
+$` \mathfrak a = \bigoplus_{d\geq 0} \mathfrak a_d `$
+with $`\mathfrak a_0 = \mathfrak g`$, $`\mathfrak a_1 = V`$, and the higher graded pieces determined from the initial products.
+
+We want to construct this algebra in M2, so that we can use it to learn properties of tensors.
+
+### Adjoint operators
+Given $`T \in \mathfrak a`$ can construct the linear map $`\text{ad}_T \colon \mathfrak a \to \mathfrak a`$ via $`\text{ad}_T(X) = [T,X]`$. 
+
+Make a matrix from the adjoint operator with a choice of basis. Then you can ask for the ranks of powers, block structures, eigenvalues, charcteristic polynomal, etc., etc.,
 
 
-Here are some starring points for this project:
 
-## Lie algebra actions on Schur modules
+## Starting points
+ExteriorExtensions focuses on algebras of the form $`\mathfrak a = \mathfrak{sl}(V) \oplus \bigoplus_{k=1}^{n-1} \bigwedge^k V `$, with $`V = \mathbb C^n`$. This case contains many special tensor formats, but those algebras are subalgebras, and this is wasteful.  We would like to directly construct algebras that will be useful for studying other tensor formats.
+
+### Lie algebra actions on Schur modules
 
 Implement the standard action of $\mathfrak{sl}_2$ on $\mathbb{C}^2$.
 
