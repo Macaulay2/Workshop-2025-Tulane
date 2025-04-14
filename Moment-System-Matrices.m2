@@ -1,4 +1,10 @@
 produceMomentSystemMatrices = method()
+-*
+The function produces the matrix being multiplied to [1,P,P^2,...,P^k]^T
+Input: k - number of P's of ZZ
+       variance - sigma^2 of QQ
+Output: k by (k+1) matrix
+*-
 produceMomentSystemMatrices (ZZ,QQ) := (k,variance) -> (
     if not k > 0 then error "k should be a positive integer";
     if k == 1 then return matrix{{0,1}};
@@ -14,7 +20,7 @@ produceMomentSystemMatrices (ZZ,QQ) := (k,variance) -> (
 		    M_(i,j) = newRow_j;
 		    )))
 	);
-    return M
+    M
     )
 
 shiftingRow = method()
