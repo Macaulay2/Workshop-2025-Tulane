@@ -44,7 +44,7 @@ export {
 
 getRigidityMatrix = method(Options => {Numerical => false}, TypicalValue => Matrix)
 
-isLocallyRigid = method(TypicalValue => Boolean)
+isLocallyRigid = method(Options => {Numerical => false}, TypicalValue => Boolean)
 
 getRigidityMatrix(ZZ, ZZ, List) := Matrix => opts -> (d, n, G) -> (
     R := QQ[x_1 .. x_(d*n)]; -- Create a ring with d*n variables
@@ -57,16 +57,29 @@ getRigidityMatrix(ZZ, ZZ, List) := Matrix => opts -> (d, n, G) -> (
 );
 
 getRigidityMatrix(ZZ,ZZ) := Matrix => opts -> (d,n) -> (
-    getRigidityMatrix(d,n, subsets(toList(0..(n-1)), 2))
+    getRigidityMatrix(d,n, subsets(toList(0..(n-1)), 2), opts)
 );
 
-isLocallyRigid(ZZ, ZZ, G) := (d, n, G) -> (
-    M := getRigidityMatrix(d,n,G);
-    rank M == d*n - (d+1)*d/2
-;)
+isLocallyRigid(ZZ, ZZ, G) := Boolean => opts -> (d, n, G) -> (
+    if opts.Numerical 
+    then (
+        listOfTruthValues := apply(
+            toList(0..1),
+            n -> d*n - (d+1)*d/2 == rank(
+                sub(
+                    getRigidityMatrix(d, n, G), 
+                    apply(toList(1..d*n), i -> x_i => random(-1.,1))
+                )
+            ) 
+        );
+        if # set(listOfTruthValues) =!= 1 then error("Expected all the numerical attempts to give the same result. Try again.");
+        all listOfTruthValues
+    )
+    else rank getRigidityMatrix(d, n, G) == d*n - (d+1)*d/2
+);
 
-isLocallyRigid(ZZ,ZZ) := (d,n) -> (
-    isRigid(d,n, subsets(toList(0..(n-1)), 2))
+isLocallyRigid(ZZ,ZZ) := Boolean => opts -> (d,n) -> (
+    isLocallyRigid(d,n, subsets(toList(0..(n-1)), 2), Numerical => opts.Numerical)
 );
 
 
