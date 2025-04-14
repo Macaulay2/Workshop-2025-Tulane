@@ -193,7 +193,7 @@ https://www.youtube.com/watch?v=BhZbL95cUHw
 
 ## Interfacing with GAP
 
-Michael's proposal: Macaulay2 apparently have a built-in interface with GAP. It would be interesting to see if we could implement the group actions from GAP, in addition to current matrix representations. 
+Michael's proposal: Macaulay2 apparently has a built-in interface with GAP. It would be interesting to see if we could implement the group actions from GAP, in addition to current matrix representations. 
 
 - New packages OpenMath and SCSCP for communicating via SCSCP with OpenMath to programs such as GAP and Maple have been developed, thanks to Dan Roozemond. They depend on the new package XML, which uses the libxml2 library to parse XML code. [https://macaulay2.com/doc/Macaulay2/share/doc/Macaulay2/Macaulay2Doc/html/_changes_cm_sp1.3.html](Macaulay2 + GAP)
 
