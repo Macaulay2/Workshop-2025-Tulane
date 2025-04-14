@@ -61,15 +61,15 @@ doc ///
     produceMomentSystemMatrices
  Node
   Key
-   (produceMomentSystemMatrices,ZZ,QQ)
    produceMomentSystemMatrices
+   (produceMomentSystemMatrices,ZZ,QQ)
   Headline
    a silly first function
   Usage
    produceMomentSystemMatrices(numberOfGaussians,variance)
   Inputs
-   k:
-   variance:
+   k:ZZ
+   variance:QQ
   Outputs
    :
     a silly string, depending on the value of {\tt n}
