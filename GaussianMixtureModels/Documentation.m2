@@ -1,5 +1,28 @@
+
+-*
 doc ///
- Node
+Key
+Headline
+Usage
+Inputs
+Outputs
+Consequences
+  Item
+Description
+  Text
+  Example
+  CannedExample
+  Code
+  Pre
+ExampleFiles
+Contributors
+References
+Caveat
+SeeAlso
+///
+*-
+
+doc ///
   Key
    GaussianMixtureModels
   Headline
@@ -11,7 +34,9 @@ doc ///
     Still trying to figure this out.
   Subnodes
     produceMomentSystemMatrices
- Node
+///
+
+doc ///
   Key
    produceMomentSystemMatrices
    (produceMomentSystemMatrices,ZZ,QQ)
