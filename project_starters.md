@@ -10,7 +10,7 @@ We'd like to do the same thing with tensors, but even cubic format tensors (elem
 
 The basic idea of this project is to build algebras that contain tensors of interest:
 
-Let $`T\in V`$ with $`V`$ a space of tensors and a Lie group action $`G`$ on $`V`$ that preserves the tensor structure (think products of $`\operatorname{SL}`$'s). Let $`\mathfrak g`$ be the Lie algebra of $`G`$. Form an algebra:
+Let $`T\in V`$ with $`V`$ a space of tensors and a Lie group action $`G`$ on $`V`$ that preserves the tensor structure (think products of $`\text{SL}`$'s). Let $`\mathfrak g`$ be the Lie algebra of $`G`$. Form an algebra:
 
 $` \mathfrak a = \bigoplus_{d\geq 0} \mathfrak a_d `$
 with $`\mathfrak a_0 = \mathfrak g`$, $`\mathfrak a_1 = V`$, and the higher graded pieces determined from the initial products.
