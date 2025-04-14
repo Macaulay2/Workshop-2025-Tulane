@@ -1,9 +1,9 @@
 
-getRigidityMatrix = method(TypicalValue => Matrix)
+getRigidityMatrix = method(Options => {Numerical => false}, TypicalValue => Matrix)
 
 isLocallyRigid = method(TypicalValue => Boolean)
 
-getRigidityMatrix(ZZ, ZZ, List) := (d, n, G) -> (
+getRigidityMatrix(ZZ, ZZ, List) := Matrix => opts -> (d, n, G) -> (
     R := QQ[x_1 .. x_(d*n)]; -- Create a ring with d*n variables
     M := genericMatrix(R, x_1, d, n); -- Return a generic d by n matrix over R
     -- Here is the polynomial we might want to switch in the future
@@ -13,7 +13,7 @@ getRigidityMatrix(ZZ, ZZ, List) := (d, n, G) -> (
     1/2 * transpose fold((a,b) -> a|b, jacobianList)
 );
 
-getRigidityMatrix(ZZ,ZZ) := (d,n) -> (
+getRigidityMatrix(ZZ,ZZ) := Matrix => opts -> (d,n) -> (
     getRigidityMatrix(d,n, subsets(toList(0..(n-1)), 2))
 );
 
