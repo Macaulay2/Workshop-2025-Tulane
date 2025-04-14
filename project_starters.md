@@ -61,7 +61,7 @@ Repeat this exercise for the other algebra-module pairs above.
 For $\mathbb C^3$, we actually define a $\mathbb Z_3$-graded algebra $\mathfrak{g}$, with $\mathfrak g_0 = \mathfrak{sl}_3$, $\mathfrak g_1 = \mathbb C^3$ and $\mathfrak g_2 = \bigwedge ^2 \mathbb C^3  = (\mathbb C^3)^*$. The products $\mathfrak g_0 \times \mathfrak g_1$  and $\mathfrak g_0 \times \mathfrak g_2$ are the usual Lie algebra action. The product $\mathfrak g_1 \times \mathfrak g_1 \to \mathfrak g_2$ is the wedge product. The other products can be obtained from these by defining the structure tensor from the information we have, then using that structure tensor to define the other products. 
 
 ## Sporadic isomorphisms and special cases
-We have a sporratic isomorphism $\mathfrak{sl}_4 \oplus \bigwedge^2 \mathbb{C}^4 \cong \mathfrak{sp}_4$, where $\mathfrak{sl}_4$ is the traceless $4\times 4$ matrices, $\bigwedge^2 \mathbb{C}^4$ is the skew-symmetric $4\times 4$ matrices. 
+We have a sporratic isomorphism $\mathfrak{sl}_4 \oplus \bigwedge^2 \mathbb{C}^4 \cong \mathfrak{sp}_6$, where $\mathfrak{sl}_4$ is the traceless $4\times 4$ matrices, $\bigwedge^2 \mathbb{C}^4$ is the skew-symmetric $4\times 4$ matrices, and $\mathfrak{sp}_6$ is the symplectic Lie algebra of $`6\times 6`$ matrices.
 
 -- make a copy of the symplectic Lie algebra $\mathfrak{sp}_4$ as a ring in M2 with the product being the Lie bracket. 
 
