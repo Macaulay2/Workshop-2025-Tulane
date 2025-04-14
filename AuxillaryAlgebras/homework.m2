@@ -1,4 +1,4 @@
--- here are some things we worked on today... some don't work right yets
+-- here are some things we worked on today... some don't work right yet
 -- act on vectors
 restart
 R = QQ[x_0..x_1]
