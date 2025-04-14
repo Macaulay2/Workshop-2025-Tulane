@@ -17,6 +17,6 @@ newtonIdentitySymmetry = method()
 newtonIdentitySymmetry(ZZ, Ring) := List => (k, R) -> (
     if k < 1 then error "k need to be positive integers";
     use R;
-    (for i from 1 to k list (1/i)*(sum((for j from 1 to i list (-1)^(j-1)*e_(i-j)*p_j))))
+    ({1} | (for i from 1 to k list (1/i)*(sum((for j from 1 to i list (-1)^(j-1)*e_(i-j)*p_j)))))
 )
 newtonIdentitySymmetry(ZZ) := List => k -> newtonIdentitySymmetry(k, QQ[e_0..e_k, p_0..p_k])
