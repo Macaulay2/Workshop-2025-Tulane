@@ -153,23 +153,15 @@ As another offshoot of conversations about invariants in a skew settings (and as
 
 ---
 ## The Reynolds Operator for Semi-simple Groups
-Work on this has been done by Dave Swinarski (dswinarski@fordham.edu) who has kindly shared code he wrote for Spin(10) and could be generalized to other semi-simple groups. Federico Galetto should also be interested in this and he can be reached remotely on Zulip (or by email f.galetto@csuohio.edu). Below is what Dave says. The files mentioned have been added to the Google Drive for the Invariant Ring project. 
 
-Earlier this spring I posted a preprint on the arXiv related to Mukai's model of the moduli space of genus 7 curves. As part of that project, I wrote code in M2 to find and then evaluate an invariant polynomial for the action of Spin(10) on Wedge^7 S+, where S+ is the 16-dimensional half-spin representation of Spin(10). My strategy follows the ideas of Derksen and Kemper's book to construct the Reynolds operator [see Section 4.5.2 in Computational Invariant Theory] as repeated projections using the Casimir operator on the Lie algebra. Some of the code I wrote is specific to type D, but other parts are more general.
+The new LieAlgebraRepresentation package (available for the first time in the LieAlgebraRepresentations branch for this workhop) can help us compute Casimir operators and Reynolds operators as follows. Currently, things are only fully implemented for type A in that package, but that could change by the end of this week.
 
-I met with Federico recently to discuss strategies for packaging this code in Macaulay2 code. He thought some of it might fit into a future version of InvariantRing, and suggested that I share it with you, since there is a group working on this at the workshop in Minnesota. If you'd like to chat over Zoom this weekend or next week, I'd be happy to do so. 
+In this package, one creates a ChevalleyBasis for the Lie algebra g. This includes a basis of g along with its dual basis with respect to the Killing form. Thus, to compute the Casimir operator on a representation rho, we just take the sum rho(B_i)*rho(Bstar_i) for i=0...dim(g)-1. 
 
-Here are several attachments. It's a lot, so I'll also give a brief description of each attachment.
-* "2304.12936.pdf" is the arXiv preprint. It is mostly applications to algebraic geometry, but you can see how I finally computed an invariant for this high-dimensional representation.
-* "InvariantsForSymdWedgekSpin2n.pdf" is some notes I wrote earlier this winter. With the approach described here, I was able to compute invariants for some smaller representations of the form Sym^d Wedge^k S+. But this approach wouldn't be able to handle the representation corresponding to Mukai's construction
-* "LieAlgebraRepresentations.v2.3.m2" contains code for the following basic problem. Given a representation of a Lie algebra g -> gl(n), compute the corresponding action for Sym, Wedge, or Tensor products. 
-* "SpinRepresentations.v1.7.m2" contains code for working with spin representations of so(2n). You can see here how I implemented so(2n) in order to compute the Casimir operator and Reynolds operator. It should be easy to implement types A-C in a similar way
-* "so2n.v4.2.m2" contains the code used to produce the examples in InvariantsForSymdWedgekSpin2n.pdf.  This is where I actually compute the Casimir and Reynold operators
-* "M2 transcript for InvariantsForSymdWedgekSpin2n.m2" is a transcript of several sessions where I compute the examples in the notes.
-
-I apologize that all of my code is un- or under-documented. To be honest, I was never confident that I would be able to do the calculations required for Mukai's construction until they were actually complete. Now that they are, and I know what worked, I am trying to put things in a form that other people can use, too!
-
+The kernel ker(Cas) on a representation W gives the sum of all the trivial submodules in W.  However, we can compute this iteratively, which may be faster than computing ker(Cas) using general algorithms in linear algebra. Let lambda_1,...,lambda_p be the nonzero highest weights in W. Let (k_1,...,k_p) be the values of the Casimir operator acting on V(lambda_1),...,V(lambda_p). Let w be any vector in W. Then prod (Cas - k_i)w  gives the projection of w to the sum of the trivial submodules in W.  We can do this for enough vectors w until we get a basis of ker(Cas). 
+  
 ---
+
 
 ## Cayley’s Omega Process
 
