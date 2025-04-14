@@ -189,3 +189,11 @@ More cross-over with the cool folks of SAGBI bases! Stillman and Tsai have descr
 
 A group of undergraduate students who I supervised worked on a neat algorithm for invariants of groups like (Z/p)^k (see https://github.com/lrizzolo/m2invariants). The algorithm idea has not been implemented fully because it requires first some "seed" invariants to start from. I think that if we can find in M2 a way to compute quickly a basis of the kernel of a matrix over a finite field of characteristic p, these elements can be used as seeds. I suspect that this method could be super quick if the linear algebra over FF_p is not an obstacle. There might be other interesting things in the students' repo, so feel free to explore! The students also gave a nice talk on their work, check out the video on YouTube
 https://www.youtube.com/watch?v=BhZbL95cUHw
+
+
+## Interfacing with GAP
+
+Michael's proposal: Macaulay2 apparently have a built-in interface with GAP. It would be interesting to see if we could implement the group actions from GAP, in addition to current matrix representations. 
+
+- New packages OpenMath and SCSCP for communicating via SCSCP with OpenMath to programs such as GAP and Maple have been developed, thanks to Dan Roozemond. They depend on the new package XML, which uses the libxml2 library to parse XML code. [https://macaulay2.com/doc/Macaulay2/share/doc/Macaulay2/Macaulay2Doc/html/_changes_cm_sp1.3.html](Macaulay2 + GAP)
+
