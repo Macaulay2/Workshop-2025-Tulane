@@ -1,5 +1,56 @@
 doc ///
     Key
+        getRigidityMatrix
+        (Integer, Integer, List)
+    Headline
+        Returns a 
+    Usage
+        toricLinearSeries L
+    Inputs
+        d : Integer
+        n : Integer
+        G : List
+            of pairs of adjacent vertices 
+    Description
+    	Text
+            Competes the rigidty matrix. Returns the jacobian of the composition of a projection ???
+
+            Expects the vertices of G to be 0 through n-1
+        Example
+            P2 = toricProjectiveSpace 2;
+            coxRing = ring P2;
+            mons = {x_0^2, x_0*x_1, x_1^2};
+            toricLinearSeries mons
+///
+
+doc ///
+    Key
+        isRigid
+        (Integer, Integer, List)
+    Headline
+        Returns a 
+    Usage
+        isRigid(d, n, G)
+    Inputs
+        d : Integer
+        n : Integer
+        G : List
+            of pairs of adjacent vertices 
+    Description
+    	Text
+            Constructs a toric linear series from a list of monomials from the Cox ring of a toric variety.
+            It checks that all monomials are of the same degree.
+            It expects the monomials to be in ring(X) where X is a normal toric variety.
+        Example
+            P2 = toricProjectiveSpace 2;
+            coxRing = ring P2;
+            mons = {x_0^2, x_0*x_1, x_1^2};
+            toricLinearSeries mons
+///
+
+-- Example:
+doc ///
+    Key
         toricLinearSeries
         (toricLinearSeries, List)
     Headline
