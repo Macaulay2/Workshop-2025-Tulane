@@ -15,9 +15,9 @@ $`\begin{array}{l}\fbox{0}\fbox{0} \\ \fbox{1}\end{array}`$, $`\begin{array}{l}\
 
 However, the module is also the span of all tableaux of the same shape and content modulo a set of straightening rules. Make a ring whose variables have tableaux as their indices, an ideal of straightening rules and present the module $S_{2,1}\mathbb{C}^2$ by the quotient.
 
-Define the $\mathfrak{sl}_2$-action on $`S_{2,1}\mathbb{C}^2 \subset (\mathbb{C}^2)^{\otimes 3}`$, by using the definition of the action on the space of tensors $` \mathbb{C}^2 \otimes \mathbb{C}^2 \otimes \mathbb{C}^2 `$ via the Leibnitz rule. 
+Define the $`\mathfrak{sl}_2`$-action on $`S_{2,1}\mathbb{C}^2 \subset (\mathbb{C}^2)^{\otimes 3}`$, by using the definition of the action on the space of tensors $` \mathbb{C}^2 \otimes \mathbb{C}^2 \otimes \mathbb{C}^2 `$ via the Leibnitz rule. 
 
-Repeat the same exercise for $`\mathfrak{sl}_3$ acting on $S_{2,1}\mathbb{C}^3`$.
+Repeat the same exercise for $`\mathfrak{sl}_3'$ acting on $'S_{2,1}\mathbb{C}^3`$.
 
 Define the Lie algebra action of $\mathfrak{sl}_2 \times \mathfrak{sl}_2 \times \mathfrak{sl}_2$ acting on $\mathbb{C}^2
 \otimes \mathbb{C}^2 \otimes \mathbb{C}^2$ as follows. Define the ring `R = QQ[x_(0,0,0)..x_(1,1,1)]` with $x_i \otimes x_j \otimes x_k = x_{(i,j,k)}$. 
