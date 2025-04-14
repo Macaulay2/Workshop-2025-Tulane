@@ -50,3 +50,8 @@ If $\mathfrak g$ is an algebra, then we can define adjoint operators $\text{ad}_
 * Construct the map that makes the matrix of an adjoint operator by choosing a basis the source and target.
 * Construct adjoint operators as a hash function in order to utilize sparseness. 
 
+
+# References:
+*ExteriorExtensions: A package for Macaulay2*, [arXiv](https://arxiv.org/abs/2312.11368), [code](https://github.com/LukeOeding/ExteriorExtensions.m2/)
+
+*Toward Jordan Decompositions of Tensors*, [Journal of Computational Science](https://www.sciencedirect.com/science/article/abs/pii/S1877750324002242), 82 (2024),  [arXiv](https://arxiv.org/abs/2206.13662)
