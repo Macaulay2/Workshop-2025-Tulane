@@ -14,3 +14,8 @@ Our current plan is to have hands-on tutorials with some demonstrations followed
 small (randomly generated) groups working on coding exercises. 
 
 This file resides in the git repo branch `MiniSchool` which we will use for sharing files and as a git "playground".
+
+# Monday
+* Data types intro: 
+  - use [this markdown file](MiniSchool/data-types.md) or use it as a [Macaulay2Web tutorial](https://www.unimelb-macaulay2.cloud.edu.au/#tutorial-datatypes-1)
+  - followed by a [Jupyter notebook](MiniSchool/first-steps-math.ipynb) also available as a [PDF](MiniSchool/first-steps-math.pdf) 
