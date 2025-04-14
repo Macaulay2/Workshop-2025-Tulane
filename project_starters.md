@@ -19,8 +19,10 @@ Define the $`\mathfrak{sl}_2`$-action on $`S_{2,1}\mathbb{C}^2 \subset (\mathbb{
 
 Repeat the same exercise for $`\mathfrak{sl}_3`$ acting on $`S_{2,1}\mathbb{C}^3`$.
 
-Define the Lie algebra action of $\mathfrak{sl}_2 \times \mathfrak{sl}_2 \times \mathfrak{sl}_2$ acting on $\mathbb{C}^2
-\otimes \mathbb{C}^2 \otimes \mathbb{C}^2$ as follows. Define the ring `R = QQ[x_(0,0,0)..x_(1,1,1)]` with $x_i \otimes x_j \otimes x_k = x_{(i,j,k)}$. 
+Define the Lie algebra action of $`\mathfrak{sl}_2 \times \mathfrak{sl}_2 \times \mathfrak{sl}_2`$ acting on $`\mathbb{C}^2
+\otimes \mathbb{C}^2 \otimes \mathbb{C}^2`$ as follows. Define the ring 
+`R = QQ[x_(0,0,0)..x_(1,1,1)]` 
+with $x_i \otimes x_j \otimes x_k = x_{(i,j,k)}$. 
 Define a map that takes a triple of matrices `(A,B,C)` and a variable `x_(i,j,k)` and sends it to the result: 
 $(Ax_i) \otimes x_j \otimes x_k + x_i \otimes (Bx_j) \otimes x_k  + x_i \otimes x_j \otimes (Cx_k) $
 
