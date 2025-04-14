@@ -1,6 +1,9 @@
 
 # Auxillary Algebras for spaces of tensors
 
+## Using algeras to study 
+
+
 Here are some starring points for this project:
 
 ## Lie algebra actions on Schur modules
@@ -9,7 +12,7 @@ Implement the standard action of $\mathfrak{sl}_2$ on $\mathbb{C}^2$.
 
 More generally, implement the action of  $\mathfrak{sl}_n$ on the modules $\bigwedge^k \mathbb{C}^n$, and on $S^d \mathbb{C}^n$.
 
-Consider the Schur module $S_{2,1}\mathbb{C}^2$, whose basis is given by the semi-standard Young tableaux of shape (2,1) and content in $\{0,1\}$: There are two:
+Consider the Schur module $S_{2,1}\mathbb{C}^2$, whose basis is given by the semi-standard Young tableaux of shape (2,1) and content in $`\{0,1\}`$: There are two:
 $`\begin{array}{l}\fbox{0}\fbox{0} \\ \fbox{1}\end{array}`$, $`\begin{array}{l}\fbox{0}\fbox{1}\\\fbox{1}\end{array}`$ or
 `{{0,0},{1}},  {{0,1},{1}} `
 
