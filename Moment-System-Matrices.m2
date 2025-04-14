@@ -10,7 +10,7 @@ produceMomentSystemMatrices (ZZ,QQ) := (k,variance) -> (
     if k == 1 then return matrix{{0,1}};
     if k == 2 then return matrix{{0,1,0},{variance,0,1}};
     M := new MutableMatrix from map(QQ^(k),QQ^(k+1),0);
-    M0 := produceMomentsSystemMatrices(2,variance);
+    M0 := produceMomentSystemMatrices(2,variance);
     scan(2,i -> (scan(3, j -> M_(i,j) = M0_(i,j))));
     scan(toList (2..(k-1)),i -> (
 	    shiftedRow := shiftingRow (matrix M)^{i-1};
@@ -31,7 +31,7 @@ shiftingRow Matrix := M -> (
 end
 
 restart
-needs "Moments-Matrices.m2"
+needsPackage "GaussianMixtureModels"
 for i from 1 to 20 do (
     M := produceMomentSystemMatrices(i,1/1);
     print M
