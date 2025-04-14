@@ -69,7 +69,7 @@ examples "hash tables"
 Keys have values:
 ```
 book = new HashTable from {
-  Title => "My book"
+  Title => "My book",
   1 => "Introduction",
   2 => "Preliminaries",
   3 => "More stuff",
@@ -111,8 +111,7 @@ peek loadedPackages#3
 ```
 
 _Exercise._ Create a hash table where 
-* the keys are the numbers from 1 to 10 with 
-the corresponding values are the first 10 letters of the alphabet 
+* the keys are the numbers from 1 to 10 with the corresponding values are the first 10 letters of the alphabet 
 * the keys are first 10 `loadedPackages` and the values are their versions
 
 ## Mutable vs. immutable
