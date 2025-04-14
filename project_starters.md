@@ -10,11 +10,11 @@ Implement the standard action of $\mathfrak{sl}_2$ on $\mathbb{C}^2$,
 More generally, implement the action of  $\mathfrak{sl}_n$ on the modules $\bigwedge^k \mathbb{C}^n$, and on $S^d \mathbb{C}^n$.
 
 Consider the Schur module $S_{2,1}\mathbb{C}^2$, whose basis is given by the semi-standard Young tableaux of shape (2,1) and content in $\{0,1\}$: There are two:
-\\(\begin{array}{l}\fbox{0}\fbox{0}\\\fbox{1}\end{array}\\), $\begin{array}{l}\fbox{0}\fbox{1}\\\fbox{1}\end{array}$ or `{{0,0},{1}},  {{0,1},{1}} `
+$\begin{array}{l}\fbox{0}\fbox{0}\\\fbox{1}\end{array}$, $\begin{array}{l}\fbox{0}\fbox{1}\\\fbox{1}\end{array}$ or `{{0,0},{1}},  {{0,1},{1}} `
 
 However, the module is also the span of all tableaux of the same shape and content modulo a set of straightening rules. Make a ring whose variables have tableaux as their indices, an ideal of straightening rules and present the module $S_{2,1}\mathbb{C}^2$ by the quotient.
 
-Define the $\mathfrak{sl}_2$ action on $S_{2,1}\mathbb{C}^2$ by including it into $\subset (\mathbb{C}^2)^{\otimes 3}$, and define the action on the space of tensors $\mathbb{C}^2 \otimes \mathbb{C}^2 \otimes \mathbb{C}^2 $ via the Leibnitz rule. 
+Define the $\mathfrak{sl}_2$ action on $S_{2,1}\mathbb{C}^2$ by including it into $ (\mathbb{C}^2)^{\otimes 3}$, and define the action on the space of tensors $\mathbb{C}^2 \otimes \mathbb{C}^2 \otimes \mathbb{C}^2 $ via the Leibnitz rule. 
 
 Repeat the same exercise for $\mathfrak{sl}_3$ acting on $S_{2,1}\mathbb{C}^3$.
 
