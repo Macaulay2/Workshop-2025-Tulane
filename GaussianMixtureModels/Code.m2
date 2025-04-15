@@ -70,3 +70,7 @@ solveGaussianSystem(Matrix, List, Ring) := List => (A, m, R) -> (
     roots(f)
 )
 solveGaussianSystem(Matrix, List) := List => (A, m) -> solveGaussianSystem(A, m, QQ[e_0..e_(numRows A), p_0..p_(numRows A)])
+solveGaussianSystem(List) := List => m -> (
+    n := length m;
+    solveGaussianSystem(map(ZZ^n, ZZ^n, 1),m)
+)
