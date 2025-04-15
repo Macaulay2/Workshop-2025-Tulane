@@ -86,3 +86,9 @@ getPowerSystem(Matrix, List) := List => (A, m) -> (
     f := map(S,R, matrix{for i from 1 to n list (sum(for j from 1 to n list x_j^i))});
     flatten entries f(A*(transpose vars R) - transpose matrix {m})
 )
+
+getStartingSystem = method()
+getStartingSystem(List,List) := (targetSystem,sols) -> (
+    S := ring first targetSystem;
+    targetSystem - (map(QQ,S,sols) \ targetSystem)
+    )
