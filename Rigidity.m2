@@ -43,12 +43,12 @@ export {
 -- Code
 ------------------------------------------------------------------------------
 
-getRigidityMatrix = method(TypicalValue => Matrix)
+getRigidityMatrix = method(Options => {Variable => crds}, TypicalValue => Matrix)
 
 isLocallyRigid = method(Options => {Numerical => false, FiniteField => 0}, TypicalValue => Boolean)
 
-getRigidityMatrix(ZZ, ZZ, List) := Matrix => (d, n, G) -> (
-    crds = getSymbol "crds";
+getRigidityMatrix(ZZ, ZZ, List) := Matrix => opts -> (d, n, G) -> (
+    crds = getSymbol toString(opts.Variable);
     R := QQ(monoid[crds_(1) .. crds_(d*n)]); -- Create a ring with d*n variables
     M := genericMatrix(R, d, n); -- Return a generic d by n matrix over R
     -- Here is the polynomial we might want to switch in the future
@@ -58,15 +58,15 @@ getRigidityMatrix(ZZ, ZZ, List) := Matrix => (d, n, G) -> (
     1/2 * transpose fold((a,b) -> a|b, jacobianList)
 );
 
-getRigidityMatrix(ZZ,ZZ) := Matrix => (d,n) -> (
+getRigidityMatrix(ZZ,ZZ) := Matrix => opts -> (d,n) -> (
     getRigidityMatrix(d,n, subsets(toList(0..(n-1)), 2), opts)
 );
 
-getRigidityMatrix(ZZ, Graph) := Matrix => (d, G) -> (
+getRigidityMatrix(ZZ, Graph) := Matrix => opts -> (d, G) -> (
     getRigidityMatrix(d, length vertexSet G, edges G)
 );
 
-getRigidityMatrix(ZZ, ZZ, Graph) := Matrix => (d, n, G) -> (
+getRigidityMatrix(ZZ, ZZ, Graph) := Matrix => opts -> (d, n, G) -> (
     if n =!= length vertexSet G then error("Expected ", n, " to be the number of vertices in ",G);
     getRigidityMatrix(d, n, edges G)
 );
