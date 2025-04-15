@@ -61,15 +61,24 @@ getRigidityMatrix(ZZ,ZZ) := Matrix => (d,n) -> (
     getRigidityMatrix(d,n, subsets(toList(0..(n-1)), 2), opts)
 );
 
-isLocallyRigid(ZZ, ZZ, G) := Boolean => opts -> (d, n, G) -> (
+getRigidityMatrix(ZZ, Graph) := Matrix => (d, G) -> (
+    getRigidityMatrix(d, length vertexSet G, edges G)
+);
+
+getRigidityMatrix(ZZ, ZZ, Graph) := Matrix => (d, n, G) -> (
+    if n =!= length vertexSet G then error("Expected ", n, " to be the number of vertices in ",G);
+    getRigidityMatrix(d, n, edges G)
+);
+
+isLocallyRigid(ZZ, ZZ, List) := Boolean => opts -> (d, n, E) -> (
     if opts.Numerical 
     then (
         listOfTruthValues := apply(
             toList(0..1),
             n -> d*n - (d+1)*d/2 == rank(
                 sub(
-                    getRigidityMatrix(d, n, G), 
-                    apply(toList(1..d*n), i -> x_i => random(-1.,1))
+                    getRigidityMatrix(d, n, E), 
+                    apply(toList(1..d*n), i -> x_i => random(-1.,1.))
                 )
             ) 
         );
