@@ -55,8 +55,10 @@ applyFunctionToMonomialsOfDegree'd'(degree,R,3)
 highestExponent = m -> max first exponents m
 applyFunctionToMonomialsOfDegree'd'(highestExponent,R,4)
 --...or e.g. returned
-getFunctionReturningThe'i'thExponent = i -> (m -> (first exponents m)#i)
+getFunctionReturningThe'i'thExponent = i ->
+  (m -> (first exponents m)#i)
 firstExponent = getFunctionReturningThe'i'thExponent 0
+firstExponent m
 applyFunctionToMonomialsOfDegree'd'(firstExponent,R,3)
 
 -* EXERCISE:
@@ -67,5 +69,9 @@ applyFunctionToMonomialsOfDegree'd'(firstExponent,R,3)
   Test it on L below.
 *-
 R = QQ[x,y]
-L = apply(10,i->R_(apply(numgens R,i->abs random ZZ)))
-
+L = apply(100,i->R_(apply(numgens R,i->abs random ZZ)))
+M = apply(100,i->R_(apply(numgens R,i->abs random ZZ)))
+help delete
+help isMember
+help select
+select(L,m->not isMember(m,M))

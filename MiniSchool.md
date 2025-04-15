@@ -16,6 +16,11 @@ small (randomly generated) groups working on coding exercises.
 This file resides in the git repo branch `MiniSchool` which we will use for sharing files and as a git "playground".
 
 # Monday
-* Data types intro: 
-  - use [this markdown file](MiniSchool/data-types.md) or use it as a [Macaulay2Web tutorial](https://www.unimelb-macaulay2.cloud.edu.au/#tutorial-datatypes-1)
-  - followed by a [Jupyter notebook](MiniSchool/first-steps-math.ipynb) also available as in [markdown](MiniSchool/first-steps.md) and [PDF](MiniSchool/first-steps-math.pdf) 
+* Data types intro: use [this markdown file](MiniSchool/data-types.md) or use it as a [Macaulay2Web tutorial](https://www.unimelb-macaulay2.cloud.edu.au/#tutorial-datatypes-1)
+* Rings, ideal, betti tables: a [Jupyter notebook](MiniSchool/first-steps-math.ipynb) also available as in [markdown](MiniSchool/first-steps.md) and [PDF](MiniSchool/first-steps-math.pdf) 
+
+# Tuesday
+* Functions: M2 source code is in [functions.m2](MiniSchool/functions.m2) 
+* Math types: [rings-ideals-matrices.m2](MiniSchool/rings-ideals-matrices.m2)  
+* Methods, options, code: [methods.m2](MiniSchool/methods.m2)
+* Writing packages: [packages.m2](MiniSchool/packages.m2)
