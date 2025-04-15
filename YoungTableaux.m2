@@ -109,6 +109,7 @@ conjugate YoungDiagram := YoungDiagram => lambda -> (
     numConjugateCols := lambda#0;
     youngDiagram sum(for part in lambda list (toList(part:1) | toList((numConjugateCols - part):0)))
 )
+transpose YoungDiagram := YoungDiagram => lambda -> (conjugate YoungDiagram lambda)
 
 
 -----------------------------------------------------------------------------

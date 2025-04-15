@@ -55,7 +55,7 @@ doc ///
 
       {\bf Miscellaneous.}
 
-      We can compute the {\em conjugate} of a Young diagram/tableau.
+      We can compute the {\em conjugate} (or {\em transpose} of a Young diagram/tableau.
       This corresponds to reading the diagram/tableau along the columns instead of the rows.
     Example
       lambda = youngDiagram {5,4,1};
@@ -84,11 +84,13 @@ doc ///
 ///
 
 -- (conjugate, YoungDiagram)
+-- (transpose, YoungDiagram)
 doc ///
   Key
     (conjugate, YoungDiagram)
+    (tranpose, YoungDiagram)
   Headline
-    computes the conjugate of a Young diagram
+    computes the conjugate (or transpose) of a Young diagram
   Usage
     conjugate lambda
   Inputs
@@ -97,7 +99,7 @@ doc ///
     :YoungDiagram
   Description
     Text
-      Computes the conjugate of a Young diagram.
+      Computes the conjugate (or transpose) of a Young diagram.
       The conjugate is obtained by reading the diagram along the columns instead of the rows.
 
     Example
