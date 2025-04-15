@@ -88,6 +88,24 @@ SparseMatrix == SparseMatrix := (A,B) -> (
 
 
 
+Number * SparseMatrix := (c,A) -> (
+    H:={};
+    if c==0 then (
+	H = new HashTable from {}
+    ) else (
+        H=new HashTable from apply(pairs(A#"Entries"), p -> {p_0,c*p_1})
+    );
+    sparseMatrix(A#"NumberOfRows",A#"NumberOfColumns",A#"BaseRing",H)
+);
+
+
+RingElement * SparseMatrix := (c,A) -> (
+    if not instance(c,A"BaseRing") then error "c is not the ring of this matrix" << endl;
+    H:=new HashTable from apply(pairs(A#"Entries"), p -> {p_0,c*p_1});
+    sparseMatrix(A#"NumberOfRows",A#"NumberOfColumns",A#"BaseRing",H)
+);
+
+
 SparseMatrix + SparseMatrix := (A,B) -> (
     if A#"BaseRing" =!= B#"BaseRing" then error "The base rings are not the same";
     if A#"NumberOfRows" =!= B#"NumberOfRows" then error "Different numbers of rows";

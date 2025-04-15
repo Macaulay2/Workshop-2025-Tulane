@@ -75,15 +75,22 @@ export {
     }
 
 
-
 -- From basesAsWords.m2
-export {"LieAlgebraModuleElement",
-    "lieAlgebraModuleElement",
-    "zeroElement",
-    "simplify",
-    "representation",
+export {"representation",
     "installRepresentation",
     "representationWeights",
+    "casimirOperator",
+    "casimirSpectrum",
+    "casimirProjection",
+    "reynoldsOperator"
+    }
+
+
+-- From basesAsWords.m2
+export {--"LieAlgebraModuleElement",
+    --"lieAlgebraModuleElement",
+    --"zeroElement",
+    --"simplify",
     "basisWordsFromMatrixGenerators"
     }
 

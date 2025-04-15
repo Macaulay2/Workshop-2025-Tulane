@@ -1124,7 +1124,9 @@ doc ///
 	   oo_*
 ///
 
+-- New documention after LieTypes version 0.9
 
+-- From chevalleyBasis.m2
 doc ///
     Key
        ChevalleyBasis
@@ -1181,46 +1183,7 @@ assert(CB#"BasisElements"=={map(QQ^3,QQ^3,{{1, 0, 0}, {0, -1, 0}, {0, 0, 0}}),ma
 ///
 
 
-doc ///
-    Key
-        installRepresentation
-	(installRepresentation,LieAlgebraModule,ChevalleyBasis,List)
-    Headline
-        Install an explicit Lie algebra representation to a Lie algebra module
-    Usage
-        installRepresentation(V,CB,L)
-    Inputs 
-        V:LieAlgebraModule
-	CB:ChevalleyBasis
-	L:List
-    Outputs
-    Description
-        Text
-            Let $\{B_i\}$ be a basis of $\mathfrak{g}$, and $\rho: \mathfrak{g} \rightarrow \mathfrak{gl}(V)$ be a Lie algebra representation to the $\mathfrak{g}$-module $V$. 
-
-	Text
-	    To construct $\rho$, we require a Chevalley basis @TT "CB"@ of $\mathfrak{g}$, and a list @TT "L"@ of matrices that are the images $\rho(B_i) \in \mathfrak{gl}(V)$. Then the list {CB,L} is stored in V.cache#representation.
-        Text	    
-	    First, we build the standard representation for $sl_3$. The list of matrices we need is already contained in the Chevalley basis.
-	Example
-	    sl3=simpleLieAlgebra("A",2);
-	    V=irreducibleLieAlgebraModule({1,0},sl3);
-	    peek V
-            CB = chevalleyBasis("A",2);
-	    installRepresentation(V,CB,CB#"BasisElements");
-	    peek V
-	    peek (V.cache)
-        Text
-	    Note how @TT "V.cache"@ changed after we ran @TT "installRepresentation"@.
-	Text
-	    Next, we install an explicit representation to the irreducible $sl_3$ module with highest weight $(2,0)$. This time, we create the list of matrices using the command @TO GTrepresentationMatrices@.
-        Example
-	    V=irreducibleLieAlgebraModule({2,0},sl3);
-            L = GTrepresentationMatrices(V)
-            installRepresentation(V,CB,L)
-	    peek V
-	    peek (V.cache)
-///
+-- From gelfandTsetlinTypeA.m2
 
 
 doc ///
@@ -1434,6 +1397,7 @@ TEST ///
     assert(GTrepresentationMatrices(V) === {map(QQ^8,QQ^8,{{1, 0, 0, 0, 0, 0, 0, 0}, {0, -1, 0, 0, 0, 0, 0, 0}, {0, 0, 2, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, -2, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 1, 0}, {0, 0, 0, 0, 0, 0, 0, -1}}),map(QQ^8,QQ^8,{{1, 0, 0, 0, 0, 0, 0, 0}, {0, 2, 0, 0, 0, 0, 0, 0}, {0, 0, -1, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 1, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, -2, 0}, {0, 0, 0, 0, 0, 0, 0, -1}}),map(QQ^8,QQ^8,{{0, 1, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 2, 0, 0, 0, 0}, {0, 0, 0, 0, 2, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 1}, {0, 0, 0, 0, 0, 0, 0, 0}}),map(QQ^8,QQ^8,{{0, 0, 0, -1, 0, 3, 0, 0}, {0, 0, 0, 0, -2, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 3, 0}, {0, 0, 0, 0, 0, 0, 0, 3/2}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, -3/2}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}}),map(QQ^8,QQ^8,{{0, 0, 1, 0, 0, 0, 0, 0}, {0, 0, 0, 1, 0, 3, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 3/2, 0}, {0, 0, 0, 0, 0, 0, 0, 3/2}, {0, 0, 0, 0, 0, 0, 3/2, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}}),map(QQ^8,QQ^8,{{0, 0, 0, 0, 0, 0, 0, 0}, {1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 1, 0, 0, 0, 0, 0}, {0, 0, 0, 1, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 1, 0}}),map(QQ^8,QQ^8,{{0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {-1/2, 0, 0, 0, 0, 0, 0, 0}, {0, -1/2, 0, 0, 0, 0, 0, 0}, {1/2, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 1/3, 0, 0, 0, 0, 0}, {0, 0, 0, 1/3, 0, -1, 0, 0}}),map(QQ^8,QQ^8,{{0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {1, 0, 0, 0, 0, 0, 0, 0}, {0, 1/2, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 1/2, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 1/3, 0, 1, 0, 0}, {0, 0, 0, 0, 2/3, 0, 0, 0}})})
 ///
 
+-- From symWedgeTensor.m2
 
 doc ///
     Key
@@ -1628,6 +1592,49 @@ TEST ///
 ///
 
 
+-- From representationsCasimirReynolds.m2
+
+
+doc ///
+    Key
+        installRepresentation
+	(installRepresentation,LieAlgebraModule,ChevalleyBasis,List)
+    Headline
+        Install an explicit Lie algebra representation to a Lie algebra module
+    Usage
+        installRepresentation(V,CB,L)
+    Inputs 
+        V:LieAlgebraModule
+	CB:ChevalleyBasis
+	L:List
+    Outputs
+    Description
+        Text
+            Let $\{B_i\}$ be a basis of $\mathfrak{g}$, and $\rho: \mathfrak{g} \rightarrow \mathfrak{gl}(V)$ be a Lie algebra representation to the $\mathfrak{g}$-module $V$. 
+
+	Text
+	    To construct $\rho$, we require a Chevalley basis @TT "CB"@ of $\mathfrak{g}$, and a list @TT "L"@ of matrices that are the images $\rho(B_i) \in \mathfrak{gl}(V)$. Then the list {CB,L} is stored in V.cache#representation.
+        Text	    
+	    First, we build the standard representation for $sl_3$. The list of matrices we need is already contained in the Chevalley basis.
+	Example
+	    sl3=simpleLieAlgebra("A",2);
+	    V=irreducibleLieAlgebraModule({1,0},sl3);
+	    peek V
+            CB = chevalleyBasis("A",2);
+	    installRepresentation(V,CB,CB#"BasisElements");
+	    peek V
+	    peek (V.cache)
+        Text
+	    Note how @TT "V.cache"@ changed after we ran @TT "installRepresentation"@.
+	Text
+	    Next, we install an explicit representation to the irreducible $sl_3$ module with highest weight $(2,0)$. This time, we create the list of matrices using the command @TO GTrepresentationMatrices@.
+        Example
+	    V=irreducibleLieAlgebraModule({2,0},sl3);
+            L = GTrepresentationMatrices(V)
+            installRepresentation(V,CB,L)
+	    peek V
+	    peek (V.cache)
+///
 
 
 doc ///
@@ -1693,7 +1700,205 @@ TEST ///
 ///
 
 
+doc ///
+    Key
+        casimirOperator
+	(casimirOperator,LieAlgebraModule)
+    Headline
+        computes the Casimir operator associated to a representation
+    Usage
+        casimirOperator(V)
+    Inputs 
+        V:LieAlgebraModule
+    Outputs
+        M:Matrix
+    Description
+        Text
+	    Let @TT "V"@ be a LieAlgebraModule with a representation $\rho: \mathfrak{g} \rightarrow \mathfrak{gl}(V)$ installed.
+	    
+	Text
+            Let $\{B_i\}$ be a basis of $\mathfrak{g}$, and let $\{B_i^{*}\}$ be the dual basis with respect to the Killing form. The Casimir operator is
+	    
+        Text
+	    $\operatorname{Cas} = \sum_{i} \rho(B_i^*) rho(B_i)$.
 
+	Text
+	    Recall that in creating a Chevalley basis, we compute the dual basis $\{B_i^{*}\}$. This makes it straightforward to compute the Casimir operator.
+
+	Text
+	    If @TT "V"@ is irreducible with highest weight lambda, then $\operatorname{Cas} = c(\lambda) \operatorname{Id}$, where $c(\lambda)$ is the scalar computed by @TO (casimirScalar,LieAlgebraModule)@.
+
+        Text
+	    We compute the Casimir operator for $\operatorname{Sym^2} \mathbb{C}^3$. Since this is an irreducible representation, we get a scalar multiple of the identity.
+	    
+	Example
+	    sl3=simpleLieAlgebra("A",2)
+	    CB = chevalleyBasis(sl3)
+	    V=irreducibleLieAlgebraModule({1,0},sl3)
+	    installRepresentation(V,CB,CB#"BasisElements")
+	    S2V=symmetricPowerRepresentation(2,V)
+	    time CasS2V = casimirOperator(S2V);
+	    
+        Text
+            Next, we compute the Casimir operator for $\operatorname{Sym^2} \operatorname{Sym^2} \mathbb{C}^3$. It has two distinct eigenvalues. The eigenvalues match the Casimir scalars of the irreducible submodules appearing in the decomposition of $\operatorname{Sym^2} \operatorname{Sym^2} \mathbb{C}^3$, and the multiplicities of the eigenvalues match the dimensions of these submodules. 
+
+	Example
+	    S2S2V=symmetricPowerRepresentation(2,S2V)
+	    time CasS2S2V = casimirOperator(S2S2V); -- Looks almost diagonal but it's not... there is one subdiagonal entry
+	    tally eigenvalues CasS2S2V
+	    peek S2S2V
+	    V40 = irreducibleLieAlgebraModule({4,0},sl3);
+	    dim V40
+	    casimirScalar(V40)
+	    V02 = irreducibleLieAlgebraModule({0,2},sl3);
+	    dim V02
+	    casimirScalar(V02)
+
+///
+
+-- TO DO: Check this result by hand
+TEST ///
+    sl3=simpleLieAlgebra("A",2);
+    CB = chevalleyBasis(sl3);
+    V=irreducibleLieAlgebraModule({1,0},sl3);
+    installRepresentation(V,CB,CB#"BasisElements");
+    S2V=symmetricPowerRepresentation(2,V);
+    CasS2V = casimirOperator(S2V);
+    assert(CasS2V == map(QQ^6,QQ^6,{{20/3, 0, 0, 0, 0, 0}, {0, 20/3, 0, 0, 0, 0}, {0, 0, 20/3, 0, 0, 0}, {0, 0, 0, 20/3, 0, 0}, {0, 0, 0, 0, 20/3, 0}, {0, 0, 0, 0, 0, 20/3}}))
+    S2S2V=symmetricPowerRepresentation(2,S2V);
+    CasS2S2V = casimirOperator(S2S2V);
+    assert(CasS2S2V == map(QQ^21,QQ^21,{{56/3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 56/3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 56/3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 32/3, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 32/3, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 32/3, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 8, 0, 0, 44/3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 8, 0, 0, 44/3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 56/3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 44/3, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32/3, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 44/3, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 32/3, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 44/3, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 56/3, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 56/3, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 56/3, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32/3, 4, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 44/3, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 56/3, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 56/3}}))
+///
+
+
+doc ///
+    Key
+        casimirSpectrum
+	(casimirSpectrum,LieAlgebraModule)
+    Headline
+        computes the eigenvalues of the Casimir operator associated to a representation
+    Usage
+        casimirOperator(V)
+    Inputs 
+        V:LieAlgebraModule
+    Outputs
+        M:Matrix
+    Description
+        Text
+	    Let @TT "V"@ be a LieAlgebraModule, and recall the definition of the Casimir operator from @TO (casimirOperator,LieAlgebraModule)@.
+	    
+	Text
+	    If @TT "V"@ is irreducible with highest weight lambda, then $\operatorname{Cas} = c(\lambda) \operatorname{Id}$, where $c(\lambda)$ is the scalar computed by @TO (casimirScalar,LieAlgebraModule)@.
+
+        Text
+	    This function returns a nonredundant list of eigenvalues of $\operatorname{Cas}$ by computing the scalars $c(\lambda)$ for each irreducible summand in $V$, and then removing any duplicates.
+	    
+	Example
+	    sl3=simpleLieAlgebra("A",2)
+	    CB = chevalleyBasis(sl3)
+	    V=irreducibleLieAlgebraModule({1,0},sl3)
+            S3V=symmetricPower(3,V);
+            S4S3V=symmetricPower(4,S3V)
+	    casimirSpectrum(S4S3V)
+
+///
+
+-- TO DO: Check this result by hand
+TEST ///
+    sl3=simpleLieAlgebra("A",2);
+    CB = chevalleyBasis(sl3);
+    V=irreducibleLieAlgebraModule({1,0},sl3);
+    S3V=symmetricPower(3,V);
+    S4S3V=symmetricPower(4,S3V);
+    assert(casimirSpectrum(S4S3V) == {0, 16, 24, 30, 36, 48, 60, 76, 120})
+///
+
+
+doc ///
+    Key
+        casimirProjection
+	(casimirProjection,LieAlgebraModule,QQ)
+    Headline
+        projection operator to a specified eigenspace of the Casimir operator
+    Usage
+        casimirProjection(V,z)
+    Inputs 
+        V:LieAlgebraModule
+	z:QQ
+    Outputs
+        M:Matrix
+    Description
+        Text
+	    Let @TT "V"@ be a LieAlgebraModule with a representation installed, and recall the definition of the Casimir operator from @TO (casimirOperator,LieAlgebraModule)@.
+
+        Text
+	    This function returns the projection matrix to the eigenspace of the Casimir operator for the input eigenvalue @TT "z"@.  This matrix is computed as the product of factors $\operatorname{Cas}-x I$ over all eigenvalues $x \neq z$. 
+	    
+	Example
+	    sl3=simpleLieAlgebra("A",2)
+	    CB = chevalleyBasis(sl3)
+	    V=irreducibleLieAlgebraModule({1,0},sl3)
+            installRepresentation(V,CB,CB#"BasisElements");
+            S2V=symmetricPowerRepresentation(2,V);
+            S3S2V=symmetricPowerRepresentation(3,S2V);
+	    casimirProjection(S3S2V,16)
+
+///
+
+-- TO DO: Check this result by hand
+TEST ///
+    sl3=simpleLieAlgebra("A",2);
+    CB = chevalleyBasis(sl3);
+    V=irreducibleLieAlgebraModule({1,0},sl3);
+    installRepresentation(V,CB,CB#"BasisElements");
+    S2V=symmetricPowerRepresentation(2,V);
+    S3S2V=symmetricPowerRepresentation(3,S2V);
+    assert(casimirProjection(S3S2V,16)==dense sparseMatrix(56,56,QQ, new HashTable from {(40,31) => 64/1, (36,36) => -192/1, (32,41) => 64/1, (5,5) => -256/1, (44,35) => 256/1, (5,11) => 64/1, (40,40) => -256/1, (9,9) => -192/1, (9,12) => 128/1, (13,10) => 128/1, (44,44) => -64/1, (13,13) => -192/1, (21,8) => 128/1, (9,22) => 128/1, (48,48) => -256/1, (48,49) => 64/1, (17,17) => -192/1, (17,18) => -32/1, (52,50) => 128/1, (13,26) => 128/1, (52,52) => -192/1, (17,25) => -32/1, (21,21) => -192/1, (25,17) => -64/1, (25,18) => 96/1, (17,28) => 48/1, (29,19) => 128/1, (25,25) => -224/1, (25,28) => 16/1, (37,17) => -64/1, (17,37) => -32/1, (37,18) => 96/1, (29,29) => -192/1, (37,25) => 96/1, (25,37) => 96/1, (37,28) => 16/1, (33,32) => 128/1, (33,33) => -192/1, (29,38) => 128/1, (6,3) => 256/1, (41,32) => 128/1, (33,41) => 128/1, (37,37) => -224/1, (41,33) => 128/1, (6,6) => -64/1, (41,41) => -192/1, (10,10) => -256/1, (10,13) => 64/1, (14,14) => -128/1, (22,9) => 128/1, (49,48) => 256/1, (49,49) => -64/1, (22,12) => 128/1, (18,17) => -64/1, (18,18) => -224/1, (10,26) => 64/1, (26,10) => 128/1, (26,13) => 128/1, (53,51) => 256/1, (53,53) => -64/1, (18,25) => 96/1, (22,22) => -192/1, (18,28) => 16/1, (14,36) => 192/1, (26,26) => -192/1, (18,37) => 96/1, (38,19) => 128/1, (38,29) => 128/1, (34,34) => -192/1, (3,3) => -256/1, (3,6) => 64/1, (7,4) => 256/1, (42,34) => 64/1, (38,38) => -192/1, (34,42) => 128/1, (34,43) => 128/1, (7,7) => -64/1, (11,5) => 256/1, (42,42) => -256/1, (42,43) => 64/1, (11,11) => -64/1, (15,15) => -256/1, (50,50) => -128/1, (50,52) => 192/1, (19,19) => -256/1, (15,23) => 64/1, (23,15) => 256/1, (27,16) => 128/1, (23,23) => -64/1, (19,29) => 64/1, (27,24) => 128/1, (27,27) => -192/1, (19,38) => 64/1, (39,20) => 256/1, (31,31) => -64/1, (35,35) => -256/1, (31,40) => 256/1, (4,4) => -256/1, (4,7) => 64/1, (43,34) => 128/1, (39,39) => -64/1, (35,44) => 64/1, (8,8) => -128/1, (12,9) => 64/1, (43,42) => 128/1, (43,43) => -192/1, (12,12) => -256/1, (8,21) => 192/1, (16,16) => -256/1, (12,22) => 64/1, (51,51) => -256/1, (24,16) => 128/1, (16,24) => 64/1, (20,20) => -256/1, (51,53) => 64/1, (16,27) => 64/1, (28,17) => 384/1, (28,18) => 64/1, (24,24) => -192/1, (36,14) => 128/1, (24,27) => 128/1, (28,25) => 64/1, (28,28) => -96/1, (20,39) => 64/1, (32,32) => -256/1, (32,33) => 64/1, (28,37) => 64/1}))
+///
+
+
+doc ///
+    Key
+        reynoldsOperator
+	(reynoldsOperator,LieAlgebraModule)
+    Headline
+        computes the projection to the sum of the trivial submodules in $V$
+    Usage
+        reynoldsOperator(V)
+    Inputs 
+        V:LieAlgebraModule
+    Outputs
+        M:Matrix
+    Description
+        Text
+	    Let @TT "V"@ be a LieAlgebraModule with representation installed. Suppose that the trivial module $V_0$ occurs with multiplicity $m_0 \geq 1$ in $V$. This function returns a matrix for the projection $V \rightarrow V_0^{\oplus m_0}$. 
+	    
+	Text
+	    This is a special case of the function @TO (casimirProjection,LieAlgebraModule,QQ)@ where the input eigenvalue is $z=0$.
+	    
+	Example
+	    sl3=simpleLieAlgebra("A",2)
+	    CB = chevalleyBasis(sl3)
+	    V=irreducibleLieAlgebraModule({1,0},sl3)
+	    installRepresentation(V,CB,CB#"BasisElements")
+	    S2V=symmetricPowerRepresentation(2,V)
+	    S3S2V=symmetricPowerRepresentation(3,S2V)
+	    reynoldsOperator(S3S2V)
+            
+///
+-- TO DO: Check this result by hand
+TEST ///
+    sl3=simpleLieAlgebra("A",2);
+    CB = chevalleyBasis(sl3);
+    V=irreducibleLieAlgebraModule({1,0},sl3);
+    installRepresentation(V,CB,CB#"BasisElements");
+    S2V=symmetricPowerRepresentation(2,V);
+    S3S2V=symmetricPowerRepresentation(3,S2V);
+    assert(reynoldsOperator(S3S2V)==dense sparseMatrix(56,56,QQ, new HashTable from {(37,37) => 96/1, (17,17) => 192/1, (17,18) => -96/1, (18,17) => -192/1, (18,18) => 96/1, (17,25) => -96/1, (25,17) => -192/1, (18,25) => 96/1, (25,18) => 96/1, (28,17) => 384/1, (17,28) => 48/1, (18,28) => -48/1, (28,18) => -192/1, (25,25) => 96/1, (25,28) => -48/1, (28,25) => -192/1, (17,37) => -96/1, (37,17) => -192/1, (18,37) => 96/1, (37,18) => 96/1, (28,28) => 96/1, (25,37) => 96/1, (37,25) => 96/1, (37,28) => -48/1, (28,37) => -192/1}))
+///
+
+    
+-- From basesAsWords.m2
 
 doc ///
     Key
@@ -1734,7 +1939,7 @@ TEST ///
 ///
 
 
-
+-- From highestWeightVectorsAndSubmodules.m2
 
 doc ///
     Key

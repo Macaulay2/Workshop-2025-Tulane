@@ -139,7 +139,7 @@ applyLOWord({0},v1,LoweringOperators1)
 applyLOWord({1,0},v1,LoweringOperators1)
 *-
 
-
+-*
 -- Inputs:
 -- V, the LieAlgebraModule
 -- RB, the Chevalley basis
@@ -156,44 +156,24 @@ installRepresentation(LieAlgebraModule,ChevalleyBasis,List) := (V,CB,rhoB) -> (
     V.cache#representation = {CB,rhoB};
 )
 
-
-
-isDiagonalMatrix = (M) -> (
-    for i from 0 to numRows(M)-1 do (
-        for j from 0 to numColumns(M)-1 do (
-	    if j!=i and M_(i,j)!=0 then return false
-	)
-    );
-    return true
-);
-
-
-isDiagonalSparseMatrix = (M) -> (
-    all(M#"Entries", o -> (o#0)#0==(o#0)#1)
-);
-
-
-
 representationWeights = method(
     TypicalValue=>List
 );
 
 representationWeights(LieAlgebraModule) := memoize((W) -> (
     rho:=W.cache#representation;
-    sparseGenerators:=instance(rho_1_0,SparseMatrix);
-    -- Check that the basis on Vlambda is an eigenbasis for the Cartan algebra
+    sparseGenerators:=instance(rho_1_0,SparseMatrix); 
     CB:=rho_0;
     dimW:=-1;
     Wweights:={};
     m:=CB#"LieAlgebra"#"LieAlgebraRank";
     if not sparseGenerators then (
-        if not all(m, i -> isDiagonalMatrix(rho_1_i)) then error "The basis is not an eigenbasis for the Cartan subalgebra" << endl;
-	return apply(dim W, i -> apply(m, j -> lift((rho_1_j)_(i,i),ZZ)))
+	 return apply(dim W, i -> apply(m, j -> lift((rho_1_j)_(i,i),ZZ)))
     ) else (
-        if not all(m, i -> isDiagonalSparseMatrix(rho_1_i)) then error "The basis is not an eigenbasis for the Cartan subalgebra" << endl;
-        return apply(dim W, i -> apply(m, j -> if ((rho_1_j)#"Entries")#?(i,i) then lift(((rho_1_j)#"Entries")#(i,i),ZZ) else 0))
-    );
+         return apply(dim W, i -> apply(m, j -> if ((rho_1_j)#"Entries")#?(i,i) then lift(((rho_1_j)#"Entries")#(i,i),ZZ) else 0))
+    )
 ));
+*-
 
 basisWordsFromMatrixGenerators = method(
     TypicalValue=>List
