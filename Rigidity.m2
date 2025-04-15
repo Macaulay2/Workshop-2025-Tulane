@@ -76,7 +76,7 @@ isLocallyRigid(ZZ, ZZ, List) := Boolean => opts -> (d, n, E) -> (
     then (
         listOfTruthValues := apply(
             toList(0..1),
-            n -> d*n - (d+1)*d/2 == rank(
+            k -> d*n - (d+1)*d/2 == rank(
                 sub(
                     getRigidityMatrix(d, n, E), 
                     apply(toList(1..d*n), i -> crds_i => random(-1.,1.))
