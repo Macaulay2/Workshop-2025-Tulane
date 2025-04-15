@@ -42,7 +42,7 @@ end
 restart
 needsPackage "GaussianMixtureModels"
 needsPackage "NumericalAlgebraicGeometry"
-k = 4
+k = 7
 T = getPowerSystem(random(QQ^k,QQ^k),flatten entries random(QQ^k,QQ^1));
 sols = flatten entries random(QQ^k,QQ^1);
 S = getStartingSystem(T,sols);
