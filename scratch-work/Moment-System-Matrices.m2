@@ -32,6 +32,9 @@ end
 
 restart
 needsPackage "GaussianMixtureModels"
+(A,B) = produceMomentSystemMatrices(5,1/1)
+solveGaussianSystem(A,flatten entries(random(QQ^5,QQ^1)-B))
+--
 for i from 1 to 20 do (
     M := produceMomentSystemMatrices(i,1/1);
     print M
