@@ -46,14 +46,14 @@ for i from 200 to 300 do (
     mu = flatten entries random(QQ^i,QQ^1);
     m = fabricateMoments(mu);
     (A,B) = produceMomentSystemMatrices(i,1/1);
-    elapsedTime out = solveGaussianSystem(A,flatten entries(m-B));
+    elapsedTime out = solvePowerSystem(A,flatten entries(m-B));
     print(sort apply(mu,i->i_RR));
     print(sort out);
     )
 
 m = fabricateMoments({1,2})
 (A,B) = produceMomentSystemMatrices(2,1/1)
-solveGaussianSystem(A,flatten entries (m-B))
+solvePowerSystem(A,flatten entries (m-B))
 --
 for i from 1 to 20 do (
     M := produceMomentSystemMatrices(i,1/1);
