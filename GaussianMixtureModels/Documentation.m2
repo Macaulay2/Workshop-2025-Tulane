@@ -26,12 +26,12 @@ doc ///
   Key
    GaussianMixtureModels
   Headline
-     an example Macaulay2 package
+     A Macaulay2 package to work with Gaussian mixture models.
   Description
    Text
-    {\em GaussianMixtureModels} is a basic package to be used as an example.
+    {\em GaussianMixtureModels} is a package that can solve the parameters of Gaussian mixture model.
   Caveat
-    Still trying to figure this out.
+    Only solves models with fixed, equal variance.
   Subnodes
     produceMomentSystemMatrices
 ///
