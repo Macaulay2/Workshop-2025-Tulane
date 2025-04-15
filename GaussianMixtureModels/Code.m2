@@ -60,7 +60,7 @@ solvePowerSystem(Matrix, List, Ring) := List => (A, m, R) -> (
     if rank A != numRows A then error "Matrix A is not full rank";
     use R;
     n := numRows A;
-    psSolved := solve(A**QQ,(transpose matrix {m})**QQ);
+    psSolved := solve(A**QQ,(transpose matrix {m})**QQ, MaximalRank => true);
     newtonIds := newtonIdentitySymmetry(n);
     subvalues := mutableMatrix(1 | (vars R)_{1..n} | 1 | transpose psSolved);
     partialSolveNewtonIds := apply(newtonIds, e -> sub(e,matrix subvalues));
