@@ -35,6 +35,7 @@ newPackage(
 export {
     "getRigidityMatrix",
     "isLocallyRigid"
+    "isGloballyRigid"
 }
 
 
@@ -82,6 +83,15 @@ isLocallyRigid(ZZ,ZZ) := Boolean => opts -> (d,n) -> (
     isLocallyRigid(d,n, subsets(toList(0..(n-1)), 2), Numerical => opts.Numerical)
 );
 
+isGloballyRigid = method(Options => {Numerical => false}, TypicalValue => Boolean)
+
+isGloballyRigid(ZZ, ZZ, List) := Boolean => opts -> (d,n,G) -> (
+
+);
+
+isGloballyRigid(
+
+);
 
 ------------------------------------------------------------------------------
 -- DOCUMENTATION

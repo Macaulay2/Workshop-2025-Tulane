@@ -1,3 +1,20 @@
+-***************************
+To Do List
+****************************
+
+ - Global Rigidity Test, symbolic and numerical
+
+ - Tests and documentation for local rigidity code
+
+ - Finite Field + numerical computation for local rigidity
+
+ - Matrix completion analogues
+
+ - Tropical Circuit Polynomial (TBD)
+
+ - Pebble Game Algorithm (and related stuff)
+*-
+
 d = 3
 n = 5
 R = QQ[x_1 .. x_(3*5)]; -- Create a ring with d*n variables
