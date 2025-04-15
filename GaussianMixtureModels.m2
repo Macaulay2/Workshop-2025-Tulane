@@ -14,7 +14,7 @@ export {
     "produceMomentSystemMatrices",
     "newtonIdentitySums",
     "newtonIdentitySymmetry",
-    "solveGaussianSystem"
+    "solvePowerSystem"
 }
 
 baseDirectory = GaussianMixtureModels#"source directory"
