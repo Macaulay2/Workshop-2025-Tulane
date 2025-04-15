@@ -20,9 +20,9 @@ newPackage(
             Email => "jzhou632@gatech.edu"
         },
         {
-            Name =>
-            Email =>
-            HomePage => 
+            Name => "Ryan A. Anderson"
+            Email => "raanderson@g.ucla.edu"
+            HomePage => "ryan-a-anderson.github.io"
         }
     },
     Headline => "",
