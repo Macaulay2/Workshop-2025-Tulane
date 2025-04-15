@@ -53,10 +53,10 @@ newtonIdentitySymmetry(ZZ, Ring) := List => (k, R) -> (
 )
 newtonIdentitySymmetry(ZZ) := List => k -> newtonIdentitySymmetry(k, QQ[e_0..e_k, p_0..p_k])
 
-solveGaussianSystem = method()
+solvePowerSystem = method()
 -- Takes in a matrix A describing the system of moment equations (these are in terms of sums of powers of variables), and the moments list m.
 -- Returns values for the elementary symmetric polynomials e_i evaluated at the roots of the system.
-solveGaussianSystem(Matrix, List, Ring) := List => (A, m, R) -> (
+solvePowerSystem(Matrix, List, Ring) := List => (A, m, R) -> (
     -- Should check if its lower diagonal
     use R;
     n := numRows A;
@@ -69,4 +69,8 @@ solveGaussianSystem(Matrix, List, Ring) := List => (A, m, R) -> (
     f := sum(for i from 0 to n list (-1)^(i)*(lift(solvedEs_i,QQ))*y^(n-i));
     roots(f)
 )
-solveGaussianSystem(Matrix, List) := List => (A, m) -> solveGaussianSystem(A, m, QQ[e_0..e_(numRows A), p_0..p_(numRows A)])
+solvePowerSystem(Matrix, List) := List => (A, m) -> solvePowerSystem(A, m, QQ[e_0..e_(numRows A), p_0..p_(numRows A)])
+solvePowerSystem(List) := List => m -> (
+    n := length m;
+    solvePowerSystem(map(ZZ^n, ZZ^n, 1),m)
+)
