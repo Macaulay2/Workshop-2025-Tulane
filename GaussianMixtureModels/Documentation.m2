@@ -46,15 +46,28 @@ doc ///
    produceMomentSystemMatrices(k,variance)
   Inputs
    k:ZZ
+     An integer representing the number of Gaussians.
    variance:QQ
+     A rational number representing the variance.
   Outputs
-   :
-    Two matrices, one $k \times k$ matrix representing the nonconstant coefficient matrix and one $k$-dimensional column matrix representing the constant terms in the moment equations.
+   A:Matrix
+    An $k \times k$ matrix representing the nonconstant coefficient matrix
+   B:Matrix
+    An $k$-dimensional column matrix representing the constant terms in the moment equations.
   Description
    Text
-    Here we show an example.
+    Let $p_i = (\mu_1,\cdots,\mu_k) = \mu_1^i+\cdots+\mu_k^i$ be $i$-th power sum of the means. for the case $k=4$ and $\sigma = 1$, the moment equations are
+    
+    $$\begin{aligned} & \bar{m}_1=\frac{1}{4}p_1  \\ & \bar{m}_2=\frac{1}{4}p_2+1 \\ & \bar{m}_3=\frac{3}{4}p_1+\frac{1}{4}p_3 \\ & \bar{m}_4=\frac{3}{2}p_2+\frac{1}{4}p_4+3\end{aligned}$$
+
+    which can be written in the matrix form if we denote $\mathbf{m} = [\bar{m}_1\;\cdots\;\bar{m}_k]^T$ and $\mathbf{p} = [p_1\;\cdots\;p_k]^T$:
+
+    $$\begin{aligned} & \mathbf{m} = A\mathbf{p}+B\end{aligned}$$
+
+    where the matrices $A$ and $B$ can be computed by the following command.
+    
    Example
-    produceMomentSystemMatrices(3,1/1)
+    produceMomentSystemMatrices(4,1/1)
 ///
 
 doc ///
