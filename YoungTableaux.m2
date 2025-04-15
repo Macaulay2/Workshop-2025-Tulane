@@ -18,7 +18,11 @@ export {
     "YoungTableau",
     -- methods
     "youngDiagram",
-    "youngTableau"
+    "armLength",
+    "legLength",
+    "hookLength",
+    "youngTableau",
+    "numberStandardYoungTableaux"
     -- symbols
     -- "Weak"
 }
@@ -61,23 +65,6 @@ isWellDefined YoungDiagram := Boolean => lambda -> (
     return
 )
 
-
-------------------------------------
--- YoungTableau type declarations and basic constructors
-------------------------------------
-YoungTableau = new Type of VisibleList
-YoungTableau.synonym = "youngTableau"
-
-new YoungTableau from VisibleList := (typeofYoungTableau, lambda) -> lambda
-
-youngTableau = method()
-youngTableau VisibleList := YoungTableau => lambda -> new YoungTableau from lambda
-
-isWellDefined YoungTableau := Boolean => lambda -> (
-    -- A Young diagram is well-defined if it is a sequence of non-increasing positive integers.
-    return
-)
-
 ------------------------------------
 -- Young diagram string representations
 ------------------------------------
@@ -93,11 +80,33 @@ YoungDiagram _ ZZ := ZZ => (lambda, n) -> ((toList lambda)_(n-1))
 YoungDiagram _ List := List => (lambda, l) -> ((toList lambda)_l)
 YoungDiagram _ Sequence := List => (lambda, s) -> ((toList lambda)_(toList s))
 
+numRows YoungDiagram := ZZ => lambda -> (#lambda)
+numColumns YoungDiagram := ZZ => lambda -> (lambda_0)
+
 ------------------------------------
 -- Basic Young diagram operations
 ------------------------------------
 YoungDiagram == YoungDiagram := Boolean => (lambda, mu) -> (
-    toList(lambda) == toList(mu)
+    toList lambda == toList mu
+)
+
+------------------------------------
+-- Statistics on Young diagrams
+------------------------------------
+armLength = method()
+armLength (YoungDiagram, ZZ, ZZ) := ZZ => (lambda, i, j) -> (
+    lambda_i - j
+)
+
+legLength = method()
+legLength (YoungDiagram, ZZ, ZZ) := ZZ => (lambda, i, j) -> (
+    -- efficient? idk
+    armLength(conjugate lambda, j, i)
+)
+
+hookLength = method()
+hookLength (YoungDiagram, ZZ, ZZ) := ZZ => (lambda, i, j) -> (
+    armLength(lambda, i, j) + legLength(lambda, i, j) + 1
 )
 
 
@@ -109,7 +118,54 @@ conjugate YoungDiagram := YoungDiagram => lambda -> (
     numConjugateCols := lambda#0;
     youngDiagram sum(for part in lambda list (toList(part:1) | toList((numConjugateCols - part):0)))
 )
-transpose YoungDiagram := YoungDiagram => lambda -> (conjugate YoungDiagram lambda)
+transpose YoungDiagram := YoungDiagram => lambda -> (conjugate lambda)
+
+
+------------------------------------
+-- YoungTableau type declarations and basic constructors
+------------------------------------
+YoungTableau = new Type of MutableHashTable
+YoungTableau.synonym = "youngTableau"
+
+new YoungTableau from List := (typeofYoungTableau, lambda) -> (
+    filledTableau := new MutableHashTable;
+    for i to #lambda-1 list (
+        for j to #(lambda_i)-1 list (
+            filledTableau#(i+1, j+1) = (lambda_i)_j;
+        )
+    );
+    filledTableau
+)
+
+youngTableau = method()
+youngTableau List := YoungTableau => lambda -> new YoungTableau from lambda
+
+isWellDefined YoungTableau := Boolean => lambda -> (
+    -- A Young tableau follows some rules.
+    return
+)
+
+------------------------------------
+-- Basic Young tableau operations
+------------------------------------
+YoungTableau == YoungTableau := Boolean => (lambda, mu) -> (
+    -- checks if the (key, value) pairs of the hash tables are equal
+    pairs lambda == pairs mu
+)
+
+
+------------------------------------
+-- Miscellaneous
+------------------------------------
+numberStandardYoungTableaux = method()
+numberStandardYoungTableaux YoungDiagram := ZZ => lambda -> (
+    -- Theorem of Frame-Robinson-Thrall (1954)
+    -- Do I need to be careful using // if I know the result is an integer?
+    num := (sum toList lambda)!;
+    den := product for i in 1..(numRows lambda) list product for j in 1..(lambda_i) list hookLength(lambda, i, j);
+    return num // den
+)
+
 
 
 -----------------------------------------------------------------------------

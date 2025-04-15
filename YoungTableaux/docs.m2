@@ -88,7 +88,7 @@ doc ///
 doc ///
   Key
     (conjugate, YoungDiagram)
-    (tranpose, YoungDiagram)
+    (transpose, YoungDiagram)
   Headline
     computes the conjugate (or transpose) of a Young diagram
   Usage
@@ -105,4 +105,83 @@ doc ///
     Example
       lambda = youngDiagram {5,4,1}
       conjugate lambda
+///
+
+
+-- (armLength, YoungDiagram, ZZ, ZZ)
+doc ///
+  Key
+    (armLength, YoungDiagram, ZZ, ZZ)
+  Headline
+    computes the arm length the box at (i,j) of a Young diagram
+  Usage
+    armLength(lambda, i, j)
+  Inputs
+    lambda:YoungDiagram
+    i:ZZ
+    j:ZZ
+  Outputs
+    :ZZ
+  Description
+    Text
+      SOME FILLER TEXT.
+
+    Example
+      lambda = youngDiagram {4,3,1}
+      armLength(lambda, 1, 2)
+  SeeAlso
+    (legLength, YoungDiagram, ZZ, ZZ)
+    (hookLength, YoungDiagram, ZZ, ZZ)
+///
+
+-- (legLength, YoungDiagram, ZZ, ZZ)
+doc ///
+  Key
+    (legLength, YoungDiagram, ZZ, ZZ)
+  Headline
+    computes the leg length the box at (i,j) of a Young diagram
+  Usage
+    legLength(lambda, i, j)
+  Inputs
+    lambda:YoungDiagram
+    i:ZZ
+    j:ZZ
+  Outputs
+    :ZZ
+  Description
+    Text
+      SOME FILLER TEXT.
+
+    Example
+      lambda = youngDiagram {4,3,1}
+      legLength(lambda, 1, 2)
+  SeeAlso
+    (armLength, YoungDiagram, ZZ, ZZ)
+    (hookLength, YoungDiagram, ZZ, ZZ)
+///
+
+-- (hookLength, YoungDiagram, ZZ, ZZ)
+doc ///
+  Key
+    (hookLength, YoungDiagram, ZZ, ZZ)
+  Headline
+    computes the hook length the box at (i,j) of a Young diagram
+  Usage
+    hookLength(lambda, i, j)
+  Inputs
+    lambda:YoungDiagram
+    i:ZZ
+    j:ZZ
+  Outputs
+    :ZZ
+  Description
+    Text
+      SOME FILLER TEXT.
+
+    Example
+      lambda = youngDiagram {4,3,1}
+      hookLength(lambda, 1, 2)
+  SeeAlso
+    (armLength, YoungDiagram, ZZ, ZZ)
+    (legLength, YoungDiagram, ZZ, ZZ)
 ///
