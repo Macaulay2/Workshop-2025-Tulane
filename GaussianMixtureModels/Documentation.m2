@@ -41,15 +41,15 @@ doc ///
    produceMomentSystemMatrices
    (produceMomentSystemMatrices,ZZ,QQ)
   Headline
-   a silly first function
+   A function that creates the constant and nonconstant coefficient matrices from the moment equations
   Usage
-   produceMomentSystemMatrices(numberOfGaussians,variance)
+   produceMomentSystemMatrices(k,variance)
   Inputs
    k:ZZ
    variance:QQ
   Outputs
    :
-    a silly string, depending on the value of {\tt n}
+    Two matrices, one $k \times k$ matrix representing the nonconstant coefficient matrix and one $k$-dimensional column matrix representing the constant terms in the moment equations.
   Description
    Text
     Here we show an example.
