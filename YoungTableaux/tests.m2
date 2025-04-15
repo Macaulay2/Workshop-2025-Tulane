@@ -1,4 +1,3 @@
 TEST ///
-    assert(not isVexillary(permutation {7,2,5,8,1,3,6,4}))
-    assert(isVexillary(permutation {1,6,9,2,4,7,3,5,8}))
+    assert(conjugate(youngDiagram {5,4,1}) == (youngDiagram {3,2,2,2,1}))
 ///

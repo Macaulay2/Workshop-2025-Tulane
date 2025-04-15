@@ -9,39 +9,33 @@ newPackage(
          Email => "sean.grate@auburn.edu", 
          HomePage => "https://seangrate.com/"}
     },
-    Headline => "functions for working with permutations"
+    Headline => "functions for working with Young diagrams and tableaux"
 )
 
 export {
     -- types
-    "Permutation",
+    "YoungDiagram",
+    "YoungTableau",
     -- methods
-    "permutation",
-    "cycleDecomposition",
-    "cycleType",
-    "ascents",
-    "descents",
-    "ascendingRuns",
-    "descendingRuns",
-    "exceedances",
-    "saliances",
-    "records",
-    "avoidsPattern",
-    "avoidsPatterns",
-    "isVexillary",
-    "isCartwrightSturmfels",
-    "isCDG",
-    "foataBijection",
-    "ord",
-    "sign",
-    "isEven",
-    "isOdd",
-    "isDerangement",
-    "fixedPoints",
-    "inversions",
+    "youngDiagram",
+    "youngTableau"
     -- symbols
-    "Weak"
+    -- "Weak"
 }
+
+-- TODO
+-- Lie algebra action on tableaux
+-- Young symmetrizers
+-- semistandard/standard tableaux
+-- Gelfand-Tsetlin symmetrizers/basis
+-- Pieri maps => formal linear combinations of tableaux (hash table)
+-- straightening laws/multi-straightening laws of tensor products of tableaux
+-- tensor product/Kronecker product => list of tableaux
+-- shuffling laws (for tableaux with repeated entries)
+-- plethysm
+-- contragradient vs conjugate
+-- Schur modules notation, etc.
+-- refinements of diagrams/Young's lattice/Partition lattice
 
 -----------------------------------------------------------------------------
 -- **CODE** --
@@ -49,125 +43,73 @@ export {
 ------------------------------------
 -- Local utilities
 ------------------------------------
-to1Index := w -> (w / (i -> i+1))
-to0Index := w -> (w / (i -> i-1))
+-- some helper functions go here
 
 ------------------------------------
--- Permutation type declarations and basic constructors
+-- YoungDiagram type declarations and basic constructors
 ------------------------------------
-Permutation = new Type of VisibleList
-Permutation.synonym = "permutation"
+YoungDiagram = new Type of VisibleList
+YoungDiagram.synonym = "youngDiagram"
 
-new Permutation from VisibleList := (typeofPermutation,w) -> w
+new YoungDiagram from VisibleList := (typeofYoungDiagram, lambda) -> lambda
 
-permutation = method()
-permutation VisibleList := Permutation => w -> new Permutation from w
+youngDiagram = method()
+youngDiagram VisibleList := YoungDiagram => lambda -> new YoungDiagram from lambda
 
-isWellDefined Permutation := Boolean => w -> (
-    wList := toList w;
-    ((sort wList) == toList(1..#wList)) and not (#wList == 0)
+isWellDefined YoungDiagram := Boolean => lambda -> (
+    -- A Young diagram is well-defined if it is a sequence of non-increasing positive integers.
+    return
+)
+
+
+------------------------------------
+-- YoungTableau type declarations and basic constructors
+------------------------------------
+YoungTableau = new Type of VisibleList
+YoungTableau.synonym = "youngTableau"
+
+new YoungTableau from VisibleList := (typeofYoungTableau, lambda) -> lambda
+
+youngTableau = method()
+youngTableau VisibleList := YoungTableau => lambda -> new YoungTableau from lambda
+
+isWellDefined YoungTableau := Boolean => lambda -> (
+    -- A Young diagram is well-defined if it is a sequence of non-increasing positive integers.
+    return
 )
 
 ------------------------------------
--- Permutation string representations
+-- Young diagram string representations
 ------------------------------------
-expression Permutation := w -> expression toList w
-toString Permutation := w -> toString expression toList w
-tex Permutation := w -> tex expression toSequence w
-html Permutation := w -> html expression toList w
+expression YoungDiagram := lambda -> expression toList lambda
+toString YoungDiagram := lambda -> toString expression toList lambda
+tex YoungDiagram := lambda -> tex expression toSequence lambda
+html YoungDiagram := lambda -> html expression toList lambda
 
 ------------------------------------
--- Indexing permutations as lists
+-- Indexing Young diagrams as lists
 ------------------------------------
-Permutation _ ZZ := ZZ => (w,n) -> ((toList w)_(n-1))
-Permutation _ List := List => (w,l) -> ((toList w)_l)
-Permutation _ Sequence := List => (w,s) -> ((toList w)_(toList s))
+YoungDiagram _ ZZ := ZZ => (lambda, n) -> ((toList lambda)_(n-1))
+YoungDiagram _ List := List => (lambda, l) -> ((toList lambda)_l)
+YoungDiagram _ Sequence := List => (lambda, s) -> ((toList lambda)_(toList s))
 
 ------------------------------------
--- Basic permutation operations
+-- Basic Young diagram operations
 ------------------------------------
-Permutation == Permutation := Boolean => (w, v) -> (
-    (w, v) = extend(w,v);
-    toList(w) == toList(v)
-)
-Permutation * Permutation := Permutation => (w, v) -> (
-    (w,v) = extend(w,v);
-    trim permutation w_(to0Index toList v)
-)
--- power implementation modified from Mahrud's in https://github.com/Macaulay2/M2/issues/2581
-Permutation ^ ZZ := Permutation => (w, n) -> fold(if n < 0 then (-n):(permutation to1Index inversePermutation to0Index toList w) else n:w,
-                                                  permutation toList (1 .. #w),
-                                                  (w, v) -> w*v)
-
-------------------------------------
--- Matrix representation of a permutation
-------------------------------------
--- some people prefer the transpose of this
-matrix Permutation := Matrix => o -> w -> (
-    id_(ZZ^(#w))_(to0Index toList w)
+YoungDiagram == YoungDiagram := Boolean => (lambda, mu) -> (
+    toList(lambda) == toList(mu)
 )
 
-------------------------------------
--- Group actions
-------------------------------------
-Permutation * VisibleList := VisibleList => (w, l) -> (
-    if #(trim w) > #l then error(toString w | " permutes more than " | toString #l | " elements.") 
-    else l_(to0Index toList extend(w, #l))
-)
-VisibleList _ Permutation := VisibleList => (l, w) -> (w*l)
-
--- group action on a matrix permutes the rows/columns of the matrix
-Permutation * Matrix := Matrix => (w, M) -> (
-    m := numRows M;
-    if #(trim w) > m then error(toString w | " permutes more than " | toString m | " elements.") 
-    else (matrix extend(w, m)) * M
-)
-Matrix _ Permutation := Matrix => (M, w) -> (w*M)
-Matrix * Permutation := Matrix => (M, w) -> (transpose(w*(transpose M)))
-Matrix ^ Permutation := Matrix => (M, w) -> (M*w)
 
 ------------------------------------
 -- Miscellaneous
 ------------------------------------
--- inverse = method()
-inverse Permutation := Permutation => w -> (permutation to1Index inversePermutation to0Index toList w)
-
--- order of a permutation, i.e. smallest integer n such that w^n = identity
--- the order of a permutation can be expressed as the lcm of its cycle lengths
-ord = method()
-ord Permutation := ZZ => w -> (
-    lcm((cycleDecomposition w) / length)
+conjugate YoungDiagram := YoungDiagram => lambda -> (
+    -- for each lambda#k, form the all-ones vector of length lambda#k, and then add these all-ones vectors together
+    numConjugateCols := lambda#0;
+    youngDiagram sum(for part in lambda list (toList(part:1) | toList((numConjugateCols - part):0)))
 )
 
--- see https://en.wikipedia.org/wiki/Parity_of_a_permutation for different ways
--- to compute the sign or parity of a permutation
-sign = method()
-sign Permutation := ZZ => w -> (
-    if even(#w - #(cycleDecomposition w)) then 1 else -1
-)
-
-isEven = method(TypicalValue => Boolean)
-isEven Permutation := w -> (
-    sign w == 1
-)
-
-isOdd = method(TypicalValue => Boolean)
-isOdd Permutation := w -> (
-    sign w == -1
-)
-
-isDerangement = method(TypicalValue => Boolean)
-isDerangement Permutation := w -> (not any(cycleDecomposition w, cycle -> #cycle == 1))
-
-fixedPoints = method()
-fixedPoints Permutation := List => w -> (for cycle in cycleDecomposition w list if #cycle == 1 then unsequence cycle else continue)
-
-inversions = method()
-inversions Permutation := List => w -> (
-    for idxPair in sort(subsets(toList w, 2) / sort) list if w_(idxPair#0) > w_(idxPair#1) then idxPair else continue
-)
-
-length Permutation := ZZ => w -> (#(inversions w))
 
 -----------------------------------------------------------------------------
 -- **DOCUMENTATION** --
