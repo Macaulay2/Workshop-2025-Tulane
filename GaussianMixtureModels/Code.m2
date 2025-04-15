@@ -40,7 +40,7 @@ newtonIdentitySums(ZZ,Ring) := List => (k,R) -> (
     use R;
     for i from 0 to k list ( sum((for j from 1 to i-1 list (-1)^(i-1+j)*e_(i-j)*p_j) |  {(-1)^(i-1)*i*e_i}))
 )
-newtonIdentitySums(ZZ) := List => k -> newtonIdentity(k, QQ[e_0..e_k, p_0..p_k])
+newtonIdentitySums(ZZ) := List => k -> newtonIdentitySums(k, QQ[e_0..e_k, p_0..p_k])
 
 newtonIdentitySymmetry = method()
 -- newtonIdentitySymmetry takes in an integer k and n and returns list of the 1,2,,...,kth elementary symmetric polynomials in n variables in terms of the
