@@ -82,29 +82,26 @@ doc ///
     solvePowerSystem(m)
   Inputs
     A: Matrix
-      A square matrix describing the linear system of power sum equations.
+      a square matrix describing the linear system of power sum equations.
     m: List
-      A list of solutions to $Ap = m$.
+      a list of solutions to $Ap = m$.
   Outputs
     sols: List
-      The unique solution to the system of equations up to permutation.
+      the unique solution to the system of equations up to permutation.
   Description
     Text
       Let $p_i(x_1,\dots, x_n)$ denote the $i^{\text{th}}$ power sum polynomial in $n$ variables, i.e. $p_2(x,y,z) = x^2 + y^2 + z^2$. The square matrix $A$ describes a linear system of equations in the $p_i$'s. For example,
-      $$ A = \begin{pmatrix} 
-      9 & 0 & 0 & 0 & 0\\
-      0 & 8 & 0 & 0 & 0\\
-      6 & 0 & 7 & 0 & 0\\
-      0 & 4 & 0 & 5 & 0\\
-      1 & 0 & 2 & 0 & 3
-       \end{pmatrix}$$ 
-      describes the system of equations 
-      $$
-      \begin{equation*}
-      
-      \end{equation*}
-      $$
     Example
       A = matrix {{9,0,0,0,0}, {0,8,0,0,0}, {6,0,7,0,0},{0,4,0,5,0},{1,0,2,0,3}}
+    Text
+      describes the system of equations 
+    Example
+      use QQ[p_1..p_5];
+      A*matrix{{p_1},{p_2},{p_3},{p_4},{p_5}} 
+    Text
+      The function solvePowerSystem takes in a matrix $A$ and a list of solutions $m$ to the system of equations $Ap = m$, and it returns the unique solution to $x_1,\dots, x_n$ up to permutation. If no $A$ is provided, it is assumed that A is the identity.
+    Example
+      m = {1,2,3,4,5};
+      solvePowerSystem(A,m)
   SeeAlso
 ///
