@@ -10,4 +10,5 @@ TODOS:
 1. Document the existing code
 2. Write tests for the existing code
 3. Break apart solveGaussianSystem into smaller useful functions
-4. Look into follow up ideas in the overleaf
+4. Compare our code against existing state of art
+5. Look into follow up ideas in the overleaf
