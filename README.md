@@ -15,3 +15,11 @@ TODOS:
 3. Break apart solveGaussianSystem into smaller useful functions
 4. Compare our code against existing state of art
 5. Look into follow up ideas in the overleaf
+
+Real version of this problem:
+1. Find closest univariate polynomial to inputed univariate polynomial that has all real roots (Hermite form of polynomial)
+2. Function to compute GKZ discriminant
+3. Function to perform Euclidean distance optimization to project to discriminant
+4. Function to compute discriminant of univariate polynomial
+5. Function that projects complex solution to reals then refines via mesh/grid search
+6. Read "An algebraic-geometric approach for linear regression without correspondences" to see if they have good idea for denoise 
