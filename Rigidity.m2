@@ -49,7 +49,7 @@ isLocallyRigid = method(Options => {Numerical => false, FiniteField => 0}, Typic
 
 getRigidityMatrix(ZZ, ZZ, List) := Matrix => (d, n, G) -> (
     R := QQ(monoid[x_(1) .. x_(d*n)]); -- Create a ring with d*n variables
-    M := genericMatrix(R, x_1, d, n); -- Return a generic d by n matrix over R
+    M := genericMatrix(R, d, n); -- Return a generic d by n matrix over R
     -- Here is the polynomial we might want to switch in the future
     polynomialLists := apply(G, pair -> transpose(M_{pair#0} - M_{pair#1}) * (M_{pair#0} - M_{pair#1}) ); 
     jacobianList := polynomialLists / jacobian;
