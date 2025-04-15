@@ -48,7 +48,8 @@ getRigidityMatrix = method(TypicalValue => Matrix)
 isLocallyRigid = method(Options => {Numerical => false, FiniteField => 0}, TypicalValue => Boolean)
 
 getRigidityMatrix(ZZ, ZZ, List) := Matrix => (d, n, G) -> (
-    R := QQ(monoid[x_(1) .. x_(d*n)]); -- Create a ring with d*n variables
+    crds = getSymbol "crds";
+    R := QQ(monoid[crds_(1) .. crds_(d*n)]); -- Create a ring with d*n variables
     M := genericMatrix(R, d, n); -- Return a generic d by n matrix over R
     -- Here is the polynomial we might want to switch in the future
     polynomialLists := apply(G, pair -> transpose(M_{pair#0} - M_{pair#1}) * (M_{pair#0} - M_{pair#1}) ); 
@@ -78,7 +79,7 @@ isLocallyRigid(ZZ, ZZ, List) := Boolean => opts -> (d, n, E) -> (
             n -> d*n - (d+1)*d/2 == rank(
                 sub(
                     getRigidityMatrix(d, n, E), 
-                    apply(toList(1..d*n), i -> x_i => random(-1.,1.))
+                    apply(toList(1..d*n), i -> crds_i => random(-1.,1.))
                 )
             ) 
         );
@@ -95,7 +96,7 @@ isLocallyRigid(ZZ, ZZ, List) := Boolean => opts -> (d, n, E) -> (
                     getRigidityMatrix(d, n, E), 
                     apply(
                         toList(1..d*n), 
-                        i -> x_i => (
+                        i -> crds_i => (
                             randIndex := random(1,opts.FiniteField);
                             if randIndex = opts.FiniteField
                             then 0
