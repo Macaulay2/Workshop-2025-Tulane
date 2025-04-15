@@ -42,11 +42,11 @@ export {
 -- Code
 ------------------------------------------------------------------------------
 
-getRigidityMatrix = method(Options => {Numerical => false}, TypicalValue => Matrix)
+getRigidityMatrix = method(TypicalValue => Matrix)
 
 isLocallyRigid = method(Options => {Numerical => false}, TypicalValue => Boolean)
 
-getRigidityMatrix(ZZ, ZZ, List) := Matrix => opts -> (d, n, G) -> (
+getRigidityMatrix(ZZ, ZZ, List) := Matrix => (d, n, G) -> (
     R := QQ[x_1 .. x_(d*n)]; -- Create a ring with d*n variables
     M := genericMatrix(R, x_1, d, n); -- Return a generic d by n matrix over R
     -- Here is the polynomial we might want to switch in the future
@@ -56,7 +56,7 @@ getRigidityMatrix(ZZ, ZZ, List) := Matrix => opts -> (d, n, G) -> (
     1/2 * transpose fold((a,b) -> a|b, jacobianList)
 );
 
-getRigidityMatrix(ZZ,ZZ) := Matrix => opts -> (d,n) -> (
+getRigidityMatrix(ZZ,ZZ) := Matrix => (d,n) -> (
     getRigidityMatrix(d,n, subsets(toList(0..(n-1)), 2), opts)
 );
 
@@ -89,13 +89,11 @@ isLocallyRigid(ZZ,ZZ) := Boolean => opts -> (d,n) -> (
 beginDocumentation ()
 doc ///
     Key
-        ToricExtras
+        Rigidity
     Headline
-        new features for normal toric varieties
+        Add headline description
     Description
-    	Text
-	    This temporary package implements several new features that will
-	    be incorporated into the existing NormalToricVarieties package.
+    	Add package description
 ///
 
 load "./RigidityDocs.m2"
