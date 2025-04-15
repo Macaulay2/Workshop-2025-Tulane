@@ -48,7 +48,7 @@ doc ///
         (Integer, Integer, List)
         (Integer, Integer)
     Headline
-        Returns a 
+        Returns a boolean indicating whether the given framework is locally rigid
     Usage
         isLocallyRigid(d, n, G)
         isLocallyRigid(d, G)
@@ -66,7 +66,17 @@ doc ///
     	Text
             Tests for local rigidity by checking the rank of the rigidity matrix.
         Example
-            example needed
+            n = 4;
+            d = 2;
+
+            L = {0,1}, {0,2}, {1,2}, {1,3}, {2,3};
+            isLocallyRigid(d, n, L)
+
+            isLocallyRigid(d, n, subsets(toList(0..(n-1)), 2))
+
+            G = completeGraph(n);
+            isLocallyRigid(d, n, G)
+            isLocallyRigid(d, G)
 ///
 
 -- Example documentation
