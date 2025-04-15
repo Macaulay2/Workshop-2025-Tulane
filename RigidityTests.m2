@@ -1,8 +1,7 @@
 -- Test 0 : test getRigidityMatrix for /\
 TEST //
     L = {{0,1},{1,2}}
-    getRigidityMatrix(2,3,L)
-    
+    assert(not isLocallyRigid(2,3,L))
 //
 
 -- Example Test

@@ -87,7 +87,7 @@ isLocallyRigid(ZZ, ZZ, List) := Boolean => opts -> (d, n, E) -> (
     )
     else if opts.FiniteField =!= 0
     then (
-        listOfTruthValues := apply(
+        listOfTruthValuesFiniteFields := apply(
             toList(0..1),
             n -> d*n - (d+1)*d/2 == rank(
                 GF(opts.FiniteField, Variable => a);
@@ -104,11 +104,11 @@ isLocallyRigid(ZZ, ZZ, List) := Boolean => opts -> (d, n, E) -> (
                     )
                 ) 
             );
-            if # set(listOfTruthValues) =!= 1 then error("Expected all the numerical attempts to give the same result. Try again.");
-            all listOfTruthValues
+            if # set(listOfTruthValuesFiniteFields) =!= 1 then error("Expected all the numerical attempts to give the same result. Try again.");
+            all listOfTruthValuesFiniteFields
         )
     )
-    else rank getRigidityMatrix(d, n, G) == d*n - (d+1)*d/2
+    else rank getRigidityMatrix(d, n, E) == d*n - (d+1)*d/2
 );
 
 -- local rigidity test on the complete graph
