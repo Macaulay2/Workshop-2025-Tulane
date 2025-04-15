@@ -22,4 +22,5 @@ Real version of this problem:
 3. Function to perform Euclidean distance optimization to project to discriminant
 4. Function to compute discriminant of univariate polynomial
 5. Function that projects complex solution to reals then refines via mesh/grid search
-6. Read "An algebraic-geometric approach for linear regression without correspondences" to see if they have good idea for denoise 
+6. Implement hill climbing algorithm in M2
+7. Read "An algebraic-geometric approach for linear regression without correspondences" to see if they have good idea for denoise 
