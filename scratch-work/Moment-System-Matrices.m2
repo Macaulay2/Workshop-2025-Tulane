@@ -28,12 +28,32 @@ shiftingRow Matrix := M -> (
     n := numColumns M;
     (matrix{{0} | flatten entries M})_{0..(n-1)}
     )
+
+fabricateMoments = method()
+fabricateMoments List := mu -> (
+    k := #mu;
+    powerSumList := apply(k,i->sum(apply(mu,u -> u^(i+1))));
+    (A,B) := produceMomentSystemMatrices(k,1/1);
+    A*(transpose matrix{powerSumList})+B
+    )
+
 end
 
 restart
 needsPackage "GaussianMixtureModels"
-(A,B) = produceMomentSystemMatrices(5,1/1)
-solveGaussianSystem(A,flatten entries(random(QQ^5,QQ^1)-B))
+setRandomSeed(415)
+for i from 200 to 300 do (
+    mu = flatten entries random(QQ^i,QQ^1);
+    m = fabricateMoments(mu);
+    (A,B) = produceMomentSystemMatrices(i,1/1);
+    elapsedTime out = solveGaussianSystem(A,flatten entries(m-B));
+    print(sort apply(mu,i->i_RR));
+    print(sort out);
+    )
+
+m = fabricateMoments({1,2})
+(A,B) = produceMomentSystemMatrices(2,1/1)
+solveGaussianSystem(A,flatten entries (m-B))
 --
 for i from 1 to 20 do (
     M := produceMomentSystemMatrices(i,1/1);
