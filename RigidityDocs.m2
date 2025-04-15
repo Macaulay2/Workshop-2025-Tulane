@@ -1,24 +1,40 @@
 doc ///
     Key
         getRigidityMatrix
-        (Integer, Integer, List)
+        (Integer, Graph)
     Headline
-        Constructs the rigidity matrix
+        Constructs the rigidity matrix of a d-framework
     Usage
+        getRigidityMatrix(d, n, L)
         getRigidityMatrix(d, n)
         getRigidityMatrix(d, n, G)
+        getRigidityMatrix(d, G)
     Inputs
         d : Integer
+            corresponding to the dimension of the embedding space
         n : Integer
-        G : List
+            corresponding to the number of vertices
+        G : Graph
+        L : List
             of pairs of adjacent vertices 
     Description
     	Text
-            Computes the rigidty matrix. Returns the jacobian of the composition of a projection ???
-
-            Expects the vertices of G to be 0 through n-1
+            Computes the rigidity matrix for a d-framework (i.e. a graph G with an embedding map in R^d).
+            The rigidity matrix is 1/2 times the Jacobian of the distance map evaluated at p.
+            
+            If provided, expects the vertices of G to be 0 through n-1.
         Example
-            example needed
+            n = 4;
+            d = 2;
+
+            L = {0,1}, {0,2}, {1,2}, {1,3}, {2,3};
+            getRigidityMatrix(d, n, L)
+
+            getRigidityMatrix(d, n, subsets(toList(0..(n-1)), 2))
+
+            G = completeGraph(n);
+            getRigidityMatrix(d, n, G)
+            getRigidityMatrix(d, G)
 ///
 
 doc ///
