@@ -88,8 +88,20 @@ isLocallyRigid(ZZ, ZZ, List) := Boolean => opts -> (d, n, E) -> (
     else rank getRigidityMatrix(d, n, G) == d*n - (d+1)*d/2
 );
 
+-- local rigidity test on the complete graph
 isLocallyRigid(ZZ,ZZ) := Boolean => opts -> (d,n) -> (
     isLocallyRigid(d,n, subsets(toList(0..(n-1)), 2), Numerical => opts.Numerical)
+);
+
+-- local rigidity test taking in a Graph object
+isLocallyRigid(ZZ, Graph) := Boolean => opts -> (d, G) -> (
+    isLocallyRigid(d, length vertexSet G, edges G, opts)
+);
+
+-- local rigidity test taking in a Graph object but also specifying number of vertices
+isLocallyRigid(ZZ, ZZ, Graph) := Boolean => opts -> (d, n, G) -> (
+    if n =!= length vertexSet G then error("Expected ", n, " to be the number of vertices in ",G);
+    isLocallyRigid(d, n, edges G, opts)
 );
 
 isGloballyRigid = method(Options => {Numerical => false}, TypicalValue => Boolean)
