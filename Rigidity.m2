@@ -45,10 +45,10 @@ export {
 
 getRigidityMatrix = method(TypicalValue => Matrix)
 
-isLocallyRigid = method(Options => {Numerical => false}, TypicalValue => Boolean)
+isLocallyRigid = method(Options => {Numerical => false, FiniteField => 0}, TypicalValue => Boolean)
 
 getRigidityMatrix(ZZ, ZZ, List) := Matrix => (d, n, G) -> (
-    R := QQ[x_1 .. x_(d*n)]; -- Create a ring with d*n variables
+    R := QQ(monoid[x_(1) .. x_(d*n)]); -- Create a ring with d*n variables
     M := genericMatrix(R, x_1, d, n); -- Return a generic d by n matrix over R
     -- Here is the polynomial we might want to switch in the future
     polynomialLists := apply(G, pair -> transpose(M_{pair#0} - M_{pair#1}) * (M_{pair#0} - M_{pair#1}) ); 
@@ -84,6 +84,29 @@ isLocallyRigid(ZZ, ZZ, List) := Boolean => opts -> (d, n, E) -> (
         );
         if # set(listOfTruthValues) =!= 1 then error("Expected all the numerical attempts to give the same result. Try again.");
         all listOfTruthValues
+    )
+    else if opts.FiniteField =!= 0
+    then (
+        listOfTruthValues := apply(
+            toList(0..1),
+            n -> d*n - (d+1)*d/2 == rank(
+                GF(opts.FiniteField, Variable => a);
+                sub(
+                    getRigidityMatrix(d, n, E), 
+                    apply(
+                        toList(1..d*n), 
+                        i -> x_i => (
+                            randIndex := random(1,opts.FiniteField);
+                            if randIndex = opts.FiniteField
+                            then 0
+                            else a^randIndex
+                        )
+                    )
+                ) 
+            );
+            if # set(listOfTruthValues) =!= 1 then error("Expected all the numerical attempts to give the same result. Try again.");
+            all listOfTruthValues
+        )
     )
     else rank getRigidityMatrix(d, n, G) == d*n - (d+1)*d/2
 );
