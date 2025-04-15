@@ -23,7 +23,7 @@ doc ///
     Description
     	Text
             Computes the rigidity matrix for a d-framework (i.e. a graph G with an embedding map in R^d).
-            The rigidity matrix is 1/2 times the Jacobian of the distance map evaluated at p.
+            The rigidity matrix is 1/2 times the Jacobian of the distance map evaluated at p, the choice of embedding map.
             
             If provided, expects the vertices of G to be 0 through n-1.
         Example
@@ -43,21 +43,28 @@ doc ///
 doc ///
     Key
         isLocallyRigid
-        (Integer, Integer, List,)
+        (Integer, Integer, Graph)
+        (Integer, Graph)
+        (Integer, Integer, List)
+        (Integer, Integer)
     Headline
         Returns a 
     Usage
-        isRigid(d, n, G)
+        isLocallyRigid(d, n, G)
+        isLocallyRigid(d, G)
+        isLocallyRigid(d, n, L)
+        isLocallyRigid(d, n)
     Inputs
         d : Integer
+            corresponding to the dimension of the embedding space
         n : Integer
-        G : List
+            corresponding to the number of vertices
+        G : Graph
+        L : List
             of pairs of adjacent vertices 
     Description
     	Text
-            Constructs a toric linear series from a list of monomials from the Cox ring of a toric variety.
-            It checks that all monomials are of the same degree.
-            It expects the monomials to be in ring(X) where X is a normal toric variety.
+            Tests for local rigidity by checking the rank of the rigidity matrix.
         Example
             example needed
 ///
