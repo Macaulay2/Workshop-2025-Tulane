@@ -41,7 +41,7 @@ doc ///
    produceMomentSystemMatrices
    (produceMomentSystemMatrices,ZZ,QQ)
   Headline
-   A function that creates the constant and nonconstant coefficient matrices from the moment equations
+   Creates the constant and nonconstant coefficient matrices from the moment equations
   Usage
    produceMomentSystemMatrices(k,variance)
   Inputs
