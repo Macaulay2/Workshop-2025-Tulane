@@ -74,3 +74,15 @@ solvePowerSystem(List) := List => m -> (
     n := length m;
     solvePowerSystem(map(ZZ^n, ZZ^n, 1),m)
 )
+
+
+getPowerSystem = method()
+getPowerSystem(Matrix, List) := List => (A, m) -> (
+    if numColumns A != numColumns A then error "Matrix A is not square";
+    if rank A != numRows A then error "Matrix A is not full rank";
+    n := numRows A;
+    R := QQ[p_1..p_n];
+    S := QQ[x_1..x_n];
+    f := map(S,R, matrix{for i from 1 to n list (sum(for j from 1 to n list x_j^i))});
+    flatten entries f(A*(transpose vars R) - transpose matrix {m})
+)
