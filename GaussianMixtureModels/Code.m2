@@ -29,7 +29,6 @@ shiftingRow Matrix := M -> (
     (matrix{{0} | flatten entries M})_{0..(n-1)}
     )
 
-
 newtonIdentitySums = method()
 -- newtonIdentitySums takes in an integer k and n and returns list of the 1,2,,...,kth sum of powers in n variables in terms of the
 -- elementary symmmetric polynomials and sum of powers of degrees (k-1) and lower.
@@ -57,7 +56,8 @@ solvePowerSystem = method()
 -- Takes in a matrix A describing the system of moment equations (these are in terms of sums of powers of variables), and the moments list m.
 -- Returns values for the elementary symmetric polynomials e_i evaluated at the roots of the system.
 solvePowerSystem(Matrix, List, Ring) := List => (A, m, R) -> (
-    -- Should check if its lower diagonal
+    if numColumns A != numColumns A then error "Matrix A is not square";
+    if rank A != numRows A then error "Matrix A is not full rank";
     use R;
     n := numRows A;
     psSolved := solve(A**QQ,(transpose matrix {m})**QQ);
