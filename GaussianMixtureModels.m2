@@ -7,7 +7,8 @@ newPackage("GaussianMixtureModels",
 	{Name => "Gaussian Mixture Models Group", Email => "doe@math.uiuc.edu", HomePage => "http://www.math.uiuc.edu/~doe/"}},
     Headline => "Gaussian Mixture Models Package",
     Keywords => {"Gaussian Mixture Models"},
-    DebuggingMode => false
+    PackageImports => {"Elimination"},
+    DebuggingMode => true
     )
 
 export {
@@ -15,7 +16,9 @@ export {
     "newtonIdentitySums",
     "newtonIdentitySymmetry",
     "solvePowerSystem",
-    "getPowerSystem",
+    "getPowerSystem", 
+    "getSymmetricPolynomialEvals",
+    "getPowerSystemDiscriminant",
     "getStartingSystem"
 }
 
@@ -46,6 +49,6 @@ end
 --------------------------------------------------------------------
 uninstallPackage "GaussianMixtureModels";
 restart
-debug installPackage "GaussianMixtureModels"
+installPackage "GaussianMixtureModels"
 --check GaussianMixtureModels
 debug needsPackage "GaussianMixtureModels";
