@@ -1,14 +1,17 @@
 doc ///
     Key
         getRigidityMatrix
+        (Integer, Integer, Graph)
         (Integer, Graph)
+        (Integer, Integer, List)
+        (Integer, Integer)
     Headline
         Constructs the rigidity matrix of a d-framework
     Usage
-        getRigidityMatrix(d, n, L)
-        getRigidityMatrix(d, n)
         getRigidityMatrix(d, n, G)
         getRigidityMatrix(d, G)
+        getRigidityMatrix(d, n, L)
+        getRigidityMatrix(d, n)
     Inputs
         d : Integer
             corresponding to the dimension of the embedding space
