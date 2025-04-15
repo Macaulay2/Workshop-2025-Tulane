@@ -146,7 +146,7 @@ raysOfTreePairCone=method();
 --Does this modulo the lineality space, which is spanned
 --by the all-ones vector
 raysOfTreePairCone(RingElement,RingElement):=List=>(T1,T2)->(
-    T := T1+T2-2*product(gens ring T1);
+    T := T1+T2-product(gens ring T1);
     return raysOfUltrametricCone(T);
 )
 
@@ -165,8 +165,8 @@ edgeListToIndices(List,ZZ):=List=>(G,n)->(
 n=5;
 G={{1,2},{2,3},{3,4},{1,4},{1,5},{2,5},{3,5},{4,5}};
 
-n=7;
-G={{1,5},{1,6},{1,7},{2,5},{2,6},{2,7},{3,5},{3,6},{3,7},{4,5},{4,6},{4,7}};
+--n=7;
+--G={{1,5},{1,6},{1,7},{2,5},{2,6},{2,7},{3,5},{3,6},{3,7},{4,5},{4,6},{4,7}};
 
 GIndices=edgeListToIndices(G,n);
 maximalPairs = maximalTreePairs(n);
