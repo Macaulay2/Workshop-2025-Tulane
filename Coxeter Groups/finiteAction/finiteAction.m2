@@ -3,8 +3,7 @@
 loadPackage "CoxeterGroups";
 needsPackage "InvariantRing"
 
-M = matrix {{1, 2, 0}, {2, 1, 0}, {0, 0, 1}}
-W = coxeterGroup({a,b,c}, M)
+
 W = dihedralGroup(3)
 
 G1 = id_(QQ^3)
