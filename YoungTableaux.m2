@@ -142,13 +142,22 @@ YoungTableau.synonym = "youngTableau"
 
 -- This constructs a left-aligned Young tableau
 new YoungTableau from List := (typeofYoungTableau, lambda) -> (
-    new HashTable from flatten for i to #lambda-1 list (for j in (lambda_i) list (i+1,j+1)=>true)
+    new HashTable from flatten for i to #lambda-1 list (for j to #(lambda_i)-1 list (i+1,j+1)=>lambda_i_j)
 )
 
 youngTableau = method()
 youngTableau List := YoungTableau => lambda -> new YoungTableau from lambda
 
 isWellDefined YoungTableau := Boolean => lambda -> (return)
+
+------------------------------------
+-- Young tableaux string representations
+------------------------------------
+net YoungTableau := String => lambda -> (
+    boxes := apply(toList(1..numRows lambda)**toList(1..numColumns lambda), (i, j) -> if lambda#?(i,j) then lambda#(i,j) else " ");
+    stack flatten(pack(numColumns lambda, boxes / toString) / concatenate)
+)
+
 
 ------------------------------------
 -- Basic Young tableau operations
