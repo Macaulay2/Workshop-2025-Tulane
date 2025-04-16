@@ -69,7 +69,7 @@ doc ///
             n = 4;
             d = 2;
 
-            L = {0,1}, {0,2}, {1,2}, {1,3}, {2,3};
+            L = {{0,1}, {0,2}, {1,2}, {1,3}, {2,3}};
             isLocallyRigid(d, n, L)
 
             isLocallyRigid(d, n, subsets(toList(0..(n-1)), 2))
