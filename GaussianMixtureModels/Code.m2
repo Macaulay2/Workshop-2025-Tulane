@@ -115,7 +115,12 @@ getPowerSystemDiscriminant(Matrix) := RingElement => A -> (
     solvedEs := for idx from 0 to length partialSolveNewtonIds - 1 list subvalues_(0,idx) = sub(partialSolveNewtonIds_idx, matrix subvalues | matrix {mvec});
     use R[y];
     f := sum(for i from 0 to n list (-1)^(i)*(solvedEs_i)*y^(n-i));
-    discriminant(f, y)
+    discr = discriminant(f, y);
+    S = QQ[m_1..m_n];
+    auxiliaryVars = gens(QQ[e_0..e_n, p_0..p_n]);
+    varsM = gens S;
+    projection = map(S, R, toList apply(auxiliaryVars, x -> 0) | toList varsM);
+    projection(discr)
 )
 
 -*
