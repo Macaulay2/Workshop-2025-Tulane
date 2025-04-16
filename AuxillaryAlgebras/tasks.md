@@ -15,3 +15,12 @@ Young Symmetrizers:
         - note, there is Maple code to do this
     * SemiStandardYoungTableaux: given a shape and content, produce all SemiStandardYoungTableaux of that type
     * StandardYoungTableaux: given a shape, produce all StandardYoungTableaux of that type.
+
+# Auxillary Algebras
+    * Build the graded algebra (sl_2 x sl_2) + C^(2 x 2)
+        - provide a basis of each piece of the algebra:
+            bases.grade0 = {}
+            bases.grade1 = {}
+        - compute the structure tensor in its graded pieces:
+            B000, B010, B010, B110 -- make these hash tables?
+            Use the matrix representation theorem to apply the product you know and see what you get. 
