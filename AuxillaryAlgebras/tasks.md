@@ -24,3 +24,5 @@ Young Symmetrizers:
         - compute the structure tensor in its graded pieces:
             B000, B010, B010, B110 -- make these hash tables?
             Use the matrix representation theorem to apply the product you know and see what you get. 
+        - make a function that takes an algebra element and computes its adjoint operator
+        
