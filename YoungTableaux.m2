@@ -81,6 +81,9 @@ isWellDefined YoungDiagram := Boolean => lambda -> (return)
 ------------------------------------
 -- Young diagram string representations
 ------------------------------------
+toString YoungDiagram := String => lambda -> ("YoungDiagram " | toString(shape lambda))
+toExternalString YoungDiagram := String => lambda -> (toString lambda)
+
 net YoungDiagram := String => lambda -> (
     boxes := apply(toList(1..numRows lambda)**toList(1..numColumns lambda), (i, j) -> if lambda#?(i,j) then "☐" else " ");
     stack flatten(pack(numColumns lambda, boxes / toString) / concatenate)
@@ -112,6 +115,15 @@ transpose YoungDiagram := YoungDiagram => lambda -> (conjugate lambda)
 ------------------------------------
 -- Statistics on Young diagrams
 ------------------------------------
+shape = method()
+shape YoungDiagram := List => (lambda) -> (
+    -- custom Counter implementation
+    rowIndices := unique(for coords in keys lambda list coords#0);
+    counts := new MutableHashTable from (for rowIndex in rowIndices list (rowIndex, 0));
+    for coords in keys lambda do (counts#(coords#0) = counts#(coords#0) + 1);
+    toList ((sort pairs counts) / (countPair -> countPair#1))
+)
+
 armLength = method()
 armLength (YoungDiagram, ZZ, ZZ) := ZZ => (lambda, i, j) -> (#(lambda_i) - j)
 armLength (YoungDiagram, Sequence) := ZZ => (lambda, coords) -> (armLength(lambda, coords#0, coords#1))
