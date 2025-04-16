@@ -172,3 +172,10 @@ GIndices=edgeListToIndices(G,n);
 maximalPairs = maximalTreePairs(n);
 maximalCones = apply(maximalPairs,
     p->apply(raysOfTreePairCone(p_0,p_1),v->v_GIndices));
+
+
+n=4;
+G={{1,2},{2,3},{3,4},{1,4}};
+GIndices=edgeListToIndices(G,n);
+conesOfComplete=apply(getAllTrees(n),raysOfUltrametricCone);
+apply(conesOfComplete,C->apply(C,v->v_GIndices))
