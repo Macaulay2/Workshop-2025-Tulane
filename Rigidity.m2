@@ -148,7 +148,8 @@ isLocallyRigid(ZZ, ZZ, Graph) := Boolean => opts -> (d, n, G) -> (
 
 getStressMatrix = method(Options => {Variable => null}, TypicalValue => Matrix)
 
-isGloballyRigid = method(Options => {Numerical => false, FiniteField => 0}, TypicalValue => Boolean)
+-- Option FiniteFields: 0 for numeric, 1 for symbolic, prime power for finite field
+isGloballyRigid = method(Options => {FiniteField => 1}, TypicalValue => Boolean)
 
 -- Core function
 getStressMatrix(ZZ, ZZ, List) := Matrix => opts -> (d, n, G) -> (
@@ -199,12 +200,29 @@ getStressMatrix(ZZ, Graph) := Matrix => opts -> (d, G) -> (
 
 -- Input a Graph instead of edge set with number of vertices -> check if number of vertices is correct
 getStressMatrix(ZZ, ZZ, Graph) := Matrix => opts -> (d, n, G) -> (
-    if n =!= length vertexSet G then error("Expected ", n, " to be the number of vertices in ",G);
+    if n =!= length vertexSet G then error("Expected ", n, " to be the number of vertices in ", G);
     getStressMatrix(d, n, edges G, opts)
 );
 
 -- Core function
-isGloballyRigid(ZZ, ZZ, List) := Boolean => opts -> (d,n,G) -> (
+isGloballyRigid(ZZ, ZZ, List) := Boolean => opts -> (d, n, G) -> (
+
+    M := getStressMatrix(d, n, G, opts);
+    
+    if opts.FiniteField == 1 then rank M == n - d - 1
+    else (
+        variableNum := numgens ring M;
+        results := apply(
+            toList(0..1), -- change this later
+            () -> (
+                randomValues := randomNumber(opts.FiniteField, variableNum);
+                randomMap := map(ring randomValues, ring M, randomValues);
+                rank randomMap M == n - d - 1
+            )
+        )
+        if #set(results) =!= 1 then error("Try again bro");
+        else results#0
+    )
 
 );
 
@@ -223,6 +241,14 @@ isGloballyRigid(ZZ, ZZ, Graph) := Boolean => opts -> (d, n, G) -> (
     if n =!= length vertexSet G then error("Expected ", n, " to be the number of vertices in ",G);
     isGloballyRigid(d, n, edges G, opts)
 );
+
+-- Random number generator: q = 0 for numeric, q = prime power for finite field
+randomNumber(ZZ, ZZ) := List => (q, d) -> (
+    if q == 0 then F := RR;
+    else F := GF(q, n);
+    random(F^1, F^d)
+);
+
 getSkewSymmetricCompletionMatrix = method(Options => {Variable => null}, TypicalValue => Matrix);
 
 getSkewSymmetricCompletionMatrix(ZZ, ZZ, List) := Matrix => opts -> (r, n, G) -> (
