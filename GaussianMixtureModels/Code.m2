@@ -168,3 +168,19 @@ nextStep(HillClimber) := List => (hC) -> (
    hC#CurrentPoint = nextPoint;
    nextPoint
 )
+
+track = method(
+    Options => {
+        Quiet => false
+    }
+)
+track(HillClimber) := List => opts -> (hC) -> (
+    while not hC#StopCondition(hC#CurrentPoint) do (
+        nextStep(hC);
+    );
+    if not opts#Quiet then (
+    << "Number Steps: " << hC#CurrentStep << endl;
+    << "Final Point: " << hC#CurrentPoint << endl;
+    );
+    hC#CurrentPoint
+)
