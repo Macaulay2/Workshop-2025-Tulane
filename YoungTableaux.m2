@@ -147,9 +147,6 @@ hookLength (YoungDiagram, Sequence) := ZZ => (lambda, coords) -> (hookLength(lam
 ------------------------------------
 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 ------------------------------------
 -- SkewDiagram type declarations and basic constructors
 ------------------------------------
@@ -163,10 +160,7 @@ skewDiagram (List, List) := SkewDiagram => (lambdaShape, muShape) -> new SkewDia
 
 isWellDefined SkewDiagram := Boolean => lambda -> (return)
 
-=======
->>>>>>> refs/remotes/origin/YoungTableaux
 
->>>>>>> refs/remotes/origin/YoungTableaux
 ------------------------------------
 -- YoungTableau type declarations and basic constructors
 ------------------------------------
@@ -212,7 +206,6 @@ numberStandardYoungTableaux List := ZZ => shape -> (
 )
 
 
-<<<<<<< HEAD
 ----------------------------------
 
 
@@ -232,24 +225,24 @@ getThe'i'thSequence (ZZ, ZZ, ZZ) := List => (i, givenLength, possibilitiesForEac
 )
 
 --- Given a list (shape) of a diagram, find all the standard fillings
-getCandidateFillings = methods()
-getCandidateFillings (List) := YoungTableau => (shape) -> (
-    sizeOfTableau := (
-        --- get the size by adding the number of boxes in each row
-        tempSize := 0;
-        for i to #shape-1 do (
-            tempSize = tempSize + shape#i;
-        );
-        tempSize
-    );
-    tempPlacements := for i to ?????? list (
-        -- Range over all possible sequences 
+-- getCandidateFillings = methods()
+-- getCandidateFillings (List) := YoungTableau => (shape) -> (
+--     -- sizeOfTableau := (
+--     --     --- get the size by adding the number of boxes in each row
+--     --     tempSize := 0;
+--     --     for i to #shape-1 do (
+--     --         tempSize = tempSize + shape#i;
+--     --     );
+--     --     tempSize
+--     -- );
+--     -- tempPlacements := for i to ?????? list (
+--     --     -- Range over all possible sequences 
 
-    );
-)
+--     -- );
+-- )
 
 
-=======
+
 -- Given a Young, diagram fills each box with the row it is in
 -- assumes given diagram is left justified
 highestWeightFilling = method()
@@ -264,7 +257,7 @@ rowsFirstFilling YoungDiagram := YoungTableau => diagram ->(
     
 )
 
->>>>>>> refs/remotes/origin/YoungTableaux
+
 -----------------------------------------------------------------------------
 -- **DOCUMENTATION** --
 -----------------------------------------------------------------------------
