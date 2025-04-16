@@ -1,5 +1,11 @@
 
 
+restart
+needsPackage "CoxeterGroups";
+needsPackage "InvariantRing";
+
+
+
 finiteActionCoxeter = method()
 finiteActionCoxeter (List, CoxeterGroup, PolynomialRing):= (L,W,S)  ->(
 	N := numRows first L;
@@ -14,13 +20,19 @@ finiteActionCoxeter (List, CoxeterGroup, PolynomialRing):= (L,W,S)  ->(
 	Coxeter group."
 	);
 	A = finiteAction(L, S);
-	A.cache#(symbol group) => W; 
+	A.cache#(symbol Group) = W; 
 	return A
 
 );
 
 
 
-needsPackage "CoxeterGroups";
-needsPackage "InvariantRing";
+W = dihedralGroup(3)
+
+G1 = id_(QQ^3)
+G2 = G1
+
+matrixGens = {G1, G2}
+
+peek finiteActionCoxeter(matrixGens, W, QQ[x..z])
 
