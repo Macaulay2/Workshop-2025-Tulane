@@ -151,7 +151,7 @@ hillClimber(FunctionClosure, FunctionClosure, List) := HillClimber => opts -> (l
 -- need isWellDefined
 
 nextStep = method()
-nextStep(HillClimber) := List => opts -> (hC) -> (
+nextStep(HillClimber) := List => (hC) -> (
     ambientDim := length hC#StartingPoint;
     randPoints := matrix for i from 1 to hC#NumDirections list (
         for j from 1 to ambientDim list (
