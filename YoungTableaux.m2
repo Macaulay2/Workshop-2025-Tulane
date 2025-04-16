@@ -15,16 +15,16 @@ newPackage(
 export {
     -- types
     "YoungDiagram",
-    "SkewDiagram",
     "YoungTableau",
     -- methods
     "youngDiagram",
-    "youngTableau",
-    "skewDiagram",
     "armLength",
     "legLength",
     "hookLength",
-    "numberStandardYoungTableaux"
+    "youngTableau",
+    "numberStandardYoungTableaux",
+    "highestWeightFilling",
+    "rowsFirstFilling"
     -- symbols
     -- "Weak"
 }
@@ -81,9 +81,15 @@ isWellDefined YoungDiagram := Boolean => lambda -> (return)
 ------------------------------------
 -- Young diagram string representations
 ------------------------------------
+toString YoungDiagram := String => lambda -> ("YoungDiagram " | toString(shape lambda))
+toExternalString YoungDiagram := String => lambda -> (toString lambda)
+
 net YoungDiagram := String => lambda -> (
     boxes := apply(toList(1..numRows lambda)**toList(1..numColumns lambda), (i, j) -> if lambda#?(i,j) then "☐" else " ");
     stack flatten(pack(numColumns lambda, boxes / toString) / concatenate)
+    -- boxes := apply(toList(1..numRows lambda)**toList(1..numColumns lambda), (i, j) -> if lambda#?(i,j) then netList({""}, Alignment=>Center, HorizontalSpace=>3, VerticalSpace=>1) 
+    --                                                                                                    else netList({""}, Alignment=>Center, HorizontalSpace=>3, VerticalSpace=>1, Boxes=>false));
+    -- stack apply(pack(numColumns lambda, boxes), boxList -> fold(boxList, (i,j) -> i | j))
 )
 
 ------------------------------------
@@ -112,6 +118,15 @@ transpose YoungDiagram := YoungDiagram => lambda -> (conjugate lambda)
 ------------------------------------
 -- Statistics on Young diagrams
 ------------------------------------
+shape = method()
+shape YoungDiagram := List => (lambda) -> (
+    -- custom Counter implementation
+    rowIndices := unique(for coords in keys lambda list coords#0);
+    counts := new MutableHashTable from (for rowIndex in rowIndices list (rowIndex, 0));
+    for coords in keys lambda do (counts#(coords#0) = counts#(coords#0) + 1);
+    toList ((sort pairs counts) / (countPair -> countPair#1))
+)
+
 armLength = method()
 armLength (YoungDiagram, ZZ, ZZ) := ZZ => (lambda, i, j) -> (#(lambda_i) - j)
 armLength (YoungDiagram, Sequence) := ZZ => (lambda, coords) -> (armLength(lambda, coords#0, coords#1))
@@ -133,6 +148,7 @@ hookLength (YoungDiagram, Sequence) := ZZ => (lambda, coords) -> (hookLength(lam
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 ------------------------------------
 -- SkewDiagram type declarations and basic constructors
@@ -147,6 +163,8 @@ skewDiagram (List, List) := SkewDiagram => (lambdaShape, muShape) -> new SkewDia
 
 isWellDefined SkewDiagram := Boolean => lambda -> (return)
 
+=======
+>>>>>>> refs/remotes/origin/YoungTableaux
 
 >>>>>>> refs/remotes/origin/YoungTableaux
 ------------------------------------
@@ -155,9 +173,10 @@ isWellDefined SkewDiagram := Boolean => lambda -> (return)
 YoungTableau = new Type of YoungDiagram
 YoungTableau.synonym = "youngTableau"
 
--- This constructs a left-aligned Young tableau
+-- This constructs a left-aligned Young tableau given a list of lists 
+-- containing each filled entry
 new YoungTableau from List := (typeofYoungTableau, lambda) -> (
-    new HashTable from flatten for rowIndex to #lambda-1 list (for columnIndex to #(lambda_rowIndex)-1 list (rowIndex+1,columnIndex+1)=>(lambda_rowIndex)_columnIndex)
+    new HashTable from flatten for i to #lambda-1 list (for j to #(lambda_i)-1 list (i+1,j+1)=>lambda_i_j)
 )
 
 youngTableau = method()
@@ -180,17 +199,6 @@ net YoungTableau := String => lambda -> (
 YoungTableau == YoungTableau := Boolean => (lambda, mu) -> (pairs lambda == pairs mu)
 
 ------------------------------------
--- Young tableau string representations
-------------------------------------
-net YoungTableau := String => lambda -> (
-    maxBoxWidth := max((values lambda) / (val -> #toString(val)));
-    emptyBox := concatenate(maxBoxWidth : " ");
-    boxes := apply(toList(1..numRows lambda)**toList(1..numColumns lambda), (i, j) -> if lambda#?(i,j) then netList({lambda#(i,j)}, Alignment=>Center, HorizontalSpace=>3, VerticalSpace=>1) 
-                                                                                                       else netList({emptyBox}, Alignment=>Center, HorizontalSpace=>3, VerticalSpace=>1, Boxes=>false));
-    stack apply(pack(numColumns lambda, boxes), boxList -> fold(boxList, (i,j) -> i | j))
-)
-
-------------------------------------
 -- Miscellaneous
 ------------------------------------
 numberStandardYoungTableaux = method()
@@ -204,6 +212,7 @@ numberStandardYoungTableaux List := ZZ => shape -> (
 )
 
 
+<<<<<<< HEAD
 ----------------------------------
 
 
@@ -240,6 +249,22 @@ getCandidateFillings (List) := YoungTableau => (shape) -> (
 )
 
 
+=======
+-- Given a Young, diagram fills each box with the row it is in
+-- assumes given diagram is left justified
+highestWeightFilling = method()
+highestWeightFilling YoungDiagram := YoungTableau => diagram ->(
+    return youngTableau (for i to #diagram^1-1 list (for j to #diagram_(i+1)-1 list i+1 ))
+)
+
+-- Given a Young, diagram fills each box 1->n row by row
+-- assumes given diagram is left justified
+rowsFirstFilling = method()
+rowsFirstFilling YoungDiagram := YoungTableau => diagram ->(
+    
+)
+
+>>>>>>> refs/remotes/origin/YoungTableaux
 -----------------------------------------------------------------------------
 -- **DOCUMENTATION** --
 -----------------------------------------------------------------------------
