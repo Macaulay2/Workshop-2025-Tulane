@@ -24,7 +24,9 @@ export {
     "hillClimber",
     "HillClimber",
     "nextStep",
+    "track",
     -- Symbols
+    "Quiet",
     "StartingPoint",
     "StopCondition",
     "LossFunction",
@@ -69,7 +71,9 @@ debug needsPackage "GaussianMixtureModels";
 A= matrix{{1,0},{0,1}}
 getPowerSystemDiscriminant(A)
 
+tolerance = 0.001
 obj = f -> abs((f_0^2 + 1) - f_1)
-stop = g -> if obj(g_0) == g_1 then true else false
+stop = g -> if abs(obj(g)) < tolerance  then true else false
 hC = hillClimber(obj, stop, {1,3})
-nextStep hC
+track hC
+
