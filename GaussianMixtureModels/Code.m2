@@ -59,12 +59,13 @@ solvePowerSystem(Matrix, List, Ring) := List => (A, m, R) -> (
     if numColumns A != numColumns A then error "Matrix A is not square";
     if rank A != numRows A then error "Matrix A is not full rank";
     solvedEs := getSymmetricPolynomialEvals(A, m, R);
-    use QQ[y];
+    use RR[y];
     n := numRows A;
-    f := sum(for i from 0 to n list (-1)^(i)*(lift(solvedEs_i,QQ))*y^(n-i));
+    p := map(RR, R, matrix {toList(numColumns(vars R):0)});
+    f := sum(for i from 0 to n list (-1)^(i)*(p(solvedEs_i))*y^(n-i));
     roots(f)
 )
-solvePowerSystem(Matrix, List) := List => (A, m) -> solvePowerSystem(A, m, QQ[e_0..e_(numRows A), p_0..p_(numRows A)])
+solvePowerSystem(Matrix, List) := List => (A, m) -> solvePowerSystem(A, m, RR[e_0..e_(numRows A), p_0..p_(numRows A)])
 solvePowerSystem(List) := List => m -> (
     n := length m;
     solvePowerSystem(map(ZZ^n, ZZ^n, 1),m)
@@ -76,13 +77,13 @@ getSymmetricPolynomialEvals(Matrix, List, Ring) := List => (A, m, R) -> (
     if rank A != numRows A then error "Matrix A is not full rank";
     use R;
     n := numRows A;
-    psSolved := solve(A**QQ,(transpose matrix {m})**QQ, MaximalRank => true);
+    psSolved := solve(A**RR,(transpose matrix {m})**RR, MaximalRank => true);
     newtonIds := newtonIdentitySymmetry(n);
-    subvalues := mutableMatrix(1 | (vars R)_{1..n} | 1 | transpose psSolved);
+    subvalues := mutableMatrix(1_R | (vars R)_{1..n} | 1_R | (transpose psSolved));
     partialSolveNewtonIds := apply(newtonIds, e -> sub(e,matrix subvalues));
     for idx from 0 to length partialSolveNewtonIds - 1 list subvalues_(0,idx) = sub(partialSolveNewtonIds_idx, matrix subvalues)
 )
-getSymmetricPolynomialEvals(Matrix, List) := List => (A, m) -> getSymmetricPolynomialEvals(A, m, QQ[e_0..e_(numRows A), p_0..p_(numRows A)])
+getSymmetricPolynomialEvals(Matrix, List) := List => (A, m) -> getSymmetricPolynomialEvals(A, m, RR[e_0..e_(numRows A), p_0..p_(numRows A)])
 
 getPowerSystem = method()
 getPowerSystem(Matrix, List) := List => (A, m) -> (
@@ -108,7 +109,7 @@ getPowerSystemDiscriminant(Matrix) := RingElement => A -> (
     n := numRows A;
     R := QQ[e_0..e_n, p_0..p_n, m_1..m_n];
     mvec := toList(m_1..m_n);
-    psSolved := inverse(A**QQ)*(transpose matrix {mvec});
+    psSolved := inverse(A**RR)*(transpose matrix {mvec});
     newtonIds := newtonIdentitySymmetry(n);
     subvalues := mutableMatrix(1 | (vars(R))_{1..n} | 1 | transpose psSolved);
     partialSolveNewtonIds := apply(newtonIds, e -> sub(e,matrix subvalues));
