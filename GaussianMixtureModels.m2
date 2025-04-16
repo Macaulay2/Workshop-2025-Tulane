@@ -83,8 +83,8 @@ lossFunction = method(
 lossFunction(List) := RR => opts -> L -> (
     sol := solvePowerSystem(A,L);
     rootsPartition := partition( z -> abs(imaginaryPart(z))< opts#Tolerance , sol);
-    complexRoots := rootsPartition#false;
-    realRoots := rootsPartition#true;
+    complexRoots := if rootsPartition#?false then rootsPartition#false else {};
+    realRoots := if rootsPartition#?true then rootsPartition#true else {};
     complexLoss := sqrt(sum(for val in (complexRoots / imaginaryPart) list val^2));
     sortedRealRoots := sort(realRoots);
     minPairwiseDistance := min flatten for i from 1 to length(sortedRealRoots) - 1 list (
@@ -99,8 +99,10 @@ stopCondition = method(
         Tolerance => 0.001
     }
 )
-stopCondition(List) := Boolean => opts -> (L,A) -> (
-    if lossFunction(L,A) < opts#Tolerance then true else false
+stopCondition(List) := Boolean => opts -> (L) -> (
+    sol := solvePowerSystem(A,L);
+    allRealRoots := all(sol, z -> abs(imaginaryPart(z))< opts#Tolerance);
+    if (lossFunction(L) < opts#Tolerance) or (allRealRoots) then true else false
 )
 
 hC = hillClimber(lossFunction, stopCondition, m)
