@@ -153,7 +153,7 @@ getStressMatrix(ZZ, ZZ, List) := Matrix => opts -> (d, n, G) -> (
     x := getSymbol toString(opts.Variable);
 
     -- Left kernel of the rigidity matrix
-    tRigidityMatrix := transpose getRigidityMatrix(d, n, G);
+    tRigidityMatrix := transpose getRigidityMatrix(d, n, G, opts);
     R := ring tRigidityMatrix;
     tRigidityMatrixRational := sub(tRigidityMatrix, frac R);
     stressBasis := mingens ker tRigidityMatrixRational;
@@ -186,18 +186,18 @@ getStressMatrix(ZZ, ZZ, List) := Matrix => opts -> (d, n, G) -> (
 
 -- List of edges not given -> use complete graph
 getStressMatrix(ZZ, ZZ) := Matrix => opts -> (d, n) -> (
-    getStressMatrix(d,n, subsets(toList(0..(n-1)), 2), opts)
+    getStressMatrix(d, n, subsets(toList(0..(n-1)), 2), opts)
 );
 
 -- Input a Graph instead of edge set without number of vertices -> get number of vertices from graph
 getStressMatrix(ZZ, Graph) := Matrix => opts -> (d, G) -> (
-    getStressMatrix(d, length vertexSet G, edges G)
+    getStressMatrix(d, length vertexSet G, edges G, opts)
 );
 
 -- Input a Graph instead of edge set with number of vertices -> check if number of vertices is correct
 getStressMatrix(ZZ, ZZ, Graph) := Matrix => opts -> (d, n, G) -> (
     if n =!= length vertexSet G then error("Expected ", n, " to be the number of vertices in ",G);
-    getStressMatrix(d, n, edges G)
+    getStressMatrix(d, n, edges G, opts)
 );
 
 isGloballyRigid = method(Options => {Numerical => false}, TypicalValue => Boolean)
