@@ -200,10 +200,25 @@ getStressMatrix(ZZ, ZZ, Graph) := Matrix => opts -> (d, n, G) -> (
     getStressMatrix(d, n, edges G, opts)
 );
 
-isGloballyRigid = method(Options => {Numerical => false}, TypicalValue => Boolean)
-
+-- Core function
 isGloballyRigid(ZZ, ZZ, List) := Boolean => opts -> (d,n,G) -> (
 
+);
+
+-- List of edges not given -> use complete graph
+isGloballyRigid(ZZ, ZZ) := Boolean => opts -> (d,n) -> (
+    isGloballyRigid(d, n, subsets(toList(0..(n-1)), 2), Numerical => opts.Numerical)
+);
+
+-- Input a Graph instead of edge set without number of vertices -> get number of vertices from graph
+isGloballyRigid(ZZ, Graph) := Boolean => opts -> (d, G) -> (
+    isGloballyRigid(d, length vertexSet G, edges G, opts)
+);
+
+-- Input a Graph instead of edge set with number of vertices -> check if number of vertices is correct
+isGloballyRigid(ZZ, ZZ, Graph) := Boolean => opts -> (d, n, G) -> (
+    if n =!= length vertexSet G then error("Expected ", n, " to be the number of vertices in ",G);
+    isGloballyRigid(d, n, edges G, opts)
 );
 
 ------------------------------------------------------------------------------
