@@ -27,14 +27,10 @@ doc ///
             
             If provided, expects the vertices of G to be 0 through n-1.
         Example
-            n = 4;
-            d = 2;
-
+            n = 4; d = 2;
             L = {{0,1}, {0,2}, {1,2}, {1,3}, {2,3}};
             getRigidityMatrix(d, n, L)
-
             getRigidityMatrix(d, n, subsets(toList(0..(n-1)), 2))
-
             G = completeGraph(n);
             getRigidityMatrix(d, n, G)
             getRigidityMatrix(d, G)
@@ -66,14 +62,10 @@ doc ///
     	Text
             Tests for local rigidity by checking the rank of the rigidity matrix.
         Example
-            n = 4;
-            d = 2;
-
+            n = 4; d = 2;
             L = {{0,1}, {0,2}, {1,2}, {1,3}, {2,3}};
             isLocallyRigid(d, n, L)
-
             isLocallyRigid(d, n, subsets(toList(0..(n-1)), 2))
-
             G = completeGraph(n);
             isLocallyRigid(d, n, G)
             isLocallyRigid(d, G)
