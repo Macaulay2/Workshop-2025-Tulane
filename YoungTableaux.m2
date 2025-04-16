@@ -27,7 +27,6 @@ export {
     -- "Weak"
 }
 
--- test
 -- WISHLIST
 -- Lie algebra action on tableaux
 -- Young symmetrizers
