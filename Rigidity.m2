@@ -42,6 +42,7 @@ export {
     "getStressMatrix",
     "isGloballyRigid",
     "Numerical",
+    "Field",
     "FiniteField"
 }
 
@@ -52,7 +53,7 @@ export {
 
 getRigidityMatrix = method(Options => {Variable => null}, TypicalValue => Matrix)
 
-isLocallyRigid = method(Options => {Numerical => false, FiniteField => 0}, TypicalValue => Boolean)
+isLocallyRigid = method(Options => {Numerical=> false, Field => ZZ}, TypicalValue => Boolean)
 
 -- Core function
 getRigidityMatrix(ZZ, ZZ, List) := Matrix => opts -> (d, n, G) -> (
@@ -85,9 +86,9 @@ getRigidityMatrix(ZZ, ZZ, Graph) := Matrix => opts -> (d, n, G) -> (
 isLocallyRigid(ZZ, ZZ, List) := Boolean => opts -> (d, n, E) -> (
     M := getRigidityMatrix(d, n, E);
     R := ring M;
-    C := coefficientRing R; -- evaluate over an arbitrary field (e.g. given as an option)?   
+    C := opts.Field; -- coefficientRing R; -- evaluate over an arbitrary field (e.g. given as an option)?   
     crds := gens R;
-    if opts.Numerical 
+    if opts.Field =!= ZZ 
     then (
         listOfTruthValues := apply(
             toList(0..1), -- number of confidence runs?
@@ -100,20 +101,20 @@ isLocallyRigid(ZZ, ZZ, List) := Boolean => opts -> (d, n, E) -> (
         if # set(listOfTruthValues) =!= 1 then error("Expected all the numerical attempts to give the same result. Try again.");
         all listOfTruthValues
     )
-    else if opts.FiniteField =!= 0
+    else if opts.Numerical -- We need to fix this case
     then (
         listOfTruthValuesFiniteFields := apply(
             toList(0..1),
             n -> d*n - (d+1)*d/2 == rank(
 		a := symbol a;
-                GF(opts.FiniteField, Variable => a);
+                GF(opts.Field, Variable => a);
                 sub(
                     getRigidityMatrix(d, n, E), 
                     apply(
                         toList(1..d*n), 
                         i -> crds_i => (
-                            randIndex := random(1,opts.FiniteField);
-                            if randIndex = opts.FiniteField
+                            randIndex := random(1,opts.Field);
+                            if randIndex = opts.Field
                             then 0
                             else a^randIndex
                         )
