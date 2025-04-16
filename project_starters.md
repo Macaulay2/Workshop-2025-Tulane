@@ -1,7 +1,7 @@
 
 # Auxillary Algebras for spaces of tensors
 
-## Inviariant properties from the algebra of endomophisms 
+## Inviariant properties from the algebra of endomorphisms 
 Square matrices represent endomorphisms of a vector space. The space of endomophisms forms an algebra that has a Jordan decompostion. This is a powerful tool for describing the essential properties of the matrix. 
 
 $`M = P^{-1} J P`$, with $`J`$ in Jordan normal form. The eigenvalues and block structure of $J$ describes the geometry of $M$.
