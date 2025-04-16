@@ -1162,7 +1162,7 @@ doc ///
         CB:ChevalleyBasis
     Description
         Text
-	    Currently only implemented for simple Lie algebras of type A and type C.
+	    Currently only implemented for simple Lie algebras of types A, C, and D.
 	Text
 	    The user may either input the type and rank, or the simple Lie algebra.
 	Example
