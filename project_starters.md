@@ -33,6 +33,34 @@ Implement the standard action of $\mathfrak{sl}_2$ on $\mathbb{C}^2$.
 
 More generally, implement the action of  $\mathfrak{sl}_n$ on the modules $\bigwedge^k \mathbb{C}^n$, and on $S^d \mathbb{C}^n$.
 
+Define the Lie algebra action of $`\mathfrak{sl}_2 \times \mathfrak{sl}_2`$ acting on $`\mathbb{C}^2
+\otimes \mathbb{C}^2 `$ as follows. Define the ring 
+`R = QQ[x_(0,0)..x_(1,1)]` 
+with $x_i \otimes x_j = x_{(i,j)}$. 
+
+Define a map that takes a pair of matrices `(A,B)` and a variable `x_(i,j)` and sends it to the result: 
+$`(Ax_i) \otimes x_j  + x_i \otimes (Bx_j) `$
+
+Now consider the $`\mathbb Z_2`$-graded algebra $` \mathfrak a =  \left(\mathfrak{sl}_2 \oplus \mathfrak{sl}_2 \right) \oplus \left(\mathbb{C}^2
+\otimes \mathbb{C}^2 \right)`$, where you make the following maps:
+
+$` \mathfrak a_0 \times \mathfrak a_0  \to \mathfrak a_0 `$
+given by $`((A,B), (A',B')) \mapsto ([A,A'], [B,B'])`$, with $`[,]`$ the usual commutator bracket.
+
+$` \mathfrak a_0 \times \mathfrak a_1  \to \mathfrak a_1 `$
+given by $`((A,B), M) \mapsto AM + MB^\top `$, with juxtaposition the matrix-matrix product.
+
+$` \mathfrak a_1 \times \mathfrak a_0  \to \mathfrak a_1 `$
+given by $`(M, (A,B)) \mapsto \pm(AM + MB^\top) `$, with juxtaposition the matrix-matrix product, and we're not sure if we need to have a coefficient here. 
+
+Find the tensor $`\mathcal B_{0,1,1}`$ associated to this linear map by evaluating it on a basis (matrix representation theorem), and store this in a matrix or a sparse array, or a hashtable. 
+
+Assume that $`\mathcal B_{1,1,0}`$ can be computed from $`\mathcal B_{0,1,1}`$ by just taking the appropriate entries of the tensor (we worked this out on the board). 
+
+Check if the Jacobi identity holds for this algebra. 
+
+Try to make the Killing form of this algebra - is it non-degenerate? Can we prove that this algebra is isomorphic to a known algebra?
+
 Consider the Schur module $S_{2,1}\mathbb{C}^2$, whose basis is given by the semi-standard Young tableaux of shape (2,1) and content in $`\{0,1\}`$: There are two:
 $`\begin{array}{l}\fbox{0}\fbox{0} \\ \fbox{1}\end{array}`$, $`\begin{array}{l}\fbox{0}\fbox{1}\\\fbox{1}\end{array}`$ or
 `{{0,0},{1}},  {{0,1},{1}} `
