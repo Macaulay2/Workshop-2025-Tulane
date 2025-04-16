@@ -27,19 +27,20 @@ export {
     -- "Weak"
 }
 
--- TODO
+-- WISHLIST
 -- Lie algebra action on tableaux
 -- Young symmetrizers
 -- semistandard/standard tableaux
 -- Gelfand-Tsetlin symmetrizers/basis
 -- Pieri maps => formal linear combinations of tableaux (hash table)
--- straightening laws/multi-straightening laws of tensor products of tableaux
+-- straightening laws/multi-straightening laws of tensor products of tableaux (see https://arxiv.org/pdf/1710.05214v2 for some ideas)
 -- tensor product/Kronecker product => list of tableaux
 -- shuffling laws (for tableaux with repeated entries)
 -- plethysm
 -- contragradient vs conjugate
 -- Schur modules notation, etc.
 -- refinements of diagrams/Young's lattice/Partition lattice
+-- straightening for STANDARD Young tableaux (see Sagan's book for Garnir elements and the SpechtModule package)
 
 -----------------------------------------------------------------------------
 -- **CODE** --
@@ -47,125 +48,126 @@ export {
 ------------------------------------
 -- Local utilities
 ------------------------------------
--- some helper functions go here
+-- Some helper functions go here.
 
 ------------------------------------
 -- YoungDiagram type declarations and basic constructors
 ------------------------------------
-YoungDiagram = new Type of VisibleList
+-- Basically, a Young diagram is a nested hash table, just like you would think
+-- of for a matrix. This allows indexing rows agnostic to their relative position
+-- to the origin. The second index then allows indexing the columns without need
+-- for continuity (same as the first).
+-- Matt: encode as list of lists, but start of rows have an offset if the diagram is not left-justified
+YoungDiagram = new Type of HashTable
 YoungDiagram.synonym = "youngDiagram"
 
-new YoungDiagram from VisibleList := (typeofYoungDiagram, lambda) -> lambda
+-- This creates a left-justified Young diagram
+new YoungDiagram from VisibleList := (typeofYoungDiagram, lambda) -> (
+    new HashTable from flatten for i to #lambda-1 list (for j to (lambda_i)-1 list (i+1,j+1)=>true)
+)
+-- This creates any variation of a Young diagram
+new YoungDiagram from HashTable := (typeofYoungDiagram, lambda) -> (
+    new HashTable from lambda
+)
 
 youngDiagram = method()
-youngDiagram VisibleList := YoungDiagram => lambda -> new YoungDiagram from lambda
+youngDiagram VisibleList := YoungDiagram => lambda -> (new YoungDiagram from lambda)
+youngDiagram HashTable := YoungDiagram => lambda -> (new YoungDiagram from lambda)
 
-isWellDefined YoungDiagram := Boolean => lambda -> (
-    -- A Young diagram is well-defined if it is a sequence of non-increasing positive integers.
-    return
-)
+isWellDefined YoungDiagram := Boolean => lambda -> (return)
 
 ------------------------------------
 -- Young diagram string representations
 ------------------------------------
-expression YoungDiagram := lambda -> expression toList lambda
-toString YoungDiagram := lambda -> toString expression toList lambda
-tex YoungDiagram := lambda -> tex expression toSequence lambda
-html YoungDiagram := lambda -> html expression toList lambda
+net YoungDiagram := String => lambda -> (
+    boxes := apply(toList(1..numRows lambda)**toList(1..numColumns lambda), (i, j) -> if lambda#?(i,j) then "☐" else " ");
+    stack flatten(pack(numColumns lambda, boxes / toString) / concatenate)
+    -- boxes := apply(toList(1..numRows lambda)**toList(1..numColumns lambda), (i, j) -> if lambda#?(i,j) then netList({""}, Alignment=>Center, HorizontalSpace=>3, VerticalSpace=>1) 
+    --                                                                                                    else netList({""}, Alignment=>Center, HorizontalSpace=>3, VerticalSpace=>1, Boxes=>false));
+    -- stack apply(pack(numColumns lambda, boxes), boxList -> fold(boxList, (i,j) -> i | j))
+)
 
 ------------------------------------
--- Indexing Young diagrams as lists
+-- Indexing into Young diagrams
 ------------------------------------
-YoungDiagram _ ZZ := ZZ => (lambda, n) -> ((toList lambda)_(n-1))
-YoungDiagram _ List := List => (lambda, l) -> ((toList lambda)_l)
-YoungDiagram _ Sequence := List => (lambda, s) -> ((toList lambda)_(toList s))
+-- select the i-th row(s) of the Young diagram
+YoungDiagram _ ZZ := ZZ => (lambda, n) -> (selectKeys(lambda, coords -> coords#0 == n))
+YoungDiagram _ List := List => (lambda, l) -> (selectKeys(lambda, coords -> member(coords#0, l)))
+YoungDiagram _ Sequence := List => (lambda, s) -> (selectKeys(lambda, coords -> member(coords#0, s)))
 
-numRows YoungDiagram := ZZ => lambda -> (#lambda)
-numColumns YoungDiagram := ZZ => lambda -> (lambda_0)
+YoungDiagram ^ ZZ := ZZ => (lambda, n) -> (selectKeys(lambda, coords -> coords#1 == n))
+YoungDiagram ^ List := List => (lambda, l) -> (selectKeys(lambda, coords -> member(coords#1, l)))
+YoungDiagram ^ Sequence := List => (lambda, s) -> (selectKeys(lambda, coords -> member(coords#1, s)))
+
+numRows YoungDiagram := ZZ => lambda -> (max apply(keys lambda, coords -> coords#0))
+numColumns YoungDiagram := ZZ => lambda -> (max apply(keys lambda, coords -> coords#1))
 
 ------------------------------------
 -- Basic Young diagram operations
 ------------------------------------
-YoungDiagram == YoungDiagram := Boolean => (lambda, mu) -> (
-    toList lambda == toList mu
-)
+YoungDiagram == YoungDiagram := Boolean => (lambda, mu) -> (pairs lambda == pairs mu)
+
+conjugate YoungDiagram := YoungDiagram => lambda -> (youngDiagram applyKeys(lambda, key -> reverse key))
+transpose YoungDiagram := YoungDiagram => lambda -> (conjugate lambda)
 
 ------------------------------------
 -- Statistics on Young diagrams
 ------------------------------------
 armLength = method()
-armLength (YoungDiagram, ZZ, ZZ) := ZZ => (lambda, i, j) -> (
-    lambda_i - j
-)
+armLength (YoungDiagram, ZZ, ZZ) := ZZ => (lambda, i, j) -> (#(lambda_i) - j)
+armLength (YoungDiagram, Sequence) := ZZ => (lambda, coords) -> (armLength(lambda, coords#0, coords#1))
 
 legLength = method()
-legLength (YoungDiagram, ZZ, ZZ) := ZZ => (lambda, i, j) -> (
-    -- efficient? idk
-    armLength(conjugate lambda, j, i)
-)
+legLength (YoungDiagram, ZZ, ZZ) := ZZ => (lambda, i, j) -> (#(lambda^j) - i)
+legLength (YoungDiagram, Sequence) := ZZ => (lambda, coords) -> (legLength(lambda, coords#0, coords#1))
 
 hookLength = method()
 hookLength (YoungDiagram, ZZ, ZZ) := ZZ => (lambda, i, j) -> (
     armLength(lambda, i, j) + legLength(lambda, i, j) + 1
 )
+hookLength (YoungDiagram, Sequence) := ZZ => (lambda, coords) -> (hookLength(lambda, coords#0, coords#1))
 
 
 ------------------------------------
 -- Miscellaneous
 ------------------------------------
-conjugate YoungDiagram := YoungDiagram => lambda -> (
-    -- for each lambda#k, form the all-ones vector of length lambda#k, and then add these all-ones vectors together
-    numConjugateCols := lambda#0;
-    youngDiagram sum(for part in lambda list (toList(part:1) | toList((numConjugateCols - part):0)))
-)
-transpose YoungDiagram := YoungDiagram => lambda -> (conjugate lambda)
+
 
 
 ------------------------------------
 -- YoungTableau type declarations and basic constructors
 ------------------------------------
-YoungTableau = new Type of MutableHashTable
+YoungTableau = new Type of YoungDiagram
 YoungTableau.synonym = "youngTableau"
 
+-- This constructs a left-aligned Young tableau
 new YoungTableau from List := (typeofYoungTableau, lambda) -> (
-    filledTableau := new MutableHashTable;
-    for i to #lambda-1 list (
-        for j to #(lambda_i)-1 list (
-            filledTableau#(i+1, j+1) = (lambda_i)_j;
-        )
-    );
-    filledTableau
+    new HashTable from flatten for i to #lambda-1 list (for j in (lambda_i) list (i+1,j+1)=>true)
 )
 
 youngTableau = method()
 youngTableau List := YoungTableau => lambda -> new YoungTableau from lambda
 
-isWellDefined YoungTableau := Boolean => lambda -> (
-    -- A Young tableau follows some rules.
-    return
-)
+isWellDefined YoungTableau := Boolean => lambda -> (return)
 
 ------------------------------------
 -- Basic Young tableau operations
 ------------------------------------
-YoungTableau == YoungTableau := Boolean => (lambda, mu) -> (
-    -- checks if the (key, value) pairs of the hash tables are equal
-    pairs lambda == pairs mu
-)
+YoungTableau == YoungTableau := Boolean => (lambda, mu) -> (pairs lambda == pairs mu)
 
 
 ------------------------------------
 -- Miscellaneous
 ------------------------------------
 numberStandardYoungTableaux = method()
-numberStandardYoungTableaux YoungDiagram := ZZ => lambda -> (
+numberStandardYoungTableaux List := ZZ => shape -> (
     -- Theorem of Frame-Robinson-Thrall (1954)
     -- Do I need to be careful using // if I know the result is an integer?
-    num := (sum toList lambda)!;
-    den := product for i in 1..(numRows lambda) list product for j in 1..(lambda_i) list hookLength(lambda, i, j);
+    num := (sum shape)!;
+    lambda := youngDiagram shape;
+    den := product for coords in keys lambda list hookLength(lambda, coords);
     return num // den
 )
-
 
 
 -----------------------------------------------------------------------------

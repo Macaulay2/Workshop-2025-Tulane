@@ -8,5 +8,5 @@ TEST ///
 ///
 
 TEST ///
-    assert(numberStandardYoungTableaux youngDiagram {4,2,1} == 35)
+    assert(numberStandardYoungTableaux {4,2,1} == 35)
 ///
