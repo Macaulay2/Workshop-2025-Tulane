@@ -23,6 +23,10 @@ newPackage(
             Name => "Ryan A. Anderson",
             Email => "raanderson@g.ucla.edu",
             HomePage => "ryan-a-anderson.github.io"
+        },
+        {
+            Name => "Hannah Mahon",
+            Email => "hannah.mahon@gtri.gatech.edu"
         }
     },
     Headline => "rigidity theory tools",
@@ -68,12 +72,12 @@ getRigidityMatrix(ZZ,ZZ) := Matrix => opts -> (d,n) -> (
 );
 
 getRigidityMatrix(ZZ, Graph) := Matrix => opts -> (d, G) -> (
-    getRigidityMatrix(d, length vertexSet G, edges G)
+    getRigidityMatrix(d, length vertexSet G, edges G, opts)
 );
 
 getRigidityMatrix(ZZ, ZZ, Graph) := Matrix => opts -> (d, n, G) -> (
     if n =!= length vertexSet G then error("Expected ", n, " to be the number of vertices in ",G);
-    getRigidityMatrix(d, n, edges G)
+    getRigidityMatrix(d, n, edges G, opts)
 );
 
 isLocallyRigid(ZZ, ZZ, List) := Boolean => opts -> (d, n, E) -> (
@@ -153,7 +157,7 @@ getStressMatrix(ZZ, ZZ, List) := Matrix => (d, n, G) -> (
     -- Symbolic linear combination of elements in the basis of the left kernel
     stressBasisLinearSum := 0;
     for i from 1 to auxiliaryVarCount do (
-        stressBasisLinearSum += y_i * sub(submatrix(stressBasis, {i - 1}), auxiliaryRing);
+        stressBasisLinearSum = stressBasisLinearSum + y_i * sub(submatrix(stressBasis, {i - 1}), auxiliaryRing);
     );
     
     -- Build the symbolic stress matrix from the symbolic linear combination
