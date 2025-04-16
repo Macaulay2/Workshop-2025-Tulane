@@ -114,7 +114,6 @@ getPowerSystemDiscriminant(Matrix) := RingElement => A -> (
     partialSolveNewtonIds := apply(newtonIds, e -> sub(e,matrix subvalues));
     solvedEs := for idx from 0 to length partialSolveNewtonIds - 1 list subvalues_(0,idx) = sub(partialSolveNewtonIds_idx, matrix subvalues | matrix {mvec});
     use R[y];
-    n := numRows A;
     f := sum(for i from 0 to n list (-1)^(i)*(solvedEs_i)*y^(n-i));
     discriminant(f, y)
 )
@@ -123,16 +122,49 @@ getPowerSystemDiscriminant(Matrix) := RingElement => A -> (
 - Hill Climbing Algorithm
 *- 
 HillClimber = new Type of MutableHashTable
-HillClimber.synonym = "discrete random variable"
+HillClimber.synonym = "a hill climber"
 HillClimber.GlobalAssignHook = globalAssignFunction
 HillClimber.GlobalReleaseHook = globalReleaseFunction
 
+-- constructor method for HillClimber
 hillClimber = method (
-    TypicalValue => HillClimber
+    TypicalValue => HillClimber,
+    Options => {
+        StepSize => 0.01,
+        NumDirections => 10
+    }
 )
 
-hillClimber(FunctionClosure, Vector, ) := HillClimber => (objectiveFunction, stopCondition, startingPoint, stepSize, numDirections) -> (
-    
+hillClimber(FunctionClosure, FunctionClosure, List) := HillClimber => opts -> (lossFunction, stopCondition, startingPoint) -> (
+    new HillClimber from {
+        LossFunction => lossFunction,
+        StopCondition => stopCondition,
+        StartingPoint => startingPoint,
+        CurrentPoint => startingPoint,
+        CurrentStep => 1,
+        StepSize => opts#StepSize,
+        NumDirections => opts#NumDirections,
+        symbol cache => new CacheTable
+    }
 ) 
+
 -- need isWellDefined
--- need step(HillClimber)
+
+nextStep = method()
+nextStep(HillClimber) := List => opts -> (hC) -> (
+    ambientDim := length hC#StartingPoint;
+    randPoints := matrix for i from 1 to hC#NumDirections list (
+        for j from 1 to ambientDim list (
+            random(-1.0,1.0)
+        )
+    ) ;
+   norms := (for p in entries randPoints list (for val in p list val^2)) / sum / sqrt;
+   randNormalizedPoints := inverse(diagonalMatrix(norms))*randPoints;
+   randDirections := randNormalizedPoints + (hC#StepSize)*(matrix toList(hC#NumDirections:hC#StartingPoint));
+   correctDirectionIdx := minPosition(for dir in entries randDirections list hC#LossFunction(dir));
+
+   nextPoint := (entries randDirections)_correctDirectionIdx;
+   hC#CurrentStep += 1;
+   hC#CurrentPoint = nextPoint;
+   nextPoint
+)
