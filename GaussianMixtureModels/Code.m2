@@ -118,3 +118,21 @@ getPowerSystemDiscriminant(Matrix) := RingElement => A -> (
     f := sum(for i from 0 to n list (-1)^(i)*(solvedEs_i)*y^(n-i));
     discriminant(f, y)
 )
+
+-*
+- Hill Climbing Algorithm
+*- 
+HillClimber = new Type of MutableHashTable
+HillClimber.synonym = "discrete random variable"
+HillClimber.GlobalAssignHook = globalAssignFunction
+HillClimber.GlobalReleaseHook = globalReleaseFunction
+
+hillClimber = method (
+    TypicalValue => HillClimber
+)
+
+hillClimber(FunctionClosure, Vector, ) := HillClimber => (objectiveFunction, stopCondition, startingPoint, stepSize, numDirections) -> (
+    
+) 
+-- need isWellDefined
+-- need step(HillClimber)
