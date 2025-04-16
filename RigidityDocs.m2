@@ -1,10 +1,10 @@
 doc ///
     Key
         getRigidityMatrix
-        (Integer, Integer, Graph)
-        (Integer, Graph)
-        (Integer, Integer, List)
-        (Integer, Integer)
+        (getRigidityMatrix, ZZ, ZZ, Graph)
+        (getRigidityMatrix, ZZ, Graph)
+        (getRigidityMatrix, ZZ, ZZ, List)
+        (getRigidityMatrix, ZZ, ZZ)
     Headline
         Constructs the rigidity matrix of a d-framework
     Usage
@@ -13,9 +13,9 @@ doc ///
         getRigidityMatrix(d, n, L)
         getRigidityMatrix(d, n)
     Inputs
-        d : Integer
+        d : ZZ
             corresponding to the dimension of the embedding space
-        n : Integer
+        n : ZZ
             corresponding to the number of vertices
         G : Graph
         L : List
@@ -30,7 +30,7 @@ doc ///
             n = 4;
             d = 2;
 
-            L = {0,1}, {0,2}, {1,2}, {1,3}, {2,3};
+            L = {{0,1}, {0,2}, {1,2}, {1,3}, {2,3}};
             getRigidityMatrix(d, n, L)
 
             getRigidityMatrix(d, n, subsets(toList(0..(n-1)), 2))
@@ -43,10 +43,10 @@ doc ///
 doc ///
     Key
         isLocallyRigid
-        (Integer, Integer, Graph)
-        (Integer, Graph)
-        (Integer, Integer, List)
-        (Integer, Integer)
+        (isLocallyRigid, ZZ, ZZ, Graph)
+        (isLocallyRigid, ZZ, Graph)
+        (isLocallyRigid, ZZ, ZZ, List)
+        (isLocallyRigid, ZZ, ZZ)
     Headline
         Returns a boolean indicating whether the given framework is locally rigid
     Usage
@@ -55,9 +55,9 @@ doc ///
         isLocallyRigid(d, n, L)
         isLocallyRigid(d, n)
     Inputs
-        d : Integer
+        d : ZZ
             corresponding to the dimension of the embedding space
-        n : Integer
+        n : ZZ
             corresponding to the number of vertices
         G : Graph
         L : List
@@ -79,6 +79,7 @@ doc ///
             isLocallyRigid(d, G)
 ///
 
+-*
 -- Example documentation
 doc ///
     Key
@@ -102,3 +103,4 @@ doc ///
             mons = {x_0^2, x_0*x_1, x_1^2};
             toricLinearSeries mons
 ///
+*-

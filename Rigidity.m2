@@ -2,32 +2,32 @@ newPackage(
     "Rigidity",
     Version => "0.1",
     Authors => {{
-            Name => "Kalina Mincheva"
-            Email => "kmincheva@tulane.edu"
+            Name => "Kalina Mincheva",
+            Email => "kmincheva@tulane.edu",
             HomePage => "www.math.tulane.edu/~kmincheva"
         },
         {
-            Name => "Daniel Irving Bernstein"
-            Email => "dbernstein1@tulane.edu"
+            Name => "Daniel Irving Bernstein",
+            Email => "dbernstein1@tulane.edu",
             HomePage => "dibernstein.github.io"
         },
         {
-            Name => "Griffin Edwards"
+            Name => "Griffin Edwards",
             Email => "griffinedwards@gatech.edu"
         },
         {
-            Name => "Jianuo Zhou"
+            Name => "Jianuo Zhou",
             Email => "jzhou632@gatech.edu"
         },
         {
-            Name => "Ryan A. Anderson"
-            Email => "raanderson@g.ucla.edu"
+            Name => "Ryan A. Anderson",
+            Email => "raanderson@g.ucla.edu",
             HomePage => "ryan-a-anderson.github.io"
         }
     },
-    Headline => "",
+    Headline => "rigidity theory tools",
     Keywords => {},
-    PackageExports => {},
+    PackageExports => {"Graphs"},
     PackageImports => {},
     DebuggingMode => true
 )
@@ -36,7 +36,9 @@ export {
     "getRigidityMatrix",
     "isLocallyRigid",
     "getStressMatrix",
-    "isGloballyRigid"
+    "isGloballyRigid",
+    "Numerical",
+    "FiniteField"
 }
 
 
@@ -44,14 +46,14 @@ export {
 -- Code
 ------------------------------------------------------------------------------
 
-getRigidityMatrix = method(Options => {Variable => crds}, TypicalValue => Matrix)
+getRigidityMatrix = method(Options => {Variable => null}, TypicalValue => Matrix)
 
 isLocallyRigid = method(Options => {Numerical => false, FiniteField => 0}, TypicalValue => Boolean)
 
 getStressMatrix = method(TypicalValue => Matrix)
 
 getRigidityMatrix(ZZ, ZZ, List) := Matrix => opts -> (d, n, G) -> (
-    crds = getSymbol toString(opts.Variable);
+    crds := getSymbol toString(opts.Variable);
     R := QQ(monoid[crds_(1) .. crds_(d*n)]); -- Create a ring with d*n variables
     M := genericMatrix(R, d, n); -- Return a generic d by n matrix over R
     -- Here is the polynomial we might want to switch in the future
@@ -75,15 +77,18 @@ getRigidityMatrix(ZZ, ZZ, Graph) := Matrix => opts -> (d, n, G) -> (
 );
 
 isLocallyRigid(ZZ, ZZ, List) := Boolean => opts -> (d, n, E) -> (
+    M := getRigidityMatrix(d, n, E);
+    R := ring M;
+    C := coefficientRing R; -- evaluate over an arbitrary field (e.g. given as an option)?   
+    crds := gens R;
     if opts.Numerical 
     then (
         listOfTruthValues := apply(
-            toList(0..1),
-            k -> d*n - (d+1)*d/2 == rank(
-                sub(
-                    getRigidityMatrix(d, n, E), 
-                    apply(toList(1..d*n), i -> crds_i => random(-1.,1.))
-                )
+            toList(0..1), -- number of confidence runs?
+            k -> (
+		randomValues := random(C^1,C^(d*n));
+		fromRtoC := map(C,R,randomValues);
+		d*n - (d+1)*d/2 == rank fromRtoC M
             ) 
         );
         if # set(listOfTruthValues) =!= 1 then error("Expected all the numerical attempts to give the same result. Try again.");
@@ -94,6 +99,7 @@ isLocallyRigid(ZZ, ZZ, List) := Boolean => opts -> (d, n, E) -> (
         listOfTruthValuesFiniteFields := apply(
             toList(0..1),
             n -> d*n - (d+1)*d/2 == rank(
+		a := symbol a;
                 GF(opts.FiniteField, Variable => a);
                 sub(
                     getRigidityMatrix(d, n, E), 
@@ -135,12 +141,14 @@ getStressMatrix(ZZ, ZZ, List) := Matrix => (d, n, G) -> (
 
     -- Left kernel of the rigidity matrix
     tRigidityMatrix := transpose getRigidityMatrix(d, n, G);
-    tRigidityMatrixRational := sub(tRigidityMatrix, frac(QQ[x_1..x_(d*n)]));
+    R := ring tRigidityMatrix;
+    tRigidityMatrixRational := sub(tRigidityMatrix, frac R);
     stressBasis := mingens ker tRigidityMatrixRational;
 
     -- New symbolic variables for each element in the basis of the left kernel
     auxiliaryVarCount := numgens source stressBasis;
-    auxiliaryRing := frac(QQ[x_1..x_(d*n),y_1..y_auxiliaryVarCount]);
+    y := symbol y;
+    auxiliaryRing := frac(QQ[gens R, y_1..y_auxiliaryVarCount]);
 
     -- Symbolic linear combination of elements in the basis of the left kernel
     stressBasisLinearSum := 0;
@@ -149,9 +157,9 @@ getStressMatrix(ZZ, ZZ, List) := Matrix => (d, n, G) -> (
     );
     
     -- Build the symbolic stress matrix from the symbolic linear combination
-    stressMatrix = mutableMatrix(auxiliaryRing, n, n);
+    stressMatrix := mutableMatrix(auxiliaryRing, n, n);
     for i from 0 to (#G - 1) do (
-        edge = G#i;
+        edge := G#i;
         stressMatrix_(edge#0, edge#1) = stressBasisLinearSum_(i, 0);
     );
     stressMatrixEntries := entries stressMatrix;
@@ -169,9 +177,11 @@ isGloballyRigid(ZZ, ZZ, List) := Boolean => opts -> (d,n,G) -> (
 
 );
 
+-*
 isGloballyRigid(
 
 );
+*-
 
 ------------------------------------------------------------------------------
 -- DOCUMENTATION
@@ -183,6 +193,7 @@ doc ///
     Headline
         Add headline description
     Description
+      Text
     	Add package description
 ///
 
@@ -193,3 +204,11 @@ load "./RigidityDocs.m2"
 ------------------------------------------------------------------------------
 
 load "./RigidityTests.m2"
+
+end
+
+restart
+needsPackage "Rigidity"
+check "Rigidity"
+installPackage "Rigidity"
+uninstallAllPackages()
