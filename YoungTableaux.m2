@@ -133,7 +133,6 @@ hookLength (YoungDiagram, Sequence) := ZZ => (lambda, coords) -> (hookLength(lam
 ------------------------------------
 
 
-
 ------------------------------------
 -- YoungTableau type declarations and basic constructors
 ------------------------------------
@@ -179,6 +178,24 @@ numberStandardYoungTableaux List := ZZ => shape -> (
 )
 
 
+----------------------------------
+
+
+--- Trying to list all fillings of standard tableaux of a given shape
+
+--- Helper function to get back the shape of a given diagram
+shapeOfYoungDiagram = method()
+shapeOfYoungDiagram (YoungDiagram) := List => (youngDiag) -> (
+    rows := numRows youngDiag;
+    for i to rows-1 list armLength(youngDiag, i+1, 0) -- return the number of boxes in each row
+)
+
+
+--- Given a list (shape) of a diagram, find all the standard fillings
+getCandidateFillings = methods()
+
+
+
 -----------------------------------------------------------------------------
 -- **DOCUMENTATION** --
 -----------------------------------------------------------------------------
@@ -202,3 +219,8 @@ restart
 needsPackage "YoungTableaux"
 elapsedTime check "YoungTableaux"
 viewHelp "YoungTableaux"
+
+YD = youngDiagram {4,3,3,2,1,1,0,0}
+YT = youngTableau {{1,2,3},{4,5},{6}}
+
+YT#(2,2)
