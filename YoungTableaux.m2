@@ -132,7 +132,23 @@ hookLength (YoungDiagram, Sequence) := ZZ => (lambda, coords) -> (hookLength(lam
 ------------------------------------
 
 
+<<<<<<< HEAD
+=======
+------------------------------------
+-- SkewDiagram type declarations and basic constructors
+------------------------------------
+SkewDiagram = new Type of YoungDiagram
+SkewDiagram.synonym = "skewDiagram"
 
+new SkewDiagram from YoungDiagram := (typeofSkewDiagram, lambda) -> (new HashTable from lambda)
+
+skewDiagram = method()
+skewDiagram (List, List) := SkewDiagram => (lambdaShape, muShape) -> new SkewDiagram from (youngDiagram((set keys youngDiagram lambdaShape) - (set keys youngDiagram muShape)))
+
+isWellDefined SkewDiagram := Boolean => lambda -> (return)
+
+
+>>>>>>> refs/remotes/origin/YoungTableaux
 ------------------------------------
 -- YoungTableau type declarations and basic constructors
 ------------------------------------
@@ -201,9 +217,27 @@ shapeOfYoungDiagram (YoungDiagram) := List => (youngDiag) -> (
 )
 
 
+getThe'i'thSequence = method()
+getThe'i'thSequence (ZZ, ZZ, ZZ) := List => (i, givenLength, possibilitiesForEach) -> (
+    
+)
+
 --- Given a list (shape) of a diagram, find all the standard fillings
 getCandidateFillings = methods()
+getCandidateFillings (List) := YoungTableau => (shape) -> (
+    sizeOfTableau := (
+        --- get the size by adding the number of boxes in each row
+        tempSize := 0;
+        for i to #shape-1 do (
+            tempSize = tempSize + shape#i;
+        );
+        tempSize
+    );
+    tempPlacements := for i to ?????? list (
+        -- Range over all possible sequences 
 
+    );
+)
 
 
 -----------------------------------------------------------------------------
