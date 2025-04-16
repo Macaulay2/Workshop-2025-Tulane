@@ -15,13 +15,15 @@ newPackage(
 export {
     -- types
     "YoungDiagram",
+    "SkewDiagram",
     "YoungTableau",
     -- methods
     "youngDiagram",
+    "youngTableau",
+    "skewDiagram",
     "armLength",
     "legLength",
     "hookLength",
-    "youngTableau",
     "numberStandardYoungTableaux"
     -- symbols
     -- "Weak"
@@ -82,9 +84,6 @@ isWellDefined YoungDiagram := Boolean => lambda -> (return)
 net YoungDiagram := String => lambda -> (
     boxes := apply(toList(1..numRows lambda)**toList(1..numColumns lambda), (i, j) -> if lambda#?(i,j) then "☐" else " ");
     stack flatten(pack(numColumns lambda, boxes / toString) / concatenate)
-    -- boxes := apply(toList(1..numRows lambda)**toList(1..numColumns lambda), (i, j) -> if lambda#?(i,j) then netList({""}, Alignment=>Center, HorizontalSpace=>3, VerticalSpace=>1) 
-    --                                                                                                    else netList({""}, Alignment=>Center, HorizontalSpace=>3, VerticalSpace=>1, Boxes=>false));
-    -- stack apply(pack(numColumns lambda, boxes), boxList -> fold(boxList, (i,j) -> i | j))
 )
 
 ------------------------------------
@@ -133,6 +132,19 @@ hookLength (YoungDiagram, Sequence) := ZZ => (lambda, coords) -> (hookLength(lam
 ------------------------------------
 
 
+------------------------------------
+-- SkewDiagram type declarations and basic constructors
+------------------------------------
+SkewDiagram = new Type of YoungDiagram
+SkewDiagram.synonym = "skewDiagram"
+
+new SkewDiagram from YoungDiagram := (typeofSkewDiagram, lambda) -> (new HashTable from lambda)
+
+skewDiagram = method()
+skewDiagram (List, List) := SkewDiagram => (lambdaShape, muShape) -> new SkewDiagram from (youngDiagram((set keys youngDiagram lambdaShape) - (set keys youngDiagram muShape)))
+
+isWellDefined SkewDiagram := Boolean => lambda -> (return)
+
 
 ------------------------------------
 -- YoungTableau type declarations and basic constructors
@@ -142,7 +154,7 @@ YoungTableau.synonym = "youngTableau"
 
 -- This constructs a left-aligned Young tableau
 new YoungTableau from List := (typeofYoungTableau, lambda) -> (
-    new HashTable from flatten for i to #lambda-1 list (for j in (lambda_i) list (i+1,j+1)=>true)
+    new HashTable from flatten for rowIndex to #lambda-1 list (for columnIndex to #(lambda_rowIndex)-1 list (rowIndex+1,columnIndex+1)=>(lambda_rowIndex)_columnIndex)
 )
 
 youngTableau = method()
@@ -155,6 +167,16 @@ isWellDefined YoungTableau := Boolean => lambda -> (return)
 ------------------------------------
 YoungTableau == YoungTableau := Boolean => (lambda, mu) -> (pairs lambda == pairs mu)
 
+------------------------------------
+-- Young tableau string representations
+------------------------------------
+net YoungTableau := String => lambda -> (
+    maxBoxWidth := max((values lambda) / (val -> #toString(val)));
+    emptyBox := concatenate(maxBoxWidth : " ");
+    boxes := apply(toList(1..numRows lambda)**toList(1..numColumns lambda), (i, j) -> if lambda#?(i,j) then netList({lambda#(i,j)}, Alignment=>Center, HorizontalSpace=>3, VerticalSpace=>1) 
+                                                                                                       else netList({emptyBox}, Alignment=>Center, HorizontalSpace=>3, VerticalSpace=>1, Boxes=>false));
+    stack apply(pack(numColumns lambda, boxes), boxList -> fold(boxList, (i,j) -> i | j))
+)
 
 ------------------------------------
 -- Miscellaneous
