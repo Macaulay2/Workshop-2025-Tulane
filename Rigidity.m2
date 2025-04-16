@@ -34,7 +34,8 @@ newPackage(
 
 export {
     "getRigidityMatrix",
-    "isLocallyRigid"
+    "isLocallyRigid",
+    "getStressMatrix",
     "isGloballyRigid"
 }
 
@@ -46,6 +47,8 @@ export {
 getRigidityMatrix = method(Options => {Variable => crds}, TypicalValue => Matrix)
 
 isLocallyRigid = method(Options => {Numerical => false, FiniteField => 0}, TypicalValue => Boolean)
+
+getStressMatrix = method(TypicalValue => Matrix)
 
 getRigidityMatrix(ZZ, ZZ, List) := Matrix => opts -> (d, n, G) -> (
     crds = getSymbol toString(opts.Variable);
@@ -126,6 +129,38 @@ isLocallyRigid(ZZ, Graph) := Boolean => opts -> (d, G) -> (
 isLocallyRigid(ZZ, ZZ, Graph) := Boolean => opts -> (d, n, G) -> (
     if n =!= length vertexSet G then error("Expected ", n, " to be the number of vertices in ",G);
     isLocallyRigid(d, n, edges G, opts)
+);
+
+getStressMatrix(ZZ, ZZ, List) := Matrix => (d, n, G) -> (
+
+    -- Left kernel of the rigidity matrix
+    tRigidityMatrix := transpose getRigidityMatrix(d, n, G);
+    tRigidityMatrixRational := sub(tRigidityMatrix, frac(QQ[x_1..x_(d*n)]));
+    stressBasis := mingens ker tRigidityMatrixRational;
+
+    -- New symbolic variables for each element in the basis of the left kernel
+    auxiliaryVarCount := numgens source stressBasis;
+    auxiliaryRing := frac(QQ[x_1..x_(d*n),y_1..y_auxiliaryVarCount]);
+
+    -- Symbolic linear combination of elements in the basis of the left kernel
+    stressBasisLinearSum := 0;
+    for i from 1 to auxiliaryVarCount do (
+        stressBasisLinearSum += y_i * sub(submatrix(stressBasis, {i - 1}), auxiliaryRing);
+    );
+    
+    -- Build the symbolic stress matrix from the symbolic linear combination
+    stressMatrix = mutableMatrix(auxiliaryRing, n, n);
+    for i from 0 to (#G - 1) do (
+        edge = G#i;
+        stressMatrix_(edge#0, edge#1) = stressBasisLinearSum_(i, 0);
+    );
+    stressMatrixEntries := entries stressMatrix;
+    for i from 0 to (n - 1) do (
+        stressMatrix_(i, i) = -sum(stressMatrixEntries#i);
+    );
+
+    matrix(stressMatrix)
+
 );
 
 isGloballyRigid = method(Options => {Numerical => false}, TypicalValue => Boolean)
