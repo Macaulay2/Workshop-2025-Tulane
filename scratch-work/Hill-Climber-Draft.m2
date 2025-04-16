@@ -4,8 +4,11 @@ objectFunction,stopCondition,startingPoint,stepSize,numberDirections,currPoint,c
 
 nextStep = method()
 nextStep HillClimber := hC -> (
-    directions := normalizeColumns random(QQ^(numberDirections),QQ^(numberDirections));
-    nextStepPoint := apply(numColumns directions,i -> startingPoint + stepSize*(matrix directions_i));
+    directions := normalizeColumns random(QQ^(hC.numberDirections),QQ^(hC.numberDirections));
+    nextStepPoints := apply(numColumns hC.directions,i -> startingPoint + hC.stepSize*(matrix (hC.directions)_i));
+    nextStartingPoints := {}
+    scan(nextStepPoints,p -> if hC.stopCondition(hC.objectFunction(p)) then nextStepPoints = append(nextStepPoints,p));
+    nextStepPoints
     )
 
 normalizeColumns = method()
