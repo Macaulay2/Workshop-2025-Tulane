@@ -7,7 +7,7 @@ T = getPowerSystem(random(QQ^k,QQ^k),flatten entries random(QQ^k,QQ^1));
 sols1 = apply(k,i->1)
 sols2 = flatten entries random(QQ^k,QQ^1);
 S1 = apply(flatten entries vars ring first T,var -> var^k-1);
-S2 = getStartingSystem(T,sols2);
+S2 = getStartSystem(T,sols2);
 --evaluate(polySystem S,matrix{sols})
 track(S1,T,{toSequence sols1},gamma => (7-ii),Predictor => Tangent,tStep => 0.01)
 track(S2,T,{toSequence sols2},gamma => (7-ii),Predictor => Tangent,tStep => 0.01)
