@@ -1162,7 +1162,7 @@ doc ///
         CB:ChevalleyBasis
     Description
         Text
-	    Currently only implemented for simple Lie algebras of type A.
+	    Currently only implemented for simple Lie algebras of type A and type C.
 	Text
 	    The user may either input the type and rank, or the simple Lie algebra.
 	Example
@@ -1720,7 +1720,7 @@ doc ///
             Let $\{B_i\}$ be a basis of $\mathfrak{g}$, and let $\{B_i^{*}\}$ be the dual basis with respect to the Killing form. The Casimir operator is
 	    
         Text
-	    $\operatorname{Cas} = \sum_{i} \rho(B_i^*) rho(B_i)$.
+	    $\operatorname{Cas} = \sum_{i} \rho(B_i^*) \rho(B_i)$.
 
 	Text
 	    Recall that in creating a Chevalley basis, we compute the dual basis $\{B_i^{*}\}$. This makes it straightforward to compute the Casimir operator.
@@ -1732,19 +1732,19 @@ doc ///
 	    We compute the Casimir operator for $\operatorname{Sym^2} \mathbb{C}^3$. Since this is an irreducible representation, we get a scalar multiple of the identity.
 	    
 	Example
-	    sl3=simpleLieAlgebra("A",2)
-	    CB = chevalleyBasis(sl3)
-	    V=irreducibleLieAlgebraModule({1,0},sl3)
-	    installRepresentation(V,CB,CB#"BasisElements")
-	    S2V=symmetricPowerRepresentation(2,V)
-	    time CasS2V = casimirOperator(S2V);
+	    sl3=simpleLieAlgebra("A",2);
+	    CB = chevalleyBasis(sl3);
+	    V=irreducibleLieAlgebraModule({1,0},sl3);
+	    installRepresentation(V,CB,CB#"BasisElements");
+	    S2V=symmetricPowerRepresentation(2,V);
+	    CasS2V = casimirOperator(S2V)
 	    
         Text
             Next, we compute the Casimir operator for $\operatorname{Sym^2} \operatorname{Sym^2} \mathbb{C}^3$. It has two distinct eigenvalues. The eigenvalues match the Casimir scalars of the irreducible submodules appearing in the decomposition of $\operatorname{Sym^2} \operatorname{Sym^2} \mathbb{C}^3$, and the multiplicities of the eigenvalues match the dimensions of these submodules. 
 
 	Example
-	    S2S2V=symmetricPowerRepresentation(2,S2V)
-	    time CasS2S2V = casimirOperator(S2S2V); -- Looks almost diagonal but it's not... there is one subdiagonal entry
+	    S2S2V=symmetricPowerRepresentation(2,S2V);
+	    CasS2S2V = casimirOperator(S2S2V)
 	    tally eigenvalues CasS2S2V
 	    peek S2S2V
 	    V40 = irreducibleLieAlgebraModule({4,0},sl3);
@@ -1794,11 +1794,11 @@ doc ///
 	    This function returns a nonredundant list of eigenvalues of $\operatorname{Cas}$ by computing the scalars $c(\lambda)$ for each irreducible summand in $V$, and then removing any duplicates.
 	    
 	Example
-	    sl3=simpleLieAlgebra("A",2)
-	    CB = chevalleyBasis(sl3)
-	    V=irreducibleLieAlgebraModule({1,0},sl3)
+	    sl3=simpleLieAlgebra("A",2);
+	    CB = chevalleyBasis(sl3);
+	    V=irreducibleLieAlgebraModule({1,0},sl3);
             S3V=symmetricPower(3,V);
-            S4S3V=symmetricPower(4,S3V)
+            S4S3V=symmetricPower(4,S3V);
 	    casimirSpectrum(S4S3V)
 
 ///
@@ -1835,9 +1835,9 @@ doc ///
 	    This function returns the projection matrix to the eigenspace of the Casimir operator for the input eigenvalue @TT "z"@.  This matrix is computed as the product of factors $\operatorname{Cas}-x I$ over all eigenvalues $x \neq z$. 
 	    
 	Example
-	    sl3=simpleLieAlgebra("A",2)
-	    CB = chevalleyBasis(sl3)
-	    V=irreducibleLieAlgebraModule({1,0},sl3)
+	    sl3=simpleLieAlgebra("A",2);
+	    CB = chevalleyBasis(sl3);
+	    V=irreducibleLieAlgebraModule({1,0},sl3);
             installRepresentation(V,CB,CB#"BasisElements");
             S2V=symmetricPowerRepresentation(2,V);
             S3S2V=symmetricPowerRepresentation(3,S2V);
