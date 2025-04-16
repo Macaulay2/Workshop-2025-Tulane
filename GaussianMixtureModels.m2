@@ -73,4 +73,3 @@ obj = f -> abs((f_0^2 + 1) - f_1)
 stop = g -> if obj(g_0) == g_1 then true else false
 hC = hillClimber(obj, stop, {1,3})
 nextStep hC
-
