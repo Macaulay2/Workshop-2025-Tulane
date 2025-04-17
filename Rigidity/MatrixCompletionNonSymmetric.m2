@@ -1,3 +1,8 @@
+export{
+    "getFiniteCompletion",
+    "isFinitelyCompletable"
+}
+
 getFiniteCompletion = method(Options => {Variable => null}, TypicalValue => Matrix)
 
 isFinitelyCompletable = method(TypicalValue => Boolean)
