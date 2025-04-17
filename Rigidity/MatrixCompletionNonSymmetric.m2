@@ -17,7 +17,7 @@ getFiniteCompletion(ZZ, ZZ, ZZ, List) := Matrix => opts -> (completionRank, rowD
     B := genericMatrix(R, (gens R)_((rowDim*completionRank)), completionRank, colDim);
 
     -- polynomialLists obtained from A, B -> A*B
-    polynomialLists := apply(edgeList / toList, pair -> (A * B)_{pair#0, pair#1});
+    polynomialLists := apply(edgeList / toList, pair -> (A * B)_(pair#0, pair#1));
     jacobianList := polynomialLists / jacobian;
 
     -- Folding horizontal concatenation of the jacobian of each polynomial (from each edge)
