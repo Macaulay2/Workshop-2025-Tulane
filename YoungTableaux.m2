@@ -7,7 +7,9 @@ newPackage(
     Authors => {
         {Name => "Sean Grate", 
          Email => "sean.grate@auburn.edu", 
-         HomePage => "https://seangrate.com/"}
+         HomePage => "https://seangrate.com/"},
+        {Name => "Andrew Karsten",
+         Email => "akk0071@auburn.edu"}
     },
     Headline => "functions for working with Young diagrams and tableaux",
     PackageExports => {
