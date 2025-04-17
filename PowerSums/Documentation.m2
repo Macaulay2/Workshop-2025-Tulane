@@ -29,12 +29,12 @@ undocumented {
 
 doc ///
   Key
-   GaussianMixtureModels
+   PowerSums
   Headline
      A Macaulay2 package to work with Gaussian mixture models.
   Description
    Text
-    {\em GaussianMixtureModels} is a package that can solve the parameters of Gaussian mixture model.
+    {\em PowerSums} is a package that can solve the parameters of Gaussian mixture model.
   Caveat
     Only solves models with fixed, equal variance.
   Subnodes

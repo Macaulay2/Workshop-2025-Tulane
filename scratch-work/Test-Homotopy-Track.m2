@@ -1,5 +1,5 @@
 setRandomSeed(415)
-needsPackage "GaussianMixtureModels"
+needsPackage "PowerSums"
 needsPackage "NumericalAlgebraicGeometry"
 -- Testing Homotopy track
 k = 7

@@ -5,8 +5,8 @@ I need these methods
 --getPowerSystemDiscriminant
 *-
 
-load "../GaussianMixtureModels/RootCorrecting.m2"
-load "../GaussianMixtureModels/PowerSystems.m2"
+load "../PowerSums/RootCorrecting.m2"
+load "../PowerSums/PowerSystems.m2"
 
 A := matrix{{9,0,0,0},{8,7,0,3},{2,3,4,2},{1,0,2,3}};
 m := {1,2,3,4};

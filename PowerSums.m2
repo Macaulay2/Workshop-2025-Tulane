@@ -1,5 +1,5 @@
 -- -*- coding: utf-8 -*-
-newPackage("GaussianMixtureModels",
+newPackage("PowerSums",
     AuxiliaryFiles => true, 
     Version => "0.1",
     Date => "April 14, 2025",
@@ -39,12 +39,12 @@ export {
     "CurrentStep"
 }
 
-baseDirectory = GaussianMixtureModels#"source directory"
+baseDirectory = PowerSums#"source directory"
 --------------------------------------------------------------------
 ----- CODE
 --------------------------------------------------------------------
-load(baseDirectory | "GaussianMixtureModels/PowerSystems.m2")
-load(baseDirectory | "GaussianMixtureModels/RootCorrecting.m2")
+load(baseDirectory | "PowerSums/PowerSystems.m2")
+load(baseDirectory | "PowerSums/RootCorrecting.m2")
 --- THINGS TO IMPLEMENT? -- 
 -*
 
@@ -54,19 +54,19 @@ load(baseDirectory | "GaussianMixtureModels/RootCorrecting.m2")
 ----- DOCUMENTATION
 --------------------------------------------------------------------
 beginDocumentation()
-load(baseDirectory | "GaussianMixtureModels/Documentation.m2")
+load(baseDirectory | "PowerSums/Documentation.m2")
 
 --------------------------------------------------------------------
 ----- TESTS
 --------------------------------------------------------------------
-load(baseDirectory | "GaussianMixtureModels/Tests.m2")
+load(baseDirectory | "PowerSums/Tests.m2")
 end
 
 --------------------------------------------------------------------
 ----- SCRATCH SPACE
 --------------------------------------------------------------------
-uninstallPackage "GaussianMixtureModels";
+uninstallPackage "PowerSums";
 restart
-installPackage "GaussianMixtureModels"
--- check GaussianMixtureModels
-debug needsPackage "GaussianMixtureModels";
+installPackage "PowerSums"
+-- check PowerSums
+debug needsPackage "PowerSums";
