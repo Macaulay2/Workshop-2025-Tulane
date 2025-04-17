@@ -285,21 +285,34 @@ getThe'i'thSequence (ZZ, ZZ, ZZ) := List => (i, givenLength, possibilitiesForEac
     
 )
 
---- Given a list (shape) of a diagram, find all the standard fillings
--- getCandidateFillings = methods()
--- getCandidateFillings (List) := YoungTableau => (shape) -> (
---     -- sizeOfTableau := (
---     --     --- get the size by adding the number of boxes in each row
---     --     tempSize := 0;
---     --     for i to #shape-1 do (
---     --         tempSize = tempSize + shape#i;
---     --     );
---     --     tempSize
---     -- );
---     -- tempPlacements := for i to ?????? list (
---     --     -- Range over all possible sequences 
+---- Given a list (shape) of a diagram, find all the standard fillings
+getCandidateFillings = method()
+getCandidateFillings (List) := YoungTableau => (shape) -> (
+    numberRows := #shape;
+    --- get the size by adding the number of boxes in each row
+    tempSize := 0;
+    for i to numberRows-1 do (
+        tempSize = tempSize + shape#i;
+    );
+    --- tempSize is the size of the tableau. We can think of each row the number i
+    --- goes in to, and once we know the rows every number goes in we automatically
+    --- know the filling on that row. This doesn't guarantee a valid filling though.
 
---     -- );
+    --- want a list of all the possible maps from {1,...,n} -> numRows
+    for i from 1 to numberRows ^ tempSize list (
+        --- We want the output to be a list of lists, since each sublist is the map
+        tempList := for j to tempSize - 1 list (
+            tempQuotient := i // (numberRows ^ j);
+            tempOut := tempQuotient % numberRows;
+            tempOut
+        );
+        tempList
+    )
+)
+
+-- candidateFillings = method()
+-- candidateFillings (List) := YoungTableau => (shape) -> (
+--     tempTableau := 
 -- )
 
 
@@ -371,3 +384,5 @@ restart
 needsPackage "Permutations"
 myd = youngDiagram {4,2,1}
 lambda = youngTableau {{1,2,3},{4,5},{6}}
+
+tempCand = getCandidateFillings {4,2,1}
