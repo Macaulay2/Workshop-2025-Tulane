@@ -224,7 +224,6 @@ transpose YoungTableau := YoungTableau => lambda -> (conjugate lambda)
 -- takes a YoungTableau and outputs its corresponding YoungDiagram
 toDiagram = method();
 toDiagram YoungTableau := YoungDiagram => T -> youngDiagram applyValues(T, v -> true)
-toDiagram T
 
 ------------------------------------
 -- Miscellaneous
