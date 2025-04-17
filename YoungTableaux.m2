@@ -30,7 +30,7 @@ export {
     "youngSymmetrizer",
     "numberStandardYoungTableaux",
     "highestWeightFilling",
-    "rowsFirstFilling"
+    "rowsFirstFilling",
     "toDiagram"
     -- symbols
     -- "Weak"
