@@ -104,8 +104,8 @@ isLocallyRigid(ZZ, ZZ, List) := Boolean => opts -> (d, n, E) -> (
     numOfTests := opts.Iterations;
     if isExact then any(numOfTests, checkFunction)
     else (
-        tallyCount := tally apply(numOfTests, checkFunction);
-        tallyCount#true > tallyCount#false
+        truthList := apply(numOfTests, checkFunction);
+        length (truthList -set{false})> length (truthList -set{true}) 
     )
 );
 
