@@ -136,7 +136,7 @@ doc ///
     startingPoint: List
       A point to start the hill climbing algorithm at.
   Outputs
-    HillClimber
+    hC: HillClimber
       A HillClimber object.
   Description
     Text
