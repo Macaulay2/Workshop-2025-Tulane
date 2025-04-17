@@ -380,7 +380,7 @@ filledSemiSYT(List,List) := List => (shape,nums) -> (
         print "Cannot create a semi-standard tableau with i different number of entries than boxes";
         return
     );
-    select(getCandidateFillings(shape,nums), i -> isSemiStandard(i))
+    unique select(getCandidateFillings(shape,nums), i -> isSemiStandard(i))
 )
 
 -- Given a Young diagram, fills each box with the row it is in
@@ -448,6 +448,9 @@ CSYT = #(getCandidateFillings(shape,{1,2,3,4,5,6,7}))
 filledSYT shape
 tempTableau = youngTableau {{1,4,5,6},{2,7},{3}}
 isStandard tempTableau 
+semiShape = {4,3,2}
+stuff = {1,1,2,2,3,3,3,4,4}
+filledSemiSYT(semiShape,stuff)
 
 YT#(2,2)
 
