@@ -29,7 +29,7 @@ X = matrix{{0,1},{0,0}} -- e_0 -> 0, e_1-> e_0
 Y = matrix{{0,0},{1,0}} -- e_0 -> e_1, e_1-> 0
 H = X*Y-Y*X
 sl2 = {H, X, Y}
-addValues (straighten {{0,0},{0}} , straighten {{1,0},{0}})
+addValues(straighten {{0,0},{0}} , straighten {{1,0},{0}})
 
 sl2Action (A, ht)
 --(X, {{0,0},{1}} ) -> 0*x_{{0,0},{1}}  + 0*x_{{0,0},{1}} + 1*x_{{0,0},{0}} =0 
