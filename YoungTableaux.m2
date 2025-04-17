@@ -10,7 +10,7 @@ newPackage(
          HomePage => "https://seangrate.com/"}
     },
     Headline => "functions for working with Young diagrams and tableaux",
-    PackageExports {
+    PackageExports => {
         "Permutations"
     }
 )
@@ -207,7 +207,7 @@ toString YoungTableau := String => lambda -> (
 net YoungTableau := Net => lambda -> (
     maxBoxWidth := max((values lambda) / (val -> #toString(val)));
     emptyBox := pad("", maxBoxWidth); 
-    customPad = (s) -> (pad("", floor((maxBoxWidth-#s)/2)) | s | pad("", ceiling((maxBoxWidth-#s)/2)));
+    customPad := (s) -> (pad("", floor((maxBoxWidth-#s)/2)) | s | pad("", ceiling((maxBoxWidth-#s)/2)));
     boxes := apply(toList(1..numRows lambda)**toList(1..numColumns lambda), (i, j) -> if lambda#?(i,j) then netList({customPad toString(lambda#(i,j))}, Alignment=>Center, HorizontalSpace=>1, VerticalSpace=>0) 
                                                                                                        else netList({emptyBox}, Alignment=>Center, HorizontalSpace=>1, VerticalSpace=>0, Boxes=>false));
     stack apply(pack(numColumns lambda, boxes), boxList -> fold(boxList, (i,j) -> i | j))
