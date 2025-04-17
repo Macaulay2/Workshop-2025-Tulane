@@ -29,7 +29,7 @@ newPackage(
             Email => "hannah.mahon@gtri.gatech.edu"
         },
         {
-            Name => "Mifron Fernandes"
+            Name => "Mifron Fernandes",
             Email => "mfpvt@umsystem.edu"
         },
 	{
