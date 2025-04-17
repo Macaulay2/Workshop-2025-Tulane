@@ -28,6 +28,7 @@ ListSpMon=(n,d)->(
    if #M>0 then toList(set M) else print("There are no special monomials")
 )
 --Test
+ListSpMon(4,1)
 ListSpMon(7,8)
 ListSpMon(27,8)
 
