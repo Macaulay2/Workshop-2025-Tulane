@@ -70,4 +70,3 @@ orbSumList=(G,n,d)->(
         );
         toList(set L)
 ) 
-

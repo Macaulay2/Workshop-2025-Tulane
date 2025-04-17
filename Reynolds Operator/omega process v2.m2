@@ -40,6 +40,7 @@ SLreynolds (RingElement) := f -> (
         );
         hnew
     );
+    
 
     h = act(f)%gideal;
     print(h);
@@ -61,7 +62,6 @@ SLreynolds (RingElement) := f -> (
     );
     output
 );
-
 
 
 n = 3;
