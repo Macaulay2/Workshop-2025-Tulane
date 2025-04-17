@@ -20,6 +20,7 @@ export {
     "getSymmetricPolynomialEvals",
     "getPowerSystemDiscriminant",
     "getStartingSystem",
+    "fabricateMoments",
     -- Hill Climbing Functions
     "hillClimber",
     "HillClimber",
@@ -71,7 +72,12 @@ debug needsPackage "GaussianMixtureModels";
 A= matrix{{9,0,0,0},{8,7,0,3},{2,3,4,2},{1,0,2,3}}
 m = {4,8,10,50}
 
-getMomentSystemMatrices(4, 2.5)
+actualm = fabricateMoments({3/5,2/9,8/3,30/14})**RR
+(A,B) = produceMomentSystemMatrices(4, 1/1)
+
+noise = transpose matrix{for i from 1 to numRows actualm list random(-15.0,15.0)}
+observedm = actualm + noise
+
 --L = solvePowerSystem(A,m)
 --getPowerSystemDiscriminant(A)
 
@@ -107,18 +113,14 @@ stopCondition(List) := Boolean => opts -> (L) -> (
     if (lossFunction(L) < opts#Tolerance) or (allRealRoots) then true else false
 )
 
-hC = hillClimber(lossFunction, stopCondition, m)
+hC = hillClimber(lossFunction, stopCondition, flatten entries(observedm - B**RR))
 
 nextStep(hC)
 solvePowerSystem(A,hC#CurrentPoint)
 
-for i from 1 to 400 do (
-    << "---------------------------------------" << endl;
-    << "Current Point: " << hC#CurrentPoint << endl;
-    << "Current Solution: " << solvePowerSystem(A,hC#CurrentPoint) << endl;
-)
-
 track hC
+actualm - B**RR
+observedm = actualm + noise
 solvePowerSystem(A,hC#CurrentPoint)
 solvePowerSystem(A, hC#StartingPoint)
 
