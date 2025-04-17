@@ -28,6 +28,10 @@ newPackage(
             Name => "Hannah Mahon",
             Email => "hannah.mahon@gtri.gatech.edu"
         },
+        {
+            Name => "Mifron Fernandes"
+            Email => "mfpvt@umsystem.edu"
+        },
 	{
             Name => "Julian Huddell",
             Email => "jhuddell@tulane.edu"
