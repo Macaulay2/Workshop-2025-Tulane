@@ -166,7 +166,7 @@ nextStep(HillClimber) := List => (hC) -> (
     ) ;
    norms := (for p in entries randPoints list (for val in p list val^2)) / sum / sqrt;
    randNormalizedPoints := inverse(diagonalMatrix(norms))*randPoints;
-   randDirections := randNormalizedPoints + (hC#StepSize)*(matrix toList(hC#NumDirections:hC#StartingPoint));
+   randDirections := (matrix toList(hC#NumDirections:hC#StartingPoint)) + (hC#StepSize)*randNormalizedPoints;
    correctDirectionIdx := minPosition(for dir in entries randDirections list hC#LossFunction(dir));
 
    nextPoint := (entries randDirections)_correctDirectionIdx;
@@ -182,6 +182,7 @@ track = method(
 )
 track(HillClimber) := List => opts -> (hC) -> (
     while not hC#StopCondition(hC#CurrentPoint) do (
+        if not opts#Quiet then (<< "Current Point: " << hC#CurrentPoint << endl;);
         nextStep(hC);
     );
     if not opts#Quiet then (
