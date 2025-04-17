@@ -198,13 +198,15 @@ track(HillClimber) := List => opts -> (hC) -> (
 )
 
 
--- Generates lattice neighborhood around a general point
+-*
+Generates lattice neighborhood around a general point
+*-
 makeLattice = method()
 makeLattice (List, RR, RR) := (point, radius, epsilon) -> (
     n = length(point);
 
     -- Build interval
-    m=1;
+    m := 1;
     inter := {0}|(flatten while m*epsilon < radius list (
         {m*epsilon, -m*epsilon}
         ) do m=m+1);
