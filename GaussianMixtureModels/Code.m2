@@ -182,7 +182,9 @@ track = method(
 )
 track(HillClimber) := List => opts -> (hC) -> (
     while not hC#StopCondition(hC#CurrentPoint) do (
-        if not opts#Quiet then (<< "Current Point: " << hC#CurrentPoint << endl;);
+	if not opts#Quiet then (<< "---------------------------------------" << endl;);
+	if not opts#Quiet then (<< "Current Point: " << hC#CurrentPoint << endl;);
+	if not opts#Quiet then (<< "Current Solution: " << solvePowerSystem(A,hC#CurrentPoint) << endl;);
         nextStep(hC);
     );
     if not opts#Quiet then (
