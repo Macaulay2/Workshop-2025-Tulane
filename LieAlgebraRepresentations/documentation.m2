@@ -1126,21 +1126,21 @@ doc ///
 
 -- New documention after LieTypes version 0.9
 
--- From chevalleyBasis.m2
+-- From lieAlgebraBasis.m2
 doc ///
     Key
-       ChevalleyBasis
+       LieAlgebraBasis
     Headline
-        class for a Chevalley basis
+        class for an enhanced Lie algebra basis
     Description
         Text
-    	    This class represents a specific kind of basis of a Lie algebra.  A Chevalley basis is adapted to the decomposition of $\mathfrak{g}$ into its root spaces, i.e. $\mathfrak{g} = \mathfrak{h} \oplus \bigoplus_{\Phi^{+}} \mathfrak{g}_{\alpha} \oplus \bigoplus_{\Phi^{+}} \mathfrak{g}_{-\alpha}$.
+    	    This class represents a specific kind of basis of a Lie algebra. We assume that the basis is adapted to the decomposition of $\mathfrak{g}$ into its root spaces, i.e. $\mathfrak{g} = \mathfrak{h} \oplus \bigoplus_{\Phi^{+}} \mathfrak{g}_{\alpha} \oplus \bigoplus_{\Phi^{+}} \mathfrak{g}_{-\alpha}$.
         Text
 	    This class also stores additional information about the basis in addition to the basis elements themselves. For instance, it records the weights of the basis elements and their dual elements with respect to the Killing form.
 	Text    
-	    Currently only implemented for for simple Lie algebras of type A.
+	    Currently only implemented for for simple Lie algebras of type A, C, and D.
         Example
-	    CB=chevalleyBasis("A",2)
+	    CB=lieAlgebraBasis("A",2)
 	    peek CB
 
 ///
@@ -1148,32 +1148,32 @@ doc ///
 
 doc ///
     Key
-        chevalleyBasis
-	(chevalleyBasis,String,ZZ)
-	(chevalleyBasis,LieAlgebra)
+        lieAlgebraBasis
+	(lieAlgebraBasis,String,ZZ)
+	(lieAlgebraBasis,LieAlgebra)
     Headline
-        computes a Chevalley basis for a simple Lie algebra
+        computes an enhanced basis for a simple Lie algebra
     Usage
-        chevalleyBasis("A",2)
+        lieAlgebraBasis("A",2)
     Inputs 
         t:String
 	m:ZZ
     Outputs
-        CB:ChevalleyBasis
+        CB:LieAlgebraBasis
     Description
         Text
 	    Currently only implemented for simple Lie algebras of types A, C, and D.
 	Text
 	    The user may either input the type and rank, or the simple Lie algebra.
 	Example
-	    CB=chevalleyBasis("A",2);
+	    CB=lieAlgebraBasis("A",2);
 	    peek CB
 	    sl3=simpleLieAlgebra("A",2);
-	    chevalleyBasis(sl3)===CB
+	    lieAlgebraBasis(sl3)===CB
 ///
 
 TEST ///
-CB=chevalleyBasis("A",2);
+CB=lieAlgebraBasis("A",2);
 assert(sort keys(CB)=={"BasisElements","Bracket","DualBasis","Labels","LieAlgebra","LoweringOperatorIndices","RaisingOperatorIndices","Weights","WriteInBasis"})
 assert(CB#"LieAlgebra"#"RootSystemType"=="A")
 assert(CB#"LieAlgebra"#"LieAlgebraRank"==2)
@@ -1185,8 +1185,43 @@ assert(CB#"BasisElements"=={map(QQ^3,QQ^3,{{1, 0, 0}, {0, -1, 0}, {0, 0, 0}}),ma
 
 doc ///
     Key
+        trivialRepresentation
+	(trivialRepresentation,LieAlgebraBasis)
+	(trivialRepresentation,String,ZZ)
+	(trivialRepresentation,LieAlgebra)
+    Headline
+        creates the trivial representation of a Lie algebra
+    Usage
+        trivialRepresentation(CB)
+    Inputs 
+        CB:LieAlgebraBasis
+    Outputs
+        V:LieAlgebraModule
+    Description
+
+        Text
+	    The user may either input the Lie algebra basis, or the type and rank, or the simple Lie algebra.
+
+	Example
+	    V = trivialRepresentation("A",2)
+	    dim V
+	    V#"DecompositionIntoIrreducibles"
+
+///
+
+TEST ///
+V = trivialRepresentation("A",2);
+assert(dim V == 1)
+assert(V#"DecompositionIntoIrreducibles" === new VirtualTally from {{0, 0} => 1})
+assert((V.cache#representation)_1==apply(8, i -> matrix {{0/1}}))
+///
+
+
+
+doc ///
+    Key
         standardRepresentation
-	(standardRepresentation,ChevalleyBasis)
+	(standardRepresentation,LieAlgebraBasis)
 	(standardRepresentation,String,ZZ)
 	(standardRepresentation,LieAlgebra)
     Headline
@@ -1194,27 +1229,27 @@ doc ///
     Usage
         standardRepresentation(CB)
     Inputs 
-        CB:ChevalleyBasis
+        CB:LieAlgebraBasis
     Outputs
         V:LieAlgebraModule
     Description
 	Text
-            For the matrix Lie algebras $sl_n$, $sp(2n)$, $so(m)$, the basis elements in the Chevalley basis are matrices. Thus we may use these matrices to define a representation $\rho: \mathfrak{g} \rightarrow \mathfrak{gl}(V)$.
+            For the matrix Lie algebras $sl_n$, $sp(2n)$, $so(m)$, the basis elements in the @TT "LieAlgebraBasis"@ are matrices. Thus we may use these matrices to define a representation $\rho: \mathfrak{g} \rightarrow \mathfrak{gl}(V)$.
 
         Text
-	    The user may either input the Chevalley basis, or the  type and rank, or the simple Lie algebra.
+	    The user may either input the Lie algebra basis, or the type and rank, or the simple Lie algebra.
 
 	Example
 	    standardRepresentation("A",2)
 	    sl4=simpleLieAlgebra("A",3)
 	    standardRepresentation(sl4)
-	    CB=chevalleyBasis("C",2)
+	    CB=lieAlgebraBasis("C",2)
 	    standardRepresentation(CB)
 ///
 
 TEST ///
 V = standardRepresentation("A",2);
-CB = chevalleyBasis("A",2)
+CB = lieAlgebraBasis("A",2)
 assert(dim V == 3)
 assert((V.cache#representation)_0===CB)
 assert((V.cache#representation)_1==CB#"BasisElements")
@@ -1224,7 +1259,7 @@ assert((V.cache#representation)_1==CB#"BasisElements")
 doc ///
     Key
         adjointRepresentation
-	(adjointRepresentation,ChevalleyBasis)
+	(adjointRepresentation,LieAlgebraBasis)
 	(adjointRepresentation,String,ZZ)
 	(adjointRepresentation,LieAlgebra)
     Headline
@@ -1232,27 +1267,27 @@ doc ///
     Usage
         adjointRepresentation(CB)
     Inputs 
-        CB:ChevalleyBasis
+        CB:LieAlgebraBasis
     Outputs
         V:LieAlgebraModule
     Description
 	Text
-            Let $\mathfrak{g}$ be a Lie algebra with Chevalley basis @TT "CB"@. The Chevalley basis records a basis $B$ of $\mathfrak{g}$, the bracket for $\mathfrak{g}$, and a way to write elements of $\mathfrak{g} in the basis $B$. With these tools, we may write the matrix for the linear transformation $\operatorname{ad}(B_i)$ with respect to the basis $B$ for each $B_i$. This is the adjoint representation. 
+            Let $\mathfrak{g}$ be a Lie algebra with basis @TT "CB"@. The basis records a basis $B$ of $\mathfrak{g}$, the bracket for $\mathfrak{g}$, and a way to write elements of $\mathfrak{g} in the basis $B$. With these tools, we may write the matrix for the linear transformation $\operatorname{ad}(B_i)$ with respect to the basis $B$ for each $B_i$. This is the adjoint representation. 
 	    
         Text
-	    The user may either input the Chevalley basis, or the  type and rank, or the simple Lie algebra.
+	    The user may either input the Lie algebra basis, or the type and rank, or the simple Lie algebra.
 
 	Example
 	    adjointRepresentation("A",2)
 	    sl4=simpleLieAlgebra("A",3)
 	    adjointRepresentation(sl4)
-	    CB=chevalleyBasis("C",2)
+	    CB=lieAlgebraBasis("C",2)
 	    adjointRepresentation(CB)
 ///
 
 TEST ///
 V = adjointRepresentation("A",2);
-CB = chevalleyBasis("A",2)
+CB = lieAlgebraBasis("A",2)
 assert(dim V == 8)
 assert(V#"DecompositionIntoIrreducibles"=== new VirtualTally from {{{1,1},1}})
 I = matrix apply(8, i -> apply(8, j -> if i==j then 1/1 else 0/1));
@@ -1307,7 +1342,7 @@ doc ///
 
            Each entry $x_{i,j}$ is a nonnegative integer, the top row $x_{n,i}$ corresponds to $\lambda$, and the entries satisfy the inequalities $x_{k,i} \geq x_{k-1,i} \geq x_{k,i+1}$. 
 
-            The Gelfand-Tsetlin patterns of shape $\lambda$ form a basis of the irreducible $sl_n$ module with highest weight $\lambda$, and there are explicit formulae for the actions of a Chevalley basis of $sl_n$ on this basis.
+            The Gelfand-Tsetlin patterns of shape $\lambda$ form a basis of the irreducible $sl_n$ module with highest weight $\lambda$, and there are explicit formulae for the actions of a basis of $sl_n$ on this basis.
 
             The Gelfand-Tsetlin patterns correspond to the integer points of a polytope called the Gelfand-Tsetlin polytope. The @TT "LieAlgebraRepresentations"@ package can create this polytope with the function @TO (gtPolytope,List)@.
 
@@ -1452,19 +1487,19 @@ doc ///
         Text
             Currently only supported for $\mathfrak{g} = sl_n$.
         Text
-            Let $\rho: sl_n \rightarrow \mathfrak{gl}(V)$ be a representation where $V$ is irreducible of highest weight $\lambda$. Let $\{B_i\}$ be a Chevalley basis for $sl_n$. This function creates the list of matrices $\{M_i\}$, where $M_i$ is the matrix of the endomorphism $\rho(B_i)$ with respect to the Gelfand-Tsetlin basis on $V$. See Molev, "Gelfand-Tsetlin bases for classical Lie algebras", 2018 for additional details about the Gelfand-Tsetlin basis.
+            Let $\rho: sl_n \rightarrow \mathfrak{gl}(V)$ be a representation where $V$ is irreducible of highest weight $\lambda$. Let $\{B_i\}$ be a basis for $sl_n$. This function creates the list of matrices $\{M_i\}$, where $M_i$ is the matrix of the endomorphism $\rho(B_i)$ with respect to the Gelfand-Tsetlin basis on $V$. See Molev, "Gelfand-Tsetlin bases for classical Lie algebras", 2018 for additional details about the Gelfand-Tsetlin basis.
 	    
         Text
 	    The output is a list of matrices that may in turn be installed as a representation.
 
 	Text
-	    We create matrix generators for the adjoint representation of $sl_3$ with respect to the Gelfand-Tsetlin basis of $sl_3$, and then install it to the module $V$. This yields a representation that is isomorphic to, but not equal to, the representation created by @TO (adjointRepresentation,ChevalleyBasis)@.
+	    We create matrix generators for the adjoint representation of $sl_3$ with respect to the Gelfand-Tsetlin basis of $sl_3$, and then install it to the module $V$. This yields a representation that is isomorphic to, but not equal to, the representation created by @TO (adjointRepresentation,LieAlgebraBasis)@.
 	    
 	Example
 	    sl3=simpleLieAlgebra("A",2)
 	    V=irreducibleLieAlgebraModule({1,1},sl3)
 	    L=GTrepresentationMatrices(V)
-	    CB=chevalleyBasis(sl3)
+	    CB=lieAlgebraBasis(sl3)
 	    installRepresentation(V,CB,L)
 ///
 
@@ -1583,26 +1618,26 @@ TEST ///
 doc ///
     Key
         isLieAlgebraRepresentation
-	(isLieAlgebraRepresentation,ChevalleyBasis,List)
+	(isLieAlgebraRepresentation,LieAlgebraBasis,List)
     Headline
         checks whether a list of matrices defines a Lie algebra representation
     Usage
         isLieAlgebraRepresentation(CB,L)
     Inputs 
-        CB:ChevalleyBasis
+        CB:LieAlgebraBasis
 	L:List
     Outputs
         b:Boolean
     Description
         Text
-	    Let CB be a Chevalley basis of $\mathfrak{g}$, and let $L$ be a list of $n \times n$ matrices with $\#L = \#CB$.  Let $\rho: \mathfrak{g} \rightarrow \mathbb{C}^n$ be the linear transformation defined by mapping $B_i$ in CB to $L_i$. This function checks whether $\rho$ preserves the Lie bracket; that is, for each pair of indices $i,j$, if $[B_i,B_j] = \sum c_{ijk} B_k$, then is $[\rho(B_i),\rho(B_j)] = \sum c_{ijk} \rho(B_k)$?
+	    Let CB be a basis of $\mathfrak{g}$, and let $L$ be a list of $n \times n$ matrices with $\#L = \#CB$.  Let $\rho: \mathfrak{g} \rightarrow \mathfrak{gl}_n$ be the linear transformation defined by mapping $B_i$ in CB to $L_i$. This function checks whether $\rho$ preserves the Lie bracket; that is, for each pair of indices $i,j$, if $[B_i,B_j] = \sum c_{ijk} B_k$, then is $[\rho(B_i),\rho(B_j)] = \sum c_{ijk} \rho(B_k)$?
 	     
 	Text
 	    In the example below, we compute the adjoint representation of $sl_3$ directly, and check that the list of matrices we obtain defines a Lie algebra representation.
 	    
 	Example
             sl3 = simpleLieAlgebra("A",2);
-            CB = chevalleyBasis("A",2);
+            CB = lieAlgebraBasis("A",2);
 	    br = CB#"Bracket";
 	    writeInBasis = CB#"WriteInBasis";
 	    B = CB#"BasisElements"
@@ -1623,7 +1658,7 @@ doc ///
 -- TO DO: Check this result by hand
 TEST ///
     sl3 = simpleLieAlgebra("A",2);
-    CB = chevalleyBasis("A",2);
+    CB = lieAlgebraBasis("A",2);
     br = CB#"Bracket";
     writeInBasis = CB#"WriteInBasis";
     B = CB#"BasisElements";
@@ -1641,14 +1676,14 @@ TEST ///
 doc ///
     Key
         installRepresentation
-	(installRepresentation,LieAlgebraModule,ChevalleyBasis,List)
+	(installRepresentation,LieAlgebraModule,LieAlgebraBasis,List)
     Headline
         Install an explicit Lie algebra representation to a Lie algebra module
     Usage
         installRepresentation(V,CB,L)
     Inputs 
         V:LieAlgebraModule
-	CB:ChevalleyBasis
+	CB:LieAlgebraBasis
 	L:List
     Outputs
     Description
@@ -1656,14 +1691,14 @@ doc ///
             Let $\{B_i\}$ be a basis of $\mathfrak{g}$, and $\rho: \mathfrak{g} \rightarrow \mathfrak{gl}(V)$ be a Lie algebra representation to the $\mathfrak{g}$-module $V$. 
 
 	Text
-	    To construct $\rho$, we require a Chevalley basis @TT "CB"@ of $\mathfrak{g}$, and a list @TT "L"@ of matrices that are the images $\rho(B_i) \in \mathfrak{gl}(V)$. Then the list {CB,L} is stored in V.cache#representation.
+	    To construct $\rho$, we require a basis @TT "CB"@ of $\mathfrak{g}$, and a list @TT "L"@ of matrices that are the images $\rho(B_i) \in \mathfrak{gl}(V)$. Then the list {CB,L} is stored in V.cache#representation.
         Text	    
-	    First, we build the standard representation for $sl_3$. The list of matrices we need is already contained in the Chevalley basis.
+	    First, we build the standard representation for $sl_3$. The list of matrices we need is already contained in the @TT "LieAlgebraBasis"@.
 	Example
 	    sl3=simpleLieAlgebra("A",2);
 	    V=irreducibleLieAlgebraModule({1,0},sl3);
 	    peek V
-            CB = chevalleyBasis("A",2);
+            CB = lieAlgebraBasis("A",2);
 	    installRepresentation(V,CB,CB#"BasisElements");
 	    peek V
 	    peek (V.cache)
@@ -1704,7 +1739,7 @@ doc ///
 	    
 	Example
             sl3 = simpleLieAlgebra("A",2);
-            CB = chevalleyBasis("A",2);
+            CB = lieAlgebraBasis("A",2);
             V=irreducibleLieAlgebraModule({1,1},sl3);
             installRepresentation(V,CB,GTrepresentationMatrices(V));
             L1 = representationWeights(V)
@@ -1735,7 +1770,7 @@ doc ///
 -- TO DO: Check this result by hand
 TEST ///
     sl3 = simpleLieAlgebra("A",2);
-    CB = chevalleyBasis("A",2);
+    CB = lieAlgebraBasis("A",2);
     V=irreducibleLieAlgebraModule({1,1},sl3);
     installRepresentation(V,CB,GTrepresentationMatrices(V));
     L = basisWordsFromMatrixGenerators(V)
@@ -1766,7 +1801,7 @@ doc ///
 	    $\operatorname{Cas} = \sum_{i} \rho(B_i^*) \rho(B_i)$.
 
 	Text
-	    Recall that in creating a Chevalley basis, we compute the dual basis $\{B_i^{*}\}$. This makes it straightforward to compute the Casimir operator.
+	    Recall that in creating a @TT "LieAlgebraBasis"@, we compute the dual basis $\{B_i^{*}\}$. This makes it straightforward to compute the Casimir operator.
 
 	Text
 	    If @TT "V"@ is irreducible with highest weight lambda, then $\operatorname{Cas} = c(\lambda) \operatorname{Id}$, where $c(\lambda)$ is the scalar computed by @TO (casimirScalar,LieAlgebraModule)@.
@@ -1945,7 +1980,7 @@ doc ///
 	    
 	Example
             sl3 = simpleLieAlgebra("A",2);
-            CB = chevalleyBasis("A",2);
+            CB = lieAlgebraBasis("A",2);
             V=irreducibleLieAlgebraModule({1,1},sl3);
             installRepresentation(V,CB,GTrepresentationMatrices(V));
             basisWordsFromMatrixGenerators(V)
@@ -1954,7 +1989,7 @@ doc ///
 -- TO DO: Check this result by hand
 TEST ///
     sl3 = simpleLieAlgebra("A",2);
-    CB = chevalleyBasis("A",2);
+    CB = lieAlgebraBasis("A",2);
     V=irreducibleLieAlgebraModule({1,1},sl3);
     installRepresentation(V,CB,GTrepresentationMatrices(V));
     L = basisWordsFromMatrixGenerators(V)
@@ -1988,7 +2023,7 @@ doc ///
 	Example
 	    sl3=simpleLieAlgebra("A",2)
 	    V=irreducibleLieAlgebraModule({1,1},sl3)
-	    CB = chevalleyBasis("A",2);
+	    CB = lieAlgebraBasis("A",2);
 	    installRepresentation(V,CB,GTrepresentationMatrices(V));
 	    W = tensorProductRepresentation(V,V);
 	    weightMuHighestWeightVectorsInW({1,1},W)
@@ -1998,7 +2033,7 @@ doc ///
 TEST ///
     sl3=simpleLieAlgebra("A",2)
     V=irreducibleLieAlgebraModule({1,1},sl3)
-    CB = chevalleyBasis("A",2);
+    CB = lieAlgebraBasis("A",2);
     installRepresentation(V,CB,GTrepresentationMatrices(V));
     W = tensorProductRepresentation(V,V);
     assert(weightMuHighestWeightVectorsInW({1,1},W)==map(QQ^64,QQ^2,{{0, 0}, {0, 0}, {0, 0}, {1/2, 3/2}, {0, 0}, {1/2, -1/2}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {-1, -3}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {-2, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {1, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 1}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}}))
@@ -2038,7 +2073,7 @@ doc ///
 	    hwv = weightMuHighestWeightVectorsInW({0,0},S4S3V); 
 	    remove(S4S3V.cache,representation);
 	    V0=irreducibleLieAlgebraModule({0,0},sl3);
-	    CB = chevalleyBasis(sl3);
+	    CB = lieAlgebraBasis(sl3);
 	    installRepresentation(V0,CB,GTrepresentationMatrices(V0));
 	    L = VInSymdW(V0,4,S3V,hwv)
         Text
@@ -2054,7 +2089,7 @@ TEST ///
     hwv = weightMuHighestWeightVectorsInW({0,0},S4S3V); 
     remove(S4S3V.cache,representation);
     V0=irreducibleLieAlgebraModule({0,0},sl3);
-    CB = chevalleyBasis(sl3);
+    CB = lieAlgebraBasis(sl3);
     installRepresentation(V0,CB,GTrepresentationMatrices(V0));
     L = VInSymdW(V0,4,S3V,hwv);
     assert(L=={B_0*B_3*B_7*B_9-B_0*B_3*B_8^2-B_0*B_4*B_6*B_9+B_0*B_4*B_7*B_8+B_0*B_5*B_6*B_8-B_0*B_5*B_7^2-B_1^2*B_7*B_9+B_1^2*B_8^2+B_1*B_2*B_6*B_9-B_1*B_2*B_7*B_8+B_1*B_3*B_4*B_9-B_1*B_3*B_5*B_8-2*B_1*B_4^2*B_8+3*B_1*B_4*B_5*B_7-B_1*B_5^2*B_6-B_2^2*B_6*B_8+B_2^2*B_7^2-B_2*B_3^2*B_9+3*B_2*B_3*B_4*B_8-B_2*B_3*B_5*B_7-2*B_2*B_4^2*B_7+B_2*B_4*B_5*B_6+B_3^2*B_5^2-2*B_3*B_4^2*B_5+B_4^4})
@@ -2095,7 +2130,7 @@ doc ///
 	    hwv = weightMuHighestWeightVectorsInW({2,0,0},W3W2V)
 	    remove(W3W2V.cache,representation);
 	    V=irreducibleLieAlgebraModule({2,0,0},sl4);
-	    CB = chevalleyBasis(sl4);
+	    CB = lieAlgebraBasis(sl4);
 	    installRepresentation(V,CB,GTrepresentationMatrices(V));
 	    L = VInWedgekW(V,3,W2V,hwv)
 ///
@@ -2108,7 +2143,7 @@ TEST ///
     hwv = weightMuHighestWeightVectorsInW({2,0,0},W3W2V)
     remove(W3W2V.cache,representation)
     V=irreducibleLieAlgebraModule({2,0,0},sl4);
-    CB = chevalleyBasis(sl4);
+    CB = lieAlgebraBasis(sl4);
     installRepresentation(V,CB,GTrepresentationMatrices(V));
     L = VInWedgekW(V,3,W2V,hwv)
     assert(L=={p_{0, 1, 3}, p_{0, 2, 3}+p_{0, 1, 4}, 2*p_{0, 2, 4}, 3*p_{1, 2, 3}+3*p_{0, 1, 5}, 3*p_{1, 2, 4}+3*p_{0, 2, 5}, 12*p_{1, 2, 5}, -12*p_{1, 3, 4}+12*p_{0, 3, 5}, -12*p_{2, 3, 4}+12*p_{0, 4, 5}, -24*p_{2, 3, 5}+24*p_{1, 4, 5}, 144*p_{3, 4, 5} })
@@ -2145,14 +2180,14 @@ doc ///
 	    hwv = weightMuHighestWeightVectorsInW({0,2},T)
 	    remove(T.cache,representation);
 	    U = irreducibleLieAlgebraModule({0,2},sl3);
-	    CB = chevalleyBasis(sl3);
+	    CB = lieAlgebraBasis(sl3);
 	    installRepresentation(U,CB,GTrepresentationMatrices(U));
 	    L = UInVtensorW(U,V,W,hwv)
 ///
 
 TEST ///
     sl3=simpleLieAlgebra("A",2);
-    CB = chevalleyBasis("A",2);
+    CB = lieAlgebraBasis("A",2);
     V = irreducibleLieAlgebraModule({1,1},sl3);
     installRepresentation(V,CB,GTrepresentationMatrices(V));
     W = irreducibleLieAlgebraModule({1,0},sl3);

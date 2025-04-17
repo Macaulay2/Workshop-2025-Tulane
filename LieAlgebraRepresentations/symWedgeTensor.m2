@@ -269,7 +269,7 @@ tensorProductRepresentation(LieAlgebraModule,LieAlgebraModule) := (V,W) -> (
     U:=V**W;
     rho1:=V.cache#representation;
     rho2:=W.cache#representation;
-    if rho1_0 =!= rho2_0 then error "The representations do not have the same Chevalley basis" << endl;
+    if rho1_0 =!= rho2_0 then error "The representations do not have the same basis" << endl;
     R1:=(sparse(rho1_1_0))#"BaseRing";
     R2:=(sparse(rho2_1_0))#"BaseRing";
     if R1 =!= R2 then error "The representations do not have the same base ring" << endl;
@@ -303,7 +303,7 @@ checkLieAlgRepOnPair = (CB, rhoB, i, j) -> (
 isLieAlgebraRepresentation = method(
     TypicalValue=>Boolean
 );
-isLieAlgebraRepresentation(ChevalleyBasis,List) := (CB, rhoB) -> (
+isLieAlgebraRepresentation(LieAlgebraBasis,List) := (CB, rhoB) -> (
     for i from 0 to #(CB#"BasisElements")-2 do (
         for j from i+1 to #(CB#"BasisElements")-1 do (
 	    if not checkLieAlgRepOnPair(CB,rhoB,i,j) then (
@@ -348,7 +348,7 @@ V = standardModule(sl2);
 peek V
 -- So V only has character information
 -- Add the data of the standard representation
-CB = chevalleyBasis("A",1);
+CB = lieAlgebraBasis("A",1);
 installRepresentation(V,CB,CB#"BasisElements");
 
 -- Now form the symmetric power
@@ -373,7 +373,7 @@ V = standardModule(sl3);
 peek V
 -- So V only has character information
 -- Add the data of the standard representation
-CB = chevalleyBasis("A",2);
+CB = lieAlgebraBasis("A",2);
 installRepresentation(V,CB,CB#"BasisElements");
 
 
@@ -394,7 +394,7 @@ wedge2rho = W.cache#representation
 
 sl3=simpleLieAlgebra("A",2);
 V = irreducibleLieAlgebraModule({1,1},sl3);
-CB = chevalleyBasis("A",2);
+CB = lieAlgebraBasis("A",2);
 installRepresentation(V,CB,GTrepresentationMatrices(V,{1,1}));
 W = irreducibleLieAlgebraModule({1,0},sl3);
 installRepresentation(W,CB,GTrepresentationMatrices(W,{1,0}));

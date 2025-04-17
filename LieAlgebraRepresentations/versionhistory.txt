@@ -130,16 +130,16 @@ $\mathfrak{g} \rightarrow V$
 * We wrote a silly SparseMatrices package to support these calculations. (It's
 slower than calculations with dense matrices in the engine,
 but it may use less memory) 
-* We created a new type ChevalleyBasis to store an explicit basis of a
+* We created a new type LieAlgebraBasis to store an explicit basis of a
 Lie algebra plus lots of other useful information
 * In version 0.9, a Lie algebra representation is not defined as a
 new type (this is open for discussion). Instead, we install a pair
 consisting of
-    1. a ChevalleyBasis
-    2. a list of the images rho(B_i) for each B_i in the Chevalley
+    1. a LieAlgebraBasis
+    2. a list of the images rho(B_i) for each B_i in the Lie algebra 
 basis
 in the cache table of Vlambda
-* So far, we have only implemented ChevalleyBasis for type A (but
+* So far, we have only implemented LieAlgebraBasis for type A (but
 hopefully more
 are coming soon, possibly by the end of the April 2025 workshop at
 Tulane)

@@ -116,7 +116,7 @@ br = (A,B) -> A*B-B*A
 
 slnBasis = (n) -> (
     B:=slnBasisElements(n);
-    new ChevalleyBasis from {
+    new LieAlgebraBasis from {
 	"LieAlgebra"=>simpleLieAlgebra("A",n-1),
         "BasisElements"=>B,
 	"Bracket"=>br,

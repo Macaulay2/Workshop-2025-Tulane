@@ -2,7 +2,7 @@
 installRepresentation = method(
 );
 
-installRepresentation(LieAlgebraModule,ChevalleyBasis,List) := (V,CB,rhoB) -> (
+installRepresentation(LieAlgebraModule,LieAlgebraBasis,List) := (V,CB,rhoB) -> (
     if V.cache#?representation then error "V already has a representation. Remove it before installing another." << endl;
     V.cache#representation = {CB,rhoB};
 )

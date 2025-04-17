@@ -50,9 +50,10 @@ export {
     }
 
 
--- From ChevalleyBases.m2
-export {"ChevalleyBasis",
-    "chevalleyBasis",
+-- From LieAlgebraBases.m2
+export {"LieAlgebraBasis",
+    "lieAlgebraBasis",
+    "trivialRepresentation",
     "standardRepresentation",
     "adjointRepresentation"
     }

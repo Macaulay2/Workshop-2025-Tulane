@@ -17,7 +17,6 @@ restrictRaisingOperatoritoWtmuSpace = (W,i,mu) -> (
 );
 
 
-
 weightMuHighestWeightVectorsInW = method(
     TypicalValue=>Matrix
 );    
@@ -98,8 +97,8 @@ VInSymdW = method(
 VInSymdW(LieAlgebraModule,ZZ,LieAlgebraModule,Matrix) := (V,d,W,hwv) -> ( 
     rhoV:=V.cache#representation;
     rhoW:=W.cache#representation;
-    -- Check that they use the same Chevalley basis of g
-    if rhoV_0 =!= rhoW_0 then error "V and W do not use the same Chevalley basis" << endl;
+    -- Check that they use the same basis of g
+    if rhoV_0 =!= rhoW_0 then error "V and W do not use the same basis" << endl;
     CB:=rhoW_0;
     n:=dim W;
     B:=getSymbol "B";
@@ -126,8 +125,8 @@ VInWedgekW = method(
 VInWedgekW(LieAlgebraModule,ZZ,LieAlgebraModule,Matrix) := (V,k,W,hwv) -> (
     rhoV:=V.cache#representation;
     rhoW:=W.cache#representation;
-    -- Check that they use the same Chevalley basis of g
-    if rhoV_0 =!= rhoW_0 then error "V and W do not use the same Chevalley basis" << endl;
+    -- Check that they use the same basis of g
+    if rhoV_0 =!= rhoW_0 then error "V and W do not use the same basis" << endl;
     CB:=rhoW_0;
     WedgekW:=exteriorPowerRepresentation(k,W);
     n:=dim W;
@@ -156,9 +155,9 @@ UInVtensorW(LieAlgebraModule,LieAlgebraModule,LieAlgebraModule,Matrix) := (U,V,W
     rhoU:=U.cache#representation;
     rhoV:=V.cache#representation;
     rhoW:=W.cache#representation;
-    -- Check that they use the same Chevalley basis of g
-    if rhoU_0 =!= rhoV_0 then error "U and V do not use the same Chevalley basis" << endl;
-    if rhoV_0 =!= rhoW_0 then error "V and W do not use the same Chevalley basis" << endl;
+    -- Check that they use the same basis of g
+    if rhoU_0 =!= rhoV_0 then error "U and V do not use the same basis" << endl;
+    if rhoV_0 =!= rhoW_0 then error "V and W do not use the same basis" << endl;
     CB:=rhoU_0;
     n1:=dim V;
     n2:=dim W;

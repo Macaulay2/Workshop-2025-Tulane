@@ -125,7 +125,7 @@ writeInso2nBasis = (M) -> (
 
 so2nBasis = (n) -> (
     B:=so2nBasisElements(n);
-    new ChevalleyBasis from {
+    new LieAlgebraBasis from {
 	"LieAlgebra"=>simpleLieAlgebra("D",n),
         "BasisElements"=>B,
 	"Bracket"=> (A,B) -> A*B-B*A,

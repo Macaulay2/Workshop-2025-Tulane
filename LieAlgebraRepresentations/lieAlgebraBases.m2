@@ -1,8 +1,8 @@
-needs "./ChevalleyBases/chevalleyBasisTypeA.m2"
-needs "./ChevalleyBases/chevalleyBasisTypeC.m2"
-needs "./ChevalleyBases/chevalleyBasisTypeD.m2"
+needs "./LieAlgebraBases/lieAlgebraBasisTypeA.m2"
+needs "./LieAlgebraBases/lieAlgebraBasisTypeC.m2"
+needs "./LieAlgebraBases/lieAlgebraBasisTypeD.m2"
 
-ChevalleyBasis = new Type of HashTable  
+LieAlgebraBasis = new Type of HashTable  
 -- Keys:
 -- LieAlgebra
 -- BasisElements
@@ -14,17 +14,17 @@ ChevalleyBasis = new Type of HashTable
 -- WriteInBasis
 
 
-net(ChevalleyBasis) := CB -> net "Chevalley basis of"expression(CB#"LieAlgebra")
+net(LieAlgebraBasis) := CB -> net "Enhanced basis of"expression(CB#"LieAlgebra")
 
 
 
 
 
-chevalleyBasis = method(
-    TypicalValue => ChevalleyBasis
+lieAlgebraBasis = method(
+    TypicalValue => LieAlgebraBasis
     )
 
-chevalleyBasis(String,ZZ) := (type,m) -> (
+lieAlgebraBasis(String,ZZ) := (type,m) -> (
     if not member(type,{"A","C","D"}) then error "Not implemented yet" << endl;
     if type=="A" then return slnBasis(m+1);
     if type=="C" then return sp2nBasis(m);
@@ -33,11 +33,33 @@ chevalleyBasis(String,ZZ) := (type,m) -> (
 
 Eijm = (i0,j0,m) -> ( matrix apply(m, i -> apply(m, j -> if i==i0 and j==j0 then 1/1 else 0/1)) );
 
-chevalleyBasis(LieAlgebra) := (g) -> (
+lieAlgebraBasis(LieAlgebra) := (g) -> (
     if isSimple(g) and g#"RootSystemType"=="A" then return slnBasis(g#"LieAlgebraRank"+1);
     if isSimple(g) and g#"RootSystemType"=="C" then return sp2nBasis(g#"LieAlgebraRank");
     if isSimple(g) and g#"RootSystemType"=="D" then return so2nBasis(g#"LieAlgebraRank");
     error "Not implemented yet"
+);
+
+
+trivialRepresentation = method(
+    TypicalValue => LieAlgebraModule
+    )
+
+trivialRepresentation(String,ZZ) := (type,m) -> (
+    CB:=lieAlgebraBasis(type,m);
+    trivialRepresentation(CB)
+);
+
+trivialRepresentation(LieAlgebra) := (g) -> (
+    CB:=lieAlgebraBasis(g);
+    trivialRepresentation(CB)
+);
+
+trivialRepresentation(LieAlgebraBasis) := CB -> (   
+    L := apply(#(CB#"BasisElements"), i -> matrix {{0/1}});
+    V := trivialModule(CB#"LieAlgebra");
+    installRepresentation(V,CB,L);
+    V
 );
 
 
@@ -46,16 +68,16 @@ standardRepresentation = method(
     )
 
 standardRepresentation(String,ZZ) := (type,m) -> (
-    CB:=chevalleyBasis(type,m);
+    CB:=lieAlgebraBasis(type,m);
     standardRepresentation(CB)
 );
 
 standardRepresentation(LieAlgebra) := g -> (
-    CB:=chevalleyBasis(g);
+    CB:=lieAlgebraBasis(g);
     standardRepresentation(CB)
 );
 
-standardRepresentation(ChevalleyBasis) := CB -> (
+standardRepresentation(LieAlgebraBasis) := CB -> (
     V := standardModule(CB#"LieAlgebra");
     installRepresentation(V,CB,CB#"BasisElements");
     V
@@ -67,16 +89,16 @@ adjointRepresentation = method(
     )
 
 adjointRepresentation(String,ZZ) := (type,m) -> (
-    CB:=chevalleyBasis(type,m);
+    CB:=lieAlgebraBasis(type,m);
     adjointRepresentation(CB)
 );
 
 adjointRepresentation(LieAlgebra) := (g) -> (
-    CB:=chevalleyBasis(g);
+    CB:=lieAlgebraBasis(g);
     adjointRepresentation(CB)
 );
 
-adjointRepresentation(ChevalleyBasis) := CB -> (
+adjointRepresentation(LieAlgebraBasis) := CB -> (
     br := CB#"Bracket";
     writeInBasis := CB#"WriteInBasis";
     B := CB#"BasisElements";
@@ -86,3 +108,5 @@ adjointRepresentation(ChevalleyBasis) := CB -> (
     installRepresentation(V,CB,L);
     V
 );
+
+

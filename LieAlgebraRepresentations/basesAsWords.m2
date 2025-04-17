@@ -7,14 +7,14 @@ cached in V
 LieAlgebraRepresentation = new Type of HashTable
 -- Keys:
 -- V:LieAlgebraModule
--- CB:ChevalleyBasis
+-- CB:LieAlgebraBasis
 -- L:List, a list of matrix generators
 
-lieAlgebraRepresentation(LieAlgebraModule,ChevalleyBasis,List):=(V,CB,L) -> (
+lieAlgebraRepresentation(LieAlgebraModule,LieAlgebraBasis,List):=(V,CB,L) -> (
     if V#"LieAlgebra" != CB#"LieAlgebra" then error "V and CB have different Lie algebras" << endl;
     new LieAlgebraRepresentation from {
         "LieAlgebraModule"=>V,
-	"ChevalleyBasis"=>CB,
+	"LieAlgebraBasis"=>CB,
 	"MatrixGenerators"=>L
     }
 );
@@ -142,7 +142,7 @@ applyLOWord({1,0},v1,LoweringOperators1)
 -*
 -- Inputs:
 -- V, the LieAlgebraModule
--- RB, the Chevalley basis
+-- RB, the LieAlgebra basis
 -- rhoB, the matrix generators
 
 
@@ -151,7 +151,7 @@ applyLOWord({1,0},v1,LoweringOperators1)
 installRepresentation = method(
 );
 
-installRepresentation(LieAlgebraModule,ChevalleyBasis,List) := (V,CB,rhoB) -> (
+installRepresentation(LieAlgebraModule,LieAlgebraBasis,List) := (V,CB,rhoB) -> (
     if V.cache#?representation then error "V already has a representation. Remove it before installing another." << endl;
     V.cache#representation = {CB,rhoB};
 )
@@ -274,7 +274,7 @@ end
 -- Toy example
 
 g = simpleLieAlgebra("A",3);
-CB = chevalleyBasis("A",3);
+CB = lieAlgebraBasis("A",3);
 lambda = {2,0,0};
 V=irreducibleLieAlgebraModule(lambda,g);
 matrixGens = GTrepresentationMatrices(V,lambda);

@@ -128,7 +128,7 @@ writeInsp2nBasis = (M) -> (
 
 sp2nBasis = (n) -> (
     B:=sp2nBasisElements(n);
-    new ChevalleyBasis from {
+    new LieAlgebraBasis from {
 	"LieAlgebra"=>simpleLieAlgebra("C",n),
         "BasisElements"=>B,
 	"Bracket"=> (A,B) -> A*B-B*A,
