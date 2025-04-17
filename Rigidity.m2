@@ -125,36 +125,43 @@ isLocallyRigid(ZZ, ZZ, Graph) := Boolean => opts -> (d, n, G) -> (
     isLocallyRigid(d, n, edges G, opts)
 );
 
-getStressMatrix = method(Options => {Variable => null}, TypicalValue => Matrix)
+getStressMatrix = method(TypicalValue => Matrix)
 
 -- Core function
-getStressMatrix(ZZ, ZZ, List) := Matrix => opts -> (d, n, G) -> (
-    x := getSymbol toString(opts.Variable);
+getStressMatrix(ZZ, ZZ, List) := Matrix => opts -> (d, n, Gr) -> (
+    G := Gr/toList;
     -- Left kernel of the rigidity matrix
-    tRigidityMatrix := transpose getRigidityMatrix(d, n, G, opts);
+    tRigidityMatrix := transpose getRigidityMatrix(d, n, G, opts, Variable => "x");
     R := ring tRigidityMatrix;
     tRigidityMatrixRational := sub(tRigidityMatrix, frac R);
     stressBasis := mingens ker tRigidityMatrixRational;
     -- New symbolic variables for each element in the basis of the left kernel
     auxiliaryVarCount := numgens source stressBasis;
-    y := symbol y;
-    auxiliaryRing := frac(QQ[gens R, y_1..y_auxiliaryVarCount]);
-    -- Symbolic linear combination of elements in the basis of the left kernel
-    stressBasisLinearSum := 0;
-    for i from 1 to auxiliaryVarCount do (
-        stressBasisLinearSum = stressBasisLinearSum + y_i * sub(submatrix(stressBasis, {i - 1}), auxiliaryRing);
-    );
-    -- Build the symbolic stress matrix from the symbolic linear combination
-    stressMatrix := mutableMatrix(auxiliaryRing, n, n);
-    for i from 0 to (#G - 1) do (
-        edge := G#i;
-        stressMatrix_(edge#0, edge#1) = stressBasisLinearSum_(i, 0);
-    );
-    stressMatrixEntries := entries stressMatrix;
-    for i from 0 to (n - 1) do (
-        stressMatrix_(i, i) = -sum(stressMatrixEntries#i);
-    );
-    matrix(stressMatrix)
+    if auxiliaryVarCount == 0
+    then (
+        stressMatrixZero := mutableMatrix(R, n, n);
+        matrix(stressMatrixZero)
+    )
+    else (
+        y := symbol y;
+        auxiliaryRing := frac(QQ[gens R, y_1..y_auxiliaryVarCount]);
+        -- Symbolic linear combination of elements in the basis of the left kernel
+        stressBasisLinearSum := 0;
+        for i from 1 to auxiliaryVarCount do (
+            stressBasisLinearSum = stressBasisLinearSum + y_i * sub(submatrix(stressBasis, {i - 1}), auxiliaryRing);
+        );
+        -- Build the symbolic stress matrix from the symbolic linear combination
+        stressMatrix := mutableMatrix(auxiliaryRing, n, n);
+        for i from 0 to (#G - 1) do (
+            edge := G#i;
+            stressMatrix_(edge#0, edge#1) = stressBasisLinearSum_(i, 0);
+        );
+        stressMatrixEntries := entries stressMatrix;
+        for i from 0 to (n - 1) do (
+            stressMatrix_(i, i) = -sum(stressMatrixEntries#i);
+        );
+        matrix(stressMatrix)
+    )
 );
 
 -- List of edges not given -> use complete graph
@@ -178,7 +185,7 @@ isGloballyRigid = method(Options => {FiniteField => 1, RandomRuns => 2}, Typical
 
 -- Core function
 isGloballyRigid(ZZ, ZZ, List) := Boolean => opts -> (d, n, G) -> (
-    M := getStressMatrix(d, n, G, opts);
+    M := getStressMatrix(d, n, G);
     if opts.FiniteField == 1 then rank M == n - d - 1
     else (
         variableNum := numgens ring M;
@@ -196,7 +203,7 @@ isGloballyRigid(ZZ, ZZ, List) := Boolean => opts -> (d, n, G) -> (
 )
 
 -- List of edges not given -> use complete graph
-isGloballyRigid(ZZ, ZZ) := Boolean => opts -> (d,n) -> (
+isGloballyRigid(ZZ, ZZ) := Boolean => opts -> (d, n) -> (
     isGloballyRigid(d, n, subsets(toList(0..(n-1)), 2), Numerical => opts.Numerical)
 );
 
