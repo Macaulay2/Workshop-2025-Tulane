@@ -66,7 +66,7 @@ orbSumList=(G,n,d)->(
         for i from 0 to (#M-1) do(
          L = L | { orbSum(M_i,G,n)};
         );
-        L
+        toList(set L)
 ) 
 
 
