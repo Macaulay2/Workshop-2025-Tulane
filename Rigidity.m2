@@ -43,7 +43,6 @@ export {
     "isGloballyRigid",
     "Numerical",
     "FiniteField",
-    "RandomRuns",
     "getSkewSymmetricCompletionMatrix",
     "isSpanningInSkewSymmetricCompletionMatroid",
     "getSymmetricCompletionMatrix",
@@ -127,13 +126,13 @@ isLocallyRigid(ZZ, ZZ, Graph) := Boolean => opts -> (d, n, G) -> (
     isLocallyRigid(d, n, edges G, opts)
 );
 
-getStressMatrix = method(TypicalValue => Matrix)
+getStressMatrix = method(Options => {Variable => "x"}, TypicalValue => Matrix)
 
 -- Core function
 getStressMatrix(ZZ, ZZ, List) := Matrix => opts -> (d, n, Gr) -> (
     G := Gr/toList;
     -- Left kernel of the rigidity matrix
-    tRigidityMatrix := transpose getRigidityMatrix(d, n, G, opts, Variable => "x");
+    tRigidityMatrix := transpose getRigidityMatrix(d, n, G, Variable => "x");
     R := ring tRigidityMatrix;
     tRigidityMatrixRational := sub(tRigidityMatrix, frac R);
     stressBasis := mingens ker tRigidityMatrixRational;
@@ -157,6 +156,7 @@ getStressMatrix(ZZ, ZZ, List) := Matrix => opts -> (d, n, Gr) -> (
         for i from 0 to (#G - 1) do (
             edge := G#i;
             stressMatrix_(edge#0, edge#1) = stressBasisLinearSum_(i, 0);
+            stressMatrix_(edge#1, edge#0) = stressBasisLinearSum_(i, 0);
         );
         stressMatrixEntries := entries stressMatrix;
         for i from 0 to (n - 1) do (
@@ -179,24 +179,25 @@ getStressMatrix(ZZ, Graph) := Matrix => opts -> (d, G) -> (
 -- Input a Graph instead of edge set with number of vertices -> check if number of vertices is correct
 getStressMatrix(ZZ, ZZ, Graph) := Matrix => opts -> (d, n, G) -> (
     if n =!= length vertexSet G then error("Expected ", n, " to be the number of vertices in ", G);
-    getStressMatrix(d, n, edges G, opts)
+    getStressMatrix(d, n, edges G)
 );
 
 -- Option FiniteFields: 0 for numeric, 1 for symbolic, prime power for finite field
-isGloballyRigid = method(Options => {FiniteField => 1, RandomRuns => 2}, TypicalValue => Boolean)
+isGloballyRigid = method(Options => {FiniteField => 1, Iterations => 3}, TypicalValue => Boolean)
 
 -- Core function
 isGloballyRigid(ZZ, ZZ, List) := Boolean => opts -> (d, n, G) -> (
     M := getStressMatrix(d, n, G);
-    if opts.FiniteField == 1 then rank M == n - d - 1
+    if opts.FiniteField == 1 then rank M == max(n - d - 1, 0)
     else (
         variableNum := numgens ring M;
+        F := if opts.FiniteField == 0 then RR else GF(opts.FiniteField);
         results := apply(
-            toList(1..opts.RandomRuns),
+            toList(1..opts.Iterations),
             () -> (
-                randomValues := randomNumber(opts.FiniteField, variableNum);
+                randomValues := random(F^1, F^variableNum);
                 randomMap := map(ring randomValues, ring M, randomValues);
-                rank randomMap M == n - d - 1
+                rank randomMap max(n - d - 1, 0)
             )
         );
         if #set(results) =!= 1 then error("Try again bro")
@@ -218,13 +219,6 @@ isGloballyRigid(ZZ, Graph) := Boolean => opts -> (d, G) -> (
 isGloballyRigid(ZZ, ZZ, Graph) := Boolean => opts -> (d, n, G) -> (
     if n =!= length vertexSet G then error("Expected ", n, " to be the number of vertices in ",G);
     isGloballyRigid(d, n, edges G, opts)
-);
-
--- Random number generator: q = 0 for numeric, q = prime power for finite field
-randomNumber = method()
-randomNumber(ZZ, ZZ) := List => (q, d) -> (
-    F := if q == 0 then RR else GF(q);
-    random(F^1, F^d)
 );
 
 getSkewSymmetricCompletionMatrix = method(Options => {Variable => null}, TypicalValue => Matrix);
