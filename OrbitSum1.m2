@@ -24,12 +24,26 @@ ListSpMon=(n,d)->(
     R:=QQ[x_1..x_n];
    L:=partitions d;
    M:={};
-   for i from 0 to (#L-1) do if (IsListSp(toList L_i,n))_0 then M=M | {vectorToMonomial( vector((IsListSp(toList L_i,n))_1)  , R  ) };
-   if #M>0 then M else print("There are no special monomials")
+   for i from 0 to (#L-1) do if (IsListSp(toList L_i,n))_0 then M=M | ShuffMon(vectorToMonomial( vector((IsListSp(toList L_i,n))_1)  , R  ) ,n);
+   if #M>0 then toList(set M) else print("There are no special monomials")
 )
 --Test
 ListSpMon(7,8)
 ListSpMon(27,8)
+
+-- Shuffle every monomial
+ShuffMon=(f,n)->(
+    R:=QQ[x_1..x_n];
+    P:=(exponents f)_0;
+    P= permutations P;
+    Mon:={};
+    for i from 0 to (#P-1) do(
+       Mon = Mon | {vectorToMonomial(vector(P_i), R) } 
+    );
+    Mon
+)
+ShuffMon(x_1^2*x_2^3*x_3^1*x_4^2,4)
+
 
 --Orbit Sum for one monomial
 orbSum = (f,G,n) ->(
@@ -67,7 +81,7 @@ orbSum(f,G,4)
 orbSum(f,G2,4)
 orbSumList(G,4,3)
 
---Toy Examples 2
+--Toy Examples 1
 -- Orbit Sum for {s_i}_{i\in\{1,\ldost n\}} where s_i=x_1*x_2*\ldots*x_i
     -- defining s_i
     SPoly=i->(
