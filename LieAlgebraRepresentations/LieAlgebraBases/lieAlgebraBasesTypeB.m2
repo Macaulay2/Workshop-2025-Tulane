@@ -44,3 +44,41 @@ so2n1DualBasis = (n) -> (
 --myBasis = so2n1BasisElements(3);
 --myDualBasis = so2n1DualBasis(3);
 --matrix apply(length myBasis, i -> apply ( length myDualBasis, j -> killingform(myBasis_i,myDualBasis_j)))
+
+DtoLMatrixTypeB = memoize((n) -> (
+    M:=apply(n, i -> apply(n, j -> if j<i then 0 else if j<n-1 then 1 else 1/2));    
+    matrix M
+));
+
+DtoLTypeB = (v) -> (
+    M:=DtoLMatrixTypeB(#v);
+    flatten entries(M*(transpose matrix {v}))
+);
+
+
+LtoDTypeB = (v) -> (
+    M:=DtoLMatrixTypeB(#v);
+    w:=flatten entries(M^-1*(transpose matrix {v}));
+    apply(w, i -> lift(i,ZZ))
+);
+
+
+---
+so2n1BasisWeights = (n) -> (
+    -- First make the weights in the Li basis
+    -- Cartan subalgebra: weight 0
+    Hweights := apply(n, i -> apply(n, i -> 0));
+    -- Xij has weight Li-Lj
+    Xweights := flatten apply(n, i -> delete(null,apply(n, j -> if j!=i then apply(n, k -> if k==i then 1 else if k==j then -1 else 0/1) )));
+    -- Yij has weight Li+Lj
+    Yweights := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then apply(n, k -> if k==i then 1 else if k==j then 1 else 0/1) )));
+    -- Zij has weight -Li-Lj
+    Zweights := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then apply(n, k -> if k==i then -1 else if k==j then -1 else 0/1))));
+    -- Ui has weight Li
+    Uweights := apply(n, i -> apply(n, k -> if k==i then 1 else 0/1));
+    -- Vi has weight -Li
+    Vweights := apply(n, i -> apply(n, k -> if k==i then -1 else 0/1));
+
+    Lweights:= flatten {Hweights, Xweights, Yweights, Zweights, Uweights, Vweights};
+    apply(Lweights, v -> LtoDTypeB v)
+);
