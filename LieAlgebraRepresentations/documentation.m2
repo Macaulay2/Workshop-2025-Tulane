@@ -1183,6 +1183,83 @@ assert(CB#"BasisElements"=={map(QQ^3,QQ^3,{{1, 0, 0}, {0, -1, 0}, {0, 0, 0}}),ma
 ///
 
 
+doc ///
+    Key
+        standardRepresentation
+	(standardRepresentation,ChevalleyBasis)
+	(standardRepresentation,String,ZZ)
+	(standardRepresentation,LieAlgebra)
+    Headline
+        creates the standard representation of a matrix Lie algebra
+    Usage
+        standardRepresentation(CB)
+    Inputs 
+        CB:ChevalleyBasis
+    Outputs
+        V:LieAlgebraModule
+    Description
+	Text
+            For the matrix Lie algebras $sl_n$, $sp(2n)$, $so(m)$, the basis elements in the Chevalley basis are matrices. Thus we may use these matrices to define a representation $\rho: \mathfrak{g} \rightarrow \mathfrak{gl}(V)$.
+
+        Text
+	    The user may either input the Chevalley basis, or the  type and rank, or the simple Lie algebra.
+
+	Example
+	    standardRepresentation("A",2)
+	    sl4=simpleLieAlgebra("A",3)
+	    standardRepresentation(sl4)
+	    CB=chevalleyBasis("C",2)
+	    standardRepresentation(CB)
+///
+
+TEST ///
+V = standardRepresentation("A",2);
+CB = chevalleyBasis("A",2)
+assert(dim V == 3)
+assert((V.cache#representation)_0===CB)
+assert((V.cache#representation)_1==CB#"BasisElements")
+///
+
+
+doc ///
+    Key
+        adjointRepresentation
+	(adjointRepresentation,ChevalleyBasis)
+	(adjointRepresentation,String,ZZ)
+	(adjointRepresentation,LieAlgebra)
+    Headline
+        creates the adjoint representation of a Lie algebra
+    Usage
+        adjointRepresentation(CB)
+    Inputs 
+        CB:ChevalleyBasis
+    Outputs
+        V:LieAlgebraModule
+    Description
+	Text
+            Let $\mathfrak{g}$ be a Lie algebra with Chevalley basis @TT "CB"@. The Chevalley basis records a basis $B$ of $\mathfrak{g}$, the bracket for $\mathfrak{g}$, and a way to write elements of $\mathfrak{g} in the basis $B$. With these tools, we may write the matrix for the linear transformation $\operatorname{ad}(B_i)$ with respect to the basis $B$ for each $B_i$. This is the adjoint representation. 
+	    
+        Text
+	    The user may either input the Chevalley basis, or the  type and rank, or the simple Lie algebra.
+
+	Example
+	    adjointRepresentation("A",2)
+	    sl4=simpleLieAlgebra("A",3)
+	    adjointRepresentation(sl4)
+	    CB=chevalleyBasis("C",2)
+	    adjointRepresentation(CB)
+///
+
+TEST ///
+V = adjointRepresentation("A",2);
+CB = chevalleyBasis("A",2)
+assert(dim V == 8)
+assert(V#"DecompositionIntoIrreducibles"=== new VirtualTally from {{{1,1},1}})
+I = matrix apply(8, i -> apply(8, j -> if i==j then 1/1 else 0/1));
+assert(casimirOperator(V)===6*I)
+///
+
+
 -- From gelfandTsetlinTypeA.m2
 
 
@@ -1381,7 +1458,7 @@ doc ///
 	    The output is a list of matrices that may in turn be installed as a representation.
 
 	Text
-	    We create matrix generators for the adjoint representation of $sl_3$ with respect to the Gelfand-Tsetlin basis of $sl_3$, and then install it to the module $V$.
+	    We create matrix generators for the adjoint representation of $sl_3$ with respect to the Gelfand-Tsetlin basis of $sl_3$, and then install it to the module $V$. This yields a representation that is isomorphic to, but not equal to, the representation created by @TO (adjointRepresentation,ChevalleyBasis)@.
 	    
 	Example
 	    sl3=simpleLieAlgebra("A",2)
@@ -1420,27 +1497,15 @@ doc ///
             In the example below, we compute $\operatorname{Sym}^2 V$ for the standard representation of $sl_2$.
          
 	Example
-	    sl2=simpleLieAlgebra("A",1);
-	    V = standardModule(sl2);
-	    peek V
-
-	Text
-	    So far, $V$ only has information about its decomposition into irreducible submodules. Now we install the standard representation, then compute its symmetric square.
-	    
-        Example
-	    CB = chevalleyBasis("A",1);
-            installRepresentation(V,CB,CB#"BasisElements");
+	    V = standardRepresentation("A",1);
 	    W = symmetricPowerRepresentation(2,V)
             peek W
 	    W.cache#representation
 ///
 
 TEST ///
-    sl2=simpleLieAlgebra("A",1);
-    V = standardModule(sl2);
-    CB = chevalleyBasis("A",1);
-    installRepresentation(V,CB,CB#"BasisElements");
-    W = symmetricPowerRepresentation(2,V)
+    V = standardRepresentation("A",1);
+    W = symmetricPowerRepresentation(2,V);
     assert( last(W.cache#representation) == {sparseMatrix(3,3,QQ,new HashTable from {(0,0) => 2, (2,2) => -2}),sparseMatrix(3,3,QQ,new HashTable from {(0,1) => 1, (1,2) => 2}),sparseMatrix(3,3,QQ,new HashTable from {(1,0) => 2, (2,1) => 1})})
 ///
 
@@ -1466,29 +1531,15 @@ doc ///
             In the example below, we compute $\bigwedge^2 V$ for the standard representation of $sl_3$.
          
 	Example
-	    sl2=simpleLieAlgebra("A",1);
-	    V = standardModule(sl2);
-	    peek V
-
-	Text
-	    So far, $V$ only has information about decomposition into irreducible submodules. Now we install the standard representation, then compute its symmetric square.
-	    
-        Example
-            sl3=simpleLieAlgebra("A",2);
-            V = standardModule(sl3);
-            CB = chevalleyBasis("A",2);
-	    installRepresentation(V,CB,CB#"BasisElements");
+	    V = standardRepresentation("A",2);
 	    W = exteriorPowerRepresentation(2,V)
 	    W.cache#representation
 ///
 
 -- TO DO: Check this result by hand
 TEST ///
-    sl3=simpleLieAlgebra("A",2);
-    V = standardModule(sl3);
-    CB = chevalleyBasis("A",2);
-    installRepresentation(V,CB,CB#"BasisElements");
-    W = exteriorPowerRepresentation(2,V)
+    V = standardRepresentation("A",2);
+    W = exteriorPowerRepresentation(2,V);
     assert(last(W.cache#representation)=={new SparseMatrix from {"Entries" => new HashTable from {(2,2) => -1/1, (1,1) => 1/1}, "NumberOfRows" => 3, "BaseRing" => QQ, "NumberOfColumns" => 3},new SparseMatrix from {"Entries" => new HashTable from {(0,0) => 1/1, (1,1) => -1/1}, "NumberOfRows" => 3, "BaseRing" => QQ, "NumberOfColumns" => 3},new SparseMatrix from {"Entries" => new HashTable from {(1,2) => 1/1}, "NumberOfRows" => 3, "BaseRing" => QQ, "NumberOfColumns" => 3},new SparseMatrix from {"Entries" => new HashTable from {(0,2) => -1/1}, "NumberOfRows" => 3, "BaseRing" => QQ, "NumberOfColumns" => 3},new SparseMatrix from {"Entries" => new HashTable from {(0,1) => 1/1}, "NumberOfRows" => 3, "BaseRing" => QQ, "NumberOfColumns" => 3},new SparseMatrix from {"Entries" => new HashTable from {(2,1) => 1/1}, "NumberOfRows" => 3, "BaseRing" => QQ, "NumberOfColumns" => 3},new SparseMatrix from {"Entries" => new HashTable from {(2,0) => -1/1}, "NumberOfRows" => 3, "BaseRing" => QQ, "NumberOfColumns" => 3},new SparseMatrix from {"Entries" => new HashTable from {(1,0) => 1/1}, "NumberOfRows" => 3, "BaseRing" => QQ, "NumberOfColumns" => 3}})
 ///
 
@@ -1514,26 +1565,18 @@ doc ///
             In the example below, we compute $V \otimes W$, where $V$ is the adjoint represention of $sl_3$, and $W$ is the standard representation of $sl_3$.
          	    
         Example
-            sl3=simpleLieAlgebra("A",2);
-            V = irreducibleLieAlgebraModule({1,1},sl3);
-            CB = chevalleyBasis(sl3);
-	    installRepresentation(V,CB,GTrepresentationMatrices(V));
-	    W = irreducibleLieAlgebraModule({1,0},sl3);
-	    installRepresentation(W,CB,GTrepresentationMatrices(W));
+            V = adjointRepresentation("A",2);
+	    W = standardRepresentation("A",2);
 	    U = tensorProductRepresentation(V,W);
 	    (U.cache#representation)_1_0
 ///
 
 -- TO DO: Check this result by hand
 TEST ///
-    sl3=simpleLieAlgebra("A",2);
-    V = irreducibleLieAlgebraModule({1,1},sl3);
-    CB = chevalleyBasis("A",2);
-    installRepresentation(V,CB,GTrepresentationMatrices(V));
-    W = irreducibleLieAlgebraModule({1,0},sl3);
-    installRepresentation(W,CB,GTrepresentationMatrices(W));
+    V = adjointRepresentation("A",2);
+    W = standardRepresentation("A",2);
     U = tensorProductRepresentation(V,W);
-    assert((U.cache#representation)_1_0==new SparseMatrix from {"Entries" => new HashTable from {(20,20) => 1/1, (4,4) => -2/1, (5,5) => -1/1, (6,6) => 3/1, (22,22) => -2/1, (23,23) => -1/1, (7,7) => 1/1, (8,8) => 2/1, (9,9) => 1/1, (10,10) => -1/1, (12,12) => -1/1, (13,13) => -3/1, (14,14) => -2/1, (15,15) => 1/1, (0,0) => 2/1, (16,16) => -1/1, (2,2) => 1/1, (18,18) => 2/1}, "NumberOfRows" => 24, "BaseRing" => QQ, "NumberOfColumns" => 24})
+    assert((U.cache#representation)_1_0==sparseMatrix(24,24,QQ,new HashTable from {(20,20) => -1, (4,4) => -1, (21,21) => 2, (6,6) => 3, (7,7) => 1, (23,23) => 1, (8,8) => 2, (9,9) => 2, (11,11) => 1, (13,13) => -2, (14,14) => -1, (15,15) => -1, (0,0) => 1, (16,16) => -3, (1,1) => -1, (17,17) => -2, (3,3) => 1, (19,19) => -2}))
 ///
 
 
@@ -1729,14 +1772,13 @@ doc ///
 	    If @TT "V"@ is irreducible with highest weight lambda, then $\operatorname{Cas} = c(\lambda) \operatorname{Id}$, where $c(\lambda)$ is the scalar computed by @TO (casimirScalar,LieAlgebraModule)@.
 
         Text
-	    We compute the Casimir operator for $\operatorname{Sym^2} \mathbb{C}^3$. Since this is an irreducible representation, we get a scalar multiple of the identity.
+	    We compute the Casimir operator for the symmetric square of the standard representation of $sl_3$. Since this is an irreducible representation, we get a scalar multiple of the identity.
 	    
 	Example
-	    sl3=simpleLieAlgebra("A",2);
-	    CB = chevalleyBasis(sl3);
-	    V=irreducibleLieAlgebraModule({1,0},sl3);
-	    installRepresentation(V,CB,CB#"BasisElements");
+	    sl3 = simpleLieAlgebra("A",2)
+	    V = standardRepresentation(sl3)
 	    S2V=symmetricPowerRepresentation(2,V);
+	    casimirScalar(S2V)
 	    CasS2V = casimirOperator(S2V)
 	    
         Text
@@ -1758,10 +1800,7 @@ doc ///
 
 -- TO DO: Check this result by hand
 TEST ///
-    sl3=simpleLieAlgebra("A",2);
-    CB = chevalleyBasis(sl3);
-    V=irreducibleLieAlgebraModule({1,0},sl3);
-    installRepresentation(V,CB,CB#"BasisElements");
+    V=standardRepresentation("A",2);
     S2V=symmetricPowerRepresentation(2,V);
     CasS2V = casimirOperator(S2V);
     assert(CasS2V == map(QQ^6,QQ^6,{{20/3, 0, 0, 0, 0, 0}, {0, 20/3, 0, 0, 0, 0}, {0, 0, 20/3, 0, 0, 0}, {0, 0, 0, 20/3, 0, 0}, {0, 0, 0, 0, 20/3, 0}, {0, 0, 0, 0, 0, 20/3}}))
@@ -1794,9 +1833,7 @@ doc ///
 	    This function returns a nonredundant list of eigenvalues of $\operatorname{Cas}$ by computing the scalars $c(\lambda)$ for each irreducible summand in $V$, and then removing any duplicates.
 	    
 	Example
-	    sl3=simpleLieAlgebra("A",2);
-	    CB = chevalleyBasis(sl3);
-	    V=irreducibleLieAlgebraModule({1,0},sl3);
+	    V=standardRepresentation("A",2);
             S3V=symmetricPower(3,V);
             S4S3V=symmetricPower(4,S3V);
 	    casimirSpectrum(S4S3V)
@@ -1805,9 +1842,7 @@ doc ///
 
 -- TO DO: Check this result by hand
 TEST ///
-    sl3=simpleLieAlgebra("A",2);
-    CB = chevalleyBasis(sl3);
-    V=irreducibleLieAlgebraModule({1,0},sl3);
+    V=standardRepresentation("A",2);
     S3V=symmetricPower(3,V);
     S4S3V=symmetricPower(4,S3V);
     assert(casimirSpectrum(S4S3V) == {0, 16, 24, 30, 36, 48, 60, 76, 120})
@@ -1835,10 +1870,7 @@ doc ///
 	    This function returns the projection matrix to the eigenspace of the Casimir operator for the input eigenvalue @TT "z"@.  This matrix is computed as the product of factors $\operatorname{Cas}-x I$ over all eigenvalues $x \neq z$. 
 	    
 	Example
-	    sl3=simpleLieAlgebra("A",2);
-	    CB = chevalleyBasis(sl3);
-	    V=irreducibleLieAlgebraModule({1,0},sl3);
-            installRepresentation(V,CB,CB#"BasisElements");
+	    V=standardRepresentation("A",2);
             S2V=symmetricPowerRepresentation(2,V);
             S3S2V=symmetricPowerRepresentation(3,S2V);
 	    casimirProjection(S3S2V,16)
@@ -1847,10 +1879,7 @@ doc ///
 
 -- TO DO: Check this result by hand
 TEST ///
-    sl3=simpleLieAlgebra("A",2);
-    CB = chevalleyBasis(sl3);
-    V=irreducibleLieAlgebraModule({1,0},sl3);
-    installRepresentation(V,CB,CB#"BasisElements");
+    V=standardRepresentation("A",2);
     S2V=symmetricPowerRepresentation(2,V);
     S3S2V=symmetricPowerRepresentation(3,S2V);
     assert(casimirProjection(S3S2V,16)==dense sparseMatrix(56,56,QQ, new HashTable from {(40,31) => 64/1, (36,36) => -192/1, (32,41) => 64/1, (5,5) => -256/1, (44,35) => 256/1, (5,11) => 64/1, (40,40) => -256/1, (9,9) => -192/1, (9,12) => 128/1, (13,10) => 128/1, (44,44) => -64/1, (13,13) => -192/1, (21,8) => 128/1, (9,22) => 128/1, (48,48) => -256/1, (48,49) => 64/1, (17,17) => -192/1, (17,18) => -32/1, (52,50) => 128/1, (13,26) => 128/1, (52,52) => -192/1, (17,25) => -32/1, (21,21) => -192/1, (25,17) => -64/1, (25,18) => 96/1, (17,28) => 48/1, (29,19) => 128/1, (25,25) => -224/1, (25,28) => 16/1, (37,17) => -64/1, (17,37) => -32/1, (37,18) => 96/1, (29,29) => -192/1, (37,25) => 96/1, (25,37) => 96/1, (37,28) => 16/1, (33,32) => 128/1, (33,33) => -192/1, (29,38) => 128/1, (6,3) => 256/1, (41,32) => 128/1, (33,41) => 128/1, (37,37) => -224/1, (41,33) => 128/1, (6,6) => -64/1, (41,41) => -192/1, (10,10) => -256/1, (10,13) => 64/1, (14,14) => -128/1, (22,9) => 128/1, (49,48) => 256/1, (49,49) => -64/1, (22,12) => 128/1, (18,17) => -64/1, (18,18) => -224/1, (10,26) => 64/1, (26,10) => 128/1, (26,13) => 128/1, (53,51) => 256/1, (53,53) => -64/1, (18,25) => 96/1, (22,22) => -192/1, (18,28) => 16/1, (14,36) => 192/1, (26,26) => -192/1, (18,37) => 96/1, (38,19) => 128/1, (38,29) => 128/1, (34,34) => -192/1, (3,3) => -256/1, (3,6) => 64/1, (7,4) => 256/1, (42,34) => 64/1, (38,38) => -192/1, (34,42) => 128/1, (34,43) => 128/1, (7,7) => -64/1, (11,5) => 256/1, (42,42) => -256/1, (42,43) => 64/1, (11,11) => -64/1, (15,15) => -256/1, (50,50) => -128/1, (50,52) => 192/1, (19,19) => -256/1, (15,23) => 64/1, (23,15) => 256/1, (27,16) => 128/1, (23,23) => -64/1, (19,29) => 64/1, (27,24) => 128/1, (27,27) => -192/1, (19,38) => 64/1, (39,20) => 256/1, (31,31) => -64/1, (35,35) => -256/1, (31,40) => 256/1, (4,4) => -256/1, (4,7) => 64/1, (43,34) => 128/1, (39,39) => -64/1, (35,44) => 64/1, (8,8) => -128/1, (12,9) => 64/1, (43,42) => 128/1, (43,43) => -192/1, (12,12) => -256/1, (8,21) => 192/1, (16,16) => -256/1, (12,22) => 64/1, (51,51) => -256/1, (24,16) => 128/1, (16,24) => 64/1, (20,20) => -256/1, (51,53) => 64/1, (16,27) => 64/1, (28,17) => 384/1, (28,18) => 64/1, (24,24) => -192/1, (36,14) => 128/1, (24,27) => 128/1, (28,25) => 64/1, (28,28) => -96/1, (20,39) => 64/1, (32,32) => -256/1, (32,33) => 64/1, (28,37) => 64/1}))
@@ -1877,10 +1906,7 @@ doc ///
 	    This is a special case of the function @TO (casimirProjection,LieAlgebraModule,QQ)@ where the input eigenvalue is $z=0$.
 	    
 	Example
-	    sl3=simpleLieAlgebra("A",2)
-	    CB = chevalleyBasis(sl3)
-	    V=irreducibleLieAlgebraModule({1,0},sl3)
-	    installRepresentation(V,CB,CB#"BasisElements")
+	    V=standardRepresentation("A",2);
 	    S2V=symmetricPowerRepresentation(2,V)
 	    S3S2V=symmetricPowerRepresentation(3,S2V)
 	    reynoldsOperator(S3S2V)
@@ -1888,10 +1914,7 @@ doc ///
 ///
 -- TO DO: Check this result by hand
 TEST ///
-    sl3=simpleLieAlgebra("A",2);
-    CB = chevalleyBasis(sl3);
-    V=irreducibleLieAlgebraModule({1,0},sl3);
-    installRepresentation(V,CB,CB#"BasisElements");
+    V=standardRepresentation("A",2);
     S2V=symmetricPowerRepresentation(2,V);
     S3S2V=symmetricPowerRepresentation(3,S2V);
     assert(reynoldsOperator(S3S2V)==dense sparseMatrix(56,56,QQ, new HashTable from {(37,37) => 96/1, (17,17) => 192/1, (17,18) => -96/1, (18,17) => -192/1, (18,18) => 96/1, (17,25) => -96/1, (25,17) => -192/1, (18,25) => 96/1, (25,18) => 96/1, (28,17) => 384/1, (17,28) => 48/1, (18,28) => -48/1, (28,18) => -192/1, (25,25) => 96/1, (25,28) => -48/1, (28,25) => -192/1, (17,37) => -96/1, (37,17) => -192/1, (18,37) => 96/1, (37,18) => 96/1, (28,28) => 96/1, (25,37) => 96/1, (37,25) => 96/1, (37,28) => -48/1, (28,37) => -192/1}))
@@ -1959,7 +1982,7 @@ doc ///
 	    A highest weight vector is one that is killed by all the raising operators. We compute the intersection of the kernels of the raising operators restricted to the weight $\mu$ subspace in $W$.
 	    
 	Text     
-            Let $V$ be the adjoint representation of $sl_3$. Then $V$ has highest weight $(1,1)$ and dimension 8, and the multiplicity of $V$ in $W = V \otimes V$ is 2. In the example below, we compute two highest weight vectors of $(1,1)$ in $V \otimes V$.
+            Let $V$ be the adjoint representation of $sl_3$. Then $V$ has highest weight $(1,1)$ and dimension 8, and the multiplicity of $V$ in $W = V \otimes V$ is 2. In the example below, we compute two highest weight vectors of $(1,1)$ in $V \otimes V$. We work with the Gelfand-Tsetlin basis in these calculations.
 	    
          
 	Example
@@ -2008,15 +2031,14 @@ doc ///
 	Text     
             We compute the degree four invariant for plane cubics by finding a trivial submodule in $  \operatorname{Sym}^4 \operatorname{Sym}^3 \mathbb{C}^3$.  
 	Example
-	    sl3=simpleLieAlgebra("A",2);
-	    CB = chevalleyBasis("A",2);
-	    V=irreducibleLieAlgebraModule({1,0},sl3);
-	    installRepresentation(V,CB,CB#"BasisElements");
+	    sl3=simpleLieAlgebra("A",2)
+	    V=standardRepresentation(sl3);
 	    S3V = symmetricPowerRepresentation(3,V);
 	    S4S3V = symmetricPowerRepresentation(4,S3V);
 	    hwv = weightMuHighestWeightVectorsInW({0,0},S4S3V); 
 	    remove(S4S3V.cache,representation);
 	    V0=irreducibleLieAlgebraModule({0,0},sl3);
+	    CB = chevalleyBasis(sl3);
 	    installRepresentation(V0,CB,GTrepresentationMatrices(V0));
 	    L = VInSymdW(V0,4,S3V,hwv)
         Text
@@ -2025,15 +2047,14 @@ doc ///
 
 
 TEST ///
-    sl3=simpleLieAlgebra("A",2);
-    CB = chevalleyBasis("A",2);
-    V=irreducibleLieAlgebraModule({1,0},sl3);
-    installRepresentation(V,CB,CB#"BasisElements");
+    sl3=simpleLieAlgebra("A",2)
+    V=standardRepresentation(sl3);
     S3V = symmetricPowerRepresentation(3,V);
     S4S3V = symmetricPowerRepresentation(4,S3V);
     hwv = weightMuHighestWeightVectorsInW({0,0},S4S3V); 
     remove(S4S3V.cache,representation);
     V0=irreducibleLieAlgebraModule({0,0},sl3);
+    CB = chevalleyBasis(sl3);
     installRepresentation(V0,CB,GTrepresentationMatrices(V0));
     L = VInSymdW(V0,4,S3V,hwv);
     assert(L=={B_0*B_3*B_7*B_9-B_0*B_3*B_8^2-B_0*B_4*B_6*B_9+B_0*B_4*B_7*B_8+B_0*B_5*B_6*B_8-B_0*B_5*B_7^2-B_1^2*B_7*B_9+B_1^2*B_8^2+B_1*B_2*B_6*B_9-B_1*B_2*B_7*B_8+B_1*B_3*B_4*B_9-B_1*B_3*B_5*B_8-2*B_1*B_4^2*B_8+3*B_1*B_4*B_5*B_7-B_1*B_5^2*B_6-B_2^2*B_6*B_8+B_2^2*B_7^2-B_2*B_3^2*B_9+3*B_2*B_3*B_4*B_8-B_2*B_3*B_5*B_7-2*B_2*B_4^2*B_7+B_2*B_4*B_5*B_6+B_3^2*B_5^2-2*B_3*B_4^2*B_5+B_4^4})
@@ -2068,28 +2089,26 @@ doc ///
          
 	Example
 	    sl4=simpleLieAlgebra("A",3);
-	    V= standardModule(sl4);
-	    CB = chevalleyBasis("A",3);
-	    installRepresentation(V,CB,CB#"BasisElements");
+	    V= standardRepresentation(sl4);
 	    W2V = exteriorPowerRepresentation(2,V);
 	    W3W2V = exteriorPowerRepresentation(3,W2V);
 	    hwv = weightMuHighestWeightVectorsInW({2,0,0},W3W2V)
 	    remove(W3W2V.cache,representation);
 	    V=irreducibleLieAlgebraModule({2,0,0},sl4);
+	    CB = chevalleyBasis(sl4);
 	    installRepresentation(V,CB,GTrepresentationMatrices(V));
 	    L = VInWedgekW(V,3,W2V,hwv)
 ///
 
 TEST ///
     sl4=simpleLieAlgebra("A",3);
-    V= standardModule(sl4);
-    CB = chevalleyBasis("A",3);
-    installRepresentation(V,CB,CB#"BasisElements");
+    V= standardRepresentation(sl4);
     W2V = exteriorPowerRepresentation(2,V);
     W3W2V = exteriorPowerRepresentation(3,W2V);
     hwv = weightMuHighestWeightVectorsInW({2,0,0},W3W2V)
     remove(W3W2V.cache,representation)
     V=irreducibleLieAlgebraModule({2,0,0},sl4);
+    CB = chevalleyBasis(sl4);
     installRepresentation(V,CB,GTrepresentationMatrices(V));
     L = VInWedgekW(V,3,W2V,hwv)
     assert(L=={p_{0, 1, 3}, p_{0, 2, 3}+p_{0, 1, 4}, 2*p_{0, 2, 4}, 3*p_{1, 2, 3}+3*p_{0, 1, 5}, 3*p_{1, 2, 4}+3*p_{0, 2, 5}, 12*p_{1, 2, 5}, -12*p_{1, 3, 4}+12*p_{0, 3, 5}, -12*p_{2, 3, 4}+12*p_{0, 4, 5}, -24*p_{2, 3, 5}+24*p_{1, 4, 5}, 144*p_{3, 4, 5} })
@@ -2119,16 +2138,14 @@ doc ///
             Let $V$ be the adjoint representation of $sl_3$, and let $W$ be the standard representation. Then $V \otimes W$ contains a submodule with highest weight $(0,2)$. We compute an explicit basis for this submodule. 
          
 	Example
-	    sl3=simpleLieAlgebra("A",2);
-	    CB = chevalleyBasis("A",2);
-	    V = irreducibleLieAlgebraModule({1,1},sl3);
-	    installRepresentation(V,CB,GTrepresentationMatrices(V));
-	    W = irreducibleLieAlgebraModule({1,0},sl3);
-	    installRepresentation(W,CB,GTrepresentationMatrices(W));
+	    sl3 = simpleLieAlgebra("A",2)
+	    V = adjointRepresentation(sl3);
+	    W = standardRepresentation(sl3);
 	    T = tensorProductRepresentation(V,W);
 	    hwv = weightMuHighestWeightVectorsInW({0,2},T)
 	    remove(T.cache,representation);
 	    U = irreducibleLieAlgebraModule({0,2},sl3);
+	    CB = chevalleyBasis(sl3);
 	    installRepresentation(U,CB,GTrepresentationMatrices(U));
 	    L = UInVtensorW(U,V,W,hwv)
 ///

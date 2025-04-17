@@ -14,7 +14,7 @@ ChevalleyBasis = new Type of HashTable
 -- WriteInBasis
 
 
-net(ChevalleyBasis) := CB -> net "Chevalley basis of "expression(CB#"LieAlgebra")
+net(ChevalleyBasis) := CB -> net "Chevalley basis of"expression(CB#"LieAlgebra")
 
 
 
@@ -38,4 +38,51 @@ chevalleyBasis(LieAlgebra) := (g) -> (
     if isSimple(g) and g#"RootSystemType"=="C" then return sp2nBasis(g#"LieAlgebraRank");
     if isSimple(g) and g#"RootSystemType"=="D" then return so2nBasis(g#"LieAlgebraRank");
     error "Not implemented yet"
+);
+
+
+standardRepresentation = method(
+    TypicalValue => LieAlgebraModule
+    )
+
+standardRepresentation(String,ZZ) := (type,m) -> (
+    CB:=chevalleyBasis(type,m);
+    standardRepresentation(CB)
+);
+
+standardRepresentation(LieAlgebra) := g -> (
+    CB:=chevalleyBasis(g);
+    standardRepresentation(CB)
+);
+
+standardRepresentation(ChevalleyBasis) := CB -> (
+    V := standardModule(CB#"LieAlgebra");
+    installRepresentation(V,CB,CB#"BasisElements");
+    V
+);
+
+
+adjointRepresentation = method(
+    TypicalValue => LieAlgebraModule
+    )
+
+adjointRepresentation(String,ZZ) := (type,m) -> (
+    CB:=chevalleyBasis(type,m);
+    adjointRepresentation(CB)
+);
+
+adjointRepresentation(LieAlgebra) := (g) -> (
+    CB:=chevalleyBasis(g);
+    adjointRepresentation(CB)
+);
+
+adjointRepresentation(ChevalleyBasis) := CB -> (
+    br := CB#"Bracket";
+    writeInBasis := CB#"WriteInBasis";
+    B := CB#"BasisElements";
+    ad := X -> transpose matrix apply(B, Y -> writeInBasis br(X,Y));
+    L := apply(B, X -> ad X);
+    V := adjointModule(CB#"LieAlgebra");
+    installRepresentation(V,CB,L);
+    V
 );

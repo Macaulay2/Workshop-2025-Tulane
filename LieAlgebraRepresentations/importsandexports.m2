@@ -52,7 +52,9 @@ export {
 
 -- From ChevalleyBases.m2
 export {"ChevalleyBasis",
-    "chevalleyBasis"
+    "chevalleyBasis",
+    "standardRepresentation",
+    "adjointRepresentation"
     }
 
 
