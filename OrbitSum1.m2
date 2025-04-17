@@ -54,7 +54,7 @@ orbSum = (f,G,n) ->(
     g:=0;
     G*v;
     for i from 0 to (#(G*v)-1) do(
-        g = g + vectorToMonomial(vector(G*v)_i,R);
+        g = g + vectorToMonomial(vector((G*v)_i),R);
     );
     g
 )
@@ -85,20 +85,20 @@ orbSumList(G,4,3)
 --Toy Examples 1
 -- Orbit Sum for {s_i}_{i\in\{1,\ldost n\}} where s_i=x_1*x_2*\ldots*x_i
     -- defining s_i
-    SPoly=i->(
+    SPoly=(i,n)->(
+    R:=QQ[x_1..x_n];
     f:=1;
-    for j from 1 to i do(
-    f=f*x_j;
-    );
+    for j from 1 to i do(f=f*x_j);
     f
     )
+    SPoly(3,4)
 
     -- Getting the OrbitSum List for s_i polynomials in n variables
     OrbSumSi=(n,G)->(
+        R:=QQ[x_1..x_n];
         L:={};
-        for i from 1 to n do(
-         L = L | { orbSum( SPoly(i),G,n)};
-        );
-        L
+        for i from 1 to n do( L = L | { orbSum((SPoly(i,n)),G,n)});
+        toList(set L)
     )
 
+    OrbSumSi(4,G)
