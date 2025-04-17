@@ -121,8 +121,8 @@ getPowerSystem(Matrix, List) := List => (A, m) -> (
     n := numRows A;
     p := local p;
     x := local x;
-    R := QQ[p_1..p_n];
-    S := QQ[x_1..x_n];
+    R := RR[p_1..p_n];
+    S := RR[x_1..x_n];
     f := map(S,R, matrix{for i from 1 to n list (sum(for j from 1 to n list x_j^i))});
     flatten entries f(A*(transpose vars R) - transpose matrix {m})
 )
