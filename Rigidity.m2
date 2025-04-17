@@ -333,8 +333,7 @@ isSpanningInSkewSymmetricCompletionMatroid(ZZ, ZZ, Graph) := Boolean => opts -> 
     isSpanningInSkewSymmetricCompletionMatroid(r, n, edges G, opts)
 );
 
-x = symbol x;
-getSymmetricCompletionMatrix = method(Options => {Variable => x}, TypicalValue => Matrix);
+getSymmetricCompletionMatrix = method(Options => {Variable => null}, TypicalValue => Matrix);
 
 -- input r - rank, n - number of vertices, G - list of set of edges eg {set {1, 2}, {2, 4}}
 getSymmetricCompletionMatrix(ZZ, ZZ, List) := Matrix => opts -> (r, n, G) -> (
@@ -345,7 +344,7 @@ getSymmetricCompletionMatrix(ZZ, ZZ, List) := Matrix => opts -> (r, n, G) -> (
     M := genericMatrix(R, r, n); -- Return a generic r by n matrix over R
 
     -- convert sets to lists
-    Glist = G / (pair -> toSequence sort toList pair);
+    Glist := G / (pair -> toSequence sort toList pair);
 
     -- polynomialList obtained from A -> A^T*A
     polynomialLists := apply(Glist, pair -> (transpose(M)*M)_(pair));
