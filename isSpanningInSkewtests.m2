@@ -1,3 +1,5 @@
+-- Test for isSpanningInSkewSymmetricCompletionMatroid
+Test ///
 -- Test for K_3,3 Bipartite graph(should not be spanning)
 G = completeMultipartiteGraph({3,3})
 assert(isSpanningInSkewSymmetricCompletionMatroid(2, G) === false)
@@ -16,5 +18,5 @@ M1 = getSkewSymmetricCompletionMatrix(2, G, Variable => "x");
 M2 = getSkewSymmetricCompletionMatrix(2, G, Variable => "y");
 assert(ring M1 =!= ring M2) -- should have different variable names
 
-
+///
 
