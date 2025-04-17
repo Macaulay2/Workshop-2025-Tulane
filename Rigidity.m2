@@ -33,6 +33,7 @@ newPackage(
     Keywords => {},
     PackageExports => {"Graphs", "NumericalLinearAlgebra"},
     PackageImports => {},
+    AuxiliaryFiles => true,
     DebuggingMode => true
 )
 
@@ -408,14 +409,15 @@ doc ///
     	Add package description
 ///
 
-load "./RigidityDocs.m2"
+load "./Rigidity/RigidityDocs.m2"
 
 ------------------------------------------------------------------------------
 -- Tests
 ------------------------------------------------------------------------------
 
-load "./RigidityTests.m2"
-load "./isSpanningInSkewtests.m2"
+load "./Rigidity/RigidityTests.m2"
+load "./Rigidity/isSpanningInSkewtests.m2"
+load "./Rigidity/locallyRigidTests.m2"
 end
 
 restart

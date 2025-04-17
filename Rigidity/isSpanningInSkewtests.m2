@@ -1,5 +1,5 @@
 -- Test for isSpanningInSkewSymmetricCompletionMatroid
-Test ///
+TEST ///
 -- Test for K_3,3 Bipartite graph(should not be spanning)
 G = completeMultipartiteGraph({3,3})
 assert(isSpanningInSkewSymmetricCompletionMatroid(2, G) === false)
