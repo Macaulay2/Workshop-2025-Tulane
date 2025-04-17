@@ -373,6 +373,7 @@ doc ///
 
 load "./Rigidity/isLocallyRigid.m2"
 load "./Rigidity/RigidityDocs.m2"
+load "./Rigidity/MatrixCompletionNonSymmetric.m2"
 
 ------------------------------------------------------------------------------
 -- Tests
