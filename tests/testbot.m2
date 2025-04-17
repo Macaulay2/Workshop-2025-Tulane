@@ -12,11 +12,13 @@
 -- Terminate each directory name with a "/".
 
 -- Edit the following lines to preload and check your package 
-needsPackage ("TestPackage", FileName => "tests/TestPackage.m2")
-check TestPackage
+needsPackage "Rigidity"
+check Rigidity
 
+-*
 -- and/or run a series of examples either with
 load "tests/example.m2"
 -- or with
 capture get "tests/example.m2"
 -- at every push on GitHub.
+*-
