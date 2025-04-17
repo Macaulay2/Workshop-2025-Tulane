@@ -128,6 +128,8 @@ doc ///
   Key
     hillClimber
     (hillClimber, FunctionClosure, FunctionClosure, List)
+    [hillClimber, StepSize]
+    [hillClimber, NumDirections]
   Headline
     Constructs a HillClimber object
   Usage
@@ -139,6 +141,10 @@ doc ///
       a function that takes in a list of points and returns a boolean.
     startingPoint: List
       a point to start the hill climbing algorithm at.
+    StepSize => RR
+      a real number that indicates the size of the step taken in the hill climbing algorithm.
+    NumDirections => ZZ
+      an integer that indicates the number of random directions to generate in each step of the hill climbing algorithm.
   Outputs
     hC: HillClimber
       a HillClimber object.
@@ -195,7 +201,7 @@ doc ///
     Example
       nextStep(hC)
     Text
-      The hill climber is also updated simultaneously if one checks the new CurrentPoint and CurrentStep in hC
+      The hill climber is also updated simultaneously. One can check the new CurrentPoint and CurrentStep in hC
     Example
       peek hC
   SeeAlso
@@ -208,6 +214,7 @@ doc ///
   Key
     track
     (track, HillClimber)
+    [track, Quiet]
   Headline
     Perform several steps of the hill-climbing algorithm untill the stop condition is met.
   Usage
@@ -215,7 +222,7 @@ doc ///
   Inputs
     hC: HillClimber
       a HillClimber object
-    Quiet: Boolean
+    Quiet => Boolean
       a Boolean that indicates to print messages about the steps or not
   Outputs
     finalPoint: List
@@ -234,7 +241,9 @@ doc ///
     Example
       trackedPoint = track(hC)
     Text
-      The information about the point and the loss function value at the point is printed and the hill climber is updated with the final point it find. We could also change our loss function to find a more accurate result. One can set the optional input Quiet to true to not print the middle steps of track.
+      The information about the point and the loss function value at the point is printed and the hill climber is updated with the final point it find.
+
+      One could also update the stop condition in the @TO2(HillClimber, "HillClimber")@ object hC to find a more accurate result. One can set the optional input Quiet to true to not print the middle steps of track.
     Example
       stopFunction2 = L -> lossFunction(L) < 0.00001;
       hCAccurate = hillClimber(lossFunction,stopFunction2,trackedPoint)
@@ -245,5 +254,5 @@ doc ///
   SeeAlso
     HillClimber
     hillClimber
-    (track, HillClimber)
+    (nextStep, HillClimber)
 ///
