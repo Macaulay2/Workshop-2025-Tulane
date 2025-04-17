@@ -195,7 +195,7 @@ doc ///
     Example
       nextStep(hC)
     Text
-      The hill climber is also updated simultaneously if one checks the new CurrentPoint and CurrentStep in hC
+      The hill climber is also updated simultaneously. One can check the new CurrentPoint and CurrentStep in hC
     Example
       peek hC
   SeeAlso
@@ -234,7 +234,9 @@ doc ///
     Example
       trackedPoint = track(hC)
     Text
-      The information about the point and the loss function value at the point is printed and the hill climber is updated with the final point it find. We could also change our loss function to find a more accurate result. One can set the optional input Quiet to true to not print the middle steps of track.
+      The information about the point and the loss function value at the point is printed and the hill climber is updated with the final point it find.
+
+      We could also update the stop condition in the @TO2(HillClimber, "HillClimber")@ object to find a more accurate result. One can set the optional input Quiet to true to not print the middle steps of track.
     Example
       stopFunction2 = L -> lossFunction(L) < 0.00001;
       hCAccurate = hillClimber(lossFunction,stopFunction2,trackedPoint)
@@ -245,5 +247,5 @@ doc ///
   SeeAlso
     HillClimber
     hillClimber
-    (track, HillClimber)
+    (nextStep, HillClimber)
 ///
