@@ -37,9 +37,9 @@ F1 ==F
 for d from 1 to dg do F1 = sum(cc+1,k-> sum(bb+1, j-> sum(aa+1,i->x_(i+1,j+1,k+1)*diff(a_(i+1,d)*b_(j+1,d)*c_(k+1,d),F1))))
 
 restart
-tab1 = {{1,2,3}, {4}}
-tab2 = {{1,2,4}, {3}}
-tab3 = {{1,3,4}, {2}}
+tab1 = {{1,2}, {3,4}}
+tab2 = {{1,2}, {3,4}}
+tab3 = {{1,3}, {2,4}}
 
 highestWeight = (tab1,tab2,tab3) -> (
 
@@ -128,19 +128,28 @@ highestWeight = (tab1,tab2,tab3) -> (
     T1 = product detListABC;
     print("---T1---");
     print(T1);
+
+    limitTab := (d,tab) -> (
+        for item in tab do (
+            if (isMember(d,item)) then (
+                return length item
+            )
+        )
+
+    );
     F1 = T1;
-    F1 = sum(cc-1,k-> sum(bb-1, j-> sum(aa-1,i->x_(i+1,j+1,k+1)*diff(a_(i+1,3)*b_(j+1,3)*c_(k+1,3),F1))));
+    for d from 1 to dg do (
+        F1 = sum(limitTab(d,tab3)-1,k-> sum(limitTab(d,tab2)-1, j-> sum(limitTab(d,tab1)-1,i->x_(i+1,j+1,k+1)*diff(a_(i+1,d)*b_(j+1,d)*c_(k+1,d),F1))));
+    );
     print("---F1---");
     print(F1);
 
-    -- myList := flatten flatten apply(aa+1, i-> apply(bb+1, j-> apply(cc+1, k-> {i,j,k}  )));
-    -- print("---myList---");
-    -- print(myList);
-
-
 )
 
-time highestWeight(tab2,tab1,tab3)
+
+time highestWeight(tab1,tab1,tab3)
+
+
 
 
 
