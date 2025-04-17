@@ -10,7 +10,7 @@ TEST ///
     assert(isLocallyRigid(2,3,L2,Field => QQ))
     assert(isLocallyRigid(2,3,L2,Field => RR))
     assert(isLocallyRigid(2,3,L2,Field => RR_100))
---    assert(isLocallyRigid(4,3,L2,Field => RR_100, Iterations => 5))
+    assert(isLocallyRigid(4,3,L2,Field => RR_100, Iterations => 5))
 ///
 
 TEST ///
