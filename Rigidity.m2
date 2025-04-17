@@ -31,7 +31,7 @@ newPackage(
     },
     Headline => "rigidity theory tools",
     Keywords => {},
-    PackageExports => {"Graphs"},
+    PackageExports => {"Graphs", "NumericalLinearAlgebra"},
     PackageImports => {},
     DebuggingMode => true
 )
