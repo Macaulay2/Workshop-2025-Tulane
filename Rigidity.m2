@@ -46,6 +46,8 @@ export {
     "RandomRuns",
     "getSkewSymmetricCompletionMatrix",
     "isSpanningInSkewSymmetricCompletionMatroid",
+    "getSymmetricCompletionMatrix",
+    "isSpanningInSymmetricCompletionMatroid",
     "Field"
 }
 
@@ -345,6 +347,8 @@ getSymmetricCompletionMatrix(ZZ, ZZ, List) := Matrix => opts -> (r, n, G) -> (
 
     -- convert sets to lists
     Glist := G / (pair -> toSequence sort toList pair);
+    -- fix indexing
+    Glist = Glist / (pair -> (pair#0 -1, pair#1 - 1));
 
     -- polynomialList obtained from A -> A^T*A
     polynomialLists := apply(Glist, pair -> (transpose(M)*M)_(pair));
@@ -356,6 +360,53 @@ getSymmetricCompletionMatrix(ZZ, ZZ, List) := Matrix => opts -> (r, n, G) -> (
 
 getSymmetricCompletionMatrix(ZZ,ZZ) := Matrix => opts -> (r,n) -> (
     getSymmetricCompletionMatrix(r,n, subsets(toList(0..(n-1)), 2), opts)
+);
+
+isSpanningInSymmetricCompletionMatroid = method(Options => {Numerical => false, FiniteField => 0}, TypicalValue => Boolean);
+
+isSpanningInSymmetricCompletionMatroid(ZZ, ZZ, List) := Boolean => opts -> (r, n, E) -> (
+    M := getSymmetricCompletionMatrix(r, n, E);
+    R := ring M;
+    C := coefficientRing R; -- evaluate over an arbitrary field (e.g. given as an option)?   
+    crds := gens R;
+    if opts.Numerical 
+    then (
+        listOfTruthValues := apply(
+            toList(0..1), -- number of confidence runs?
+            k -> (
+        		randomValues := random(C^1,C^(r*n));
+        		fromRtoC := map(C,R,randomValues);
+        		r*n - (r+1)*r/2 == rank fromRtoC M
+            ) 
+        );
+        if # set(listOfTruthValues) =!= 1 then error("Expected all the numerical attempts to give the same result. Try again.");
+        all listOfTruthValues
+    )
+    else if opts.FiniteField =!= 0
+    then (
+        listOfTruthValuesFiniteFields := apply(
+            toList(0..1),
+            n -> r*n - (r+1)*r/2 == rank(
+                a := symbol a; 
+                GF(opts.FiniteField, Variable => a);
+                sub(
+                    getSymmetricCompletionMatrix(r, n, E), 
+                    apply(
+                        toList(1..r*n), 
+                        i -> crds_i => (
+                            randIndex := random(1,opts.FiniteField);
+                            if randIndex = opts.FiniteField
+                            then 0
+                            else a^randIndex
+                        )
+                    )
+                ) 
+            );
+            if # set(listOfTruthValuesFiniteFields) =!= 1 then error("Expected all the numerical attempts to give the same result. Try again.");
+            all listOfTruthValuesFiniteFields
+        )
+    )
+    else rank getSymmetricCompletionMatrix(r, n, E) == r*n - (r-1)*r/2
 );
 
 ------------------------------------------------------------------------------
