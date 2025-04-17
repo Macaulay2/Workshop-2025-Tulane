@@ -20,7 +20,7 @@ newPackage(
 -- Code
 ------------------------------------------------------------------------------
 
-getFiniteCompletion = method(Options => {Variable => nulll}, TypicalValue => Matrix)
+getFiniteCompletion = method(Options => {Variable => null}, TypicalValue => Matrix)
 
 isFinitelyCompletable = method(TypicalValue => Boolean)
 
@@ -35,8 +35,8 @@ getFiniteCompletion(ZZ, ZZ, ZZ, List) := Matrix => opts -> (completionRank, rowD
     polynomialLists := apply(edgeList / toList, pair -> (A * B)_{pair#0, pair#1}); 
     jacobianList := polynomialLists / jacobian;
 
-    -- Folding horizontal concatination of the jacobian of each polynomial (from each edge)
-    1/2 * transpose fold((a,b) -> a|b, jacobianList)
+    -- Folding horizontal concatenation of the jacobian of each polynomial (from each edge)
+    transpose fold((a,b) -> a|b, jacobianList)
 );
 
 isFinitelyCompletable(ZZ, ZZ, ZZ, List) := Boolean => (completionRank, rowDim, colDim, edgeList) -> (
