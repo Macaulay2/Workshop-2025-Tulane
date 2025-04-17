@@ -167,7 +167,6 @@ doc ///
     (track, HillClimber)
 ///
 
-
 doc ///
   Key
     nextStep
@@ -178,21 +177,21 @@ doc ///
     nextStep(hC)
   Inputs
     hC: HillClimber
-      a HashTable including the configurations of the hill-climbing algorithm.
+      a HillClimber object
   Outputs
     nextPoint: List
       the next point as the starting points when continuing performing the hill-climbing algorithm.
   Description
     Text
-      Let's define a hill climber with the loss function, stop condition, and starting point defined below:
+      Let's define a @TO2(HillClimber, "HillClimber")@ object with the loss function, stop function, and starting point below:
     Example
-      lossFunction = x -> norm transpose matrix{x}
-      stopCondition = x -> if x < 0.001 then true else false
-      startingPoint = {1,2}
-      hC = hillClimber(lossFunction, stopCondition,startingPoint)
+      lossFunction = L -> abs(L_1 - ((L_0)^2 + 1));
+      stopFunction = L -> lossFunction(L) < 0.001;
+      startingPoint = {4,8};
+      hC = hillClimber(lossFunction,stopFunction,startingPoint)
       peek hC
     Text
-      The following code porforms one step of hill climbing from the starting point and returns the new point it predicts
+      The above example means that we start with a point $(4,8)$ in $\mathbb{R}^2$ and we wish to find a point on the curve $y = x^2 + 1$ via hill climb. The following code porforms one step of hill climbing from the starting point and returns the new point it predicts
     Example
       nextStep(hC)
     Text
@@ -200,4 +199,51 @@ doc ///
     Example
       peek hC
   SeeAlso
+    HillClimber
+    hillClimber
+    (track, HillClimber)
+///
+
+doc ///
+  Key
+    track
+    (track, HillClimber)
+  Headline
+    Perform several steps of the hill-climbing algorithm untill the stop condition is met.
+  Usage
+    track(hC)
+  Inputs
+    hC: HillClimber
+      a HillClimber object
+    Quiet: Boolean
+      a Boolean that indicates to print messages about the steps or not
+  Outputs
+    finalPoint: List
+      the point found when the stopping criterion is met.
+  Description
+    Text
+      Consider a problem that we start with a point $(1,3)$ in $\mathbb{R}^2$ and we wish to find a point on the curve $y = x^2 + 1$ via hill climb.
+    Example
+      lossFunction = L -> abs(L_1 - ((L_0)^2 + 1));
+      stopFunction = L -> lossFunction(L) < 0.01;
+      startingPoint = {1, 3};
+      hC = hillClimber(lossFunction,stopFunction,startingPoint)
+      peek hC
+    Text
+      Then if we track from the starting point untill we find a point on the parabola, we have
+    Example
+      trackedPoint = track(hC)
+    Text
+      The information about the point and the loss function value at the point is printed and the hill climber is updated with the final point it find. We could also change our loss function to find a more accurate result. One can set the optional input Quiet to true to not print the middle steps of track.
+    Example
+      stopFunction2 = L -> lossFunction(L) < 0.00001;
+      hCAccurate = hillClimber(lossFunction,stopFunction2,trackedPoint)
+      peek hCAccurate
+      accuratePoint = track(hCAccurate,Quiet => true)
+      lossFunction accuratePoint
+      peek hCAccurate
+  SeeAlso
+    HillClimber
+    hillClimber
+    (track, HillClimber)
 ///

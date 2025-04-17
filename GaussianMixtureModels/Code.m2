@@ -256,7 +256,7 @@ localRootApproximation (List, List, RR) := (point, F, tol) -> (
         lattice = makeLattice(realPoint, radius, epsilon);
         newpoint = minimizeLocalDistance(newpoint, lattice, F);
 
-        radius = radius/2;
+        radius =3* radius/4;
         epsilon = radius/2;
     );
 
