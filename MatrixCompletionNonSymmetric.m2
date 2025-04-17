@@ -25,14 +25,16 @@ getFiniteCompletion = method(Options => {Variable => nulll}, TypicalValue => Mat
 isFinitelyCompletable = method(TypicalValue => Boolean)
 
 getFiniteCompletion(ZZ, ZZ, ZZ, List) := Matrix => opts -> (completionRank, rowDim, colDim, edgeList) -> (
-    -- Get the matrix incompleteness pattern as a generic matrix
     crds := getSymbol toString(opts.Variable);
-    R := QQ(monoid[crds_(1) .. crds_(rowDim*colDim)]); -- Create a ring with d*n variables
+    R := QQ(monoid[crds_(1) .. crds_(rowDim*colDim)]); -- Create a ring with rowDim * colDim variables
+
     A := genericMatrix(R, rowDim, completionRank); -- Return a generic n by r matrix over R
     B := genericMatrix(R, completionRank, colDim); -- Return a generic r by m matrix over R
-    -- Here is the polynomial we might want to switch in the future
+
+    -- polynomialLists obtained from A, B -> A*B
     polynomialLists := apply(edgeList / toList, pair -> (A * B)_{pair#0, pair#1}); 
     jacobianList := polynomialLists / jacobian;
+
     -- Folding horizontal concatination of the jacobian of each polynomial (from each edge)
     1/2 * transpose fold((a,b) -> a|b, jacobianList)
 );
