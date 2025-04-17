@@ -1,25 +1,3 @@
-newPackage(
-    "MatrixCompletionNonSymmetric",
-    Version => "0.1",
-    Authors => {
-        {
-            Name => "Ryan A. Anderson",
-            Email => "raanderson@g.ucla.edu",
-            HomePage => "ryan-a-anderson.github.io"
-        }
-    },
-    Headline => "tests finite completability at specified ranks for nonsymmetric incomplete matrices",
-    Keywords => {},
-    PackageExports => {},
-    PackageImports => {},
-    DebuggingMode => true
-)
-
-
-------------------------------------------------------------------------------
--- Code
-------------------------------------------------------------------------------
-
 getFiniteCompletion = method(Options => {Variable => null}, TypicalValue => Matrix)
 
 isFinitelyCompletable = method(TypicalValue => Boolean)
