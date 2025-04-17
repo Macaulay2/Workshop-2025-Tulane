@@ -262,3 +262,13 @@ localRootApproximation (List, List, RR) := (point, F, tol) -> (
 
     newpoint
 )
+--Runs localRootApproximation from user inputs
+auxiliaryOflocalRootApproximation=method()
+auxiliaryOflocalRootApproximation(Matrix,List,RR):=(A,m,tol)->(
+    zo:=(toList (1..(#A)))*0; 
+    F:=getPowerSystem(A,zo);
+    point:=solvePowerSystem(A,m);
+    newPoint:=localRootApproximation(point,F,tol);
+    apply(F,f->f(toSequence newPoint))
+    )
+    
