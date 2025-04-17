@@ -37,7 +37,7 @@ ShuffMon=(f,n)->(
 )
 
 ListSpMon=(n,d)->(
-    d=min {d,n*(n-1)/2};
+    d=min {d,n*(n-1)//2};
     R:=QQ[x_1..x_n];
     SpI:=ListSpInd(d,n);
     SpMon:={};
