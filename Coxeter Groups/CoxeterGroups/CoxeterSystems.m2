@@ -681,6 +681,17 @@ dynkinDiagram CoxeterGroup := DynkinDiagram => W -> (
 -----------------------------------------------------------------
 
 
+isDefinedAt = method()
+isDefinedAt (Function, String) := (f, x) -> (
+    try (
+        f x;
+        true
+    ) else (
+        false
+    )
+)
+
+
 specificDynkin = method()
 
 specificDynkin String := DynkinDiagram => name -> (
@@ -699,9 +710,10 @@ specificDynkin String := DynkinDiagram => name -> (
 		error "Enter a valid positive integer"
 	);
 
-	for i from 0 to #m-1 do if value(m#i)<0 then (
-		error "specificDynkin: Expected the a valid positive integer."
+	for i from 0 to #m-1 do if not (isDefinedAt(value,m#i) and instance(value m#i,ZZ)) then (
+		error "specificDynkin: Expected a valid positive integer."
 	);
+
 	n:=value m;
 
     if first name == "A" then (
