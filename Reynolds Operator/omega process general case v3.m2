@@ -20,7 +20,7 @@ aVarsMatrix = matrix {(gens S)_{0..N-1}}
 
 universaldForm = (allMonomialsMatrix * transpose(aVarsMatrix))_0_0
 
--- ****** linear change of variables ******
+-- ****** linear change of variables & extract coefficients ******
 
 zVars = z_(1,1)..z_(n,n)
 
@@ -29,15 +29,22 @@ R' = QQ[aVars, zVars][X_1..X_n]
 
 fromStoR = map(R, S, join(take(gens R, N),take(gens R, -n)))
 universaldForm = fromStoR(universaldForm)
+aVarsMatrix = matrix {(gens S)_{0..N-1} / fromStoR}
 fromRtoR' = map(R', R, gens coefficientRing R' | gens R')
 f = fromRtoR' universaldForm
 coefficient(X_1*X_2,f)
-zVarsMatrix = genericMatrix(R, z_(1,1), n, n)
-XVarsMatrix = genericMatrix(R, X_1, n, 1)
 
-transformedXVars = zVarsMatrix * XVarsMatrix
 
-transformeddForm = sub(universaldForm, aVarsMatrix | transpose(transformedXVars))
+zVarsMatrix = genericMatrix(R, (z_(1,1))_R, n, n)
+XVarsMatrix = genericMatrix(R, (X_1)_R, n, 1)
+
+SLnLinearChangeofVars = map(R,R, aVarsMatrix | matrix mutableMatrix(R, 1, n^2) | transpose(zVarsMatrix * XVarsMatrix))
+
+
+
+transformeddForm = SLnLinearChangeofVars(universaldForm)
+
+coefficient(X_1*X_2,fromRtoR'(transformeddForm))
 
 
 -- === 4. Form μ^*(a_1^2) and expand ===
