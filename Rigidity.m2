@@ -56,6 +56,7 @@ export {
 ------------------------------------------------------------------------------
 -- Code
 ------------------------------------------------------------------------------
+load "./Rigidity/CayleyMenger.m2"
 
 getRigidityMatrix = method(Options => {Variable => null}, TypicalValue => Matrix)
 

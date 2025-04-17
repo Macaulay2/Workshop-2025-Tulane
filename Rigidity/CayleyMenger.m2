@@ -32,6 +32,7 @@ getAllTrees(List) := List => L->(
     return toReturn;
 );
 getAllTrees(ZZ) := List => n->(
+    x := getSymbol "x";
     R := QQ[x_1..x_n];
     return getAllTrees(gens R);
 )
@@ -60,7 +61,7 @@ getLinearHull = method();
 --and corresponding to an internal node x is the set of pairs of leaves
 --with most recent common ancestor x
 getLinearHull(RingElement):=Matrix=>T->(
-    cladePairs = pairsForClades(T);
+    cladePairs := pairsForClades(T);
     transpose matrix for L in cladePairs list(
     	for p in subsets(gens ring T,2) list(
 	    if member(product(p),L) then 1 else 0
@@ -85,7 +86,8 @@ oneNorm(Matrix):=RingElement=>v->(
 
 cayleyMengerMatrix=method();
 cayleyMengerMatrix(ZZ):=Matrix=>n->(
-    R = QQ[apply(sort subsets(toList(1..n),2),p->d_p)];
+    d := getSymbol "d"; 
+    R := QQ[apply(sort subsets(toList(1..n),2),p->d_p)];
     matrix for i from 1 to n+1 list(
     	for j from 1 to n+1 list(
 	    if i == j then 0
@@ -155,7 +157,7 @@ edgeListToIndices=method();
 --and returns the positions where they appear in the lexicographic order.
 --Assumes each edge is in increasing order
 edgeListToIndices(List,ZZ):=List=>(G,n)->(
-    allEdges=flatten for i from 1 to n-1 list for j from i+1 to n list {i,j};
+    allEdges := flatten for i from 1 to n-1 list for j from i+1 to n list {i,j};
     for e in G list(
     	position(allEdges,f->f==e)
     )
