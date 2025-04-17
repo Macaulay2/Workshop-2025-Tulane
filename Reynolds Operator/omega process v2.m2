@@ -1,6 +1,9 @@
 SLreynolds = method()
 SLreynolds (RingElement) := f -> (
 
+    if not isHomogeneous f then
+        error "f must be homogeneous";
+
     P = ring f;
 
     n = numgens P;
@@ -37,11 +40,14 @@ SLreynolds (RingElement) := f -> (
     );
 
     h = act(f)%gideal;
+    print(h);
     q = n - 1;
     output = 0_P;  -- initialize output (in P, since gtozero maps R to P)
     c = 1;         -- normalization constant
     iVal = 1;      -- loop counter
     
+    print("Starting loop");
+
     while (h != 0) do (
        output = output + gtozero(h)/c;
        h = omegaProcess(h, q);
@@ -60,9 +66,11 @@ n = 3;
 
 P = QQ[x_1..x_n];
 
-f = x_1*x_2 - x_2*x_1;
+f = x_1*x_2*x_3^4 + x_1^2*x_2^3*x_3 + x_1^2*x_2^2*x_3^2 + x_1^4*x_2*x_3;
 
 SLreynolds(f)
 
-xVars = {x_1..x_n};
-gVars = {g_(1,1)..g_(n,n)};
+g = x_1 + x_3^4;
+
+SLreynolds(g) --should raise error: not homogeneous!
+
