@@ -304,7 +304,7 @@ numberStandardYoungTableaux List := ZZ => shape -> (
 
 ---- Given a list (shape) of a diagram, find all the standard fillings
 getCandidateFillings = method()
-getCandidateFillings(List) := YoungTableau => (shape) -> (
+getCandidateFillings List := List => (shape) -> (
     numberRows := #shape;
     --- get the size by adding the number of boxes in each row
     tempSize := 0;
@@ -355,12 +355,9 @@ getCandidateFillings(List) := YoungTableau => (shape) -> (
 )
 
 --- Still need to write this
-candidateFilledTableaux = method() 
-candidateFilledTableaux(List,List) := List => (shape) -> (
-    tempFillings := getCandidateFillings shape;
-    for i to #tempFillings - 1 list (
-        
-    )
+filledSYT = method()
+filledSYT List := List => shape -> (
+    select(getCandidateFillings(shape), i -> isStandard(i))
 )
 
 -- Given a Young diagram, fills each box with the row it is in
@@ -420,6 +417,12 @@ shape = {4,2,1}
 fill = {1,2,3,4,5,6,7}
 listToTableauxList(fill,shape)
 getCandidateFillings {4,2,1}
+
+shape = {4,2,1}
+FSYT = #(filledSYT shape)
+NSYT = numberStandardYoungTableaux shape
+CSYT = #(getCandidateFillings shape)
+filledSYT shape
 
 YT#(2,2)
 
