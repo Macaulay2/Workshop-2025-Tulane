@@ -45,9 +45,9 @@ rho = reflectionRep W
 
 matrixGens = apply(gens W, s -> rho s)
 
-WPolyRep = finiteActionCoxeter(matrixGens, W, QQ[x..z])
+WPolyRep = finiteActionCoxeter(matrixGens, W, QQ[x_0..x_3])
 
-invariants WPolyRep
+invariants(WPolyRep,2)
 
 
 

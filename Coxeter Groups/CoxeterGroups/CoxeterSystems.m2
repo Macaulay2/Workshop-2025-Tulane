@@ -690,7 +690,7 @@ specificDynkin String := DynkinDiagram => name -> (
     if not instance(value last name, ZZ) then (
 	error "specificDynkin: Expected the last character to be an integer."
 	);
-    if #name > 2 and (#name =!= 3 or name#1 =!= "'") then (
+    if not instance(value(name#1),ZZ) and name#1 =!= "'" then (
 	error "specificDynkin: Not one of the named Dynkin diagrams."
 	); 
     if first name == "A" then (
