@@ -29,6 +29,14 @@ shiftingRow Matrix := M -> (
     (matrix{{0} | flatten entries M})_{0..(n-1)}
     )
 
+fabricateMoments = method()
+fabricateMoments List := mu -> (
+    k := #mu;
+    powerSumList := apply(k, i->sum(apply(mu, u -> u^(i+1))));
+    (A,B) := produceMomentSystemMatrices(k, 1/1);
+    A*(transpose matrix({powerSumList}))+B
+)
+
 newtonIdentitySums = method()
 -- newtonIdentitySums takes in an integer k and n and returns list of the 1,2,,...,kth sum of powers in n variables in terms of the
 -- elementary symmmetric polynomials and sum of powers of degrees (k-1) and lower.
