@@ -174,9 +174,9 @@ getSymmetricCompletionMatrix(ZZ, ZZ, List) := Matrix => opts -> (r, n, G) -> (
     M := genericMatrix(R, r, n); -- Return a generic r by n matrix over R
 
     -- convert sets to lists
-    Glist := G / (pair -> toSequence sort toList pair);
-    -- fix indexing
-    Glist = Glist / (pair -> (pair#0 -1, pair#1 - 1));
+    Glist := G / (pair -> 
+        if #pair == 2 then toSequence sort toList pair
+        else toSequence (toList pair | toList pair));
 
     -- polynomialList obtained from A -> A^T*A
     polynomialLists := apply(Glist, pair -> (transpose(M)*M)_(pair));
@@ -204,7 +204,7 @@ isSpanningInSymmetricCompletionMatroid(ZZ, ZZ, List) := Boolean => opts -> (r, n
             k -> (
         		randomValues := random(C^1,C^(r*n));
         		fromRtoC := map(C,R,randomValues);
-        		r*n - (r+1)*r/2 == rank fromRtoC M
+        		r*n - (r-1)*r/2 == rank fromRtoC M
             ) 
         );
         if # set(listOfTruthValues) =!= 1 then error("Expected all the numerical attempts to give the same result. Try again.");
@@ -214,7 +214,7 @@ isSpanningInSymmetricCompletionMatroid(ZZ, ZZ, List) := Boolean => opts -> (r, n
     then (
         listOfTruthValuesFiniteFields := apply(
             toList(0..1),
-            n -> r*n - (r+1)*r/2 == rank(
+            n -> r*n - (r-1)*r/2 == rank(
                 a := symbol a; 
                 GF(opts.FiniteField, Variable => a);
                 sub(
