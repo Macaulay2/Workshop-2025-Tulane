@@ -196,3 +196,37 @@ track(HillClimber) := List => opts -> (hC) -> (
     );
     hC#CurrentPoint
 )
+
+
+-- Generates lattice neighborhood around a general point
+makeLattice = method()
+makeLattice (List, RR, RR) := (point, radius, epsilon) -> (
+    n = length(point);
+
+    -- Build interval
+    m=1;
+    inter := {0}|(flatten while m*epsilon < radius list (
+        {m*epsilon, -m*epsilon}
+        ) do m=m+1);
+
+    -- Build lattice
+    lattice := inter;
+    for i in 1..n-1 do lattice = apply(lattice**inter, t->flatten toList(t));
+
+    apply(lattice, p -> p+point)
+)
+
+-- Euclidean distance minimizing
+minimizeDistance = method()
+minimizeDistance (List, List, List) := (point, neighborhood, F) -> (
+    -- Apply the polynomial at each point of the neighborhood
+    impoint := apply(F, f->f(toSequence point));
+    images := apply(neighborhood, p -> apply(F, f -> f(toSequence p)));
+
+    dist := apply(images, p -> norm(p - impoint));
+
+    minimizer = min dist;
+    for i in 0..#(dist) do
+        if dist_i == minimizer then
+            return neighborhood_i
+)
