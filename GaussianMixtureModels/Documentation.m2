@@ -22,6 +22,11 @@ SeeAlso
 ///
 *-
 
+undocumented {
+  (fabricateMoments, List),
+  (isWellDefined, HillClimber)
+}
+
 doc ///
   Key
    GaussianMixtureModels
@@ -124,27 +129,33 @@ doc ///
   Key
     hillClimber
     (hillClimber, FunctionClosure, FunctionClosure, List)
+    [hillClimber, StepSize]
+    [hillClimber, NumDirections]
   Headline
-    Constructs a @TO2(HillClimber, "HillClimber") object
+    Constructs a HillClimber object
   Usage
     hillClimber(lossFunction, stopCondition, startingPoint)
   Inputs
     lossFunction: FunctionClosure
-      A function that takes in a list of points and returns a real number.
+      a function that takes in a list of points and returns a real number.
     stopCondition: FunctionClosure
-      A function that takes in a list of points and returns a boolean.
+      a function that takes in a list of points and returns a boolean.
     startingPoint: List
-      A point to start the hill climbing algorithm at.
+      a point to start the hill climbing algorithm at.
+    StepSize => RR
+      a real number that indicates the size of the step taken in the hill climbing algorithm.
+    NumDirections => ZZ
+      an integer that indicates the number of random directions to generate in each step of the hill climbing algorithm.
   Outputs
-    HillClimber
-      A HillClimber object.
+    hC: HillClimber
+      a HillClimber object.
   Description
     Text
-      The hillClimber function constructs a HillClimber object. The lossFunction and stopCondition are both functions that take in a point (represented as a list). The lossFunction should return a real number that represents the "loss" at that point, and the stopCondition should return a boolean that indicates whether the hill climbing algorithm should stop. The startingPoint is the point at which the hill climbing algorithm will start. For example, suppose that we start with a point $(4,8)$ in $\mathbb{R}^2$ and we wish to find a point on the curve $y = x^2 + 1$ via hill climb. Then we can construct the HillClimber object as follows:
+      The hillClimber function constructs a @TO2(HillClimber, "HillClimber")@ object. The lossFunction and stopCondition are both functions that take in a point (represented as a list). The lossFunction should return a real number that represents the "loss" at that point, and the stopCondition should return a boolean that indicates whether the hill climbing algorithm should stop. The startingPoint is the point at which the hill climbing algorithm will start. For example, suppose that we start with a point $(4,8)$ in $\mathbb{R}^2$ and we wish to find a point on the curve $y = x^2 + 1$ via hill climb. Then we can construct the HillClimber object as follows:
     Example
-      lossFunction = L -> abs(L_1 - ((L_0)^2 + 1)) 
-      stopFunction = L -> lossFunction(L) < 0.001
-      startingPoint = {4,8}
+      lossFunction = L -> abs(L_1 - ((L_0)^2 + 1));
+      stopFunction = L -> lossFunction(L) < 0.001;
+      startingPoint = {4,8};
       hC = hillClimber(lossFunction, stopFunction, startingPoint)
     Text
       We can then call the nextStep method to take a step in the hill climbing algorithm:
@@ -161,4 +172,88 @@ doc ///
     HillClimber
     (nextStep, HillClimber)
     (track, HillClimber)
+///
+
+doc ///
+  Key
+    nextStep
+    (nextStep, HillClimber)
+  Headline
+    Perform one next step of the hill-climbing algorithm.
+  Usage
+    nextStep(hC)
+  Inputs
+    hC: HillClimber
+      a HillClimber object
+  Outputs
+    nextPoint: List
+      the next point as the starting points when continuing performing the hill-climbing algorithm.
+  Description
+    Text
+      Let's define a @TO2(HillClimber, "HillClimber")@ object with the loss function, stop function, and starting point below:
+    Example
+      lossFunction = L -> abs(L_1 - ((L_0)^2 + 1));
+      stopFunction = L -> lossFunction(L) < 0.001;
+      startingPoint = {4,8};
+      hC = hillClimber(lossFunction,stopFunction,startingPoint)
+      peek hC
+    Text
+      The above example means that we start with a point $(4,8)$ in $\mathbb{R}^2$ and we wish to find a point on the curve $y = x^2 + 1$ via hill climb. The following code porforms one step of hill climbing from the starting point and returns the new point it predicts
+    Example
+      nextStep(hC)
+    Text
+      The hill climber is also updated simultaneously. One can check the new CurrentPoint and CurrentStep in hC
+    Example
+      peek hC
+  SeeAlso
+    HillClimber
+    hillClimber
+    (track, HillClimber)
+///
+
+doc ///
+  Key
+    track
+    (track, HillClimber)
+    [track, Quiet]
+  Headline
+    Perform several steps of the hill-climbing algorithm untill the stop condition is met.
+  Usage
+    track(hC)
+  Inputs
+    hC: HillClimber
+      a HillClimber object
+    Quiet => Boolean
+      a Boolean that indicates to print messages about the steps or not
+  Outputs
+    finalPoint: List
+      the point found when the stopping criterion is met.
+  Description
+    Text
+      Consider a problem that we start with a point $(1,3)$ in $\mathbb{R}^2$ and we wish to find a point on the curve $y = x^2 + 1$ via hill climb.
+    Example
+      lossFunction = L -> abs(L_1 - ((L_0)^2 + 1));
+      stopFunction = L -> lossFunction(L) < 0.01;
+      startingPoint = {1, 3};
+      hC = hillClimber(lossFunction,stopFunction,startingPoint)
+      peek hC
+    Text
+      Then if we track from the starting point untill we find a point on the parabola, we have
+    Example
+      trackedPoint = track(hC)
+    Text
+      The information about the point and the loss function value at the point is printed and the hill climber is updated with the final point it find.
+
+      One could also update the stop condition in the @TO2(HillClimber, "HillClimber")@ object hC to find a more accurate result. One can set the optional input Quiet to true to not print the middle steps of track.
+    Example
+      stopFunction2 = L -> lossFunction(L) < 0.00001;
+      hCAccurate = hillClimber(lossFunction,stopFunction2,trackedPoint)
+      peek hCAccurate
+      accuratePoint = track(hCAccurate,Quiet => true)
+      lossFunction accuratePoint
+      peek hCAccurate
+  SeeAlso
+    HillClimber
+    hillClimber
+    (nextStep, HillClimber)
 ///
