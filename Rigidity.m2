@@ -44,7 +44,7 @@ export {
     "Numerical",
     "FiniteField",
     "getSkewSymmetricCompletionMatrix",
-    "isSpanningInSkewSymmetricCompletionMatroid"
+    "isSpanningInSkewSymmetricCompletionMatroid",
     "Field"
 }
 
