@@ -29,7 +29,11 @@ hillClimber(FunctionClosure, FunctionClosure, List) := HillClimber => opts -> (l
     }
 ) 
 
--- need isWellDefined
+isWellDefined(HillClimber) := Boolean => (hC) -> (
+    try hC#LossFunction(hC#StartingPoint) else return false;
+    try hC#StopCondition(hC#StartingPoint) else return false;
+    true
+)
 
 nextStep = method()
 nextStep(HillClimber) := List => (hC) -> (

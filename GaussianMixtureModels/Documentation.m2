@@ -23,7 +23,8 @@ SeeAlso
 *-
 
 undocumented {
-  (fabricateMoments, List)
+  (fabricateMoments, List),
+  (isWellDefined, HillClimber)
 }
 
 doc ///
