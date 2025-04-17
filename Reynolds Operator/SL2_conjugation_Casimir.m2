@@ -52,3 +52,13 @@ Cas = f -> (
 
     f = f1 + f2 + f3
 );
+
+-- Reynolds demo 
+V = QQ^2
+
+v1 = matrix{{0},{2}}
+v2 = matrix{{1},{4}}
+
+
+
+
