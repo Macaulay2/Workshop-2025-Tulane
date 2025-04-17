@@ -226,17 +226,39 @@ makeLattice (List, RR, RR) := (point, radius, epsilon) -> (
     apply(lattice, p -> p+point)
 )
 
--- Euclidean distance minimizing
-minimizeDistance = method()
-minimizeDistance (List, List, List) := (point, neighborhood, F) -> (
+-- Euclidean distance minimizing in a real neighborhood
+minimizeLocalDistance = method()
+minimizeLocalDistance (List, List, List) := (point, neighborhood, F) -> (
     -- Apply the polynomial at each point of the neighborhood
     impoint := apply(F, f->f(toSequence point));
     images := apply(neighborhood, p -> apply(F, f -> f(toSequence p)));
 
     dist := apply(images, p -> norm(p - impoint));
 
+    -- Return the minimizing point
     minimizer = min dist;
     for i in 0..#(dist) do
         if dist_i == minimizer then
             return neighborhood_i
+)
+
+-- Finds approximate real root of a polynomial system close to a point
+localRootApproximation = method()
+localRootApproximation (List, List, RR) := (point, F, tol) -> (
+    realPoint := apply(point, c -> realPart(c));
+    radius := norm(point-realPoint);
+    epsilon := radius/2;
+
+    lattice := makeLattice(realPoint, radius, epsilon);
+    newpoint := minimizeLocalDistance(point, lattice, F);
+
+    while epsilon > tol do (
+        lattice = makeLattice(realPoint, radius, epsilon);
+        newpoint = minimizeLocalDistance(newpoint, lattice, F);
+
+        radius = radius/2;
+        epsilon = radius/2;
+    );
+
+    newpoint
 )
