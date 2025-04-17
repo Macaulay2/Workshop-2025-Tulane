@@ -128,6 +128,8 @@ doc ///
   Key
     hillClimber
     (hillClimber, FunctionClosure, FunctionClosure, List)
+    [hillClimber, StepSize]
+    [hillClimber, NumDirections]
   Headline
     Constructs a HillClimber object
   Usage
@@ -139,6 +141,10 @@ doc ///
       a function that takes in a list of points and returns a boolean.
     startingPoint: List
       a point to start the hill climbing algorithm at.
+    StepSize => RR
+      a real number that indicates the size of the step taken in the hill climbing algorithm.
+    NumDirections => ZZ
+      an integer that indicates the number of random directions to generate in each step of the hill climbing algorithm.
   Outputs
     hC: HillClimber
       a HillClimber object.
