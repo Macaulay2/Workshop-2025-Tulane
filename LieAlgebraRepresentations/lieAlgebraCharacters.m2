@@ -2,63 +2,63 @@
 
 -----------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------
--- The LieAlgebraModule type
+-- The LieAlgebraCharacter type
 -----------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------
 
 
--- LieAlgebraModule= {
+-- LieAlgebraCharacter= {
 --   LieAlgebra => 
 --   }
 --Functions: weights, dimension, **
 
-LieAlgebraModule = new Type of HashTable 
-LieAlgebraModule.GlobalAssignHook = globalAssignFunction
-LieAlgebraModule.GlobalReleaseHook = globalReleaseFunction
-LL = new ScriptedFunctor from { subscript => w -> g -> irreducibleLieAlgebraModule(g,w) }
+LieAlgebraCharacter = new Type of HashTable 
+LieAlgebraCharacter.GlobalAssignHook = globalAssignFunction
+LieAlgebraCharacter.GlobalReleaseHook = globalReleaseFunction
+LL = new ScriptedFunctor from { subscript => w -> g -> irreducibleLieAlgebraCharacter(g,w) }
 LL.texMath = ///{\mathcal L}///
 
-describe LieAlgebraModule := M -> Describe (
+describe LieAlgebraCharacter := M -> Describe (
     dec := M#"DecompositionIntoIrreducibles";
     g := Parenthesize expression M#"LieAlgebra";
     if #dec == 0 then expression 0
     else DirectSum apply(sort pairs dec,(v,mul) -> ((expression LL)_(unsequence toSequence v) g)^mul)
     )
-expression LieAlgebraModule := M -> if hasAttribute(M,ReverseDictionary) then expression getAttribute(M,ReverseDictionary) else unhold describe M;
+expression LieAlgebraCharacter := M -> if hasAttribute(M,ReverseDictionary) then expression getAttribute(M,ReverseDictionary) else unhold describe M;
 
-net LieAlgebraModule := net @@ expression
-texMath LieAlgebraModule := texMath @@ expression
+net LieAlgebraCharacter := net @@ expression
+texMath LieAlgebraCharacter := texMath @@ expression
 
-new LieAlgebraModule from Sequence := (T,s) -> new LieAlgebraModule from {
+new LieAlgebraCharacter from Sequence := (T,s) -> new LieAlgebraCharacter from {
     "LieAlgebra" => s#0,
     "DecompositionIntoIrreducibles" => if class s#1 === VirtualTally then s#1 else new VirtualTally from s#1,
     cache => new CacheTable
     }
 
---simpleLieAlgebra LieAlgebraModule := M -> M#"LieAlgebra" -- no longer works now Lie algebras aren't always simple
+--simpleLieAlgebra LieAlgebraCharacter := M -> M#"LieAlgebra" -- no longer works now Lie algebras aren't always simple
 
-LieAlgebraModule_ZZ := (M,i) -> irreducibleLieAlgebraModule(M#"LieAlgebra",(sort keys M#"DecompositionIntoIrreducibles")#i)
-LieAlgebraModule_* := M -> apply(sort keys M#"DecompositionIntoIrreducibles", v -> irreducibleLieAlgebraModule(M#"LieAlgebra",v))
-LieAlgebraModule_List := (V,w) -> (V#"DecompositionIntoIrreducibles")_w
-LieAlgebraModule_Vector := (V,w) -> V_(entries w)
-LieAlgebraModule_LieAlgebraModule := (V,W) -> (
-	if not isIrreducible W then error "last module must be irreducible";
+LieAlgebraCharacter_ZZ := (M,i) -> irreducibleLieAlgebraCharacter(M#"LieAlgebra",(sort keys M#"DecompositionIntoIrreducibles")#i)
+LieAlgebraCharacter_* := M -> apply(sort keys M#"DecompositionIntoIrreducibles", v -> irreducibleLieAlgebraCharacter(M#"LieAlgebra",v))
+LieAlgebraCharacter_List := (V,w) -> (V#"DecompositionIntoIrreducibles")_w
+LieAlgebraCharacter_Vector := (V,w) -> V_(entries w)
+LieAlgebraCharacter_LieAlgebraCharacter := (V,W) -> (
+	if not isIrreducible W then error "last character must be irreducible";
     	V_(first keys W#"DecompositionIntoIrreducibles")
     )
 
 isIrreducible = method()
-isIrreducible LieAlgebraModule := M -> values M#"DecompositionIntoIrreducibles" == {1}
+isIrreducible LieAlgebraCharacter := M -> values M#"DecompositionIntoIrreducibles" == {1}
 
-LieAlgebraModule ^ ZZ :=
-LieAlgebraModule ^ QQ := (M,q) -> (
+LieAlgebraCharacter ^ ZZ :=
+LieAlgebraCharacter ^ QQ := (M,q) -> (
     if q==1 then M
-    else new LieAlgebraModule from (
+    else new LieAlgebraCharacter from (
 	M#"LieAlgebra",
 	if q==0 then {} else applyValues(M#"DecompositionIntoIrreducibles", a -> try lift(a*q,ZZ) else error "multiplicity not integer")
 	)
 )
 
-LieAlgebraModule#AfterPrint = M -> (
+LieAlgebraCharacter#AfterPrint = M -> (
     if isIrreducible M then "irreducible "
     else if any(values M#"DecompositionIntoIrreducibles",a->a<0) then "virtual ",
     class M,
@@ -66,25 +66,25 @@ LieAlgebraModule#AfterPrint = M -> (
     M#"LieAlgebra"
  )
 
-trivialModule = method(TypicalValue => LieAlgebraModule)
-trivialModule LieAlgebra := g -> irreducibleLieAlgebraModule(toList(rank g:0),g)
+trivialCharacter = method(TypicalValue => LieAlgebraCharacter)
+trivialCharacter LieAlgebra := g -> irreducibleLieAlgebraCharacter(toList(rank g:0),g)
 
-zeroModule = method(TypicalValue => LieAlgebraModule)
-zeroModule LieAlgebra := g -> new LieAlgebraModule from (g,{})
+zeroCharacter = method(TypicalValue => LieAlgebraCharacter)
+zeroCharacter LieAlgebra := g -> new LieAlgebraCharacter from (g,{})
 
 
-LieAlgebraModule ^** ZZ := (cacheValue'(0,symbol ^**)) ((M,n) -> (
+LieAlgebraCharacter ^** ZZ := (cacheValue'(0,symbol ^**)) ((M,n) -> (
 	if n<0 then "error nonnegative powers only";
-    	if n==0 then trivialModule M#"LieAlgebra"
+    	if n==0 then trivialCharacter M#"LieAlgebra"
     	else if n==1 then M
     	else M**(M^**(n-1)) -- order matters for speed purposes
     ))
 
 -*
 -- the implementation below seems more reasonable but it's actually slower in most circumstances
-LieAlgebraModule ^** ZZ := LieAlgebraModule => (M, n) -> BinaryPowerMethod(M, n, tensor,
-    M -> trivialModule M#"LieAlgebra",
-    M -> error "LieAlgebraModule ^** ZZ: expected non-negative integer")
+LieAlgebraCharacter ^** ZZ := LieAlgebraCharacter => (M, n) -> BinaryPowerMethod(M, n, tensor,
+    M -> trivialCharacter M#"LieAlgebra",
+    M -> error "LieAlgebraCharacter ^** ZZ: expected non-negative integer")
 *-
 
 adjointWeight := (type,m) -> splice (
@@ -97,88 +97,88 @@ adjointWeight := (type,m) -> splice (
     else if type == "G" then {0,1}
     )
 
-adjointModule = method(TypicalValue => LieAlgebraModule)
-adjointModule LieAlgebra := g -> (
+adjointCharacter = method(TypicalValue => LieAlgebraCharacter)
+adjointCharacter LieAlgebra := g -> (
     type:=g#"RootSystemType";
     m:=g#"LieAlgebraRank";
-    if isSimple g then irreducibleLieAlgebraModule(g,adjointWeight(type,m))
-    else new LieAlgebraModule from (g, tally apply(#m, i -> unsplit(adjointWeight(type#i,m#i),m,i)))
+    if isSimple g then irreducibleLieAlgebraCharacter(g,adjointWeight(type,m))
+    else new LieAlgebraCharacter from (g, tally apply(#m, i -> unsplit(adjointWeight(type#i,m#i),m,i)))
     )
 
 standardWeight :=(m) -> apply(m, i -> if i==0 then 1 else 0);
 
-standardModule = method(TypicalValue => LieAlgebraModule)
-standardModule LieAlgebra := g -> (
+standardCharacter = method(TypicalValue => LieAlgebraCharacter)
+standardCharacter LieAlgebra := g -> (
     type:=g#"RootSystemType";
     m:=g#"LieAlgebraRank";
-    if isSimple g then irreducibleLieAlgebraModule(g,standardWeight(m))
-    else new LieAlgebraModule from (g, tally apply(#m, i -> unsplit(standardWeight(m#i),m,i)))
+    if isSimple g then irreducibleLieAlgebraCharacter(g,standardWeight(m))
+    else new LieAlgebraCharacter from (g, tally apply(#m, i -> unsplit(standardWeight(m#i),m,i)))
     )
 
 
-dim LieAlgebra := g -> dim adjointModule g
+dim LieAlgebra := g -> dim adjointCharacter g
 
-starInvolution LieAlgebraModule := M -> (
+starInvolution LieAlgebraCharacter := M -> (
     g:=M#"LieAlgebra";
-    new LieAlgebraModule from (
+    new LieAlgebraCharacter from (
     	g,
     	applyKeys(M#"DecompositionIntoIrreducibles", v -> starInvolution(g,v))
 	)
     )
-dual LieAlgebraModule := {} >> o -> lookup(starInvolution,LieAlgebraModule)
+dual LieAlgebraCharacter := {} >> o -> lookup(starInvolution,LieAlgebraCharacter)
 
 
 
-LieAlgebraModule == LieAlgebraModule := (V,W)-> (V===W)
+LieAlgebraCharacter == LieAlgebraCharacter := (V,W)-> (V===W)
 
 -*
 isIsomorphic = method(
     TypicalValue => Boolean
     )
-isIsomorphic(LieAlgebraModule,LieAlgebraModule) := (M,N) -> ( -- actually this is the same as ===
+isIsomorphic(LieAlgebraCharacter,LieAlgebraCharacter) := (M,N) -> ( -- actually this is the same as ===
     if M#"LieAlgebra" != N#"LieAlgebra" then return false;
     M#"DecompositionIntoIrreducibles"===N#"DecompositionIntoIrreducibles"
 )
 *-
 
-LieAlgebraModule == ZZ := (M,n) -> if n=!=0 then error "attempted to compare module to nonzero integer" else #(M#"DecompositionIntoIrreducibles") == 0
+LieAlgebraCharacter == ZZ := (M,n) -> if n=!=0 then error "attempted to compare character to nonzero integer" else #(M#"DecompositionIntoIrreducibles") == 0
 
-directSum LieAlgebraModule := identity
-LieAlgebraModule.directSum = args -> (
-    if not same apply(args, M -> M#"LieAlgebra") then error "modules must be over the same Lie algebra";
-    new LieAlgebraModule from (
+directSum LieAlgebraCharacter := identity
+LieAlgebraCharacter.directSum = args -> (
+    if not same apply(args, M -> M#"LieAlgebra") then error "characters must be over the same Lie algebra";
+    new LieAlgebraCharacter from (
 	(first args)#"LieAlgebra",
 	sum(args,M->M#"DecompositionIntoIrreducibles")
 	)
 )
-LieAlgebraModule ++ LieAlgebraModule := directSum
+LieAlgebraCharacter ++ LieAlgebraCharacter := directSum
 
 ωsub := i -> Subscript{symbol ω,i};
 ω=new ScriptedFunctor from { subscript => ωsub }
-irreducibleLieAlgebraModule = method(
-    TypicalValue => LieAlgebraModule
+irreducibleLieAlgebraCharacter = method(
+    TypicalValue => LieAlgebraCharacter
     )
-irreducibleLieAlgebraModule(LieAlgebra,List) := (g,v) -> (
+irreducibleLieAlgebraCharacter(LieAlgebra,List) := (g,v) -> (
     v = deepSplice v;
     if #v != rank g or not all(v, a -> class a === ZZ) then error "invalid highest weight";
-    new LieAlgebraModule from (g,{v => 1})
+    new LieAlgebraCharacter from (g,{v => 1})
     )
-irreducibleLieAlgebraModule(LieAlgebra,VisibleList) := (g,v) -> irreducibleLieAlgebraModule(g,toList v)
-irreducibleLieAlgebraModule(LieAlgebra,Vector) := (g,v) -> irreducibleLieAlgebraModule(g,entries v)
-irreducibleLieAlgebraModule(LieAlgebra,ZZ) := (g,v) -> irreducibleLieAlgebraModule(g,{v})
-irreducibleLieAlgebraModule(LieAlgebra,Expression) := (g,v) -> (
+irreducibleLieAlgebraCharacter(LieAlgebra,VisibleList) := (g,v) -> irreducibleLieAlgebraCharacter(g,toList v)
+irreducibleLieAlgebraCharacter(LieAlgebra,Vector) := (g,v) -> irreducibleLieAlgebraCharacter(g,entries v)
+irreducibleLieAlgebraCharacter(LieAlgebra,ZZ) := (g,v) -> irreducibleLieAlgebraCharacter(g,{v})
+irreducibleLieAlgebraCharacter(LieAlgebra,Expression) := (g,v) -> (
         ω.subscript = i -> apply(rank g,j->if j+1==i then 1 else 0 );
-        irreducibleLieAlgebraModule(g,first(value v,ω.subscript=ωsub))
+        irreducibleLieAlgebraCharacter(g,first(value v,ω.subscript=ωsub))
     )
-irreducibleLieAlgebraModule(Thing,LieAlgebra) := (v,g) -> irreducibleLieAlgebraModule(g,v)
+irreducibleLieAlgebraCharacter(Thing,LieAlgebra) := (v,g) -> irreducibleLieAlgebraCharacter(g,v)
 
 -*-----------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------
--- Private functions for LieAlgebraModule
+-- Private functions for LieAlgebraCharacter
 -----------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------
 
-We implement the Lie theoretic ingredients needed to compute the weights in an irreducible Lie algebra module and their multiplicities
+We implement the Lie theoretic ingredients needed to compute the weights in an irreducible Lie algebra character and their multiplicities
 We need: 
 --a list of the positive roots
 --the ability to compute casimirScalars
@@ -316,8 +316,8 @@ casimirScalar(String,ZZ,List) := (type, m, w) -> (
     killingForm(type,m,w,w) + 2*killingForm(type,m,w,rho)
 )
 casimirScalar(LieAlgebra,List) := (g, w) -> casimirScalar(g#"RootSystemType",g#"LieAlgebraRank",w)
-casimirScalar(LieAlgebraModule) := (M) -> (
-    if not isIrreducible M then error "Casimir scalar on irreducible modules only";
+casimirScalar(LieAlgebraCharacter) := (M) -> (
+    if not isIrreducible M then error "Casimir scalar on irreducible characters only";
     g:=M#"LieAlgebra";
     type:=g#"RootSystemType";
     m:=g#"LieAlgebraRank";
@@ -414,15 +414,15 @@ positiveCoroots(LieAlgebra):=(g) -> positiveCoroots(g#"RootSystemType",g#"LieAlg
 
 -----------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------
--- Exported functions for Lie algebra modules 
+-- Exported functions for Lie algebra characters 
 -----------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------
 
-multiplicity(List,LieAlgebraModule) := o -> (w,M) -> (
+multiplicity(List,LieAlgebraCharacter) := o -> (w,M) -> (
     W:=weightDiagram(M);
     W_w 
 )
-multiplicity(Vector,LieAlgebraModule) := o -> (w,M) -> multiplicity(entries w,M)
+multiplicity(Vector,LieAlgebraCharacter) := o -> (w,M) -> multiplicity(entries w,M)
 
 stdVars := memoize ( (type,m) -> (
 	vrs := gens characterRing(type,m);
@@ -486,8 +486,8 @@ characterAlgorithms#"Weyl" = (type,m,v) -> ( -- good for low rank algebras
     num//den
 )
 
---In the next two functions we implement Freudenthal's recursive algorithm for computing the weights in a Lie algebra module and their multiplicities
---The function Freud computes the set of weights in a Lie algebra module without their multiplicities
+--In the next two functions we implement Freudenthal's recursive algorithm for computing the weights in a Lie algebra character and their multiplicities
+--The function Freud computes the set of weights in a Lie algebra character without their multiplicities
 Freud = memoize ((type,m,v) -> (
     simpleroots:=simpleRoots(type,m);
     if all(v, a -> a < 0) then return set{v};
@@ -521,7 +521,7 @@ weightsAboveMu = memoize( (type,m,v,w) -> (
 ))
 
 
-multiplicityOfWeightInLieAlgebraModule = memoize((type,m,v,w) -> (
+multiplicityOfWeightInLieAlgebraCharacter = memoize((type,m,v,w) -> (
     rho:=toList(m:1);
     if v==w then return 1;
     Omega:=Freud(type,m,v);
@@ -533,7 +533,7 @@ multiplicityOfWeightInLieAlgebraModule = memoize((type,m,v,w) -> (
     scan(posroots, a -> (
         w'=w+a;
         while member(w',Omega) do (
-	    rhs=rhs+killingForm(type,m,w',a)*multiplicityOfWeightInLieAlgebraModule(type,m,v,w');
+	    rhs=rhs+killingForm(type,m,w',a)*multiplicityOfWeightInLieAlgebraCharacter(type,m,v,w');
 	    w'=w'+a;
 	    )));
     lhs:=killingForm(type,m,v+rho,v+rho)-killingForm(type,m,w+rho,w+rho);
@@ -543,11 +543,11 @@ multiplicityOfWeightInLieAlgebraModule = memoize((type,m,v,w) -> (
 
 characterAlgorithms#"Freudenthal" = (type,m,v) -> (
     R := characterRing(type,m);
-    sum(toList Freud(type,m,v), w -> multiplicityOfWeightInLieAlgebraModule(type,m,v,w) * R_w)
+    sum(toList Freud(type,m,v), w -> multiplicityOfWeightInLieAlgebraCharacter(type,m,v,w) * R_w)
     )
 *-
 
--- this is a rewrite of commented out multiplicityOfWeightInLieAlgebraModule
+-- this is a rewrite of commented out multiplicityOfWeightInLieAlgebraCharacter
 characterAlgorithms#"Freudenthal" = (type,m,v) -> (
     R:=characterRing(type,m);
     rho:=toList(m:1);
@@ -595,7 +595,7 @@ character (String,ZZ,List) := o -> (type,m,v) -> character1(type,m,v,o) -- trick
 character (Sequence,Sequence,List) := o -> (type,m,v) -> character2(type,m,v,o) -- tricky to memoize a method with options
 character (LieAlgebra,List) := o -> (g,v) -> if rank g == 0 then 1_(characterRing g) else character(g#"RootSystemType",g#"LieAlgebraRank",v,o) -- annoying special case, otherwise wrong ring
 character (LieAlgebra,Vector) := o -> (g,v) -> character(g,entries v,o)
-character LieAlgebraModule := o -> (cacheValue character) ((M) ->
+character LieAlgebraCharacter := o -> (cacheValue character) ((M) ->
     if #(M#"DecompositionIntoIrreducibles") == 0 then 0_(characterRing M#"LieAlgebra")
     else sum(pairs M#"DecompositionIntoIrreducibles",(v,a) -> a * character (M#"LieAlgebra",v,o)))
 
@@ -604,7 +604,7 @@ weightDiagram = method(
     TypicalValue=>VirtualTally
     )
 
-weightDiagram LieAlgebraModule := o -> (M) -> new VirtualTally from listForm character(M,o)
+weightDiagram LieAlgebraCharacter := o -> (M) -> new VirtualTally from listForm character(M,o)
 weightDiagram(LieAlgebra,Vector) := weightDiagram(LieAlgebra,List) := o -> (g,v) -> new VirtualTally from listForm character(g,v,o)
 
 fac := memoize((type,m) -> ( -- possible denominator in Weyl product formula factors
@@ -628,7 +628,7 @@ qdim1 = (M,qnum) -> ( -- used internally by dim and qdim: Weyl product formula
 	))//qden(type,m,qnum)
     )
 
-dim LieAlgebraModule := (cacheValue dim) (M -> qdim1(M,identity))
+dim LieAlgebraCharacter := (cacheValue dim) (M -> qdim1(M,identity))
 
 -- we use one q ring for everyone, to simplify
 q:=getSymbol "q"
@@ -650,18 +650,18 @@ qring := memoize ( (n,d) -> R'/((map(R',R',{R'_0^d})) cyclotomic n ) )
 qnum := n->sum(n,i->R_0^(2*i-n+1))
 
 qdim = method()
-qdim LieAlgebraModule := (cacheValue qdim) (M -> qdim1(M,qnum))
-qdim (LieAlgebraModule,ZZ) := (M,l) -> (
+qdim LieAlgebraCharacter := (cacheValue qdim) (M -> qdim1(M,qnum))
+qdim (LieAlgebraCharacter,ZZ) := (M,l) -> (
     g:=M#"LieAlgebra";
     if not isSimple g then error "Lie algebra not simple";
     (map(qring(l+dualCoxeterNumber g,2*fac(g#"RootSystemType",g#"LieAlgebraRank")),R)) qdim M
     )
 
 
-LieAlgebraModuleFromWeights = method(
-    TypicalValue => LieAlgebraModule
+LieAlgebraCharacterFromWeights = method(
+    TypicalValue => LieAlgebraCharacter
     )
-LieAlgebraModuleFromWeights(RingElement,LieAlgebra) := (c0,g) -> (
+LieAlgebraCharacterFromWeights(RingElement,LieAlgebra) := (c0,g) -> (
     if ring c0 =!= characterRing g then error "wrong ring";
     c:=c0;
     --find and peel off irreducibles
@@ -669,7 +669,7 @@ LieAlgebraModuleFromWeights(RingElement,LieAlgebra) := (c0,g) -> (
 	if any(v,a->a<0) then error "not a valid weight diagram";
 	c = c - mu*character(g,v);
     	);
-    new LieAlgebraModule from {
+    new LieAlgebraCharacter from {
     	"LieAlgebra" => g,
     	"DecompositionIntoIrreducibles" => new VirtualTally from decompositionData,
     	cache => new CacheTable from { character => c0 }
@@ -678,35 +678,35 @@ LieAlgebraModuleFromWeights(RingElement,LieAlgebra) := (c0,g) -> (
 -- another algorithm would be to apply the same Racah/Brauer/Klimyk algorithm as tensor product (with second weight = trivial one)
 -- not clear which is faster
 
-LieAlgebraModuleFromWeights(VirtualTally,LieAlgebra) := (W,g) -> (
+LieAlgebraCharacterFromWeights(VirtualTally,LieAlgebra) := (W,g) -> (
     R := characterRing g;
-    LieAlgebraModuleFromWeights(sum(pairs W,(w,a) -> a*R_w),g)
+    LieAlgebraCharacterFromWeights(sum(pairs W,(w,a) -> a*R_w),g)
     )
 
-adams = method( TypicalValue => LieAlgebraModule )
-adams (ZZ,LieAlgebraModule) := (k,M) -> (
+adams = method( TypicalValue => LieAlgebraCharacter )
+adams (ZZ,LieAlgebraCharacter) := (k,M) -> (
     g:=M#"LieAlgebra";
-    if k==0 then new LieAlgebraModule from (g,{})
+    if k==0 then new LieAlgebraCharacter from (g,{})
     else if k==1 then M
     else if k==-1 then starInvolution M
-    else LieAlgebraModuleFromWeights(applyKeys(weightDiagram M, w -> k*w),g) -- primitive but works
+    else LieAlgebraCharacterFromWeights(applyKeys(weightDiagram M, w -> k*w),g) -- primitive but works
 )
 
-symmetricPower(ZZ,LieAlgebraModule) := (cacheValue'(1,symmetricPower)) ((n,M) -> (
+symmetricPower(ZZ,LieAlgebraCharacter) := (cacheValue'(1,symmetricPower)) ((n,M) -> (
     if n<0 then error "nonnegative powers only";
-    if n==0 then trivialModule M#"LieAlgebra"
+    if n==0 then trivialCharacter M#"LieAlgebra"
     else if n==1 then M
     else (directSum apply(1..n, k -> adams(k,M) ** symmetricPower(n-k,M)))^(1/n)
     ))
 
-exteriorPower(ZZ,LieAlgebraModule) := o -> (cacheValue'(1,exteriorPower)) ((n,M) -> (
+exteriorPower(ZZ,LieAlgebraCharacter) := o -> (cacheValue'(1,exteriorPower)) ((n,M) -> (
     if n<0 then error "nonnegative powers only";
-    if n==0 then trivialModule M#"LieAlgebra"
+    if n==0 then trivialCharacter M#"LieAlgebra"
     else if n==1 then M
     else (directSum apply(1..n, k -> (adams(k,M) ** exteriorPower(n-k,M))^((-1)^(k-1)) ))^(1/n)
     ))
 
-LieAlgebraModule @ LieAlgebraModule := (M,M') -> new LieAlgebraModule from (
+LieAlgebraCharacter @ LieAlgebraCharacter := (M,M') -> new LieAlgebraCharacter from (
     M#"LieAlgebra" ++ M'#"LieAlgebra",
     combine(M#"DecompositionIntoIrreducibles",M'#"DecompositionIntoIrreducibles",join,times,plus)
     )
@@ -752,9 +752,9 @@ isIdentity = (type,m,l,w) -> (
 
 *-
 
-LieAlgebraModule ** LieAlgebraModule := (V,W) -> ( -- cf Humpheys' intro to LA & RT sec 24 exercise 9
+LieAlgebraCharacter ** LieAlgebraCharacter := (V,W) -> ( -- cf Humpheys' intro to LA & RT sec 24 exercise 9
     g:=V#"LieAlgebra";
-    if g != W#"LieAlgebra" then error "V and W must be modules over the same Lie algebra";
+    if g != W#"LieAlgebra" then error "V and W must be characters over the same Lie algebra";
     if V =!= W and dim W < dim V then (V,W)=(W,V); -- maybe should first test if characters already computed?
     wd:=weightDiagram V;
     type:=g#"RootSystemType";
@@ -773,12 +773,12 @@ LieAlgebraModule ** LieAlgebraModule := (V,W) -> ( -- cf Humpheys' intro to LA &
 	    	    );
 		if i === null then add(u-rho,a*b*t);
 		)));
-    new LieAlgebraModule from (g,ans)
+    new LieAlgebraCharacter from (g,ans)
     )
 
 tensorCoefficient = method(
     TypicalValue=>ZZ)
-tensorCoefficient(LieAlgebraModule, LieAlgebraModule,LieAlgebraModule) := (U,V,W) -> (U**V)_W
+tensorCoefficient(LieAlgebraCharacter, LieAlgebraCharacter,LieAlgebraCharacter) := (U,V,W) -> (U**V)_W
 
 
 ---------------------------------------------------------
@@ -822,24 +822,24 @@ fusionReflectionData = memoize( (type,m,l,maxwordlength,remainingWeights) -> (
 
 fusionProduct = method(
 --    TypicalValue=>HashTable,Options=>{MaxWordLength=>10})
-    TypicalValue=>LieAlgebraModule)
+    TypicalValue=>LieAlgebraCharacter)
 
 -- TODO: allow for arbitrary number of args just like tensor and directSum
 
 -*
--- try to define abbreviated syntax? something like (except fusionProduct should output a fusion module)
-FusionModule := new Type of LieAlgebraModule
-LieAlgebraModule _ ZZ := (M,l) -> new FusionModule from merge(M,hashTable{"Level"=>l},last)
--- expression fusionModule := -- TODO
-FusionModule ** LieAlgebraModule := (F,W) -> fusionProduct(F,W,F#"Level")
-LieAlgebraModule ** FusionModule := (W,F) -> fusionProduct(W,F,F#"Level")
-FusionModule ** FusionModule := (F,F') -> if F#"Level" != F'#"Level" then error "modules must have same level" else fusionProduct(F,F',F#"Level")
+-- try to define abbreviated syntax? something like (except fusionProduct should output a fusion character)
+FusionCharacter := new Type of LieAlgebraCharacter
+LieAlgebraCharacter _ ZZ := (M,l) -> new FusionCharacter from merge(M,hashTable{"Level"=>l},last)
+-- expression fusionCharacter := -- TODO
+FusionCharacter ** LieAlgebraCharacter := (F,W) -> fusionProduct(F,W,F#"Level")
+LieAlgebraCharacter ** FusionCharacter := (W,F) -> fusionProduct(W,F,F#"Level")
+FusionCharacter ** FusionCharacter := (F,F') -> if F#"Level" != F'#"Level" then error "characters must have same level" else fusionProduct(F,F',F#"Level")
 *-
 
-fusionProduct(LieAlgebraModule,LieAlgebraModule,ZZ) := (V,W,l) -> (
+fusionProduct(LieAlgebraCharacter,LieAlgebraCharacter,ZZ) := (V,W,l) -> (
     g:=V#"LieAlgebra";
     l = l + dualCoxeterNumber g;
-    if g != W#"LieAlgebra" then error "V and W must be modules over the same Lie algebra";
+    if g != W#"LieAlgebra" then error "V and W must be characters over the same Lie algebra";
     if not isSimple g then error "Lie algebra not simple";
     wd:=weightDiagram V;
     type:=g#"RootSystemType";
@@ -880,17 +880,17 @@ fusionProduct(LieAlgebraModule,LieAlgebraModule,ZZ) := (V,W,l) -> (
 		    add(u-rho,a*b*t);
 		    )
 		)));
-    new LieAlgebraModule from (g,ans)
+    new LieAlgebraCharacter from (g,ans)
     )
 
 -*
-fusionProduct(LieAlgebraModule,LieAlgebraModule,ZZ) := memoize( opts-> (M,N,l) -> (
+fusionProduct(LieAlgebraCharacter,LieAlgebraCharacter,ZZ) := memoize( opts-> (M,N,l) -> (
     wl:= opts.MaxWordLength;
-    if M#"LieAlgebra" != N#"LieAlgebra" then error "The Lie algebra modules must be over the same Lie algebra.";
+    if M#"LieAlgebra" != N#"LieAlgebra" then error "The Lie algebra characters must be over the same Lie algebra.";
     g:=M#"LieAlgebra";
     type:=g#"RootSystemType";
     m:=g#"LieAlgebraRank";
-    if not isIrreducible M or not isIrreducible N then error "modules need to be irreducible";
+    if not isIrreducible M or not isIrreducible N then error "characters need to be irreducible";
     lambda:=first keys M#"DecompositionIntoIrreducibles";
     mu:=first keys N#"DecompositionIntoIrreducibles";
     wd:=pairs weightDiagram(g,lambda);
@@ -913,16 +913,16 @@ fusionProduct(LieAlgebraModule,LieAlgebraModule,ZZ) := memoize( opts-> (M,N,l) -
     );
     wdh=pairs(wdh);
     newwdh:=delete(null, apply(#wdh, i -> if wdh_i_1 != 0 then wdh_i));
-    if #newwdh == 1 and newwdh_0_1 == 1 then return irreducibleLieAlgebraModule(newwdh_0_0,simpleLieAlgebra(type,m));
-    return new LieAlgebraModule from (simpleLieAlgebra(type,m),newwdh)
+    if #newwdh == 1 and newwdh_0_1 == 1 then return irreducibleLieAlgebraCharacter(newwdh_0_0,simpleLieAlgebra(type,m));
+    return new LieAlgebraCharacter from (simpleLieAlgebra(type,m),newwdh)
 ))
 *-
 
 fusionCoefficient=method(
 --    TypicalValue=>ZZ,Options=>{MaxWordLength=>10})
     TypicalValue=>ZZ)
-fusionCoefficient(LieAlgebraModule,LieAlgebraModule,LieAlgebraModule,ZZ) := (U,V,W,l) -> (
-    if not isIrreducible W then error "third module must be irreducible";
+fusionCoefficient(LieAlgebraCharacter,LieAlgebraCharacter,LieAlgebraCharacter,ZZ) := (U,V,W,l) -> (
+    if not isIrreducible W then error "third character must be irreducible";
     nu:=first keys W#"DecompositionIntoIrreducibles";
     fullFusionProduct:=(fusionProduct(U,V,l))#"DecompositionIntoIrreducibles";
     fullFusionProduct_nu
@@ -1023,18 +1023,18 @@ subLieAlgebra (LieAlgebra,Matrix) := (g,M) -> ( -- matrix of coroots
     )
     
 
-branchingRule = method ( TypicalValue => LieAlgebraModule )
+branchingRule = method ( TypicalValue => LieAlgebraCharacter )
 
-branchingRule (LieAlgebraModule, Matrix) :=
-branchingRule (LieAlgebraModule, List) := (M,S) -> branchingRule(M,subLieAlgebra(M#"LieAlgebra",S))
+branchingRule (LieAlgebraCharacter, Matrix) :=
+branchingRule (LieAlgebraCharacter, List) := (M,S) -> branchingRule(M,subLieAlgebra(M#"LieAlgebra",S))
 
-branchingRule (LieAlgebraModule, LieAlgebra) := (M,h) -> ( -- here h must be a (known) subalgebra of that of M
+branchingRule (LieAlgebraCharacter, LieAlgebra) := (M,h) -> ( -- here h must be a (known) subalgebra of that of M
     g:=M#"LieAlgebra";
     if g===h then return M; -- annoying special case
     S:=try h#subLieAlgebra#g else error "not a Lie subalgebra";
     --    f:=if class S===List then a -> a_S else a -> entries(transpose S*vector a);
     f:=a -> entries(transpose S*vector a); -- lame but what we get for using Lists rather than vectors
-    LieAlgebraModuleFromWeights(applyKeys(weightDiagram M,f,plus),h)
+    LieAlgebraCharacterFromWeights(applyKeys(weightDiagram M,f,plus),h)
     )
 
 

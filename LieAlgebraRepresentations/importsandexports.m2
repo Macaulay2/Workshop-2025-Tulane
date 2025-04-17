@@ -26,10 +26,10 @@ export {
     "subLieAlgebra"
     }
 
--- From lieAlgebraModules.m2
+-- From lieAlgebraCharacters.m2
 export {
-    "LieAlgebraModule", 
-    "irreducibleLieAlgebraModule", "LL", "ω",
+    "LieAlgebraCharacter", 
+    "irreducibleLieAlgebraCharacter", "LL", "ω",
 --    "isIsomorphic",
     "casimirScalar",
     "weightDiagram",
@@ -37,11 +37,11 @@ export {
     "fusionProduct",
     "fusionCoefficient",
 --    "MaxWordLength",
-    "LieAlgebraModuleFromWeights",
-    "trivialModule",
-    "standardModule",
-    "adjointModule",
-    "zeroModule",
+    "LieAlgebraCharacterFromWeights",
+    "trivialCharacter",
+    "standardCharacter",
+    "adjointCharacter",
+    "zeroCharacter",
     "isIrreducible",
     "character",
     "adams",
@@ -52,11 +52,23 @@ export {
 
 -- From LieAlgebraBases.m2
 export {"LieAlgebraBasis",
-    "lieAlgebraBasis",
+    "lieAlgebraBasis"
+    }
+
+
+-- From representationsCasimirReynolds.m2
+export {"LieAlgebraRepresentation",
+    "lieAlgebraRepresentation",
     "trivialRepresentation",
     "standardRepresentation",
-    "adjointRepresentation"
+    "adjointRepresentation",
+    "representationWeights",
+    "casimirOperator",
+    "casimirSpectrum",
+    "casimirProjection",
+    "reynoldsOperator"
     }
+
 
 
 -- From gelfandTsetlinTypeA.m2
@@ -79,17 +91,6 @@ export {
 
 
 -- From basesAsWords.m2
-export {"representation",
-    "installRepresentation",
-    "representationWeights",
-    "casimirOperator",
-    "casimirSpectrum",
-    "casimirProjection",
-    "reynoldsOperator"
-    }
-
-
--- From basesAsWords.m2
 export {--"LieAlgebraModuleElement",
     --"lieAlgebraModuleElement",
     --"zeroElement",
@@ -98,7 +99,7 @@ export {--"LieAlgebraModuleElement",
     }
 
 
--- From highestWeightVectorsAndSubmodules.m2
+-- From highestWeightVectorsAndSubmoduless.m2
 export {"weightMuHighestWeightVectorsInW",
     "VInWedgekW",
     "VInSymdW",

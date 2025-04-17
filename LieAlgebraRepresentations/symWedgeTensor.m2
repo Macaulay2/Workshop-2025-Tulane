@@ -104,16 +104,15 @@ XactionOnSymd = (d,X) -> (
 
 
 symmetricPowerRepresentation = method(
-    TypicalValue=>LieAlgebraModule
+    TypicalValue=>LieAlgebraRepresentation
 );
 
-symmetricPowerRepresentation(ZZ,LieAlgebraModule) := (d,V) -> (
-    W:=symmetricPower(d,V);
-    rho:=V.cache#representation;
-    CB:=rho_0;
-    rhoB:=rho_1;
-    installRepresentation(W,CB,apply(rhoB, M -> XactionOnSymd(d,M)));
-    W
+symmetricPowerRepresentation(ZZ,LieAlgebraRepresentation) := (d,rho) -> (
+    xiV:=rho#"Character";
+    CB:=rho#"Basis";
+    rhoB:=rho#"RepresentationMatrices";
+    xiW:=symmetricPower(d,xiV);
+    lieAlgebraRepresentation(xiW,CB,apply(rhoB, M -> XactionOnSymd(d,M)))
 );
 
 
@@ -199,17 +198,16 @@ XactionOnWedgek = (k,X) -> (
 
 
 exteriorPowerRepresentation = method(
-    TypicalValue=>LieAlgebraModule
+    TypicalValue=>LieAlgebraRepresentation
 );
 
 
-exteriorPowerRepresentation(ZZ,LieAlgebraModule) := (k,V) -> (
+exteriorPowerRepresentation(ZZ,LieAlgebraRepresentation) := (k,rho) -> (
+    V:=rho#"Character";
+    CB:=rho#"Basis";
+    rhoB:=rho#"RepresentationMatrices";
     W:=exteriorPower(k,V);
-    rho:=V.cache#representation;
-    CB:=rho_0;
-    rhoB:=rho_1;
-    installRepresentation(W,CB,apply(rhoB, M -> XactionOnWedgek(k,M)));
-    W
+    lieAlgebraRepresentation(W,CB,apply(rhoB, M -> XactionOnWedgek(k,M)))
 );
 
 
@@ -217,7 +215,7 @@ exteriorPowerRepresentation(ZZ,LieAlgebraModule) := (k,V) -> (
 
 --------------------------------------------
 --------------------------------------------
--- V otimes W, both modules over g
+-- V otimes W, both characters over g
 --------------------------------------------
 --------------------------------------------
 
@@ -262,22 +260,25 @@ XactionOnTensorProduct = (rho1X,rho2X) -> (
 
 
 tensorProductRepresentation = method(
-    TypicalValue=>LieAlgebraModule
+    TypicalValue=>LieAlgebraRepresentation
 );
 
-tensorProductRepresentation(LieAlgebraModule,LieAlgebraModule) := (V,W) -> (
+tensorProductRepresentation(LieAlgebraRepresentation,LieAlgebraRepresentation) := (rhoV,rhoW) -> (
+    V:=rhoV#"Character";
+    W:=rhoW#"Character";
+    CBV:=rhoV#"Basis";
+    CBW:=rhoW#"Basis";
+    LV:=rhoV#"RepresentationMatrices";
+    LW:=rhoW#"RepresentationMatrices";
     U:=V**W;
-    rho1:=V.cache#representation;
-    rho2:=W.cache#representation;
-    if rho1_0 =!= rho2_0 then error "The representations do not have the same basis" << endl;
-    R1:=(sparse(rho1_1_0))#"BaseRing";
-    R2:=(sparse(rho2_1_0))#"BaseRing";
+    if CBV =!= CBW then error "The representations do not have the same basis" << endl;
+    R1:=(sparse(LV_0))#"BaseRing";
+    R2:=(sparse(LW_0))#"BaseRing";
     if R1 =!= R2 then error "The representations do not have the same base ring" << endl;
-    CB:=rho1_0;
-    installRepresentation(U,CB,apply(#(CB#"BasisElements"), i -> XactionOnTensorProduct(sparse((rho1_1_i)),sparse ((rho2_1)_i))));
-    U
+    lieAlgebraRepresentation(U,CBV,apply(#(CBV#"BasisElements"), i -> XactionOnTensorProduct(sparse(LV_i),sparse(LW_i))))
 );
 
+LieAlgebraRepresentation ** LieAlgebraRepresentation := (V,W) -> tensorProductRepresentation(V,W)
 
 
 
@@ -344,7 +345,7 @@ end
 --------------------------------------------------
 
 sl2=simpleLieAlgebra("A",1);
-V = standardModule(sl2);
+V = standardCharacter(sl2);
 peek V
 -- So V only has character information
 -- Add the data of the standard representation
@@ -369,7 +370,7 @@ sym2rho_1 == {sparseMatrix(3,3,QQ,new HashTable from {(0,0) => 2, (2,2) => -2}),
 ------------------------------------------------------------
 
 sl3=simpleLieAlgebra("A",2);
-V = standardModule(sl3);
+V = standardCharacter(sl3);
 peek V
 -- So V only has character information
 -- Add the data of the standard representation
@@ -393,10 +394,10 @@ wedge2rho = W.cache#representation
 ------------------------------------------------------------
 
 sl3=simpleLieAlgebra("A",2);
-V = irreducibleLieAlgebraModule({1,1},sl3);
+V = irreducibleLieAlgebraCharacter({1,1},sl3);
 CB = lieAlgebraBasis("A",2);
 installRepresentation(V,CB,GTrepresentationMatrices(V,{1,1}));
-W = irreducibleLieAlgebraModule({1,0},sl3);
+W = irreducibleLieAlgebraCharacter({1,0},sl3);
 installRepresentation(W,CB,GTrepresentationMatrices(W,{1,0}));
 
 U = tensorProductRepresentation(0,V,0,W);

@@ -1,33 +1,115 @@
+LieAlgebraRepresentation = new Type of HashTable  
+-- Keys:
+-- Character
+-- Basis
+-- RepresentationMatrices
 
-installRepresentation = method(
+lieAlgebraRepresentation = method(
+    TypicalValue=>LieAlgebraRepresentation
 );
 
-installRepresentation(LieAlgebraModule,LieAlgebraBasis,List) := (V,CB,rhoB) -> (
-    if V.cache#?representation then error "V already has a representation. Remove it before installing another." << endl;
-    V.cache#representation = {CB,rhoB};
-)
+
+lieAlgebraRepresentation(LieAlgebraCharacter,LieAlgebraBasis,List):=(V,LAB,L) -> (
+    new LieAlgebraRepresentation from {
+        "Character"=>V,
+        "Basis"=>LAB,
+	"RepresentationMatrices"=>L
+    }
+);
+
+
+
+trivialRepresentation = method(
+    TypicalValue => LieAlgebraRepresentation
+    )
+
+trivialRepresentation(String,ZZ) := (type,m) -> (
+    CB:=lieAlgebraBasis(type,m);
+    trivialRepresentation(CB)
+);
+
+trivialRepresentation(LieAlgebra) := (g) -> (
+    CB:=lieAlgebraBasis(g);
+    trivialRepresentation(CB)
+);
+
+trivialRepresentation(LieAlgebraBasis) := CB -> (   
+    L := apply(#(CB#"BasisElements"), i -> matrix {{0/1}});
+    V := trivialCharacter(CB#"LieAlgebra");
+    lieAlgebraRepresentation(V,CB,L)
+);
+
+
+standardRepresentation = method(
+    TypicalValue => LieAlgebraRepresentation
+    )
+
+standardRepresentation(String,ZZ) := (type,m) -> (
+    CB:=lieAlgebraBasis(type,m);
+    standardRepresentation(CB)
+);
+
+standardRepresentation(LieAlgebra) := g -> (
+    CB:=lieAlgebraBasis(g);
+    standardRepresentation(CB)
+);
+
+standardRepresentation(LieAlgebraBasis) := CB -> (
+    V := standardCharacter(CB#"LieAlgebra");
+    lieAlgebraRepresentation(V,CB,CB#"BasisElements")
+);
+
+
+adjointRepresentation = method(
+    TypicalValue => LieAlgebraRepresentation
+    )
+
+adjointRepresentation(String,ZZ) := (type,m) -> (
+    CB:=lieAlgebraBasis(type,m);
+    adjointRepresentation(CB)
+);
+
+adjointRepresentation(LieAlgebra) := (g) -> (
+    CB:=lieAlgebraBasis(g);
+    adjointRepresentation(CB)
+);
+
+adjointRepresentation(LieAlgebraBasis) := CB -> (
+    br := CB#"Bracket";
+    writeInBasis := CB#"WriteInBasis";
+    B := CB#"BasisElements";
+    ad := X -> transpose matrix apply(B, Y -> writeInBasis br(X,Y));
+    L := apply(B, X -> ad X);
+    V := adjointCharacter(CB#"LieAlgebra");
+    lieAlgebraRepresentation(V,CB,L)
+);
+
+
+
+
+
 
 representationWeights = method(
     TypicalValue=>List
 );
 
-representationWeights(LieAlgebraModule) := memoize((W) -> (
-    rho:=W.cache#representation;
-    sparseGenerators:=instance(rho_1_0,SparseMatrix); 
-    CB:=rho_0;
-    dimW:=-1;
+representationWeights(LieAlgebraRepresentation) := memoize((rho) -> (
+    W:=rho#"Character";
+    CB:=rho#"Basis";
+    L:=rho#"RepresentationMatrices";
+    sparseGenerators:=instance(L_0,SparseMatrix); 
     Wweights:={};
     m:=CB#"LieAlgebra"#"LieAlgebraRank";
     if not sparseGenerators then (
-	 return apply(dim W, i -> apply(m, j -> lift((rho_1_j)_(i,i),ZZ)))
+	 return apply(dim W, i -> apply(m, j -> lift((L_j)_(i,i),ZZ)))
     ) else (
-         return apply(dim W, i -> apply(m, j -> if ((rho_1_j)#"Entries")#?(i,i) then lift(((rho_1_j)#"Entries")#(i,i),ZZ) else 0))
+         return apply(dim W, i -> apply(m, j -> if ((L_j)#"Entries")#?(i,i) then lift(((L_j)#"Entries")#(i,i),ZZ) else 0))
     )
 ));
 
 
 
--- Let V be a LieAlgebraModule with a representation rho installed
+-- Let V be a LieAlgebraCharacter with a representation rho installed
 
 -- The Casimir operator is sum_i rho(Bstar_i)*rho(B_i)
 
@@ -35,11 +117,11 @@ casimirOperator = method(
 );
 
 
-casimirOperator(LieAlgebraModule) := (W) -> (
-    rho:=W.cache#representation;
-    --sparseGenerators:=instance(rho_1_0,SparseMatrix);
-    CB:=rho_0;
-    rhoB:=apply(rho_1, M->dense M);
+casimirOperator(LieAlgebraRepresentation) := (rho) -> (
+    W:=rho#"Character";
+    CB:=rho#"Basis";
+    L:=rho#"RepresentationMatrices";
+    rhoB:=apply(L, M->dense M);
     M:={};
     c:={};
     rhoBstar:=for i from 0 to #rhoB-1 list (
@@ -56,8 +138,8 @@ casimirSpectrum = method(
 );
 
 
-casimirSpectrum(LieAlgebraModule) := (W) -> (
-    unique sort apply(keys(W#"DecompositionIntoIrreducibles"), w -> casimirScalar(irreducibleLieAlgebraModule(w,W#"LieAlgebra")))
+casimirSpectrum(LieAlgebraCharacter) := (W) -> (
+    unique sort apply(keys(W#"DecompositionIntoIrreducibles"), w -> casimirScalar(irreducibleLieAlgebraCharacter(w,W#"LieAlgebra")))
 );
 
 
@@ -66,12 +148,13 @@ casimirProjection = method(
 );
 
 
-casimirProjection(LieAlgebraModule,ZZ) := (W,z) -> (
-    casimirProjection(W,1/1*z)
+casimirProjection(LieAlgebraRepresentation,ZZ) := (rho,z) -> (
+    casimirProjection(rho,1/1*z)
 );
 
-casimirProjection(LieAlgebraModule,QQ) := (W,z) -> (
-    Cas:=casimirOperator(W);
+casimirProjection(LieAlgebraRepresentation,QQ) := (rho,z) -> (
+    Cas:=casimirOperator(rho);
+    W:=rho#"Character";
     L:=delete(1/1*z,casimirSpectrum(W));
     N:=dim W;
     I:={};
@@ -88,7 +171,7 @@ reynoldsOperator = method(
 );
 
 
-reynoldsOperator(LieAlgebraModule) := (W) -> (
-    casimirProjection(W,0)
+reynoldsOperator(LieAlgebraRepresentation) := (rho) -> (
+    casimirProjection(rho,0)
 );
 

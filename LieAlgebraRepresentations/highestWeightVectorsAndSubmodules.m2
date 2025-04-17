@@ -1,14 +1,15 @@
 -- Restrict a sparse matrix to a subdomain and subcodomain
 
-restrictRaisingOperatoritoWtmuSpace = (W,i,mu) -> (
-    rho:=W.cache#representation;
-    CB:=rho_0;
+restrictRaisingOperatoritoWtmuSpace = (rho,i,mu) -> (
+    W:=rho#"Character";
+    CB:=rho#"Basis";
+    L:=rho#"RepresentationMatrices";
     ROI:=CB#"RaisingOperatorIndices";
     weightShift:=(CB#"Weights")_(ROI_i);
-    Wweights:=representationWeights(W);
+    Wweights:=representationWeights(rho);
     domainIndices:=select(dim W, i -> Wweights_i==mu);
     codomainIndices:=select(dim W, i -> Wweights_i==mu+weightShift);
-    M:=(rho_1)_(ROI_i);
+    M:=L_(ROI_i);
     if instance(M,Matrix) then (
 	return M_domainIndices^codomainIndices
     ) else (
@@ -21,12 +22,13 @@ weightMuHighestWeightVectorsInW = method(
     TypicalValue=>Matrix
 );    
 
-weightMuHighestWeightVectorsInW(List,LieAlgebraModule) := (mu,W) -> (
-    rho:=W.cache#representation;
-    CB:=rho_0;
+weightMuHighestWeightVectorsInW(List,LieAlgebraRepresentation) := (mu,rho) -> (
+    W:=rho#"Character";
+    CB:=rho#"Basis";
+    L:=rho#"RepresentationMatrices";
     ROI:=CB#"RaisingOperatorIndices";
-    K:=entries gens intersect apply(#ROI, i -> ker dense restrictRaisingOperatoritoWtmuSpace(W,i,mu));
-    Wweights:=representationWeights(W);
+    K:=entries gens intersect apply(#ROI, i -> ker dense restrictRaisingOperatoritoWtmuSpace(rho,i,mu));
+    Wweights:=representationWeights(rho);
     domainIndices:=select(dim W, i -> Wweights_i==mu);
     z:=apply(#(K_0), i -> 0);
     return matrix apply(dim W, i -> if member(i,domainIndices) then K_(position(domainIndices,x->x==i)) else z)
@@ -91,27 +93,31 @@ applyWord = (w,v,actInstance,LoweringOperators) -> (
 
 
 VInSymdW = method(
-    TypicalValue=>Matrix
+    TypicalValue=>List
 );
 
-VInSymdW(LieAlgebraModule,ZZ,LieAlgebraModule,Matrix) := (V,d,W,hwv) -> ( 
-    rhoV:=V.cache#representation;
-    rhoW:=W.cache#representation;
+VInSymdW(LieAlgebraRepresentation,ZZ,LieAlgebraRepresentation,Matrix) := (rhoV,d,rhoW,hwv) -> (
+    V:=rhoV#"Character";
+    CBV:=rhoV#"Basis";
+    LV:=rhoV#"RepresentationMatrices";
+    W:=rhoW#"Character";
+    CBW:=rhoW#"Basis";
+    LW:=rhoW#"RepresentationMatrices";
     -- Check that they use the same basis of g
-    if rhoV_0 =!= rhoW_0 then error "V and W do not use the same basis" << endl;
-    CB:=rhoW_0;
+    if CBV =!= CBW then error "V and W do not use the same basis" << endl;
+    CB:=CBV;
     n:=dim W;
     B:=getSymbol "B";
     R:=QQ[apply(n, i -> B_i),MonomialOrder=>Lex];
-    Wweights:=representationWeights(W);
+    Wweights:=representationWeights(rhoW);
     R.cache = new CacheTable from {"Weights"=>Wweights};
     LOMaps:={};
-    if instance(rhoW_1_0,SparseMatrix) then (
-        LOMaps=apply(CB#"LoweringOperatorIndices", i -> ringMap(R,R,rhoW_1_i))
+    if instance(LW_0,SparseMatrix) then (
+        LOMaps=apply(CB#"LoweringOperatorIndices", i -> ringMap(R,R,LW_i))
     ) else (
-        LOMaps=apply(CB#"LoweringOperatorIndices", i -> map(R,R,rhoW_1_i))
+        LOMaps=apply(CB#"LoweringOperatorIndices", i -> map(R,R,LW_i))
     );
-    basisWords:=basisWordsFromMatrixGenerators(V);
+    basisWords:=basisWordsFromMatrixGenerators(rhoV);
     hwvR := ( (basis(d,R))*(hwv) )_(0,0);
     apply(basisWords, w -> applyWord(w,hwvR,act,LOMaps))
 )
@@ -119,28 +125,31 @@ VInSymdW(LieAlgebraModule,ZZ,LieAlgebraModule,Matrix) := (V,d,W,hwv) -> (
 
 
 VInWedgekW = method(
-    TypicalValue=>Matrix
+    TypicalValue=>List
 );    
 
-VInWedgekW(LieAlgebraModule,ZZ,LieAlgebraModule,Matrix) := (V,k,W,hwv) -> (
-    rhoV:=V.cache#representation;
-    rhoW:=W.cache#representation;
+VInWedgekW(LieAlgebraRepresentation,ZZ,LieAlgebraRepresentation,Matrix) := (rhoV,k,rhoW,hwv) -> (
+    V:=rhoV#"Character";
+    CBV:=rhoV#"Basis";
+    LV:=rhoV#"RepresentationMatrices";
+    W:=rhoW#"Character";
+    CBW:=rhoW#"Basis";
+    LW:=rhoW#"RepresentationMatrices";
     -- Check that they use the same basis of g
-    if rhoV_0 =!= rhoW_0 then error "V and W do not use the same basis" << endl;
-    CB:=rhoW_0;
-    WedgekW:=exteriorPowerRepresentation(k,W);
+    if CBV =!= CBW then error "V and W do not use the same basis" << endl;
+    CB:=CBV;
+    WedgekW:=exteriorPowerRepresentation(k,rhoW);
     n:=dim W;
     Bk := subsets(apply(n, i -> i),k);
     p:=getSymbol "p";
     R:=QQ[apply(Bk, i -> p_i),MonomialOrder=>Lex];
     m:=CB#"LieAlgebra"#"LieAlgebraRank";
-    Wweights:=representationWeights(W);
+    Wweights:=representationWeights(rhoW);
     Wedgekweights := apply(Bk, s -> sum apply(s, j -> Wweights_j));
     R.cache = new CacheTable from {"Weights"=>Wedgekweights};
-    rhoWedgekW:=(WedgekW.cache#representation)_1;
-    LOMaps:=apply(CB#"LoweringOperatorIndices", i -> ringMap(R,R,rhoWedgekW_i));
-    --LoweringOperatorsVmu:=apply(CB#"LoweringOperatorIndices", i -> VlambdaRepMats_i);
-    basisWords:=basisWordsFromMatrixGenerators(V);
+    LWedgekW:=WedgekW#"RepresentationMatrices";
+    LOMaps:=apply(CB#"LoweringOperatorIndices", i -> ringMap(R,R,LWedgekW_i));
+    basisWords:=basisWordsFromMatrixGenerators(rhoV);
     hwvR := ( (vars R)*(hwv) )_(0,0);
     apply(basisWords, w -> applyWord(w,hwvR,act,LOMaps))
 );
@@ -148,17 +157,23 @@ VInWedgekW(LieAlgebraModule,ZZ,LieAlgebraModule,Matrix) := (V,k,W,hwv) -> (
 
 
 UInVtensorW = method(
-    TypicalValue=>Matrix
+    TypicalValue=>List
 );
 
-UInVtensorW(LieAlgebraModule,LieAlgebraModule,LieAlgebraModule,Matrix) := (U,V,W,hwv) -> (
-    rhoU:=U.cache#representation;
-    rhoV:=V.cache#representation;
-    rhoW:=W.cache#representation;
+UInVtensorW(LieAlgebraRepresentation,LieAlgebraRepresentation,LieAlgebraRepresentation,Matrix) := (rhoU,rhoV,rhoW,hwv) -> (
+    U:=rhoU#"Character";
+    CBU:=rhoU#"Basis";
+    LU:=rhoU#"RepresentationMatrices";    
+    V:=rhoV#"Character";
+    CBV:=rhoV#"Basis";
+    LV:=rhoV#"RepresentationMatrices";
+    W:=rhoW#"Character";
+    CBW:=rhoW#"Basis";
+    LW:=rhoW#"RepresentationMatrices";
     -- Check that they use the same basis of g
-    if rhoU_0 =!= rhoV_0 then error "U and V do not use the same basis" << endl;
-    if rhoV_0 =!= rhoW_0 then error "V and W do not use the same basis" << endl;
-    CB:=rhoU_0;
+    if CBU =!= CBV then error "U and V do not use the same basis" << endl;
+    if CBU =!= CBW then error "U and W do not use the same basis" << endl;
+    CB:=CBU;
     n1:=dim V;
     n2:=dim W;
     A:=getSymbol "A";
@@ -166,11 +181,11 @@ UInVtensorW(LieAlgebraModule,LieAlgebraModule,LieAlgebraModule,Matrix) := (U,V,W
     R:=QQ[join(apply(n1, i -> A_i),apply(n2, i -> B_i)),MonomialOrder=>Lex];
     domainPairs:= flatten apply(n1, i -> apply(n2, j -> {i,j}));
     hwvR:=sum apply(#domainPairs, i -> hwv_(i,0)*R_((domainPairs_i)_0)*R_(n1+((domainPairs_i)_1)));
-    Vweights:=representationWeights(V);
-    Wweights:=representationWeights(W);
+    Vweights:=representationWeights(rhoV);
+    Wweights:=representationWeights(rhoW);
     R.cache = new CacheTable from {"Weights"=>join(Vweights,Wweights)};
-    LOMaps:=apply(CB#"LoweringOperatorIndices", i->  ringMap(R,R,diagonalJoin(sparse(rhoV_1_i),sparse(rhoW_1_i))));
-    basisWords:=basisWordsFromMatrixGenerators(U);
+    LOMaps:=apply(CB#"LoweringOperatorIndices", i->  ringMap(R,R,diagonalJoin(sparse(LV_i),sparse(LW_i))));
+    basisWords:=basisWordsFromMatrixGenerators(rhoU);
     apply(basisWords, w -> applyWord(w,hwvR,act,LOMaps))
 )
 

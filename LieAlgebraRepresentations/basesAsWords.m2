@@ -1,27 +1,3 @@
--*
-New plan: don't define this as an extra type
-Instead, a representation is just a pair (CB,MatrixGens)
-cached in V
-
-
-LieAlgebraRepresentation = new Type of HashTable
--- Keys:
--- V:LieAlgebraModule
--- CB:LieAlgebraBasis
--- L:List, a list of matrix generators
-
-lieAlgebraRepresentation(LieAlgebraModule,LieAlgebraBasis,List):=(V,CB,L) -> (
-    if V#"LieAlgebra" != CB#"LieAlgebra" then error "V and CB have different Lie algebras" << endl;
-    new LieAlgebraRepresentation from {
-        "LieAlgebraModule"=>V,
-	"LieAlgebraBasis"=>CB,
-	"MatrixGenerators"=>L
-    }
-);
-*-
-
-
-
 ---------------------------------
 -- Define the LieAlgebraModuleElement type
 -- for linear combinations of VLB elements
@@ -30,14 +6,14 @@ lieAlgebraRepresentation(LieAlgebraModule,LieAlgebraBasis,List):=(V,CB,L) -> (
 
 LieAlgebraModuleElement = new Type of HashTable
 -- The keys are:
--- LieAlgebraModule
+-- LieAlgebraCharacter
 -- Terms, a hashtable
 ---- The keys are VLB patterns
 ---- The values are the coefficients 
 
 
 lieAlgebraModuleElement = (V,L) -> (
-    new LieAlgebraModuleElement from {"LieAlgebraModule"=>V,"Terms"=>L} 
+    new LieAlgebraModuleElement from {"LieAlgebraCharacter"=>V,"Terms"=>L} 
 );
 
 
@@ -54,8 +30,8 @@ simplify = (L) -> (
 
 
 LieAlgebraModuleElement + LieAlgebraModuleElement := (F1,F2) -> (
-    V1:=F1#"LieAlgebraModule";
-    V2:=F2#"LieAlgebraModule";
+    V1:=F1#"LieAlgebraCharacter";
+    V2:=F2#"LieAlgebraCharacter";
     if V1=!=V2 then error "Not elements of the same module";
     L:=join(F1#"Terms",F2#"Terms");
     lieAlgebraModuleElement(V1, simplify(L))
@@ -63,7 +39,7 @@ LieAlgebraModuleElement + LieAlgebraModuleElement := (F1,F2) -> (
 
 
 Number * LieAlgebraModuleElement := (c,f) -> (
-    lieAlgebraModuleElement(f#"LieAlgebraModule", apply(f#"Terms", p -> {p_0,c*p_1}))
+    lieAlgebraModuleElement(f#"LieAlgebraCharacter", apply(f#"Terms", p -> {p_0,c*p_1}))
 );
 
 - LieAlgebraModuleElement := (F1) -> (
@@ -75,7 +51,7 @@ LieAlgebraModuleElement - LieAlgebraModuleElement := (F1,F2) -> (
 );
 
 LieAlgebraModuleElement == LieAlgebraModuleElement := (F1,F2) -> (
-    F1- F2 === zeroElement(F1#"LieAlgebraModule")
+    F1- F2 === zeroElement(F1#"LieAlgebraCharacter")
 );
 
 
@@ -139,50 +115,18 @@ applyLOWord({0},v1,LoweringOperators1)
 applyLOWord({1,0},v1,LoweringOperators1)
 *-
 
--*
--- Inputs:
--- V, the LieAlgebraModule
--- RB, the LieAlgebra basis
--- rhoB, the matrix generators
 
 
--- Here V should be the irreducible Lie algebra with highest weight lambda in Dynkin notation
-
-installRepresentation = method(
-);
-
-installRepresentation(LieAlgebraModule,LieAlgebraBasis,List) := (V,CB,rhoB) -> (
-    if V.cache#?representation then error "V already has a representation. Remove it before installing another." << endl;
-    V.cache#representation = {CB,rhoB};
-)
-
-representationWeights = method(
-    TypicalValue=>List
-);
-
-representationWeights(LieAlgebraModule) := memoize((W) -> (
-    rho:=W.cache#representation;
-    sparseGenerators:=instance(rho_1_0,SparseMatrix); 
-    CB:=rho_0;
-    dimW:=-1;
-    Wweights:={};
-    m:=CB#"LieAlgebra"#"LieAlgebraRank";
-    if not sparseGenerators then (
-	 return apply(dim W, i -> apply(m, j -> lift((rho_1_j)_(i,i),ZZ)))
-    ) else (
-         return apply(dim W, i -> apply(m, j -> if ((rho_1_j)#"Entries")#?(i,i) then lift(((rho_1_j)#"Entries")#(i,i),ZZ) else 0))
-    )
-));
-*-
 
 basisWordsFromMatrixGenerators = method(
     TypicalValue=>List
 );
 
-basisWordsFromMatrixGenerators(LieAlgebraModule) := (V) -> (
-    CB:=(V.cache#representation)_0;
-    rhoB:=(V.cache#representation)_1;
-    Vlambdaweights :=representationWeights(V);
+basisWordsFromMatrixGenerators(LieAlgebraRepresentation) := (rho) -> (
+    V:=rho#"Character";
+    CB:=rho#"Basis";
+    rhoB:=rho#"RepresentationMatrices";
+    Vlambdaweights :=representationWeights(rho);
     WD := weightDiagram(V);
     wts:=keys(V#"DecompositionIntoIrreducibles");
     mults:= values(V#"DecompositionIntoIrreducibles");
@@ -276,7 +220,7 @@ end
 g = simpleLieAlgebra("A",3);
 CB = lieAlgebraBasis("A",3);
 lambda = {2,0,0};
-V=irreducibleLieAlgebraModule(lambda,g);
+V=irreducibleLieAlgebraCharacter(lambda,g);
 matrixGens = GTrepresentationMatrices(V,lambda);
 installRepresentation(V,CB,matrixGens)
 basisWordsFromMatrixGenerators(V)

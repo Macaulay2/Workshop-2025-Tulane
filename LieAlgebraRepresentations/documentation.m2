@@ -198,8 +198,8 @@ doc ///
 doc ///
     Key
         starInvolution
-	(starInvolution,LieAlgebraModule)
-	(dual,LieAlgebraModule)
+	(starInvolution,LieAlgebraCharacter)
+	(dual,LieAlgebraCharacter)
     Headline
         computes w* for a weight w
     Usage
@@ -215,7 +215,7 @@ doc ///
 	    1. The involution * is given by $-w_0$, where $w_0$ is the longest word in the Weyl group $W(\mathbf{g})$.
 		  
 	Text
-	    2. If $\mu$ is a dominant integral weight, and $V_{\mu}$ is the irreducible Lie algebra module with highest weight $\mu$, then $\mu^*$ is the highest weight of the dual module $(V_{\mu})^*$.
+	    2. If $\mu$ is a dominant integral weight, and $V_{\mu}$ is the irreducible Lie algebra character with highest weight $\mu$, then $\mu^*$ is the highest weight of the dual character $(V_{\mu})^*$.
 		  
 	Text 
 	    3. If the Dynkin diagram of $\mathbf{g}$ has an involution, then * corresponds to the action of this involution on weights.
@@ -305,43 +305,43 @@ TEST ///
 
 doc ///
     Key
-        LieAlgebraModule
+        LieAlgebraCharacter
     Headline
-        class for Lie algebra modules
+        class for Lie algebra characters
     Description
         Text 
-    	    This class represents Lie algebra modules.  Currently only modules over semi-simple Lie algebras over the complex numbers are supported.
-	    An object of type LieAlgebraModule is a hash table recording the Lie algebra and the decomposition of the module into irreducible Lie algebra modules, which are indexed by their highest weights.
+    	    This class represents Lie algebra characters.  Currently only characters over semi-simple Lie algebras over the complex numbers are supported.
+	    An object of type LieAlgebraCharacter is a hash table recording the Lie algebra and the decomposition of the character into irreducible Lie algebra characters, which are indexed by their highest weights.
 	    
 	Example
 	    g=simpleLieAlgebra("A",2)
-	    M=irreducibleLieAlgebraModule(g,{1,1})
+	    M=irreducibleLieAlgebraCharacter(g,{1,1})
 ///
 
 doc ///
     Key
-        irreducibleLieAlgebraModule
-	(irreducibleLieAlgebraModule,LieAlgebra,List)
-	(irreducibleLieAlgebraModule,LieAlgebra,Vector)
+        irreducibleLieAlgebraCharacter
+	(irreducibleLieAlgebraCharacter,LieAlgebra,List)
+	(irreducibleLieAlgebraCharacter,LieAlgebra,Vector)
 	LL
 	ω
     Headline
-        construct the irreducible Lie algebra module with given highest weight
+        construct the irreducible Lie algebra character with given highest weight
     Usage
-        irreducibleLieAlgebraModule(w,g)
-        irreducibleLieAlgebraModule(g,w)
+        irreducibleLieAlgebraCharacter(w,g)
+        irreducibleLieAlgebraCharacter(g,w)
     Inputs
         w:List
-	    the highest weight of the desired module
+	    the highest weight of the desired character
 	g:LieAlgebra     
     Outputs
-        M:LieAlgebraModule
+        M:LieAlgebraCharacter
     Description
         Text
-            This function creates the irreducible Lie algebra module with a given highest weight.
+            This function creates the irreducible Lie algebra character with a given highest weight.
 	Example
 	    g=simpleLieAlgebra("A",2)
-            irreducibleLieAlgebraModule(g,{1,1})
+            irreducibleLieAlgebraCharacter(g,{1,1})
         Text
 	    One can also use the shorthand LL:
 	Example
@@ -352,29 +352,29 @@ doc ///
 ///
 
 TEST ///
-    assert(irreducibleLieAlgebraModule({1,1},simpleLieAlgebra("A",2)) === new LieAlgebraModule from (simpleLieAlgebra("A",2),{{1,1}=>1} ))
+    assert(irreducibleLieAlgebraCharacter({1,1},simpleLieAlgebra("A",2)) === new LieAlgebraCharacter from (simpleLieAlgebra("A",2),{{1,1}=>1} ))
 ///	
 		
 doc ///
     Key 
-	(multiplicity,List,LieAlgebraModule)
-	(multiplicity,Vector,LieAlgebraModule)
+	(multiplicity,List,LieAlgebraCharacter)
+	(multiplicity,Vector,LieAlgebraCharacter)
     Headline
-        compute the multiplicity of a weight in a Lie algebra module
+        compute the multiplicity of a weight in a Lie algebra character
     Usage
         multiplicity(v,M)
     Inputs
         v:List
-	M:LieAlgebraModule
+	M:LieAlgebraCharacter
     Outputs
         k:ZZ
     Description
 	Text     
-	    The example below shows that the $sl_3$ module with highest weight $(2,1)$ contains the weight $(-1,1)$ with multiplicity 2.
+	    The example below shows that the $sl_3$ character with highest weight $(2,1)$ contains the weight $(-1,1)$ with multiplicity 2.
          
 	Example
 	    g=simpleLieAlgebra("A",2)
-	    V=irreducibleLieAlgebraModule({2,1},g)
+	    V=irreducibleLieAlgebraCharacter({2,1},g)
 	    multiplicity({-1,1},V)
     SeeAlso
         weightDiagram
@@ -382,90 +382,90 @@ doc ///
 ///
 
 TEST ///
-    assert(multiplicity({-1,1},irreducibleLieAlgebraModule({2,1},simpleLieAlgebra("A",2))) === 2)
+    assert(multiplicity({-1,1},irreducibleLieAlgebraCharacter({2,1},simpleLieAlgebra("A",2))) === 2)
 ///
 
 doc ///
     Key
-	(dim,LieAlgebraModule)
+	(dim,LieAlgebraCharacter)
     Headline
-        computes the dimension of a Lie algebra module as a vector space over the ground field
+        computes the dimension of a Lie algebra character as a vector space over the ground field
     Usage
         dim(V)
     Inputs 
-        V:LieAlgebraModule
+        V:LieAlgebraCharacter
     Outputs
         k:ZZ
     Description
         Example
 	    g=simpleLieAlgebra("A",2)
-	    V=irreducibleLieAlgebraModule({1,0},g)
+	    V=irreducibleLieAlgebraCharacter({1,0},g)
 	    dim(V)
 ///
 TEST ///
     g=simpleLieAlgebra("A",2)
-    V=irreducibleLieAlgebraModule({1,0},g)
+    V=irreducibleLieAlgebraCharacter({1,0},g)
     assert(dim(V) === 3)
-    W=irreducibleLieAlgebraModule({5,2},g)
+    W=irreducibleLieAlgebraCharacter({5,2},g)
     assert(dim W == sum values weightDiagram W)
 ///
 
 doc ///
     Key
         weightDiagram
-	(weightDiagram,LieAlgebraModule)
+	(weightDiagram,LieAlgebraCharacter)
 	(weightDiagram,LieAlgebra,List)
 	(weightDiagram,LieAlgebra,Vector)
 	[weightDiagram,Strategy]
     Headline
-        computes the weights in a Lie algebra module and their multiplicities
+        computes the weights in a Lie algebra character and their multiplicities
     Usage
         weightDiagram(V)
     Inputs
-        V:LieAlgebraModule
+        V:LieAlgebraCharacter
     Outputs
         T:VirtualTally
     Description
         Text
-	    Let $V$ be the irreducible $\mathbf{g}$-module with highest weight $v$.  This function returns a tally whose keys are the weights appearing in $V$ and whose values are the multiplicities of these weights.
+	    Let $V$ be the irreducible $\mathbf{g}$-character with highest weight $v$.  This function returns a tally whose keys are the weights appearing in $V$ and whose values are the multiplicities of these weights.
 	    An optional argument {\tt "Strategy"} allows to specify which algorithm to use, see @TO character@.
 	     
         Example
 	     g=simpleLieAlgebra("A",2)
-	     V=irreducibleLieAlgebraModule({2,1},g)
+	     V=irreducibleLieAlgebraCharacter({2,1},g)
 	     weightDiagram(V)
 	     
     SeeAlso
-        (multiplicity,List,LieAlgebraModule)
+        (multiplicity,List,LieAlgebraCharacter)
 	character
 ///
 
 TEST ///
-    assert(weightDiagram(irreducibleLieAlgebraModule({2,1},simpleLieAlgebra("A",2))) === new VirtualTally from {{{-1, 1}, 2}, {{1, 0}, 2}, {{3, -1}, 1}, {{-2, 0}, 1}, {{0, -1}, 2}, {{2, -2}, 1}, {{-2, 3}, 1}, {{0, 2}, 1}, {{2, 1}, 1}, {{-1, -2}, 1}, {{1, -3}, 1}, {{-3, 2}, 1}})
+    assert(weightDiagram(irreducibleLieAlgebraCharacter({2,1},simpleLieAlgebra("A",2))) === new VirtualTally from {{{-1, 1}, 2}, {{1, 0}, 2}, {{3, -1}, 1}, {{-2, 0}, 1}, {{0, -1}, 2}, {{2, -2}, 1}, {{-2, 3}, 1}, {{0, 2}, 1}, {{2, 1}, 1}, {{-1, -2}, 1}, {{1, -3}, 1}, {{-3, 2}, 1}})
 ///	
 
 	
 
 doc ///
     Key
-	(symbol **, LieAlgebraModule, LieAlgebraModule)
+	(symbol **, LieAlgebraCharacter, LieAlgebraCharacter)
     Headline
-        tensor product of LieAlgebraModules
+        tensor product of LieAlgebraCharacters
     Usage
         U ** V
     Inputs
-        U:LieAlgebraModule
-	V:LieAlgebraModule
+        U:LieAlgebraCharacter
+	V:LieAlgebraCharacter
     Outputs
-        W:LieAlgebraModule
+        W:LieAlgebraCharacter
     Description
         Text
-	    Computes the tensor product of two Lie algebra modules.  
+	    Computes the tensor product of two Lie algebra characters.  
 	       
         Example
 	    g=simpleLieAlgebra("A",2)
-	    U=irreducibleLieAlgebraModule({4,2},g)
-	    V=irreducibleLieAlgebraModule({3,1},g)
+	    U=irreducibleLieAlgebraCharacter({4,2},g)
+	    V=irreducibleLieAlgebraCharacter({3,1},g)
 	    U**V
 	    
     SeeAlso
@@ -473,49 +473,49 @@ doc ///
 ///
 
 TEST ///
-    assert(irreducibleLieAlgebraModule({2,1},simpleLieAlgebra("A",2)) ** irreducibleLieAlgebraModule({1,2},simpleLieAlgebra("A",2)) === new LieAlgebraModule from (simpleLieAlgebra("A",2), {{{1, 1}, 2}, {{3, 0}, 1}, {{1, 4}, 1}, {{3, 3}, 1}, {{0, 0}, 1}, {{0, 3}, 1}, {{2, 2}, 2}, {{4, 1}, 1}} ))
+    assert(irreducibleLieAlgebraCharacter({2,1},simpleLieAlgebra("A",2)) ** irreducibleLieAlgebraCharacter({1,2},simpleLieAlgebra("A",2)) === new LieAlgebraCharacter from (simpleLieAlgebra("A",2), {{{1, 1}, 2}, {{3, 0}, 1}, {{1, 4}, 1}, {{3, 3}, 1}, {{0, 0}, 1}, {{0, 3}, 1}, {{2, 2}, 2}, {{4, 1}, 1}} ))
 ///
 
 doc ///
     Key
-	(symbol ++, LieAlgebraModule, LieAlgebraModule)
-	(directSum, LieAlgebraModule)
+	(symbol ++, LieAlgebraCharacter, LieAlgebraCharacter)
+	(directSum, LieAlgebraCharacter)
     Headline
-        direct sum of LieAlgebraModules
+        direct sum of LieAlgebraCharacters
     Usage
         U ++ V
     Inputs
-        U:LieAlgebraModule
-	V:LieAlgebraModule
+        U:LieAlgebraCharacter
+	V:LieAlgebraCharacter
     Outputs
-        W:LieAlgebraModule
+        W:LieAlgebraCharacter
     Description
         Text
-	    Computes the direct sum of two Lie algebra modules.  
+	    Computes the direct sum of two Lie algebra characters.  
 	    
         Example
 	    g=simpleLieAlgebra("A",2)
-	    U=irreducibleLieAlgebraModule({4,2},g)
-	    V=irreducibleLieAlgebraModule({3,1},g)
+	    U=irreducibleLieAlgebraCharacter({4,2},g)
+	    V=irreducibleLieAlgebraCharacter({3,1},g)
 	    U++V
 ///
 
 TEST ///
-    assert(irreducibleLieAlgebraModule({2,1},simpleLieAlgebra("A",2)) ** irreducibleLieAlgebraModule({1,2},simpleLieAlgebra("A",2)) === new LieAlgebraModule from (simpleLieAlgebra("A",2), {{{1, 1}, 2}, {{3, 0}, 1}, {{1, 4}, 1}, {{3, 3}, 1}, {{0, 0}, 1}, {{0, 3}, 1}, {{2, 2}, 2}, {{4, 1}, 1}} ))
+    assert(irreducibleLieAlgebraCharacter({2,1},simpleLieAlgebra("A",2)) ** irreducibleLieAlgebraCharacter({1,2},simpleLieAlgebra("A",2)) === new LieAlgebraCharacter from (simpleLieAlgebra("A",2), {{{1, 1}, 2}, {{3, 0}, 1}, {{1, 4}, 1}, {{3, 3}, 1}, {{0, 0}, 1}, {{0, 3}, 1}, {{2, 2}, 2}, {{4, 1}, 1}} ))
 ///
 
 doc ///
     Key
         tensorCoefficient
-	(tensorCoefficient,LieAlgebraModule,LieAlgebraModule,LieAlgebraModule)     
+	(tensorCoefficient,LieAlgebraCharacter,LieAlgebraCharacter,LieAlgebraCharacter)     
     Headline
         computes the multiplicity of W in U tensor V
     Usage
         tensorCoefficient(U,V,W)
     Inputs
-        U:LieAlgebraModule
-	V:LieAlgebraModule
-	W:LieAlgebraModule
+        U:LieAlgebraCharacter
+	V:LieAlgebraCharacter
+	W:LieAlgebraCharacter
     Outputs
         k:ZZ
     Description
@@ -523,27 +523,27 @@ doc ///
 	    This function implements the Racah-Speiser algorithm; see Di Francesco, Mathieu, and Senechal, {\it Conformal Field Theory}, Springer Graduate Texts in Theoretical Physics, Section 13.5.2. 
 	       
 	Text     
-	    Given three irreducible Lie algebra modules $U$, $V$, and $W$, the function returns the multiplicity of $W$ in $U \otimes V$.  In Type A, these are related to the Littlewood-Richardson coefficients (though in this package, irreducible representations are indexed by the Dynkin labels of their highest weights, rather than by partitions).  
+	    Given three irreducible Lie algebra characters $U$, $V$, and $W$, the function returns the multiplicity of $W$ in $U \otimes V$.  In Type A, these are related to the Littlewood-Richardson coefficients (though in this package, irreducible representations are indexed by the Dynkin labels of their highest weights, rather than by partitions).  
 	   
         Text
-	    The example below shows that for $g=sl_3$ and $\lambda=2 \omega_1 + \omega_2$, $\mu= \omega_1 + 2 \omega_2$, and $\nu= 2 \omega_1 + 2 \omega_2$, the tensor product of $sl_3$ modules $V_{\lambda} \otimes V_{\mu}$ contains two copies of $V_{\nu}$.
+	    The example below shows that for $g=sl_3$ and $\lambda=2 \omega_1 + \omega_2$, $\mu= \omega_1 + 2 \omega_2$, and $\nu= 2 \omega_1 + 2 \omega_2$, the tensor product of $sl_3$ characters $V_{\lambda} \otimes V_{\mu}$ contains two copies of $V_{\nu}$.
 	       
         Example
 	    g=simpleLieAlgebra("A",2)
-	    U=irreducibleLieAlgebraModule({2,1},g)
-	    V=irreducibleLieAlgebraModule({1,2},g)
-	    W=irreducibleLieAlgebraModule({2,2},g)
+	    U=irreducibleLieAlgebraCharacter({2,1},g)
+	    V=irreducibleLieAlgebraCharacter({1,2},g)
+	    W=irreducibleLieAlgebraCharacter({2,2},g)
 	    tensorCoefficient(U,V,W)
     SeeAlso
-        (symbol **, LieAlgebraModule, LieAlgebraModule)
+        (symbol **, LieAlgebraCharacter, LieAlgebraCharacter)
 ///
 
 
 TEST ///
     g=simpleLieAlgebra("A",2);
-    U=irreducibleLieAlgebraModule({2,1},g);
-    V=irreducibleLieAlgebraModule({1,2},g);
-    W=irreducibleLieAlgebraModule({2,2},g);
+    U=irreducibleLieAlgebraCharacter({2,1},g);
+    V=irreducibleLieAlgebraCharacter({1,2},g);
+    W=irreducibleLieAlgebraCharacter({2,2},g);
     assert(tensorCoefficient(U,V,W) === 2)         
 ///
 		
@@ -552,22 +552,22 @@ TEST ///
 doc ///
     Key
         fusionCoefficient
-	(fusionCoefficient,LieAlgebraModule,LieAlgebraModule,LieAlgebraModule,ZZ)     
+	(fusionCoefficient,LieAlgebraCharacter,LieAlgebraCharacter,LieAlgebraCharacter,ZZ)     
     Headline
         computes the multiplicity of W in the fusion product of U and V
     Usage
         fusionCoefficient(U,V,W,l)
     Inputs
-        U:LieAlgebraModule
-	V:LieAlgebraModule
-	W:LieAlgebraModule
+        U:LieAlgebraCharacter
+	V:LieAlgebraCharacter
+	W:LieAlgebraCharacter
         l:ZZ	
     Description
         Text
 	    This function implements the Kac-Walton algorithm; see Di Francesco, Mathieu, and Senechal, {\it Conformal Field Theory}, Springer Graduate Texts in Theoretical Physics, Section 16.2.2.  
 	    
 	Text    
-	    Given three irreducible Lie algebra modules $U$, $V$, and $W$, the function returns the multiplicity of $W$ in the fusion product of $U$ and $V$ at level $l$.  (We are abusing notation and terminology a little here; the fusion product is really a product for modules over an affine Lie algebra.  However, since the Kac-Walton algorithm is defined entirely using the combinatorics of the root system of the underlying finite-dimensional Lie algebra, we may therefore use the Kac-Walton algorithm to define a product on Lie algebra modules as well.)
+	    Given three irreducible Lie algebra characters $U$, $V$, and $W$, the function returns the multiplicity of $W$ in the fusion product of $U$ and $V$ at level $l$.  (We are abusing notation and terminology a little here; the fusion product is really a product for characters over an affine Lie algebra.  However, since the Kac-Walton algorithm is defined entirely using the combinatorics of the root system of the underlying finite-dimensional Lie algebra, we may therefore use the Kac-Walton algorithm to define a product on Lie algebra characters as well.)
        
        
 	Text
@@ -575,50 +575,50 @@ doc ///
 	    
         Example
 	    g=simpleLieAlgebra("A",2);
-	    U=irreducibleLieAlgebraModule({2,1},g);
-	    V=irreducibleLieAlgebraModule({1,2},g);
-	    W=irreducibleLieAlgebraModule({1,1},g);
+	    U=irreducibleLieAlgebraCharacter({2,1},g);
+	    V=irreducibleLieAlgebraCharacter({1,2},g);
+	    W=irreducibleLieAlgebraCharacter({1,1},g);
 	    fusionCoefficient(U,V,W,3)
 ///
 
 doc ///
     Key
-       LieAlgebraModuleFromWeights
-       (LieAlgebraModuleFromWeights,VirtualTally,LieAlgebra)
-       (LieAlgebraModuleFromWeights,RingElement,LieAlgebra)
+       LieAlgebraCharacterFromWeights
+       (LieAlgebraCharacterFromWeights,VirtualTally,LieAlgebra)
+       (LieAlgebraCharacterFromWeights,RingElement,LieAlgebra)
     Headline
-       finds a Lie algebra module based on its weights
+       finds a Lie algebra character based on its weights
     Usage
-        LieAlgebraModuleFromWeights(T,g)
+        LieAlgebraCharacterFromWeights(T,g)
     Inputs
         T:Tally
 	g:LieAlgebra
     Description
         Example
 	    g=simpleLieAlgebra("A",2);
-	    U=irreducibleLieAlgebraModule({1,1},g);
+	    U=irreducibleLieAlgebraCharacter({1,1},g);
 	    M=U**U
 	    T=weightDiagram M
-            LieAlgebraModuleFromWeights(T,g)
+            LieAlgebraCharacterFromWeights(T,g)
 ///
 doc ///
     Key
         fusionProduct
-	(fusionProduct,LieAlgebraModule,LieAlgebraModule,ZZ)     
+	(fusionProduct,LieAlgebraCharacter,LieAlgebraCharacter,ZZ)     
     Headline
         computes the multiplicities of irreducibles in the decomposition of the fusion product of U and V
     Usage
         fusionProduct(U,V,l)
     Inputs
-        U:LieAlgebraModule
-	V:LieAlgebraModule
+        U:LieAlgebraCharacter
+	V:LieAlgebraCharacter
         l:ZZ
     Description
         Text
 	    This function implements the Kac-Walton algorithm; see Di Francesco, Mathieu, and Senechal, {\it Conformal Field Theory}, Springer Graduate Texts in Theoretical Physics, Section 16.2.2.  
 	    
  	Text   
-	    Given two irreducible Lie algebra modules $U$ and $V$, the function returns the fusion product of $U$ and $V$ at level $l$.  (We are abusing notation and terminology a little here; the fusion product is really a product for modules over an affine Lie algebra.  However, since the Kac-Walton algorithm is defined entirely using the combinatorics of the root system of the underlying finite-dimensional Lie algebra, we may therefore use the Kac-Walton algorithm to define a product on Lie algebra modules as well.)  
+	    Given two irreducible Lie algebra characters $U$ and $V$, the function returns the fusion product of $U$ and $V$ at level $l$.  (We are abusing notation and terminology a little here; the fusion product is really a product for characters over an affine Lie algebra.  However, since the Kac-Walton algorithm is defined entirely using the combinatorics of the root system of the underlying finite-dimensional Lie algebra, we may therefore use the Kac-Walton algorithm to define a product on Lie algebra characters as well.)  
 	    
 	    
         Text
@@ -626,17 +626,17 @@ doc ///
 	    
         Example
 	    g=simpleLieAlgebra("A",2);
-	    U=irreducibleLieAlgebraModule({2,1},g);
-	    V=irreducibleLieAlgebraModule({1,2},g);
+	    U=irreducibleLieAlgebraCharacter({2,1},g);
+	    V=irreducibleLieAlgebraCharacter({1,2},g);
 	    fusionProduct(U,V,3)
 ///
 
 
 TEST ///
     g=simpleLieAlgebra("A",2);
-    U=irreducibleLieAlgebraModule({2,1},g);
-    V=irreducibleLieAlgebraModule({1,2},g);
-    W=irreducibleLieAlgebraModule({1,1},g);
+    U=irreducibleLieAlgebraCharacter({2,1},g);
+    V=irreducibleLieAlgebraCharacter({1,2},g);
+    W=irreducibleLieAlgebraCharacter({1,1},g);
     assert(fusionCoefficient(U,V,W,3) === 1)         
 ///
 
@@ -645,31 +645,31 @@ TEST ///
 doc ///
     Key
         casimirScalar
-	(casimirScalar,LieAlgebraModule)
+	(casimirScalar,LieAlgebraCharacter)
     Headline
-        computes the scalar by which the Casimir operator acts on an irreducible Lie algebra module
+        computes the scalar by which the Casimir operator acts on an irreducible Lie algebra character
     Usage
         casimirScalar(V)
     Inputs 
-        V:LieAlgebraModule
+        V:LieAlgebraCharacter
     Outputs
         k:QQ
     Description
         Text
-	    The Casimir operator is an element of the universal enveloping algebra that acts by a scalar on each irreducible Lie algebra module.  One has $c(\mu) = (\mu,\mu) + 2(\mu,\rho)$, where $\rho$ is half the sum of the positive weights and (,) is the Killing form scaled so that $(\theta,\theta)=2$, where $\theta$ is the highest root.  See Di Francesco, Mathieu, and Senechal, {\it Conformal Field Theory}, Springer Graduate Texts in Theoretical Physics, (13.127) p. 512, and (13.46) p. 499.
+	    The Casimir operator is an element of the universal enveloping algebra that acts by a scalar on each irreducible Lie algebra character.  One has $c(\mu) = (\mu,\mu) + 2(\mu,\rho)$, where $\rho$ is half the sum of the positive weights and (,) is the Killing form scaled so that $(\theta,\theta)=2$, where $\theta$ is the highest root.  See Di Francesco, Mathieu, and Senechal, {\it Conformal Field Theory}, Springer Graduate Texts in Theoretical Physics, (13.127) p. 512, and (13.46) p. 499.
 	    
 	Text     
             In the example below, we see that the Casimir operator acts as multiplication by 8/3 on the standard representation of $sl_3$.  
          
 	Example
 	    g=simpleLieAlgebra("A",2)
-	    V=irreducibleLieAlgebraModule({1,0},g)
+	    V=irreducibleLieAlgebraCharacter({1,0},g)
 	    casimirScalar(V)
 ///
 
 TEST ///
     g=simpleLieAlgebra("A",2)
-    V=irreducibleLieAlgebraModule({1,0},g)
+    V=irreducibleLieAlgebraCharacter({1,0},g)
     assert(casimirScalar(V) === 8/3)
 ///
 
@@ -677,25 +677,25 @@ TEST ///
 doc ///
     Key
         isIsomorphic
-	(isIsomorphic,LieAlgebraModule,LieAlgebraModule)
+	(isIsomorphic,LieAlgebraCharacter,LieAlgebraCharacter)
     Headline
-        tests whether two Lie algebra modules are isomorphic
+        tests whether two Lie algebra characters are isomorphic
     Usage
         isIsomorphic(V,W)
     Inputs
-        V:LieAlgebraModule
-	W:LieAlgebraModule
+        V:LieAlgebraCharacter
+	W:LieAlgebraCharacter
     Outputs
         b:Boolean
     Description
         Text
-	    To test whether two Lie algebra modules are isomorphic, we first test whether they are modules over the same Lie algebra, and if so, then test whether they have the same decomposition into irreducible Lie algebra modules.
+	    To test whether two Lie algebra characters are isomorphic, we first test whether they are characters over the same Lie algebra, and if so, then test whether they have the same decomposition into irreducible Lie algebra characters.
         
 	Example
 	    g=simpleLieAlgebra("A",2)
-	    M=irreducibleLieAlgebraModule({2,1},g)
-	    N=irreducibleLieAlgebraModule({1,2},g)
-	    Z=irreducibleLieAlgebraModule({0,0},g)
+	    M=irreducibleLieAlgebraCharacter({2,1},g)
+	    N=irreducibleLieAlgebraCharacter({1,2},g)
+	    Z=irreducibleLieAlgebraCharacter({0,0},g)
 	    isIsomorphic(M,N)
 	    isIsomorphic(M,M)
 	    isIsomorphic(M,M**Z)
@@ -704,9 +704,9 @@ doc ///
 
 TEST ///
     g=simpleLieAlgebra("A",2);
-    M=irreducibleLieAlgebraModule({2,1},g);
-    N=irreducibleLieAlgebraModule({1,2},g);
-    Z=irreducibleLieAlgebraModule({0,0},g);
+    M=irreducibleLieAlgebraCharacter({2,1},g);
+    N=irreducibleLieAlgebraCharacter({1,2},g);
+    Z=irreducibleLieAlgebraCharacter({0,0},g);
     assert(isIsomorphic(M,N) === false)
     assert(isIsomorphic(M,M) === true)
     assert(isIsomorphic(M,M**Z) === true)
@@ -730,16 +730,16 @@ doc ///
 doc ///
     Key
         character
-	(character,LieAlgebraModule)
+	(character,LieAlgebraCharacter)
 	(character,LieAlgebra,List)
 	(character,LieAlgebra,Vector)
 	[character,Strategy]
     Headline
-        Computes the character of a Lie algebra module
+        Computes the character of a Lie algebra character
     Usage
         character V
     Inputs
-        V:LieAlgebraModule
+        V:LieAlgebraCharacter
     Outputs
         C:RingElement
     Description
@@ -762,13 +762,13 @@ TEST ///
 doc ///
     Key
         isIrreducible
-	(isIrreducible,LieAlgebraModule)
+	(isIrreducible,LieAlgebraCharacter)
     Headline
-        Whether a Lie algebra module is irreducible or not
+        Whether a Lie algebra character is irreducible or not
     Description
         Example
 	    g=simpleLieAlgebra("A",2)
-	    M=irreducibleLieAlgebraModule({2,1},g)
+	    M=irreducibleLieAlgebraCharacter({2,1},g)
 	    isIrreducible M
 	    isIrreducible(M++M)
 	    isIrreducible(M**M)
@@ -776,110 +776,110 @@ doc ///
 
 TEST ///
     g=simpleLieAlgebra("A",2);
-    assert(isIrreducible irreducibleLieAlgebraModule({2,1},g))
+    assert(isIrreducible irreducibleLieAlgebraCharacter({2,1},g))
 ///
 
 doc ///
     Key
-        trivialModule
-	(trivialModule,LieAlgebra)
+        trivialCharacter
+	(trivialCharacter,LieAlgebra)
     Headline
-        The trivial module of a Lie algebra
+        The trivial character of a Lie algebra
     Description
         Text
-	    Returns the one-dimensional module with zero highest weight.
+	    Returns the one-dimensional character with zero highest weight.
 ///
 
 doc ///
     Key
-        zeroModule
-	(zeroModule,LieAlgebra)
+        zeroCharacter
+	(zeroCharacter,LieAlgebra)
     Headline
-        The zero module of a Lie algebra
+        The zero character of a Lie algebra
     Description
         Text
-	    Returns the zero-dimensional module.
+	    Returns the zero-dimensional character.
 ///
 
 doc ///
     Key
-        adjointModule
-	(adjointModule,LieAlgebra)
+        adjointCharacter
+	(adjointCharacter,LieAlgebra)
     Headline
-        The adjoint module of a Lie algebra
+        The adjoint character of a Lie algebra
     Description
         Text
-	    Returns the module corresponding to the adjoint representation of a Lie algebra.
+	    Returns the character corresponding to the adjoint representation of a Lie algebra.
         Example
 	    g=simpleLieAlgebra("A",2)
-	    adjointModule g
-	    adjointModule (g++g)
+	    adjointCharacter g
+	    adjointCharacter (g++g)
 ///
 
 TEST ///
     g=simpleLieAlgebra("A",2);
-    M=irreducibleLieAlgebraModule({2,1},g);
-    assert(M ** trivialModule g === M)
-    assert(M ** zeroModule g === zeroModule g)
-    assert(dim adjointModule(g++g)==2*dim adjointModule g)
+    M=irreducibleLieAlgebraCharacter({2,1},g);
+    assert(M ** trivialCharacter g === M)
+    assert(M ** zeroCharacter g === zeroCharacter g)
+    assert(dim adjointCharacter(g++g)==2*dim adjointCharacter g)
 ///
 
 doc ///
     Key
     	adams
-	(adams,ZZ,LieAlgebraModule)
+	(adams,ZZ,LieAlgebraCharacter)
     Headline
-        Computes the action of the nth Adams operator on a Lie algebra module
+        Computes the action of the nth Adams operator on a Lie algebra character
     Usage
         adams(n,M)
     Inputs
 	n:ZZ
-        M:LieAlgebraModule
+        M:LieAlgebraCharacter
     Outputs
-        M':LieAlgebraModule
+        M':LieAlgebraCharacter
 ///
 
 doc ///
     Key
-    	(symmetricPower,ZZ,LieAlgebraModule)
-	(exteriorPower,ZZ,LieAlgebraModule)
+    	(symmetricPower,ZZ,LieAlgebraCharacter)
+	(exteriorPower,ZZ,LieAlgebraCharacter)
     Headline
-        Computes the nth symmetric / exterior tensor power of a Lie algebra module
+        Computes the nth symmetric / exterior tensor power of a Lie algebra character
     Usage
         symmetricPower(n,M)
         exteriorPower(n,M)
     Inputs
 	n:ZZ
-        M:LieAlgebraModule
+        M:LieAlgebraCharacter
     Outputs
-        M':LieAlgebraModule
+        M':LieAlgebraCharacter
 ///
 
 TEST ///
     g=simpleLieAlgebra("A",3);
-    M=irreducibleLieAlgebraModule({1,0,0},g);
-    assert(exteriorPower(2,M) === irreducibleLieAlgebraModule({0,1,0},g));
-    assert(exteriorPower(3,M) === irreducibleLieAlgebraModule({0,0,1},g));
-    scan(1..5, i -> assert(symmetricPower(i,M) === irreducibleLieAlgebraModule({i,0,0},g)));
+    M=irreducibleLieAlgebraCharacter({1,0,0},g);
+    assert(exteriorPower(2,M) === irreducibleLieAlgebraCharacter({0,1,0},g));
+    assert(exteriorPower(3,M) === irreducibleLieAlgebraCharacter({0,0,1},g));
+    scan(1..5, i -> assert(symmetricPower(i,M) === irreducibleLieAlgebraCharacter({i,0,0},g)));
 ///
 
 doc ///
     Key
-	(symbol ^**,LieAlgebraModule,ZZ)
+	(symbol ^**,LieAlgebraCharacter,ZZ)
     Headline
-        Computes the nth tensor power of a Lie algebra module
+        Computes the nth tensor power of a Lie algebra character
     Usage
         M^**n
     Inputs
-        M:LieAlgebraModule
+        M:LieAlgebraCharacter
 	n:ZZ
     Outputs
-        M':LieAlgebraModule
+        M':LieAlgebraCharacter
 ///
 
 TEST ///
     g=simpleLieAlgebra("B",3);
-    M=irreducibleLieAlgebraModule({1,0,1},g);
+    M=irreducibleLieAlgebraCharacter({1,0,1},g);
     c=character M;
     scan(1..4, n -> assert(character(M^**n) == c^n))
 ///
@@ -887,15 +887,15 @@ TEST ///
 doc ///
     Key
        qdim
-       (qdim,LieAlgebraModule)
-       (qdim,LieAlgebraModule,ZZ)
+       (qdim,LieAlgebraCharacter)
+       (qdim,LieAlgebraCharacter,ZZ)
     Headline
        Compute principal specialization of character or quantum dimension
     Usage
        qdim M
        qdim(M,l)
     Inputs
-        M:LieAlgebraModule
+        M:LieAlgebraCharacter
 	l:ZZ
     Outputs
         P:RingElement
@@ -988,26 +988,26 @@ assert ( k#"LieAlgebraRank" === (1,1,1) and k#"RootSystemType" === ("A","A","A")
 doc ///
     Key
         branchingRule
-        (branchingRule,LieAlgebraModule,List)
-        (branchingRule,LieAlgebraModule,Matrix)
-        (branchingRule,LieAlgebraModule,LieAlgebra)
+        (branchingRule,LieAlgebraCharacter,List)
+        (branchingRule,LieAlgebraCharacter,Matrix)
+        (branchingRule,LieAlgebraCharacter,LieAlgebra)
     Headline
-        A Lie algebra module viewed as a module over a Lie subalgebra 
+        A Lie algebra character viewed as a character over a Lie subalgebra 
     Usage
         branchingRule(V,S)
     Inputs
-        V:LieAlgebraModule
+        V:LieAlgebraCharacter
 	S:{List,Matrix,LieAlgebra}
     Outputs
-        V':LieAlgebraModule
+        V':LieAlgebraCharacter
     Description
         Text
 	   @TT "S"@ must be a subset of vertices of the Dynkin diagram of the Lie algebra of @TT "V"@, or a matrix, see @TO subLieAlgebra@;
 	   or a sub-Lie algebra.
-	   Returns @TT "V"@ viewed as a module over the Lie subalgebra determined by @TT "S"@.
+	   Returns @TT "V"@ viewed as a character over the Lie subalgebra determined by @TT "S"@.
 	Example
 	    g=simpleLieAlgebra("D",4);
-	    M=adjointModule g;
+	    M=adjointCharacter g;
 	    branchingRule(M,{1,2,3})
 ///
 
@@ -1037,16 +1037,16 @@ doc ///
 
 doc ///
     Key
-       (symbol @,LieAlgebraModule,LieAlgebraModule)
+       (symbol @,LieAlgebraCharacter,LieAlgebraCharacter)
     Headline
-        Take the tensor product of modules over different Lie algebras
+        Take the tensor product of characters over different Lie algebras
     Description
         Text
-	   Produces a module over the direct sum of the Lie algebras of the two modules.
+	   Produces a character over the direct sum of the Lie algebras of the two characters.
 	Example
 	   LL_(1,2,3,4) (simpleLieAlgebra("D",4)) @ LL_(5,6) (simpleLieAlgebra("G",2))
         Text
-	   A complicated way to define usual tensor product @TO (symbol **,LieAlgebraModule,LieAlgebraModule)@ would be using the diagonal embedding:
+	   A complicated way to define usual tensor product @TO (symbol **,LieAlgebraCharacter,LieAlgebraCharacter)@ would be using the diagonal embedding:
 	Example
 	   g := simpleLieAlgebra("A",1)
 	   h := g ++ g
@@ -1087,40 +1087,40 @@ doc ///
 
 doc ///
     Key
-       (symbol _,LieAlgebraModule,ZZ)
-       (symbol _,LieAlgebraModule,List)
-       (symbol _,LieAlgebraModule,Vector)
-       (symbol _,LieAlgebraModule,LieAlgebraModule)
+       (symbol _,LieAlgebraCharacter,ZZ)
+       (symbol _,LieAlgebraCharacter,List)
+       (symbol _,LieAlgebraCharacter,Vector)
+       (symbol _,LieAlgebraCharacter,LieAlgebraCharacter)
     Headline
-        Pick out one irreducible submodule of a Lie algebra module
+        Pick out one irreducible submodule of a Lie algebra character
     Description
         Text
-	   If a number is given, the ordering is the same as when the module is displayed:
+	   If a number is given, the ordering is the same as when the character is displayed:
 	Example
 	   g=simpleLieAlgebra("A",2);
-	   (adjointModule g)^**3
+	   (adjointCharacter g)^**3
 	   oo_2
         Text
-	   Instead one can simply use a weight or irreducible module as subscript:
+	   Instead one can simply use a weight or irreducible character as subscript:
 	Example
 	   g=simpleLieAlgebra("A",3);
-	   M=(adjointModule g)^**2
+	   M=(adjointCharacter g)^**2
 	   describe M
 	   M_{1,0,1}
-	   M_(trivialModule g)
+	   M_(trivialCharacter g)
 ///
 
 doc ///
     Key
-       (symbol _*,LieAlgebraModule)
+       (symbol _*,LieAlgebraCharacter)
     Headline
-        List irreducible submodules of a Lie algebra module
+        List irreducible submodules of a Lie algebra character
     Description
         Text
 	   Gives a list of nonisomorphic irreducible submodules:
 	Example
 	   g=simpleLieAlgebra("A",2);
-	   (adjointModule g)^**3
+	   (adjointCharacter g)^**3
 	   oo_*
 ///
 
@@ -1138,7 +1138,7 @@ doc ///
         Text
 	    This class also stores additional information about the basis in addition to the basis elements themselves. For instance, it records the weights of the basis elements and their dual elements with respect to the Killing form.
 	Text    
-	    Currently only implemented for for simple Lie algebras of type A, C, and D.
+	    Currently only implemented for for simple Lie algebras of type A, B, C, and D.
         Example
 	    CB=lieAlgebraBasis("A",2)
 	    peek CB
@@ -1162,7 +1162,7 @@ doc ///
         CB:LieAlgebraBasis
     Description
         Text
-	    Currently only implemented for simple Lie algebras of types A, C, and D.
+	    Currently only implemented for simple Lie algebras of types A, B, C, and D.
 	Text
 	    The user may either input the type and rank, or the simple Lie algebra.
 	Example
@@ -1196,24 +1196,26 @@ doc ///
     Inputs 
         CB:LieAlgebraBasis
     Outputs
-        V:LieAlgebraModule
+        V:LieAlgebraRepresentation
     Description
 
         Text
 	    The user may either input the Lie algebra basis, or the type and rank, or the simple Lie algebra.
 
 	Example
-	    V = trivialRepresentation("A",2)
-	    dim V
-	    V#"DecompositionIntoIrreducibles"
+	    rho0 = trivialRepresentation("A",2)
+	    V0 = rho0#"Character"
+	    dim V0
+	    V0#"DecompositionIntoIrreducibles"
 
 ///
 
 TEST ///
-V = trivialRepresentation("A",2);
-assert(dim V == 1)
-assert(V#"DecompositionIntoIrreducibles" === new VirtualTally from {{0, 0} => 1})
-assert((V.cache#representation)_1==apply(8, i -> matrix {{0/1}}))
+rho0 = trivialRepresentation("A",2);
+V0 = rho0#"Character"
+assert(dim V0 == 1)
+assert(V0#"DecompositionIntoIrreducibles" === new VirtualTally from {{0, 0} => 1})
+assert(rho0#"RepresentationMatrices"==apply(8, i -> matrix {{0/1}}))
 ///
 
 
@@ -1231,7 +1233,7 @@ doc ///
     Inputs 
         CB:LieAlgebraBasis
     Outputs
-        V:LieAlgebraModule
+        V:LieAlgebraRepresentation
     Description
 	Text
             For the matrix Lie algebras $sl_n$, $sp(2n)$, $so(m)$, the basis elements in the @TT "LieAlgebraBasis"@ are matrices. Thus we may use these matrices to define a representation $\rho: \mathfrak{g} \rightarrow \mathfrak{gl}(V)$.
@@ -1248,11 +1250,11 @@ doc ///
 ///
 
 TEST ///
-V = standardRepresentation("A",2);
+rho = standardRepresentation("A",2);
 CB = lieAlgebraBasis("A",2)
-assert(dim V == 3)
-assert((V.cache#representation)_0===CB)
-assert((V.cache#representation)_1==CB#"BasisElements")
+assert(dim(rho#"Character") == 3)
+assert(rho#"Basis"===CB)
+assert(rho#"RepresentationMatrices"==CB#"BasisElements")
 ///
 
 
@@ -1269,7 +1271,7 @@ doc ///
     Inputs 
         CB:LieAlgebraBasis
     Outputs
-        V:LieAlgebraModule
+        V:LieAlgebraRepresentation
     Description
 	Text
             Let $\mathfrak{g}$ be a Lie algebra with basis @TT "CB"@. The basis records a basis $B$ of $\mathfrak{g}$, the bracket for $\mathfrak{g}$, and a way to write elements of $\mathfrak{g} in the basis $B$. With these tools, we may write the matrix for the linear transformation $\operatorname{ad}(B_i)$ with respect to the basis $B$ for each $B_i$. This is the adjoint representation. 
@@ -1286,12 +1288,13 @@ doc ///
 ///
 
 TEST ///
-V = adjointRepresentation("A",2);
+rho = adjointRepresentation("A",2);
 CB = lieAlgebraBasis("A",2)
+V=rho#"Character"
 assert(dim V == 8)
 assert(V#"DecompositionIntoIrreducibles"=== new VirtualTally from {{{1,1},1}})
 I = matrix apply(8, i -> apply(8, j -> if i==j then 1/1 else 0/1));
-assert(casimirOperator(V)===6*I)
+assert(casimirOperator(rho)===6*I)
 ///
 
 
@@ -1312,7 +1315,7 @@ doc ///
         L:List
     Description
         Text
-            There are at least two popular ways to describe irreducible $\gl_n$ and $sl_n$ modules. We can either give its highest weight as a linear combination of the fundamental dominant weights $\omega_i$, or describe it as a partition. This function allows us to convert from the first convention to the second.
+            There are at least two popular ways to describe irreducible $\gl_n$ and $sl_n$ characters. We can either give its highest weight as a linear combination of the fundamental dominant weights $\omega_i$, or describe it as a partition. This function allows us to convert from the first convention to the second.
 
         Text
 	    In the example below, we convert the weight $\lambda = (1,2,0,0,1) =  \omega_1 + 2\omega_2 + \omega_5$ for $sl_6$ into a partition. 
@@ -1342,7 +1345,7 @@ doc ///
 
            Each entry $x_{i,j}$ is a nonnegative integer, the top row $x_{n,i}$ corresponds to $\lambda$, and the entries satisfy the inequalities $x_{k,i} \geq x_{k-1,i} \geq x_{k,i+1}$. 
 
-            The Gelfand-Tsetlin patterns of shape $\lambda$ form a basis of the irreducible $sl_n$ module with highest weight $\lambda$, and there are explicit formulae for the actions of a basis of $sl_n$ on this basis.
+            The Gelfand-Tsetlin patterns of shape $\lambda$ form a basis of the irreducible $sl_n$ character with highest weight $\lambda$, and there are explicit formulae for the actions of a basis of $sl_n$ on this basis.
 
             The Gelfand-Tsetlin patterns correspond to the integer points of a polytope called the Gelfand-Tsetlin polytope. The @TT "LieAlgebraRepresentations"@ package can create this polytope with the function @TO (gtPolytope,List)@.
 
@@ -1474,13 +1477,13 @@ TEST ///
 doc ///
     Key
         GTrepresentationMatrices
-	(GTrepresentationMatrices,LieAlgebraModule)
+	(GTrepresentationMatrices,LieAlgebraCharacter)
     Headline
         creates a list of matrices for the action of $\mathfrak{g}$ on Gelfand-Tsetlin basis
     Usage
         GTrepresentationMatrices(V,lambda)
     Inputs 
-        V:LieAlgebraModule
+        V:LieAlgebraCharacter
     Outputs
         L:List
     Description
@@ -1493,20 +1496,20 @@ doc ///
 	    The output is a list of matrices that may in turn be installed as a representation.
 
 	Text
-	    We create matrix generators for the adjoint representation of $sl_3$ with respect to the Gelfand-Tsetlin basis of $sl_3$, and then install it to the module $V$. This yields a representation that is isomorphic to, but not equal to, the representation created by @TO (adjointRepresentation,LieAlgebraBasis)@.
+	    We create matrix generators for the adjoint representation of $sl_3$ with respect to the Gelfand-Tsetlin basis of $sl_3$, and then install it to the character $V$. This yields a representation that is isomorphic to, but not equal to, the representation created by @TO (adjointRepresentation,LieAlgebraBasis)@.
 	    
 	Example
 	    sl3=simpleLieAlgebra("A",2)
-	    V=irreducibleLieAlgebraModule({1,1},sl3)
-	    L=GTrepresentationMatrices(V)
+	    xi=irreducibleLieAlgebraCharacter({1,1},sl3)
+	    L=GTrepresentationMatrices(xi)
 	    CB=lieAlgebraBasis(sl3)
-	    installRepresentation(V,CB,L)
+	    lieAlgebraRepresentation(xi,CB,L)
 ///
 
 TEST ///
     sl3=simpleLieAlgebra("A",2)
-    V=irreducibleLieAlgebraModule({1,1},sl3)
-    assert(GTrepresentationMatrices(V) === {map(QQ^8,QQ^8,{{1, 0, 0, 0, 0, 0, 0, 0}, {0, -1, 0, 0, 0, 0, 0, 0}, {0, 0, 2, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, -2, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 1, 0}, {0, 0, 0, 0, 0, 0, 0, -1}}),map(QQ^8,QQ^8,{{1, 0, 0, 0, 0, 0, 0, 0}, {0, 2, 0, 0, 0, 0, 0, 0}, {0, 0, -1, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 1, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, -2, 0}, {0, 0, 0, 0, 0, 0, 0, -1}}),map(QQ^8,QQ^8,{{0, 1, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 2, 0, 0, 0, 0}, {0, 0, 0, 0, 2, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 1}, {0, 0, 0, 0, 0, 0, 0, 0}}),map(QQ^8,QQ^8,{{0, 0, 0, -1, 0, 3, 0, 0}, {0, 0, 0, 0, -2, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 3, 0}, {0, 0, 0, 0, 0, 0, 0, 3/2}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, -3/2}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}}),map(QQ^8,QQ^8,{{0, 0, 1, 0, 0, 0, 0, 0}, {0, 0, 0, 1, 0, 3, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 3/2, 0}, {0, 0, 0, 0, 0, 0, 0, 3/2}, {0, 0, 0, 0, 0, 0, 3/2, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}}),map(QQ^8,QQ^8,{{0, 0, 0, 0, 0, 0, 0, 0}, {1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 1, 0, 0, 0, 0, 0}, {0, 0, 0, 1, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 1, 0}}),map(QQ^8,QQ^8,{{0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {-1/2, 0, 0, 0, 0, 0, 0, 0}, {0, -1/2, 0, 0, 0, 0, 0, 0}, {1/2, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 1/3, 0, 0, 0, 0, 0}, {0, 0, 0, 1/3, 0, -1, 0, 0}}),map(QQ^8,QQ^8,{{0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {1, 0, 0, 0, 0, 0, 0, 0}, {0, 1/2, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 1/2, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 1/3, 0, 1, 0, 0}, {0, 0, 0, 0, 2/3, 0, 0, 0}})})
+    xi=irreducibleLieAlgebraCharacter({1,1},sl3)
+    assert(GTrepresentationMatrices(xi) === {map(QQ^8,QQ^8,{{1, 0, 0, 0, 0, 0, 0, 0}, {0, -1, 0, 0, 0, 0, 0, 0}, {0, 0, 2, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, -2, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 1, 0}, {0, 0, 0, 0, 0, 0, 0, -1}}),map(QQ^8,QQ^8,{{1, 0, 0, 0, 0, 0, 0, 0}, {0, 2, 0, 0, 0, 0, 0, 0}, {0, 0, -1, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 1, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, -2, 0}, {0, 0, 0, 0, 0, 0, 0, -1}}),map(QQ^8,QQ^8,{{0, 1, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 2, 0, 0, 0, 0}, {0, 0, 0, 0, 2, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 1}, {0, 0, 0, 0, 0, 0, 0, 0}}),map(QQ^8,QQ^8,{{0, 0, 0, -1, 0, 3, 0, 0}, {0, 0, 0, 0, -2, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 3, 0}, {0, 0, 0, 0, 0, 0, 0, 3/2}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, -3/2}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}}),map(QQ^8,QQ^8,{{0, 0, 1, 0, 0, 0, 0, 0}, {0, 0, 0, 1, 0, 3, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 3/2, 0}, {0, 0, 0, 0, 0, 0, 0, 3/2}, {0, 0, 0, 0, 0, 0, 3/2, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}}),map(QQ^8,QQ^8,{{0, 0, 0, 0, 0, 0, 0, 0}, {1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 1, 0, 0, 0, 0, 0}, {0, 0, 0, 1, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 1, 0}}),map(QQ^8,QQ^8,{{0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {-1/2, 0, 0, 0, 0, 0, 0, 0}, {0, -1/2, 0, 0, 0, 0, 0, 0}, {1/2, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 1/3, 0, 0, 0, 0, 0}, {0, 0, 0, 1/3, 0, -1, 0, 0}}),map(QQ^8,QQ^8,{{0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {1, 0, 0, 0, 0, 0, 0, 0}, {0, 1/2, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 1/2, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 1/3, 0, 1, 0, 0}, {0, 0, 0, 0, 2/3, 0, 0, 0}})})
 ///
 
 -- From symWedgeTensor.m2
@@ -1514,19 +1517,19 @@ TEST ///
 doc ///
     Key
         symmetricPowerRepresentation
-	(symmetricPowerRepresentation,ZZ,LieAlgebraModule)
+	(symmetricPowerRepresentation,ZZ,LieAlgebraRepresentation)
     Headline
         computes the explicit action on $\operatorname{Sym}^d V$ for a $\mathfrak{g}$-module $V$
     Usage
         symmetricPowerRepresentation(d,V)
     Inputs
         d:ZZ
-        V:LieAlgebraModule
+        V:LieAlgebraRepresentation
     Outputs
-        W:LieAlgebraModule
+        W:LieAlgebraRepresentation
     Description
         Text
-	    Let $V$ be a LieAlgebraModule with a representation installed. Then this function computes the action of $\mathfrak{g}$ on $W = \operatorname{Sym}^d V$, and caches the result in W.cache#representation.
+	    Let $\rho$ be a LieAlgebraRepresentation. Then this function computes the action of $\mathfrak{g}$ on $W = \operatorname{Sym}^d V$.
 	    
 	Text     
             In the example below, we compute $\operatorname{Sym}^2 V$ for the standard representation of $sl_2$.
@@ -1534,33 +1537,31 @@ doc ///
 	Example
 	    V = standardRepresentation("A",1);
 	    W = symmetricPowerRepresentation(2,V)
-            peek W
-	    W.cache#representation
 ///
 
 TEST ///
     V = standardRepresentation("A",1);
     W = symmetricPowerRepresentation(2,V);
-    assert( last(W.cache#representation) == {sparseMatrix(3,3,QQ,new HashTable from {(0,0) => 2, (2,2) => -2}),sparseMatrix(3,3,QQ,new HashTable from {(0,1) => 1, (1,2) => 2}),sparseMatrix(3,3,QQ,new HashTable from {(1,0) => 2, (2,1) => 1})})
+    assert( W#"RepresentationMatrices" == {sparseMatrix(3,3,QQ,new HashTable from {(0,0) => 2, (2,2) => -2}),sparseMatrix(3,3,QQ,new HashTable from {(0,1) => 1, (1,2) => 2}),sparseMatrix(3,3,QQ,new HashTable from {(1,0) => 2, (2,1) => 1})})
 ///
 
 
 doc ///
     Key
         exteriorPowerRepresentation
-	(exteriorPowerRepresentation,ZZ,LieAlgebraModule)
+	(exteriorPowerRepresentation,ZZ,LieAlgebraRepresentation)
     Headline
         computes the explicit action on $\bigwedge^k V$ for a $\mathfrak{g}$-module $V$
     Usage
         exteriorPowerRepresentation(k,V)
     Inputs
         k:ZZ
-        V:LieAlgebraModule
+        V:LieAlgebraRepresentation
     Outputs
-        W:LieAlgebraModule
+        W:LieAlgebraRepresentation
     Description
         Text
-	    Let $V$ be a LieAlgebraModule with a representation installed. Then this function computes the action of $\mathfrak{g}$ on $W = \bigwedge^k V$, and caches the result in W.cache#representation.
+	    Let $V$ be a LieAlgebraRepresentation. Then this function computes the action of $\mathfrak{g}$ on $W = \bigwedge^k V$.
 	    
 	Text     
             In the example below, we compute $\bigwedge^2 V$ for the standard representation of $sl_3$.
@@ -1568,33 +1569,33 @@ doc ///
 	Example
 	    V = standardRepresentation("A",2);
 	    W = exteriorPowerRepresentation(2,V)
-	    W.cache#representation
+	    
 ///
 
 -- TO DO: Check this result by hand
 TEST ///
     V = standardRepresentation("A",2);
     W = exteriorPowerRepresentation(2,V);
-    assert(last(W.cache#representation)=={new SparseMatrix from {"Entries" => new HashTable from {(2,2) => -1/1, (1,1) => 1/1}, "NumberOfRows" => 3, "BaseRing" => QQ, "NumberOfColumns" => 3},new SparseMatrix from {"Entries" => new HashTable from {(0,0) => 1/1, (1,1) => -1/1}, "NumberOfRows" => 3, "BaseRing" => QQ, "NumberOfColumns" => 3},new SparseMatrix from {"Entries" => new HashTable from {(1,2) => 1/1}, "NumberOfRows" => 3, "BaseRing" => QQ, "NumberOfColumns" => 3},new SparseMatrix from {"Entries" => new HashTable from {(0,2) => -1/1}, "NumberOfRows" => 3, "BaseRing" => QQ, "NumberOfColumns" => 3},new SparseMatrix from {"Entries" => new HashTable from {(0,1) => 1/1}, "NumberOfRows" => 3, "BaseRing" => QQ, "NumberOfColumns" => 3},new SparseMatrix from {"Entries" => new HashTable from {(2,1) => 1/1}, "NumberOfRows" => 3, "BaseRing" => QQ, "NumberOfColumns" => 3},new SparseMatrix from {"Entries" => new HashTable from {(2,0) => -1/1}, "NumberOfRows" => 3, "BaseRing" => QQ, "NumberOfColumns" => 3},new SparseMatrix from {"Entries" => new HashTable from {(1,0) => 1/1}, "NumberOfRows" => 3, "BaseRing" => QQ, "NumberOfColumns" => 3}})
+    assert(W#"RepresentationMatrices"=={new SparseMatrix from {"Entries" => new HashTable from {(2,2) => -1/1, (1,1) => 1/1}, "NumberOfRows" => 3, "BaseRing" => QQ, "NumberOfColumns" => 3},new SparseMatrix from {"Entries" => new HashTable from {(0,0) => 1/1, (1,1) => -1/1}, "NumberOfRows" => 3, "BaseRing" => QQ, "NumberOfColumns" => 3},new SparseMatrix from {"Entries" => new HashTable from {(1,2) => 1/1}, "NumberOfRows" => 3, "BaseRing" => QQ, "NumberOfColumns" => 3},new SparseMatrix from {"Entries" => new HashTable from {(0,2) => -1/1}, "NumberOfRows" => 3, "BaseRing" => QQ, "NumberOfColumns" => 3},new SparseMatrix from {"Entries" => new HashTable from {(0,1) => 1/1}, "NumberOfRows" => 3, "BaseRing" => QQ, "NumberOfColumns" => 3},new SparseMatrix from {"Entries" => new HashTable from {(2,1) => 1/1}, "NumberOfRows" => 3, "BaseRing" => QQ, "NumberOfColumns" => 3},new SparseMatrix from {"Entries" => new HashTable from {(2,0) => -1/1}, "NumberOfRows" => 3, "BaseRing" => QQ, "NumberOfColumns" => 3},new SparseMatrix from {"Entries" => new HashTable from {(1,0) => 1/1}, "NumberOfRows" => 3, "BaseRing" => QQ, "NumberOfColumns" => 3}})
 ///
 
 
 doc ///
     Key
         tensorProductRepresentation
-	(tensorProductRepresentation,LieAlgebraModule,LieAlgebraModule)
+	(tensorProductRepresentation,LieAlgebraRepresentation,LieAlgebraRepresentation)
     Headline
-        computes the explicit action on $V \otimes W$ given $\mathfrak{g}$-modules $V$ and $W$
+        computes the explicit action on $V \otimes W$ given $\mathfrak{g}$-characters $V$ and $W$
     Usage
         tensorProductRepresentation(V,W)
     Inputs
-        V:LieAlgebraModule
-        W:LieAlgebraModule
+        V:LieAlgebraCharacter
+        W:LieAlgebraCharacter
     Outputs
-        Y:LieAlgebraModule
+        Y:LieAlgebraCharacter
     Description
         Text
-	    Let $V$ and $W$ be LieAlgebraModules with representations installed. Then this function computes the action of $\mathfrak{g}$ on $U = V \otimes V$, and caches the result in U.cache#representation.
+	    Let $V$ and $W$ be LieAlgebraCharacters with representations installed. Then this function computes the action of $\mathfrak{g}$ on $U = V \otimes V$, and caches the result in U.cache#representation.
 	    
 	Text     
             In the example below, we compute $V \otimes W$, where $V$ is the adjoint represention of $sl_3$, and $W$ is the standard representation of $sl_3$.
@@ -1603,7 +1604,7 @@ doc ///
             V = adjointRepresentation("A",2);
 	    W = standardRepresentation("A",2);
 	    U = tensorProductRepresentation(V,W);
-	    (U.cache#representation)_1_0
+	    first(U#"RepresentationMatrices")
 ///
 
 -- TO DO: Check this result by hand
@@ -1611,7 +1612,7 @@ TEST ///
     V = adjointRepresentation("A",2);
     W = standardRepresentation("A",2);
     U = tensorProductRepresentation(V,W);
-    assert((U.cache#representation)_1_0==sparseMatrix(24,24,QQ,new HashTable from {(20,20) => -1, (4,4) => -1, (21,21) => 2, (6,6) => 3, (7,7) => 1, (23,23) => 1, (8,8) => 2, (9,9) => 2, (11,11) => 1, (13,13) => -2, (14,14) => -1, (15,15) => -1, (0,0) => 1, (16,16) => -3, (1,1) => -1, (17,17) => -2, (3,3) => 1, (19,19) => -2}))
+    assert(first(U#"RepresentationMatrices")==sparseMatrix(24,24,QQ,new HashTable from {(20,20) => -1, (4,4) => -1, (21,21) => 2, (6,6) => 3, (7,7) => 1, (23,23) => 1, (8,8) => 2, (9,9) => 2, (11,11) => 1, (13,13) => -2, (14,14) => -1, (15,15) => -1, (0,0) => 1, (16,16) => -3, (1,1) => -1, (17,17) => -2, (3,3) => 1, (19,19) => -2}))
 ///
 
 
@@ -1671,128 +1672,147 @@ TEST ///
 
 
 -- From representationsCasimirReynolds.m2
+doc ///
+    Key
+       LieAlgebraRepresentation
+    Headline
+        class for a Lie algebra representation
+    Description
+        Text
+    	    Let $\rho: \mathfrak{g} \rightarrow \mathfrak{gl}(V)$ be a Lie algebra representation. We implement this in the @TT "LieAlgebraRepresentation"@ class as follows.
 
+	Text
+	    The user should input: the character of $\rho$, a @TT "LieAlgebraBasis"@ of $\mathfrak{g}$, and the list of images $\rho(B_i)$ for each basis element $B_i$ in the @TT "LieAlgebraBasis"@.
+
+        Text
+	    As a first example, we create the standard representation of $sl_2$ from scratch. (This can be done automatically with the @TO (standardRepresentation,LieAlgebra)@ command.)  It has highest weight $\omega_1$. 
+	    
+        Example
+	    sl2 = simpleLieAlgebra("A",1)
+	    xi = irreducibleLieAlgebraCharacter({1},sl2)
+	    LAB=lieAlgebraBasis("A",1)
+	    L = {matrix {{1, 0}, {0, -1/1}}, matrix {{0, 1}, {0, 0/1}}, matrix {{0, 0}, {1, 0/1}}}
+	    rho = lieAlgebraRepresentation(xi,LAB,L)
+
+///
 
 doc ///
     Key
-        installRepresentation
-	(installRepresentation,LieAlgebraModule,LieAlgebraBasis,List)
+        lieAlgebraRepresentation
+	(lieAlgebraRepresentation,LieAlgebraCharacter,LieAlgebraBasis,List)
     Headline
-        Install an explicit Lie algebra representation to a Lie algebra module
+        create a LieAlgebraRepresentation
     Usage
-        installRepresentation(V,CB,L)
+        lieAlgebraRepresentation(V,CB,L)
     Inputs 
-        V:LieAlgebraModule
+        V:LieAlgebraCharacter
 	CB:LieAlgebraBasis
 	L:List
     Outputs
     Description
         Text
-            Let $\{B_i\}$ be a basis of $\mathfrak{g}$, and $\rho: \mathfrak{g} \rightarrow \mathfrak{gl}(V)$ be a Lie algebra representation to the $\mathfrak{g}$-module $V$. 
+            Let $\{B_i\}$ be a basis of $\mathfrak{g}$, and $\rho: \mathfrak{g} \rightarrow \mathfrak{gl}(V)$ be a Lie algebra representation with character $V$. 
 
 	Text
-	    To construct $\rho$, we require a basis @TT "CB"@ of $\mathfrak{g}$, and a list @TT "L"@ of matrices that are the images $\rho(B_i) \in \mathfrak{gl}(V)$. Then the list {CB,L} is stored in V.cache#representation.
+	    To construct $\rho$, we require a basis @TT "CB"@ of $\mathfrak{g}$, and a list @TT "L"@ of matrices that are the images $\rho(B_i) \in \mathfrak{gl}(V)$.
+	    
         Text	    
 	    First, we build the standard representation for $sl_3$. The list of matrices we need is already contained in the @TT "LieAlgebraBasis"@.
 	Example
 	    sl3=simpleLieAlgebra("A",2);
-	    V=irreducibleLieAlgebraModule({1,0},sl3);
-	    peek V
+	    V=irreducibleLieAlgebraCharacter({1,0},sl3);
             CB = lieAlgebraBasis("A",2);
-	    installRepresentation(V,CB,CB#"BasisElements");
-	    peek V
-	    peek (V.cache)
-        Text
-	    Note how @TT "V.cache"@ changed after we ran @TT "installRepresentation"@.
+	    CB#"BasisElements"
+	    rho=lieAlgebraRepresentation(V,CB,CB#"BasisElements")
 	Text
-	    Next, we install an explicit representation to the irreducible $sl_3$ module with highest weight $(2,0)$. This time, we create the list of matrices using the command @TO GTrepresentationMatrices@.
+	    Next, we make an irreducible representation with highest weight $(2,0)$. This time, we create the list of matrices using the command @TO GTrepresentationMatrices@.
         Example
-	    V=irreducibleLieAlgebraModule({2,0},sl3);
+	    V=irreducibleLieAlgebraCharacter({2,0},sl3);
             L = GTrepresentationMatrices(V)
-            installRepresentation(V,CB,L)
-	    peek V
-	    peek (V.cache)
+            lieAlgebraRepresentation(V,CB,L)
 ///
 
 
 doc ///
     Key
         representationWeights
-	(representationWeights,LieAlgebraModule)
+	(representationWeights,LieAlgebraRepresentation)
     Headline
-        computes the weights of the basis of $V(\lambda)$ used to define a representation
+        computes the weights of the basis of a Lie algebra module from an explicit representation
     Usage
-        representationWeights(V)
+        representationWeights(rho)
     Inputs 
-        V:LieAlgebraModule
+        rho:LieAlgebraRepresentation
     Outputs
         L:List
     Description
         Text
-	    Let @TT "V"@ be a LieAlgebraModule with a representation installed. Computing @TT "weightDiagram(V)"@ will give a VirtualTally of the weights of $V$ and their multiplicities, but this aggregated report does not tell us the weight of each basis element used to define the matrices in the representation.
+	    Let $\rho: \mathfrak{g} \rightarrow \mathfrak{gl}(V)$ be a Lie algebra representation. 
 
 	Text
-            Instead, this function first checks that for the Cartan subalgebra elements $H_i$ in the Chevallay basis of $\mathfrak{g}$, the image $\rho(H_i)$ is a diagonal matrix. If not, this function returns an error that the basis of $V(\lambda) is not an eigenbasis for the Cartan subalgebra. Otherwise, this function returns the list of weights of these basis elements, which are obtained from the diagonal entries of the matrices $\rho(H_i)$.
+            This function first checks that for the Cartan subalgebra elements $H_i$ in the basis of $\mathfrak{g}$, the image $\rho(H_i)$ is a diagonal matrix. If not, this function returns an error that the basis of $V$ in use is not an eigenbasis for the Cartan subalgebra. Otherwise, this function returns the list of weights of these basis elements, which are obtained from the diagonal entries of the matrices $\rho(H_i)$.
 
 	Text
 	    In the example below, we compute the weights of the Gelfand-Tsetlin basis for the adjoint representation of $sl_3$.
 	    
 	Example
             sl3 = simpleLieAlgebra("A",2);
+	    xi=irreducibleLieAlgebraCharacter({1,1},sl3);
             CB = lieAlgebraBasis("A",2);
-            V=irreducibleLieAlgebraModule({1,1},sl3);
-            installRepresentation(V,CB,GTrepresentationMatrices(V));
-            L1 = representationWeights(V)
+            L1 = GTrepresentationMatrices(xi);
+            rho = lieAlgebraRepresentation(xi,CB,L1);
+            L2 = representationWeights(rho)
 	    
         Text
             We can check that this agrees with the weight of the Gelfand-Tsetlin pattern labelling each basis element.
 
 	Example
 	    dynkinToPartition({1,1})
-	    L2 = gtPatterns({2,1,0})
+	    L3 = gtPatterns({2,1,0})
 	    
         Text
 	    Right now, the entries of L2 are just lists. We turn them into objects of type GTPattern, and then get their weights.
 
 	Example
-	    L2 = apply(L2, x -> (gtPatternFromEntries(x))#"weight")
-	    L1==L2
+	    L3 = apply(L3, x -> (gtPatternFromEntries(x))#"weight")
+	    L2==L3
 
 	Text
 	    Finally, we check that this agrees with the weight diagram of V.
 
 	Example
-	    tally(L2)
-	    weightDiagram(V)
-	    weightDiagram(V) === new VirtualTally from tally(L2)
+	    tally(L3)
+	    weightDiagram(xi)
+	    weightDiagram(xi) === new VirtualTally from tally(L3)
 ///
 
+-*
 -- TO DO: Check this result by hand
 TEST ///
     sl3 = simpleLieAlgebra("A",2);
     CB = lieAlgebraBasis("A",2);
-    V=irreducibleLieAlgebraModule({1,1},sl3);
+    V=irreducibleLieAlgebraCharacter({1,1},sl3);
     installRepresentation(V,CB,GTrepresentationMatrices(V));
     L = basisWordsFromMatrixGenerators(V)
     assert(apply(L,w -> w#"Terms") == {{{{}, 1}}, {{{0}, 1}}, {{{2}, 1}}, {{{0, 2}, 1}}, {{{0, 1}, -2}}, {{{1}, 2}, {{0, 2}, 1}}, {{{1, 2}, 3}}, {{{1, 1}, -3/2}}});
 ///
-
+*-
 
 doc ///
     Key
         casimirOperator
-	(casimirOperator,LieAlgebraModule)
+	(casimirOperator,LieAlgebraRepresentation)
     Headline
         computes the Casimir operator associated to a representation
     Usage
-        casimirOperator(V)
+        casimirOperator(rho)
     Inputs 
-        V:LieAlgebraModule
+        rho:LieAlgebraRepresentation
     Outputs
         M:Matrix
     Description
         Text
-	    Let @TT "V"@ be a LieAlgebraModule with a representation $\rho: \mathfrak{g} \rightarrow \mathfrak{gl}(V)$ installed.
+	    Let $\rho: \mathfrak{g} \rightarrow \mathfrak{gl}(V)$ be a Lie algebra representation. 
 	    
 	Text
             Let $\{B_i\}$ be a basis of $\mathfrak{g}$, and let $\{B_i^{*}\}$ be the dual basis with respect to the Killing form. The Casimir operator is
@@ -1804,7 +1824,7 @@ doc ///
 	    Recall that in creating a @TT "LieAlgebraBasis"@, we compute the dual basis $\{B_i^{*}\}$. This makes it straightforward to compute the Casimir operator.
 
 	Text
-	    If @TT "V"@ is irreducible with highest weight lambda, then $\operatorname{Cas} = c(\lambda) \operatorname{Id}$, where $c(\lambda)$ is the scalar computed by @TO (casimirScalar,LieAlgebraModule)@.
+	    If $V$ is irreducible with highest weight $\lambda$, then $\operatorname{Cas} = c(\lambda) \operatorname{Id}$, where $c(\lambda)$ is the scalar computed by @TO (casimirScalar,LieAlgebraCharacter)@.
 
         Text
 	    We compute the Casimir operator for the symmetric square of the standard representation of $sl_3$. Since this is an irreducible representation, we get a scalar multiple of the identity.
@@ -1813,7 +1833,7 @@ doc ///
 	    sl3 = simpleLieAlgebra("A",2)
 	    V = standardRepresentation(sl3)
 	    S2V=symmetricPowerRepresentation(2,V);
-	    casimirScalar(S2V)
+	    casimirScalar(S2V#"Character")
 	    CasS2V = casimirOperator(S2V)
 	    
         Text
@@ -1824,12 +1844,12 @@ doc ///
 	    CasS2S2V = casimirOperator(S2S2V)
 	    tally eigenvalues CasS2S2V
 	    peek S2S2V
-	    V40 = irreducibleLieAlgebraModule({4,0},sl3);
-	    dim V40
-	    casimirScalar(V40)
-	    V02 = irreducibleLieAlgebraModule({0,2},sl3);
-	    dim V02
-	    casimirScalar(V02)
+	    xi40 = irreducibleLieAlgebraCharacter({4,0},sl3);
+	    dim xi40
+	    casimirScalar(xi40)
+	    xi02 = irreducibleLieAlgebraCharacter({0,2},sl3);
+	    dim xi02
+	    casimirScalar(xi02)
 
 ///
 
@@ -1848,58 +1868,60 @@ TEST ///
 doc ///
     Key
         casimirSpectrum
-	(casimirSpectrum,LieAlgebraModule)
+	(casimirSpectrum,LieAlgebraCharacter)
     Headline
         computes the eigenvalues of the Casimir operator associated to a representation
     Usage
         casimirOperator(V)
     Inputs 
-        V:LieAlgebraModule
+        V:LieAlgebraCharacter
     Outputs
         M:Matrix
     Description
         Text
-	    Let @TT "V"@ be a LieAlgebraModule, and recall the definition of the Casimir operator from @TO (casimirOperator,LieAlgebraModule)@.
+	    Let @TT "V"@ be a LieAlgebraCharacter, and recall the definition of the Casimir operator from @TO (casimirOperator,LieAlgebraRepresentation)@.
 	    
 	Text
-	    If @TT "V"@ is irreducible with highest weight lambda, then $\operatorname{Cas} = c(\lambda) \operatorname{Id}$, where $c(\lambda)$ is the scalar computed by @TO (casimirScalar,LieAlgebraModule)@.
+	    If $V$ corresponds to an irreducible $\mathfrak{g}$-module with highest weight $\lambda$, then $\operatorname{Cas} = c(\lambda) \operatorname{Id}$, where $c(\lambda)$ is the scalar computed by @TO (casimirScalar,LieAlgebraCharacter)@.
 
         Text
 	    This function returns a nonredundant list of eigenvalues of $\operatorname{Cas}$ by computing the scalars $c(\lambda)$ for each irreducible summand in $V$, and then removing any duplicates.
 	    
 	Example
-	    V=standardRepresentation("A",2);
-            S3V=symmetricPower(3,V);
-            S4S3V=symmetricPower(4,S3V);
-	    casimirSpectrum(S4S3V)
+	    sl3 = simpleLieAlgebra("A",2);
+	    xi=standardCharacter(sl3);
+            S3xi=symmetricPower(3,xi);
+            S4S3xi=symmetricPower(4,S3xi);
+	    casimirSpectrum(S4S3xi)
 
 ///
 
 -- TO DO: Check this result by hand
 TEST ///
-    V=standardRepresentation("A",2);
-    S3V=symmetricPower(3,V);
-    S4S3V=symmetricPower(4,S3V);
-    assert(casimirSpectrum(S4S3V) == {0, 16, 24, 30, 36, 48, 60, 76, 120})
+    sl3 = simpleLieAlgebra("A",2);
+    xi=standardCharacter(sl3);
+    S3xi=symmetricPower(3,xi);
+    S4S3xi=symmetricPower(4,S3xi);
+    assert(casimirSpectrum(S4S3xi) == {0, 16, 24, 30, 36, 48, 60, 76, 120})
 ///
 
 
 doc ///
     Key
         casimirProjection
-	(casimirProjection,LieAlgebraModule,QQ)
+	(casimirProjection,LieAlgebraRepresentation,QQ)
     Headline
         projection operator to a specified eigenspace of the Casimir operator
     Usage
-        casimirProjection(V,z)
+        casimirProjection(rho,z)
     Inputs 
-        V:LieAlgebraModule
+        rho:LieAlgebraRepresentation
 	z:QQ
     Outputs
         M:Matrix
     Description
         Text
-	    Let @TT "V"@ be a LieAlgebraModule with a representation installed, and recall the definition of the Casimir operator from @TO (casimirOperator,LieAlgebraModule)@.
+	    Let $\rho$ be a LieAlgebraRepresentation, and recall the definition of the Casimir operator from @TO (casimirOperator,LieAlgebraRepresentation)@.
 
         Text
 	    This function returns the projection matrix to the eigenspace of the Casimir operator for the input eigenvalue @TT "z"@.  This matrix is computed as the product of factors $\operatorname{Cas}-x I$ over all eigenvalues $x \neq z$. 
@@ -1924,21 +1946,21 @@ TEST ///
 doc ///
     Key
         reynoldsOperator
-	(reynoldsOperator,LieAlgebraModule)
+	(reynoldsOperator,LieAlgebraRepresentation)
     Headline
         computes the projection to the sum of the trivial submodules in $V$
     Usage
         reynoldsOperator(V)
     Inputs 
-        V:LieAlgebraModule
+        V:LieAlgebraRepresentation
     Outputs
         M:Matrix
     Description
         Text
-	    Let @TT "V"@ be a LieAlgebraModule with representation installed. Suppose that the trivial module $V_0$ occurs with multiplicity $m_0 \geq 1$ in $V$. This function returns a matrix for the projection $V \rightarrow V_0^{\oplus m_0}$. 
+	    Let $\rho$ be a LieAlgebraRepresentation. Suppose that the trivial module $V_0$ occurs with multiplicity $m_0 \geq 1$ in $V$. This function returns a matrix for the projection $V \rightarrow V_0^{\oplus m_0}$. 
 	    
 	Text
-	    This is a special case of the function @TO (casimirProjection,LieAlgebraModule,QQ)@ where the input eigenvalue is $z=0$.
+	    This is a special case of the function @TO (casimirProjection,LieAlgebraRepresentation,QQ)@ where the input eigenvalue is $z=0$.
 	    
 	Example
 	    V=standardRepresentation("A",2);
@@ -1961,13 +1983,13 @@ TEST ///
 doc ///
     Key
         basisWordsFromMatrixGenerators
-	(basisWordsFromMatrixGenerators,LieAlgebraModule)
+	(basisWordsFromMatrixGenerators,LieAlgebraRepresentation)
     Headline
         express each basis element of $V(\lambda)$ as a linear combination of words in the lowering operators applied to the highest weight vector
     Usage
         basisWordsFromMatrixGenerators(V)
     Inputs 
-        V:LieAlgebraModule
+        V:LieAlgebraRepresentation
     Outputs
         L:List
     Description
@@ -1981,35 +2003,35 @@ doc ///
 	Example
             sl3 = simpleLieAlgebra("A",2);
             CB = lieAlgebraBasis("A",2);
-            V=irreducibleLieAlgebraModule({1,1},sl3);
-            installRepresentation(V,CB,GTrepresentationMatrices(V));
-            basisWordsFromMatrixGenerators(V)
+            V=irreducibleLieAlgebraCharacter({1,1},sl3);
+            rho=lieAlgebraRepresentation(V,CB,GTrepresentationMatrices(V));
+            basisWordsFromMatrixGenerators(rho)
 ///
 
 -- TO DO: Check this result by hand
 TEST ///
     sl3 = simpleLieAlgebra("A",2);
     CB = lieAlgebraBasis("A",2);
-    V=irreducibleLieAlgebraModule({1,1},sl3);
-    installRepresentation(V,CB,GTrepresentationMatrices(V));
-    L = basisWordsFromMatrixGenerators(V)
+    V=irreducibleLieAlgebraCharacter({1,1},sl3);
+    rho=lieAlgebraRepresentation(V,CB,GTrepresentationMatrices(V));
+    L = basisWordsFromMatrixGenerators(rho)
     assert(apply(L,w -> w#"Terms") == {{{{}, 1}}, {{{0}, 1}}, {{{2}, 1}}, {{{0, 2}, 1}}, {{{0, 1}, -2}}, {{{1}, 2}, {{0, 2}, 1}}, {{{1, 2}, 3}}, {{{1, 1}, -3/2}}});
 ///
 
 
--- From highestWeightVectorsAndSubmodules.m2
+-- From highestWeightVectorsAndSubcharacters.m2
 
 doc ///
     Key
         weightMuHighestWeightVectorsInW
-	(weightMuHighestWeightVectorsInW,List,LieAlgebraModule)
+	(weightMuHighestWeightVectorsInW,List,LieAlgebraRepresentation)
     Headline
         computes the highest weight vectors of weight mu in W
     Usage
         weightMuHighestWeightVectorsInW(mu,V)
     Inputs
         mu:List
-        V:LieAlgebraModule
+        V:LieAlgebraRepresentation
     Outputs
         M:Matrix
     Description
@@ -2022,9 +2044,10 @@ doc ///
          
 	Example
 	    sl3=simpleLieAlgebra("A",2)
-	    V=irreducibleLieAlgebraModule({1,1},sl3)
+	    xi=irreducibleLieAlgebraCharacter({1,1},sl3)
 	    CB = lieAlgebraBasis("A",2);
-	    installRepresentation(V,CB,GTrepresentationMatrices(V));
+	    L = GTrepresentationMatrices(xi);
+	    V=lieAlgebraRepresentation(xi,CB,L);
 	    W = tensorProductRepresentation(V,V);
 	    weightMuHighestWeightVectorsInW({1,1},W)
 
@@ -2032,9 +2055,10 @@ doc ///
 
 TEST ///
     sl3=simpleLieAlgebra("A",2)
-    V=irreducibleLieAlgebraModule({1,1},sl3)
+    xi=irreducibleLieAlgebraCharacter({1,1},sl3)
     CB = lieAlgebraBasis("A",2);
-    installRepresentation(V,CB,GTrepresentationMatrices(V));
+    L = GTrepresentationMatrices(xi);
+    V=lieAlgebraRepresentation(xi,CB,L);
     W = tensorProductRepresentation(V,V);
     assert(weightMuHighestWeightVectorsInW({1,1},W)==map(QQ^64,QQ^2,{{0, 0}, {0, 0}, {0, 0}, {1/2, 3/2}, {0, 0}, {1/2, -1/2}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {-1, -3}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {-2, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {1, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 1}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}}))
 ///
@@ -2047,21 +2071,21 @@ TEST ///
 doc ///
     Key
         VInSymdW
-	(VInSymdW,LieAlgebraModule,ZZ,LieAlgebraModule,Matrix)
+	(VInSymdW,LieAlgebraRepresentation,ZZ,LieAlgebraRepresentation,Matrix)
     Headline
         computes a basis of a submodule of $\operatorname{Sym}^d W$ isomorphic to $V$ with a given highest weight vector  
     Usage
         VInSymdW(V,d,W,hwv)
     Inputs 
-        V:LieAlgebraModule
+        V:LieAlgebraRepresentation
 	d:ZZ
-	W:LieAlgebraModule
+	W:LieAlgebraRepresentation
 	hwv:Matrix
     Outputs
         L:List
     Description
         Text
-	    Suppose that an irreducible module $V$ appears in the decomposition of $\operatorname{Sym}^d W$ with multiplicity at least one. Then we can find a highest weight vector using @TO (weightMuHighestWeightVectorsInW,List,LieAlgebraModule)@, and then compute a basis of a submodule in $\operatorname{Sym}^d W$ isomorphic to $V$. The basis elements are expressed as polynomials in the basis of $W$ used to define the matrix generators of the representation on $W$.
+	    Suppose that an irreducible module $V$ appears in the decomposition of $\operatorname{Sym}^d W$ with multiplicity at least one. Then we can find a highest weight vector using @TO (weightMuHighestWeightVectorsInW,List,LieAlgebraRepresentation)@, and then compute a basis of a submodule in $\operatorname{Sym}^d W$ isomorphic to $V$. The basis elements are expressed as polynomials in the basis of $W$ used to define the matrix generators of the representation on $W$.
 	    
 	Text     
             We compute the degree four invariant for plane cubics by finding a trivial submodule in $  \operatorname{Sym}^4 \operatorname{Sym}^3 \mathbb{C}^3$.  
@@ -2071,10 +2095,7 @@ doc ///
 	    S3V = symmetricPowerRepresentation(3,V);
 	    S4S3V = symmetricPowerRepresentation(4,S3V);
 	    hwv = weightMuHighestWeightVectorsInW({0,0},S4S3V); 
-	    remove(S4S3V.cache,representation);
-	    V0=irreducibleLieAlgebraModule({0,0},sl3);
-	    CB = lieAlgebraBasis(sl3);
-	    installRepresentation(V0,CB,GTrepresentationMatrices(V0));
+	    V0=trivialRepresentation(sl3);
 	    L = VInSymdW(V0,4,S3V,hwv)
         Text
 	    Note: this polynomial appears as early as 1856 in work of Cayley, who attributes it to Salmon. See Cayley, "A third memoir upon quantics", tables 62 and 63. 
@@ -2087,10 +2108,7 @@ TEST ///
     S3V = symmetricPowerRepresentation(3,V);
     S4S3V = symmetricPowerRepresentation(4,S3V);
     hwv = weightMuHighestWeightVectorsInW({0,0},S4S3V); 
-    remove(S4S3V.cache,representation);
-    V0=irreducibleLieAlgebraModule({0,0},sl3);
-    CB = lieAlgebraBasis(sl3);
-    installRepresentation(V0,CB,GTrepresentationMatrices(V0));
+    V0=trivialRepresentation(sl3);
     L = VInSymdW(V0,4,S3V,hwv);
     assert(L=={B_0*B_3*B_7*B_9-B_0*B_3*B_8^2-B_0*B_4*B_6*B_9+B_0*B_4*B_7*B_8+B_0*B_5*B_6*B_8-B_0*B_5*B_7^2-B_1^2*B_7*B_9+B_1^2*B_8^2+B_1*B_2*B_6*B_9-B_1*B_2*B_7*B_8+B_1*B_3*B_4*B_9-B_1*B_3*B_5*B_8-2*B_1*B_4^2*B_8+3*B_1*B_4*B_5*B_7-B_1*B_5^2*B_6-B_2^2*B_6*B_8+B_2^2*B_7^2-B_2*B_3^2*B_9+3*B_2*B_3*B_4*B_8-B_2*B_3*B_5*B_7-2*B_2*B_4^2*B_7+B_2*B_4*B_5*B_6+B_3^2*B_5^2-2*B_3*B_4^2*B_5+B_4^4})
 ///
@@ -2103,49 +2121,47 @@ TEST ///
 doc ///
     Key
         VInWedgekW
-	(VInWedgekW,LieAlgebraModule,ZZ,LieAlgebraModule,Matrix)
+	(VInWedgekW,LieAlgebraRepresentation,ZZ,LieAlgebraRepresentation,Matrix)
     Headline
         computes a basis of a submodule of $\bigwedge^k W$ isomorphic to $V$ with a given highest weight vector  
     Usage
         VInWedgekW(V,k,W,hwv)
     Inputs 
-        V:LieAlgebraModule
+        V:LieAlgebraRepresentation
 	k:ZZ
-	W:LieAlgebraModule
+	W:LieAlgebraRepresentation
 	hwv:Matrix
     Outputs
         L:List
     Description
         Text
-	    Suppose that an irreducible module $V$ appears in the decomposition of $\bigwedge^k W$ with multiplicity at least one. Then we can find a highest weight vector using @TO (weightMuHighestWeightVectorsInW,List,LieAlgebraModule)@, and then compute a basis of a submodule in $\bigwedge^k W$ isomorphic to $V$. The basis elements are expressed as linear polynomials in the Plucker coordinates.
+	    Suppose that an irreducible module $V$ appears in the decomposition of $\bigwedge^k W$ with multiplicity at least one. Then we can find a highest weight vector using @TO (weightMuHighestWeightVectorsInW,List,LieAlgebraRepresentation)@, and then compute a basis of a submodule in $\bigwedge^k W$ isomorphic to $V$. The basis elements are expressed as linear polynomials in the Plucker coordinates.
 	    
 	Text     
-            In the example below, let $V$ be the standard representation for $sl_4$. Then $\bigwedge^3 \bigwedge^2 V$ contains an irreducible submodule with highest weight $(2,0,0)$. We compute a basis for this submodule explicitly.
+            In the example below, let $U$ be the standard representation for $sl_4$, and let $W = \bigwedge^2 U$. Then $\bigwedge^3 W$ contains an irreducible submodule with highest weight $(2,0,0)$. We compute a basis for this submodule explicitly.
          
 	Example
 	    sl4=simpleLieAlgebra("A",3);
-	    V= standardRepresentation(sl4);
-	    W2V = exteriorPowerRepresentation(2,V);
-	    W3W2V = exteriorPowerRepresentation(3,W2V);
-	    hwv = weightMuHighestWeightVectorsInW({2,0,0},W3W2V)
-	    remove(W3W2V.cache,representation);
-	    V=irreducibleLieAlgebraModule({2,0,0},sl4);
+	    U= standardRepresentation(sl4);
+	    W2U = exteriorPowerRepresentation(2,U);
+	    W3W2U = exteriorPowerRepresentation(3,W2U);
+	    hwv = weightMuHighestWeightVectorsInW({2,0,0},W3W2U)
+	    xi=irreducibleLieAlgebraCharacter({2,0,0},sl4);
 	    CB = lieAlgebraBasis(sl4);
-	    installRepresentation(V,CB,GTrepresentationMatrices(V));
-	    L = VInWedgekW(V,3,W2V,hwv)
+	    V = lieAlgebraRepresentation(xi,CB,GTrepresentationMatrices(xi));
+	    L = VInWedgekW(V,3,W2U,hwv)
 ///
 
 TEST ///
     sl4=simpleLieAlgebra("A",3);
-    V= standardRepresentation(sl4);
-    W2V = exteriorPowerRepresentation(2,V);
-    W3W2V = exteriorPowerRepresentation(3,W2V);
-    hwv = weightMuHighestWeightVectorsInW({2,0,0},W3W2V)
-    remove(W3W2V.cache,representation)
-    V=irreducibleLieAlgebraModule({2,0,0},sl4);
+    U= standardRepresentation(sl4);
+    W2U = exteriorPowerRepresentation(2,U);
+    W3W2U = exteriorPowerRepresentation(3,W2U);
+    hwv = weightMuHighestWeightVectorsInW({2,0,0},W3W2U)
+    xi=irreducibleLieAlgebraCharacter({2,0,0},sl4);
     CB = lieAlgebraBasis(sl4);
-    installRepresentation(V,CB,GTrepresentationMatrices(V));
-    L = VInWedgekW(V,3,W2V,hwv)
+    V=lieAlgebraRepresentation(xi,CB,GTrepresentationMatrices(xi));
+    L = VInWedgekW(V,3,W2U,hwv)
     assert(L=={p_{0, 1, 3}, p_{0, 2, 3}+p_{0, 1, 4}, 2*p_{0, 2, 4}, 3*p_{1, 2, 3}+3*p_{0, 1, 5}, 3*p_{1, 2, 4}+3*p_{0, 2, 5}, 12*p_{1, 2, 5}, -12*p_{1, 3, 4}+12*p_{0, 3, 5}, -12*p_{2, 3, 4}+12*p_{0, 4, 5}, -24*p_{2, 3, 5}+24*p_{1, 4, 5}, 144*p_{3, 4, 5} })
 ///
 
@@ -2153,21 +2169,21 @@ TEST ///
 doc ///
     Key
         UInVtensorW
-	(UInVtensorW,LieAlgebraModule,LieAlgebraModule,LieAlgebraModule,Matrix)
+	(UInVtensorW,LieAlgebraRepresentation,LieAlgebraRepresentation,LieAlgebraRepresentation,Matrix)
     Headline
         computes a basis of a submodule of $V \otimes W$ isomorphic to $U$ with a given highest weight vector  
     Usage
         UInVtensorW(U,V,W,hwv)
     Inputs
-        U:LieAlgebraModule
-        V:LieAlgebraModule
-	W:LieAlgebraModule
+        U:LieAlgebraRepresentation
+        V:LieAlgebraRepresentation
+	W:LieAlgebraRepresentation
 	hwv:Matrix
     Outputs
         L:List
     Description
         Text
-	    Suppose that an irreducible module $U$ appears in the decomposition of $V \otimes W$ with multiplicity at least one. Then we can find a highest weight vector using @TO (weightMuHighestWeightVectorsInW,List,LieAlgebraModule)@, and then compute a basis of a submodule in $V \otimes W$ isomorphic to $U$. The basis elements are expressed as polynomials in two sets of variables corresponding to bases of $V$ and $W$, respectively.
+	    Suppose that an irreducible module $U$ appears in the decomposition of $V \otimes W$ with multiplicity at least one. Then we can find a highest weight vector using @TO (weightMuHighestWeightVectorsInW,List,LieAlgebraRepresentation)@, and then compute a basis of a submodule in $V \otimes W$ isomorphic to $U$. The basis elements are expressed as polynomials in two sets of variables corresponding to bases of $V$ and $W$, respectively.
 	    
 	Text     
             Let $V$ be the adjoint representation of $sl_3$, and let $W$ be the standard representation. Then $V \otimes W$ contains a submodule with highest weight $(0,2)$. We compute an explicit basis for this submodule. 
@@ -2178,27 +2194,24 @@ doc ///
 	    W = standardRepresentation(sl3);
 	    T = tensorProductRepresentation(V,W);
 	    hwv = weightMuHighestWeightVectorsInW({0,2},T)
-	    remove(T.cache,representation);
-	    U = irreducibleLieAlgebraModule({0,2},sl3);
+	    xi = irreducibleLieAlgebraCharacter({0,2},sl3);
 	    CB = lieAlgebraBasis(sl3);
-	    installRepresentation(U,CB,GTrepresentationMatrices(U));
+	    U = lieAlgebraRepresentation(xi,CB,GTrepresentationMatrices(xi));
 	    L = UInVtensorW(U,V,W,hwv)
 ///
 
+-- TO DO : Check this output by hand
 TEST ///
-    sl3=simpleLieAlgebra("A",2);
-    CB = lieAlgebraBasis("A",2);
-    V = irreducibleLieAlgebraModule({1,1},sl3);
-    installRepresentation(V,CB,GTrepresentationMatrices(V));
-    W = irreducibleLieAlgebraModule({1,0},sl3);
-    installRepresentation(W,CB,GTrepresentationMatrices(W));
+    sl3 = simpleLieAlgebra("A",2)
+    V = adjointRepresentation(sl3);
+    W = standardRepresentation(sl3);
     T = tensorProductRepresentation(V,W);
     hwv = weightMuHighestWeightVectorsInW({0,2},T)
-    remove(T.cache,representation);
-    U = irreducibleLieAlgebraModule({0,2},sl3);
-    installRepresentation(U,CB,GTrepresentationMatrices(U));
+    xi = irreducibleLieAlgebraCharacter({0,2},sl3);
+    CB = lieAlgebraBasis(sl3);
+    U = lieAlgebraRepresentation(xi,CB,GTrepresentationMatrices(xi));
     L = UInVtensorW(U,V,W,hwv)
-    assert(L == {-A_0*B_1+A_1*B_0, -(1/2)*A_0*B_2-A_2*B_1+(1/2)*A_3*B_0+(1/2)*A_5*B_0, -(1/2)*A_1*B_2-(1/2)*A_3*B_1+(1/2)*A_4*B_0+(1/2)*A_5*B_1, -A_2*B_2+(2/3)*A_6*B_0, -A_3*B_2+(2/3)*A_6*B_1+(2/3)*A_7*B_0, -A_4*B_2+(4/3)*A_7*B_1})
+    assert(L == {-A_3*B_1+A_4*B_0, -A_1*B_0+A_2*B_1-A_3*B_2, -A_0*B_1-A_1*B_1-A_4*B_2+A_5*B_0, 2*A_2*B_2-2*A_7*B_0, -2*A_0*B_2+2*A_6*B_0-2*A_7*B_1, -4*A_5*B_2+4*A_6*B_1})
 ///
 
 
@@ -2206,11 +2219,11 @@ TEST ///
 
 undocumented ( {
     (describe,LieAlgebra),(expression,LieAlgebra),(net,LieAlgebra),(texMath,LieAlgebra),
-    (describe,LieAlgebraModule),(expression,LieAlgebraModule),(net,LieAlgebraModule),(texMath,LieAlgebraModule),
-    (symbol ==,LieAlgebraModule,LieAlgebraModule), (symbol ==,LieAlgebraModule,ZZ),
-    (NewFromMethod,LieAlgebraModule,Sequence),
-    (symbol ^,LieAlgebraModule,QQ),
-    (irreducibleLieAlgebraModule,LieAlgebra,ZZ), (irreducibleLieAlgebraModule,LieAlgebra,VisibleList), (irreducibleLieAlgebraModule,LieAlgebra,Expression), (irreducibleLieAlgebraModule,Thing,LieAlgebra),
+    (describe,LieAlgebraCharacter),(expression,LieAlgebraCharacter),(net,LieAlgebraCharacter),(texMath,LieAlgebraCharacter),
+    (symbol ==,LieAlgebraCharacter,LieAlgebraCharacter), (symbol ==,LieAlgebraCharacter,ZZ),
+    (NewFromMethod,LieAlgebraCharacter,Sequence),
+    (symbol ^,LieAlgebraCharacter,QQ),
+    (irreducibleLieAlgebraCharacter,LieAlgebra,ZZ), (irreducibleLieAlgebraCharacter,LieAlgebra,VisibleList), (irreducibleLieAlgebraCharacter,LieAlgebra,Expression), (irreducibleLieAlgebraCharacter,Thing,LieAlgebra),
     (dynkinDiagram,String,ZZ),(cartanMatrix,String,ZZ),(cartanMatrix,Sequence,Sequence),(isSimple,String,ZZ),isSimple,(isSimple,LieAlgebra),
     (dim,LieAlgebra),(rank,LieAlgebra),
     (character,String,ZZ,List),(character,Sequence,Sequence,List),

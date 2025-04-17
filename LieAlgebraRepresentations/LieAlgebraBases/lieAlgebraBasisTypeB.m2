@@ -3,8 +3,8 @@
 
 -- See Fulton and Harris, Section 18.1, especially p. 270
 
-Eijm = (i0,j0,m) -> ( matrix apply(m, i -> apply(m, j -> if i==i0 and j==j0 then 1/1 else 0/1)) );
-Hin = (i,n) -> ( Eijm(i,i,n) - Eijm(i+1,i+1,n));
+--Eijm = (i0,j0,m) -> ( matrix apply(m, i -> apply(m, j -> if i==i0 and j==j0 then 1/1 else 0/1)) );
+--Hin = (i,n) -> ( Eijm(i,i,n) - Eijm(i+1,i+1,n));
 
 typeBHin = (i,n) -> ( Eijm(i,i,2*n+1) - Eijm(n+i,n+i,2*n+1));
 typeBXijn = (i,j,n) -> ( Eijm(i,j,2*n+1) - Eijm(n+j,n+i,2*n+1));

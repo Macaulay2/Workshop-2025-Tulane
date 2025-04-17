@@ -270,7 +270,7 @@ GTrepresentationMatrices = method(
     TypicalValue=>List
 );
 
-GTrepresentationMatrices(LieAlgebraModule) := (V) -> (
+GTrepresentationMatrices(LieAlgebraCharacter) := (V) -> (
     if not isIrreducible(V) then error "Not implemented for reducible modules yet" << endl;
     lambda:=first keys(V#"DecompositionIntoIrreducibles");
     lambdaPartition:=dynkinToPartition(lambda);

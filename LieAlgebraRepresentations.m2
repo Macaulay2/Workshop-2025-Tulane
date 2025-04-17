@@ -27,7 +27,7 @@ newPackage(
 
 needs "./LieAlgebraRepresentations/importsandexports.m2"
 needs "./LieAlgebraRepresentations/lieAlgebras.m2"
-needs "./LieAlgebraRepresentations/lieAlgebraModules.m2"
+needs "./LieAlgebraRepresentations/lieAlgebraCharacters.m2"
 needs "./LieAlgebraRepresentations/lieAlgebraBases.m2"
 needs "./LieAlgebraRepresentations/representationsCasimirReynolds.m2"
 needs "./LieAlgebraRepresentations/basesAsWords.m2"
