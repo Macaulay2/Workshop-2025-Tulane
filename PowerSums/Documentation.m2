@@ -216,6 +216,7 @@ doc ///
     track
     (track, HillClimber)
     [track, Quiet]
+    [track, MaxIterations]
   Headline
     Perform several steps of the hill-climbing algorithm untill the stop condition is met.
   Usage
@@ -225,6 +226,8 @@ doc ///
       a HillClimber object
     Quiet => Boolean
       a Boolean that indicates to print messages about the steps or not
+    MaxIterations => ZZ
+      an integer that indicates the maximum number of iterations to perform.
   Outputs
     finalPoint: List
       the point found when the stopping criterion is met.
