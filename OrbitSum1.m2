@@ -1,7 +1,11 @@
+--We need a previous package
+needsPackage "SRdeformations"
+
 -- Getting the special Monomials (modulo permutations of the variables)
 
 -- First we get the special indexes
 IsListSp = (I,n) -> (
+    R:=QQ[x_1..x_n];
     aux := 0;
     if (length I) > n then aux = 1 else(
         if (length I) < n then(
@@ -16,7 +20,7 @@ IsListSp = (I,n) -> (
 )
 
 --Generate, if posible, the list of special monomials
-ListSpMon=(d,n)->(
+ListSpMon=(n,d)->(
     R:=QQ[x_1..x_n];
    L:=partitions d;
    M:={};
@@ -26,3 +30,60 @@ ListSpMon=(d,n)->(
 --Test
 ListSpMon(7,8)
 ListSpMon(27,8)
+
+--Orbit Sum for one monomial
+orbSum = (f,G,n) ->(
+    R:=QQ[x_1..x_n];
+    I:= (exponents f)_0;
+    v:= transpose matrix{I};
+    g:=0;
+    G*v;
+    for i from 0 to (#(G*v)-1) do(
+        g = g + vectorToMonomial(vector(G*v)_i,R);
+    );
+    g
+)
+
+--Orbit Sums for special Monomials
+orbSumList=(G,n,d)->(
+    M:=ListSpMon(n,d);
+    L:={};
+        for i from 0 to (#M-1) do(
+         L = L | { orbSum(M_i,G,n)};
+        );
+        L
+) 
+
+
+
+--Toy Examples 1
+m = matrix{{0,0,0,1},{1,0,0,0},{0,1,0,0},{0,0,1,0}}
+G = {m , m^2, m^3, m^4}
+m2 = matrix{{0,1,0,0},{1,0,0,0},{0,0,0,1},{0,0,1,0}}
+G2 = {m2, m2^2}
+R = QQ[x_1..x_4]
+f=x_1^2*x_2^3*x_3^1*x_4^2
+orbSum(f,G,4)
+orbSum(f,G2,4)
+orbSumList(G,4,3)
+
+--Toy Examples 2
+-- Orbit Sum for {s_i}_{i\in\{1,\ldost n\}} where s_i=x_1*x_2*\ldots*x_i
+    -- defining s_i
+    SPoly=i->(
+    f:=1;
+    for j from 1 to i do(
+    f=f*x_j;
+    );
+    f
+    )
+
+    -- Getting the OrbitSum List for s_i polynomials in n variables
+    OrbSumSi=(n,G)->(
+        L:={};
+        for i from 1 to n do(
+         L = L | { orbSum( SPoly(i),G,n)};
+        );
+        L
+    )
+
