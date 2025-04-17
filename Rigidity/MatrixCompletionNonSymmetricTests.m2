@@ -19,7 +19,7 @@ n = 5
 m = 5
 r = 1
 
-A = getFiniteCompletion(Variable => x, r, n, m, twoGlueK33)
+A = getFiniteCompletabilityMatrix(Variable => x, r, n, m, twoGlueK33)
 rank A
 condition = r*(n + m - r)
 ///
