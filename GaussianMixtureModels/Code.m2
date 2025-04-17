@@ -29,6 +29,14 @@ shiftingRow Matrix := M -> (
     (matrix{{0} | flatten entries M})_{0..(n-1)}
     )
 
+fabricateMoments = method()
+fabricateMoments List := mu -> (
+    k := #mu;
+    powerSumList := apply(k, i->sum(apply(mu, u -> u^(i+1))));
+    (A,B) := produceMomentSystemMatrices(k, 1/1);
+    A*(transpose matrix({powerSumList}))+B
+)
+
 newtonIdentitySums = method()
 -- newtonIdentitySums takes in an integer k and n and returns list of the 1,2,,...,kth sum of powers in n variables in terms of the
 -- elementary symmmetric polynomials and sum of powers of degrees (k-1) and lower.
@@ -136,7 +144,7 @@ HillClimber.GlobalReleaseHook = globalReleaseFunction
 hillClimber = method (
     TypicalValue => HillClimber,
     Options => {
-        StepSize => 0.5,
+        StepSize => 0.2,
         NumDirections => 10
     }
 )
@@ -163,10 +171,10 @@ nextStep(HillClimber) := List => (hC) -> (
         for j from 1 to ambientDim list (
             random(-1.0,1.0)
         )
-    ) ;
+    ) ; -- this way biases the directions in the corner of cube, might be a better random point generation
    norms := (for p in entries randPoints list (for val in p list val^2)) / sum / sqrt;
    randNormalizedPoints := inverse(diagonalMatrix(norms))*randPoints;
-   randDirections := (matrix toList(hC#NumDirections:hC#StartingPoint)) + (hC#StepSize)*randNormalizedPoints;
+   randDirections := (matrix toList(hC#NumDirections:hC#CurrentPoint)) + (hC#StepSize)*randNormalizedPoints;
    correctDirectionIdx := minPosition(for dir in entries randDirections list hC#LossFunction(dir));
 
    nextPoint := (entries randDirections)_correctDirectionIdx;
@@ -185,7 +193,7 @@ track(HillClimber) := List => opts -> (hC) -> (
 	if not opts#Quiet then (
         << "---------------------------------------" << endl;
         << "Current Point: " << hC#CurrentPoint << endl;
-        << "Current Solution: " << solvePowerSystem(A,hC#CurrentPoint) << endl;
+   --     << "Current Solution: " << solvePowerSystem(A,hC#CurrentPoint) << endl;
         << "Loss Function at Current Solution: " << hC#LossFunction hC#CurrentPoint << endl;
         );
         nextStep(hC);
