@@ -1,39 +1,34 @@
--- Sean Grate
-
 doc ///
   Key
-    "Permutations"
+    "YoungSymmetrizers"
   Headline
-    a package which implements permutations
+    a package which implements Young Symmetrizers
   Description
     Text
-      This package defines the @TO Permutation@ type. An overview of the package's
-      can be found in the @TO "Permutations Guide"@.
+      This package defines functions called Young symmetrizers that take a list of fillings 
+      of Young diagrams (Young tableaux), and produces a polynomial on multi-indexed variables.
+      An overview of the package's can be found in the @TO "Young Symmetrizers Guide"@.
+
 ///
 
 doc ///
  Key
-  "Permutations Guide"
+  "Young Symmetrizers Guide"
  Headline
-  a detailed overview of permutations in Macaulay2
+  a detailed overview of young symmetrizers in Macaulay2
  Description
   Text
-   This page gives an overview of the use of permutations.
+   This page gives an overview of the use of young symmetrizers.
 
    The sections of the overview are, in order:
    
-   {\bf Foata's fundamental bijection.} @BR{}@
+   {\bf Schur-Weyl Duality.} @BR{}@
    {\bf Miscellaneous.}
-   
-   Links to individual documentation pages for the functions 
-   described in this article are collected in an alphabetized list 
-   at the very end of the page.
-   
-   
-   {\bf Creating permutations.}
-   
-   Permutations are constructed from lists. To create a {\bf permutation}, 
-   use the {\tt permutation} method:
+      
+   {\bf Creating Young symmetrizers.}
+   ---- keep going here:
+   Young symmetrizers are constructed from lists of tableaux (fillings of Young diagrams)
+   To create a {\bf youngSymmetrizer}, use the {\tt youngSymmetrizer} method:
   Example
    p = permutation {3,1,2,4,5}
   Text
