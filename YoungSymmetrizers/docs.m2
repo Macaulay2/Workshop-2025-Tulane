@@ -39,11 +39,13 @@ doc ///
    permutation. In this representation, for a permutation $p$, if $p(i)=j$, then
    then the $(i,j)$th entry is $1$.
   Example
-   p = permutation {3,1,2,4,5}
-   matrix p
+    youngSymmetrizer({{1,2,3},{4}}, {{1,2,4},{3}}, {{1,3,4},{2}}, myPoint)
   Text
-   This is especially useful for considering the action of permutations on matrices,
-   see {\bf Group actions}.
+   This function evaluates the Young symmetrizer on the point {\texttt myPoint}. 
+  Example
+    highestWeightPolynomial({{1,2,3},{4}}, {{1,2,4},{3}}, {{1,3,4},{2}})    
+  Text
+    This function evaluates the Young symmetrizer on a vector of variables (hidden). 
 
   --
   Text
@@ -64,39 +66,6 @@ doc ///
 
    {\bf Miscellaneous.}
 
-   We can compute the {\em inverse} of a permutation.
-  Example
-   p = permutation {3,1,2,5,4};
-   inverse p
-  Text
-   The {\em order} of a permutation $p$ is its order in the symmetric group $\mathfrak{S}_n$, i.e.,
-   the smallest positive integer $k$ such that $p^k$ is the identity permutation.
-  Example
-   p = permutation {3,1,2,5,4};
-   ord p
-  Text
-   Every permutation can be written as a product of transpositions. One definition for the {\em sign}
-   of a permutation $p$ is $1$ if it can be written as a product of an even number of transpositions
-   and is $-1$ if it can be written as an odd number of transpositions. If $\text{sign}(p) = 1$,
-   the permutation is called {\em even} and if $\text{sign}(p) = -1 $, it is called {\em pdd}.
-  Example
-   p = permutation {3,1,2,5,4};
-   sign p
-   isEven p
-   isOdd p
-  Text
-   A permutation $p$ is a {\em derangement} if $p(i) \neq i$ for all $i$.
-   We can determine if $p$ is a derangement as well its fixed points.
-  Example
-   p = permutation {3,1,2,5,4};
-   isDerangement p
-   fixedPoints p
-  Text
-   A permutation $p$ has an inversion $(i,j)$ if $i < j$ and $p(i) > p(j)$.
-   We can compute all the inversions of a permutation.
-  Example
-   p = permutation {3,1,2,5,4};
-   inversions p
  SeeAlso
   (symbol _, Permutation, ZZ)
   (symbol _, Permutation, List)
