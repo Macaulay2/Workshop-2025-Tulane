@@ -1,13 +1,13 @@
 export{
-    "getFiniteCompletion",
+    "getFiniteCompletabilityMatrix",
     "isFinitelyCompletable"
 }
 
-getFiniteCompletion = method(Options => {Variable => null}, TypicalValue => Matrix)
+getFiniteCompletabilityMatrix = method(Options => {Variable => null}, TypicalValue => Matrix)
 
 isFinitelyCompletable = method(TypicalValue => Boolean)
 
-getFiniteCompletion(ZZ, ZZ, ZZ, List) := Matrix => opts -> (completionRank, rowDim, colDim, edgeList) -> (
+getFiniteCompletabilityMatrix(ZZ, ZZ, ZZ, List) := Matrix => opts -> (completionRank, rowDim, colDim, edgeList) -> (
     crds := getSymbol toString(opts.Variable);
     R := QQ(monoid[crds_(1) .. crds_((rowDim+colDim)*completionRank)]); -- Create a ring with (rowDim+colDim)*completionRank variables
 
@@ -25,5 +25,5 @@ getFiniteCompletion(ZZ, ZZ, ZZ, List) := Matrix => opts -> (completionRank, rowD
 );
 
 isFinitelyCompletable(ZZ, ZZ, ZZ, List) := Boolean => (completionRank, rowDim, colDim, edgeList) -> (
-    rank getFiniteCompletion(completionRank, rowDim, colDim, edgeList) == completionRank*(rowDim + colDim - completionRank)
+    rank getFiniteCompletabilityMatrix(completionRank, rowDim, colDim, edgeList) == completionRank*(rowDim + colDim - completionRank)
 );

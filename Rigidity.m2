@@ -53,6 +53,8 @@ export {
     "isSpanningInSkewSymmetricCompletionMatroid",
     "getSymmetricCompletionMatrix",
     "isSpanningInSymmetricCompletionMatroid",
+    "getFiniteCompletabilityMatrix",
+    "isFinitelyCompletable",
     "Field",
     "Iterations"
 }
@@ -65,6 +67,7 @@ load "./Rigidity/CayleyMenger.m2"
 
 load "./Rigidity/getRigidityMatrix.m2"
 load "./Rigidity/getStressMatrix.m2"
+load "./Rigidity/MatrixCompletionNonSymmetric.m2"
 
 
 getSkewSymmetricCompletionMatrix = method(Options => {Variable => null}, TypicalValue => Matrix);
