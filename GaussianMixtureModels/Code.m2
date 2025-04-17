@@ -109,7 +109,7 @@ getPowerSystemDiscriminant(Matrix) := RingElement => A -> (
     n := numRows A;
     R := QQ[e_0..e_n, p_0..p_n, m_1..m_n];
     mvec := toList(m_1..m_n);
-    psSolved := inverse(A**RR)*(transpose matrix {mvec});
+    psSolved := inverse(A**QQ)*(transpose matrix {mvec});
     newtonIds := newtonIdentitySymmetry(n);
     subvalues := mutableMatrix(1 | (vars(R))_{1..n} | 1 | transpose psSolved);
     partialSolveNewtonIds := apply(newtonIds, e -> sub(e,matrix subvalues));
