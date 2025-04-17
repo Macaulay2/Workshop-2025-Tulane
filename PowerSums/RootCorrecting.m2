@@ -56,11 +56,12 @@ nextStep(HillClimber) := List => (hC) -> (
 
 track = method(
     Options => {
-        Quiet => false
+        Quiet => false,
+        MaxIterations => 1000
     }
 )
 track(HillClimber) := List => opts -> (hC) -> (
-    while not hC#StopCondition(hC#CurrentPoint) do (
+    while not hC#StopCondition(hC#CurrentPoint) and hC#CurrentStep < opts#MaxIterations do (
 	if not opts#Quiet then (
         << "---------------------------------------" << endl;
         << "Current Point: " << hC#CurrentPoint << endl;
