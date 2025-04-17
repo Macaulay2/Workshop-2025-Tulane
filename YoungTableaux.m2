@@ -10,7 +10,7 @@ newPackage(
          HomePage => "https://seangrate.com/"}
     },
     Headline => "functions for working with Young diagrams and tableaux",
-    PackageExports {
+    PackageExports => {
         "Permutations"
     }
 )
@@ -27,6 +27,7 @@ export {
     "armLength",
     "legLength",
     "hookLength",
+    "youngSymmetrizer",
     "numberStandardYoungTableaux",
     "highestWeightFilling",
     "rowsFirstFilling"
@@ -198,7 +199,7 @@ toString YoungTableau := String => lambda -> (
     for coordsFillingPair in sort pairs lambda do (
         coords := coordsFillingPair#0;
         filling := coordsFillingPair#1;
-        boxesToFill#(coords#0) = append(boxesToFill#(coords#0), filling);
+        boxesToFill#(coords#0-1) = append(boxesToFill#(coords#0-1), filling);
     );
     "YoungTableau " | toString(new List from (for row in boxesToFill list new List from row))
 )
@@ -206,7 +207,7 @@ toString YoungTableau := String => lambda -> (
 net YoungTableau := Net => lambda -> (
     maxBoxWidth := max((values lambda) / (val -> #toString(val)));
     emptyBox := pad("", maxBoxWidth); 
-    customPad = (s) -> (pad("", floor((maxBoxWidth-#s)/2)) | s | pad("", ceiling((maxBoxWidth-#s)/2)));
+    customPad := (s) -> (pad("", floor((maxBoxWidth-#s)/2)) | s | pad("", ceiling((maxBoxWidth-#s)/2)));
     boxes := apply(toList(1..numRows lambda)**toList(1..numColumns lambda), (i, j) -> if lambda#?(i,j) then netList({customPad toString(lambda#(i,j))}, Alignment=>Center, HorizontalSpace=>1, VerticalSpace=>0) 
                                                                                                        else netList({emptyBox}, Alignment=>Center, HorizontalSpace=>1, VerticalSpace=>0, Boxes=>false));
     stack apply(pack(numColumns lambda, boxes), boxList -> fold(boxList, (i,j) -> i | j))
@@ -244,10 +245,11 @@ columnStabilizers YoungTableau := List => lambda -> (rowStabilizers conjugate la
 youngSymmetrizer = method()
 youngSymmetrizer YoungTableau := YoungTableau => lambda -> (    
     -- The group algebra CC[Sn]
-    Sn := toSequence apply(permutations(sum shape lambda), p -> permutation(p / (i -> i+1)));
+    n := sum shape lambda;
+    Sn := toSequence apply(permutations n, p -> permutation(p / (i -> i+1)));
     x := getSymbol "x";
     R := CC(monoid[toSequence(for perm in Sn list x_perm)]);
-    xHashed := hashTable apply(R_*, v -> last baseName => v);
+    xHashed := hashTable apply(R_*, v -> last baseName v => v);
 
     -- The Young symmetrizer is a sum over all row and column stabilizers where
     -- the summands take the form sign(h) e_(gh), where sign(h) is the sign of 
@@ -255,7 +257,7 @@ youngSymmetrizer YoungTableau := YoungTableau => lambda -> (
     -- algebra of CC[Sn].
     sum(for rowStab in rowStabilizers lambda list 
         sum(for columnStab in columnStabilizers lambda list 
-            ((sign columnStab) * xHashhed#(rowStab * columnStab))))
+            ((sign columnStab) * xHashed#(extend(rowStab * columnStab, n)))))
 )
 
 numberStandardYoungTableaux = method()
