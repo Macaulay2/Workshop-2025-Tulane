@@ -423,6 +423,8 @@ FSYT = #(filledSYT shape)
 NSYT = numberStandardYoungTableaux shape
 CSYT = #(getCandidateFillings shape)
 filledSYT shape
+tempTableau = youngTableau {{1,4,5,6},{2,7},{3}}
+isStandard tempTableau
 
 YT#(2,2)
 
