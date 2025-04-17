@@ -79,9 +79,10 @@ youngDiagram = method()
 youngDiagram VisibleList := YoungDiagram => lambda -> (new YoungDiagram from lambda)
 youngDiagram HashTable := YoungDiagram => lambda -> (new YoungDiagram from lambda)
 
+-- Checks if a Young diagram is well defined
 isWellDefined YoungDiagram := Boolean => diagram -> (
     aux := true;
-    for i from 1 to (numColumns diagram) - 1 do if #(diagram_i) < #(diagram_(i+1)) then break aux = false;
+    for i from 1 to (numRows diagram) - 1 do if #(diagram_i) < #(diagram_(i+1)) then break aux = false;
     aux
 ) 
 
