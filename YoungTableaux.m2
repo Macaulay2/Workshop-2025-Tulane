@@ -276,18 +276,9 @@ numberStandardYoungTableaux List := ZZ => shape -> (
 )
 
 
-----------------------------------
-
-
---- Trying to list all fillings of standard tableaux of a given shape
-getThe'i'thSequence = method()
-getThe'i'thSequence (ZZ, ZZ, ZZ) := List => (i, givenLength, possibilitiesForEach) -> (
-    
-)
-
 ---- Given a list (shape) of a diagram, find all the standard fillings
 getCandidateFillings = method()
-getCandidateFillings (List) := YoungTableau => (shape) -> (
+getCandidateFillings(List) := YoungTableau => (shape) -> (
     numberRows := #shape;
     --- get the size by adding the number of boxes in each row
     tempSize := 0;
@@ -298,24 +289,53 @@ getCandidateFillings (List) := YoungTableau => (shape) -> (
     --- goes in to, and once we know the rows every number goes in we automatically
     --- know the filling on that row. This doesn't guarantee a valid filling though.
 
+    --- Make a vector that will keep track and make sure we don't put too many things
+    --- in a row
+    
+    openBoxesVec := new MutableList from shape;
+    gotTempList := true;
     --- want a list of all the possible maps from {1,...,n} -> numRows
     for i from 1 to numberRows ^ tempSize list (
+        gotTempList = true;
+        for i to #shape-1 do (
+            openBoxesVec#i = shape#i;
+        );
         --- We want the output to be a list of lists, since each sublist is the map
         tempList := for j to tempSize - 1 list (
+            if not gotTempList then continue;
             tempQuotient := i // (numberRows ^ j);
             tempOut := tempQuotient % numberRows;
+            --- decrement the number of available boxes left in that row and if we
+            --- have put more numbers than boxes we  have gotten something invalid
+            openBoxesVec#tempOut = openBoxesVec#tempOut - 1;
+            if openBoxesVec#tempOut < 0 then (
+                gotTempList = false;
+            );
             tempOut
         );
-        tempList
+        if not gotTempList then continue;
+        --- tempList is a candidate map right now. We turn this in to a tableau list
+        --- to then feed to the tableau method
+        tempTList := new MutableList from for j to numberRows - 1 list (new MutableList from {});
+        for j to tempSize - 1 do (
+            tempTList#(tempList#j) = append(tempTList#(tempList#j),j+1);
+        );
+        tableauList := for i to #tempTList - 1 list (
+            tempInner := for j to #(tempTList#i) - 1 list (tempTList#i)#j;
+            tempInner
+        );
+        youngTableau tableauList
     )
 )
 
--- candidateFillings = method()
--- candidateFillings (List) := YoungTableau => (shape) -> (
---     tempTableau := 
--- )
-
-
+--- Still need to write this
+candidateFilledTableaux = method() 
+candidateFilledTableaux(List,List) := List => (shape) -> (
+    tempFillings := getCandidateFillings shape;
+    for i to #tempFillings - 1 list (
+        
+    )
+)
 
 -- Given a Young diagram, fills each box with the row it is in
 -- assumes given diagram is left justified
@@ -364,8 +384,16 @@ needsPackage "YoungTableaux"
 elapsedTime check "YoungTableaux"
 viewHelp "YoungTableaux"
 
+--------------------------
+-- Andrew's scratch space
+--------------------------
+
 YD = youngDiagram {4,3,3,2,1,1,0,0}
 YT = youngTableau {{1,2,3},{4,5},{6}}
+shape = {4,2,1}
+fill = {1,2,3,4,5,6,7}
+listToTableauxList(fill,shape)
+getCandidateFillings {4,2,1}
 
 YT#(2,2)
 
