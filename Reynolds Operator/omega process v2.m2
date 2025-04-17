@@ -1,3 +1,5 @@
+needsPackage "InvariantRing";
+
 SLreynolds = method()
 SLreynolds (RingElement) := f -> (
 
@@ -73,4 +75,6 @@ SLreynolds(f)
 g = x_1 + x_3^4;
 
 SLreynolds(g) --should raise error: not homogeneous!
+
+
 
