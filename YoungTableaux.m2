@@ -31,6 +31,7 @@ export {
     "numberStandardYoungTableaux",
     "highestWeightFilling",
     "rowsFirstFilling"
+    "toDiagram"
     -- symbols
     -- "Weak"
 }
