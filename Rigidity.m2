@@ -27,7 +27,12 @@ newPackage(
         {
             Name => "Hannah Mahon",
             Email => "hannah.mahon@gtri.gatech.edu"
-        }
+        },
+	{
+            Name => "Julian Huddell",
+            Email => "jhuddell@tulane.edu"
+	}
+    
     },
     Headline => "rigidity theory tools",
     Keywords => {},
@@ -92,6 +97,7 @@ getSkewSymmetricCompletionMatrix(ZZ, ZZ, Graph) := Matrix => opts -> (r, n, G) -
 isSpanningInSkewSymmetricCompletionMatroid = method(Options => {Numerical => false, FiniteField => 0}, TypicalValue => Boolean);
 
 isSpanningInSkewSymmetricCompletionMatroid(ZZ, ZZ, List) := Boolean => opts -> (r, n, E) -> (
+    if n-1 < r then return length E == (n-1)*n/2;
     M := getSkewSymmetricCompletionMatrix(r, n, E);
     R := ring M;
     C := coefficientRing R; -- evaluate over an arbitrary field (e.g. given as an option)?   
