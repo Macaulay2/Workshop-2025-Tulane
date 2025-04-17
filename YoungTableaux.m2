@@ -32,7 +32,10 @@ export {
     "highestWeightFilling",
     "rowsFirstFilling",
     "isStandard",
-    "isSemiStandard"
+    "isSemiStandard",
+    "getCandidateFillings",
+    "filledSYT",
+    "filledSemiSYT"
     -- symbols
     -- "Weak"
 }
@@ -304,7 +307,7 @@ numberStandardYoungTableaux List := ZZ => shape -> (
 
 ---- Given a list (shape) of a diagram, find all the standard fillings
 getCandidateFillings = method()
-getCandidateFillings List := List => (shape) -> (
+getCandidateFillings(List,List) := List => (shape,nums) -> (
     numberRows := #shape;
     --- get the size by adding the number of boxes in each row
     tempSize := 0;
@@ -344,7 +347,7 @@ getCandidateFillings List := List => (shape) -> (
         --- to then feed to the tableau method
         tempTList := new MutableList from for j to numberRows - 1 list (new MutableList from {});
         for j to tempSize - 1 do (
-            tempTList#(tempList#j) = append(tempTList#(tempList#j),j+1);
+            tempTList#(tempList#j) = append(tempTList#(tempList#j),nums#j);
         );
         tableauList := for i to #tempTList - 1 list (
             tempInner := for j to #(tempTList#i) - 1 list (tempTList#i)#j;
@@ -357,7 +360,25 @@ getCandidateFillings List := List => (shape) -> (
 --- Still need to write this
 filledSYT = method()
 filledSYT List := List => shape -> (
-    select(getCandidateFillings(shape), i -> isStandard(i))
+    sizeOfTableau := 0;
+    for i to #shape-1 do (
+        sizeOfTableau = sizeOfTableau + shape#i;
+    );
+    nums := for i to sizeOfTableau - 1 list i+1;
+    select(getCandidateFillings(shape,nums), i -> isStandard(i))
+)
+
+filledSemiSYT = method()
+filledSemiSYT(List,List) := List => (shape,nums) -> (
+    sizeOfTableau := 0;
+    for i to #shape-1 do (
+        sizeOfTableau = sizeOfTableau + shape#i;
+    );
+    if sizeOfTableau != #nums then (
+        print "Cannot create a semi-standard tableau with i different number of entries than boxes";
+        return
+    );
+    select(getCandidateFillings(shape,nums), i -> isSemiStandard(i))
 )
 
 -- Given a Young diagram, fills each box with the row it is in
@@ -421,10 +442,10 @@ getCandidateFillings {4,2,1}
 shape = {4,2,1}
 FSYT = #(filledSYT shape)
 NSYT = numberStandardYoungTableaux shape
-CSYT = #(getCandidateFillings shape)
+CSYT = #(getCandidateFillings(shape,{1,2,3,4,5,6,7}))
 filledSYT shape
 tempTableau = youngTableau {{1,4,5,6},{2,7},{3}}
-isStandard tempTableau
+isStandard tempTableau 
 
 YT#(2,2)
 
