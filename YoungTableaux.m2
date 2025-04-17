@@ -31,7 +31,8 @@ export {
     "numberStandardYoungTableaux",
     "highestWeightFilling",
     "rowsFirstFilling",
-    "toDiagram"
+    "isStandard",
+    "isSemiStandard"
     -- symbols
     -- "Weak"
 }
@@ -79,7 +80,7 @@ new YoungDiagram from HashTable := (typeofYoungDiagram, lambda) -> (new HashTabl
 
 youngDiagram = method()
 youngDiagram VisibleList := YoungDiagram => lambda -> (new YoungDiagram from lambda)
-youngDiagram HashTable := YoungDiagram => lambda -> (new YoungDiagram from lambda)
+youngDiagram HashTable := YoungDiagram => lambda -> (new YoungDiagram from applyValues(lambda, v -> true))
 
 -- Checks if a Young diagram is well defined
 isWellDefined YoungDiagram := Boolean => diagram -> (
@@ -191,6 +192,35 @@ youngTableau HashTable := YoungDiagram => lambda -> (new YoungTableau from lambd
 
 isWellDefined YoungTableau := Boolean => lambda -> (return)
 
+-- checks if a tableau is a standard tableau
+isStandard = method();
+isStandard YoungTableau := Boolean => T -> (
+    D := youngDiagram T;
+    if isWellDefined D == false then return false;
+    if T#(1,1) != 1 then return false;
+    if T#(numRows D, #(D_(numRows D))) != #D then return false;
+    for j from 1 to #(D_1) - 1 do if T#(1,j) >= T#(1,j+1) then return false;
+    if (numRows D) == 1 then return true;
+    for i from 2 to (numRows D) do for j from 1 to #(D_i) - 1 do if T#(i,j) >= T#(i,j+1) then return false;
+    for i from 2 to (numRows D) do for j from 1 to #(D_i) do if T#(i - 1,j) >= T#(i,j) then return false;
+    true
+)
+
+-- checks if a tableau is a semistandard tableau
+isSemiStandard = method();
+isSemiStandard YoungTableau := Boolean => T -> (
+    D := youngDiagram T;
+    if isWellDefined D == false then return false;
+    if T#(1,1) != 1 then return false;
+    if T#(numRows D, #(D_(numRows D))) < numRows D then return false;
+    if T#(numRows D, #(D_(numRows D))) > #D then return false;
+    for j from 1 to #(D_1) - 1 do if T#(1,j) > T#(1,j+1) then return false;  
+    if (numRows D) == 1 then return true;
+    for i from 2 to (numRows D) do for j from 1 to #(D_i) - 1 do if T#(i,j) > T#(i,j+1) then return false;
+    for i from 2 to (numRows D) do for j from 1 to #(D_i) do if T#(i - 1,j) >= T#(i,j) then return false;
+    true
+)
+
 ------------------------------------
 -- Young tableaux string representations
 ------------------------------------
@@ -221,10 +251,6 @@ YoungTableau == YoungTableau := Boolean => (lambda, mu) -> (pairs lambda == pair
 
 conjugate YoungTableau := YoungTableau => lambda -> (applyKeys(lambda, key -> reverse key))
 transpose YoungTableau := YoungTableau => lambda -> (conjugate lambda)
-
--- takes a YoungTableau and outputs its corresponding YoungDiagram
-toDiagram = method()
-toDiagram YoungTableau := YoungDiagram => T -> youngDiagram applyValues(T, v -> true)
 
 ------------------------------------
 -- Miscellaneous
