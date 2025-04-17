@@ -31,3 +31,6 @@ newpoint = minimizeDistance(point, lattice, F);
 
 newm = apply(F, f->f(toSequence newpoint))
 norm(newm-m)
+
+
+localRootApproximation(point, F, 0.0001)
