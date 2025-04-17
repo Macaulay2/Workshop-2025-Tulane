@@ -120,8 +120,26 @@ Now, given these roots $\hat{m}_i$, let's minimize $\|\hat{m}_i - m_i\|$ for $i 
 We can do this by using the `HillClimber` with the loss function being this minimization problem.
 *-
 
--- let's define the loss function
+-- let's define the loss function = $\|\hat{m}_i - m_i\|_2^2$
+lossFunction = method()
+lossFunction(List, List) := Number => (x, y) -> (
+    if #x != #y then error "The size of the two lists must be the same";
+    loss := sum(for i to #x-1 list (x#i - y#i)^2);
+    loss
+)
 
+-- let's define the stopping condition = $\|\hat{m}_i - m_i\|_2^2 < \epsilon$
+stopCondition = method(
+    Options => {
+        Tolerance => 0.001
+    }
+)
+stopCondition(List, List) := Boolean => opts -> (x,y) -> (
+    loss = lossFunction(x, y);
+    if loss < opts#Tolerance then true else false
+)
+
+hC = hillClimber(lossFunction, stopCondition, flatten entries(observedm - B**RR))
 
 end
 
