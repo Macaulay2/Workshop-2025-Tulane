@@ -4,7 +4,9 @@ newPackage("GaussianMixtureModels",
     Version => "0.1",
     Date => "April 14, 2025",
     Authors => {
-	{Name => "Gaussian Mixture Models Group", Email => "doe@math.uiuc.edu", HomePage => "http://www.math.uiuc.edu/~doe/"}},
+	{Name => "John Cobb", Email => "jdcobb3@gmail.com", HomePage => "https://johndcobb.github.io"},
+    {Name => "Julia Lindberg", Email => "julia.lindberg@math.utexas.edu", HomePage => "https://sites.google.com/view/julialindberg/home"}
+    },
     Headline => "Gaussian Mixture Models Package",
     Keywords => {"Gaussian Mixture Models"},
     PackageImports => {"Elimination"},
@@ -65,6 +67,6 @@ end
 --------------------------------------------------------------------
 uninstallPackage "GaussianMixtureModels";
 restart
--- installPackage "GaussianMixtureModels"
+installPackage "GaussianMixtureModels"
 -- check GaussianMixtureModels
 debug needsPackage "GaussianMixtureModels";
