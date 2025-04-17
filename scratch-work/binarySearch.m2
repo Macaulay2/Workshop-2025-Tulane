@@ -24,15 +24,18 @@ We can do this by using the `HillClimber` with the loss function being this mini
 -- Loss function = $\|\hat{m}_i - m_i\|_2^2$
 lossFunction = method(
     Options => {
-        Start => rF#Start
+        Start => rF#Start,
+        Discriminant => rF#Func,
+        DiscriminantConstant => -100,
     }
 )
 lossFunction(List) := RR => opts -> x -> (
     if #opts#Start != #x then error "The size of the two lists must be the same";
-    sqrt(sum(for i to #x-1 list (opts#Start#i - x#i)^2))
+    sqrt(sum(for i to #x-1 list (opts#Start#i - x#i)^2)) + opts#DiscriminantConstant*evalFunc(opts#Discriminant, x)
 )
 
 -- Stopping condition = $\|\hat{m}_i - m_i\|_2^2 < \epsilon$
+-- !Wrong one: loss will always be greater than any reasonable tolerance
 stopCondition = method(
     Options => {
         Tolerance => 0.001
@@ -42,6 +45,9 @@ stopCondition(List) := Boolean => opts -> x -> (
     loss = lossFunction(x);
     if loss < opts#Tolerance then true else false
 )
+
+hC := hillClimber(lossFunction, stopCondition, realRootsOfDiscriminant#0);
+nextStep(hC)
 
 results := for root in realRootsOfDiscriminant list (
     hC := hillClimber(lossFunction, stopCondition, root);
@@ -54,7 +60,8 @@ print(distancesBeforeHill);
 print("After:");
 distancesAfterHill := apply(results, root -> lossFunction(root));
 print(distancesAfterHill);
-
+print("Are the optimized roots real?");
+apply(results, root -> computeNumberOfRealRoots(A, root))
 
 end
 
