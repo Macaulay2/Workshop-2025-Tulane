@@ -9,19 +9,24 @@ newPackage(
          Email => "sean.grate@auburn.edu", 
          HomePage => "https://seangrate.com/"}
     },
-    Headline => "functions for working with Young diagrams and tableaux"
+    Headline => "functions for working with Young diagrams and tableaux",
+    PackageExports {
+        "Permutations"
+    }
 )
 
 export {
     -- types
     "YoungDiagram",
     "YoungTableau",
+    "SkewDiagram",
     -- methods
     "youngDiagram",
+    "youngTableau",
+    "skewDiagram",
     "armLength",
     "legLength",
     "hookLength",
-    "youngTableau",
     "numberStandardYoungTableaux",
     "highestWeightFilling",
     "rowsFirstFilling"
@@ -68,9 +73,7 @@ new YoungDiagram from VisibleList := (typeofYoungDiagram, lambda) -> (
     new HashTable from flatten for i to #lambda-1 list (for j to (lambda_i)-1 list (i+1,j+1)=>true)
 )
 -- This creates any variation of a Young diagram
-new YoungDiagram from HashTable := (typeofYoungDiagram, lambda) -> (
-    new HashTable from lambda
-)
+new YoungDiagram from HashTable := (typeofYoungDiagram, lambda) -> (new HashTable from lambda)
 
 youngDiagram = method()
 youngDiagram VisibleList := YoungDiagram => lambda -> (new YoungDiagram from lambda)
@@ -88,12 +91,10 @@ isWellDefined YoungDiagram := Boolean => diagram -> (
 toString YoungDiagram := String => lambda -> ("YoungDiagram " | toString(shape lambda))
 toExternalString YoungDiagram := String => lambda -> (toString lambda)
 
-net YoungDiagram := String => lambda -> (
-    boxes := apply(toList(1..numRows lambda)**toList(1..numColumns lambda), (i, j) -> if lambda#?(i,j) then "☐" else " ");
-    stack flatten(pack(numColumns lambda, boxes / toString) / concatenate)
-    -- boxes := apply(toList(1..numRows lambda)**toList(1..numColumns lambda), (i, j) -> if lambda#?(i,j) then netList({""}, Alignment=>Center, HorizontalSpace=>3, VerticalSpace=>1) 
-    --                                                                                                    else netList({""}, Alignment=>Center, HorizontalSpace=>3, VerticalSpace=>1, Boxes=>false));
-    -- stack apply(pack(numColumns lambda, boxes), boxList -> fold(boxList, (i,j) -> i | j))
+net YoungDiagram := Net => lambda -> (
+    boxes := apply(toList(1..numRows lambda)**toList(1..numColumns lambda), (i, j) -> if lambda#?(i,j) then netList({" "}, Alignment=>Center, HorizontalSpace=>1, VerticalSpace=>0) 
+                                                                                                       else netList({" "}, Alignment=>Center, HorizontalSpace=>1, VerticalSpace=>0, Boxes=>false));
+    stack apply(pack(numColumns lambda, boxes), boxList -> fold(boxList, (i,j) -> i | j))
 )
 
 ------------------------------------
@@ -116,7 +117,7 @@ numColumns YoungDiagram := ZZ => lambda -> (max apply(keys lambda, coords -> coo
 ------------------------------------
 YoungDiagram == YoungDiagram := Boolean => (lambda, mu) -> (pairs lambda == pairs mu)
 
-conjugate YoungDiagram := YoungDiagram => lambda -> (youngDiagram applyKeys(lambda, key -> reverse key))
+conjugate YoungDiagram := YoungDiagram => lambda -> (applyKeys(lambda, key -> reverse key))
 transpose YoungDiagram := YoungDiagram => lambda -> (conjugate lambda)
 
 ------------------------------------
@@ -124,11 +125,15 @@ transpose YoungDiagram := YoungDiagram => lambda -> (conjugate lambda)
 ------------------------------------
 shape = method()
 shape YoungDiagram := List => (lambda) -> (
-    -- custom Counter implementation
-    rowIndices := unique(for coords in keys lambda list coords#0);
-    counts := new MutableHashTable from (for rowIndex in rowIndices list (rowIndex, 0));
-    for coords in keys lambda do (counts#(coords#0) = counts#(coords#0) + 1);
-    toList ((sort pairs counts) / (countPair -> countPair#1))
+    -- -- Custom Counter implementation (will work for non-left-justified diagrams)
+    -- rowIndices := unique(for coords in keys lambda list coords#0);
+    -- counts := new MutableHashTable from (for rowIndex in rowIndices list (rowIndex, 0));
+    -- for coords in keys lambda do (counts#(coords#0) = counts#(coords#0) + 1);
+    -- toList ((sort pairs counts) / (countPair -> countPair#1))
+
+    -- This assumes the diagrams are left-justified, but should be easy to extend to non-left-justified
+    -- by changing the last argument in `armLength` to be the minimum nonzero column index.
+    for i to (numRows lambda)-1 list armLength(lambda, i+1, 0)
 )
 
 armLength = method()
@@ -140,9 +145,7 @@ legLength (YoungDiagram, ZZ, ZZ) := ZZ => (lambda, i, j) -> (#(lambda^j) - i)
 legLength (YoungDiagram, Sequence) := ZZ => (lambda, coords) -> (legLength(lambda, coords#0, coords#1))
 
 hookLength = method()
-hookLength (YoungDiagram, ZZ, ZZ) := ZZ => (lambda, i, j) -> (
-    armLength(lambda, i, j) + legLength(lambda, i, j) + 1
-)
+hookLength (YoungDiagram, ZZ, ZZ) := ZZ => (lambda, i, j) -> (armLength(lambda, i, j) + legLength(lambda, i, j) + 1)
 hookLength (YoungDiagram, Sequence) := ZZ => (lambda, coords) -> (hookLength(lambda, coords#0, coords#1))
 
 
@@ -176,29 +179,84 @@ YoungTableau.synonym = "youngTableau"
 new YoungTableau from List := (typeofYoungTableau, lambda) -> (
     new HashTable from flatten for i to #lambda-1 list (for j to #(lambda_i)-1 list (i+1,j+1)=>lambda_i_j)
 )
+-- This creates any variation of a Young tableau
+new YoungDiagram from HashTable := (typeofYoungDiagram, lambda) -> (new HashTable from lambda)
 
 youngTableau = method()
 youngTableau List := YoungTableau => lambda -> new YoungTableau from lambda
+youngTableau HashTable := YoungDiagram => lambda -> (new YoungTableau from lambda)
 
 isWellDefined YoungTableau := Boolean => lambda -> (return)
 
 ------------------------------------
 -- Young tableaux string representations
 ------------------------------------
-net YoungTableau := String => lambda -> (
-    boxes := apply(toList(1..numRows lambda)**toList(1..numColumns lambda), (i, j) -> if lambda#?(i,j) then lambda#(i,j) else " ");
-    stack flatten(pack(numColumns lambda, boxes / toString) / concatenate)
+toString YoungTableau := String => lambda -> (
+    maxHeight := max(apply(keys lambda, coords -> coords#0));
+    boxesToFill := new MutableList from (for i in 1..maxHeight list new MutableList from {});
+    for coordsFillingPair in sort pairs lambda do (
+        coords := coordsFillingPair#0;
+        filling := coordsFillingPair#1;
+        boxesToFill#(coords#0) = append(boxesToFill#(coords#0), filling);
+    );
+    "YoungTableau " | toString(new List from (for row in boxesToFill list new List from row))
 )
 
+net YoungTableau := Net => lambda -> (
+    maxBoxWidth := max((values lambda) / (val -> #toString(val)));
+    emptyBox := pad("", maxBoxWidth); 
+    customPad = (s) -> (pad("", floor((maxBoxWidth-#s)/2)) | s | pad("", ceiling((maxBoxWidth-#s)/2)));
+    boxes := apply(toList(1..numRows lambda)**toList(1..numColumns lambda), (i, j) -> if lambda#?(i,j) then netList({customPad toString(lambda#(i,j))}, Alignment=>Center, HorizontalSpace=>1, VerticalSpace=>0) 
+                                                                                                       else netList({emptyBox}, Alignment=>Center, HorizontalSpace=>1, VerticalSpace=>0, Boxes=>false));
+    stack apply(pack(numColumns lambda, boxes), boxList -> fold(boxList, (i,j) -> i | j))
+)
 
 ------------------------------------
 -- Basic Young tableau operations
 ------------------------------------
 YoungTableau == YoungTableau := Boolean => (lambda, mu) -> (pairs lambda == pairs mu)
 
+conjugate YoungTableau := YoungTableau => lambda -> (applyKeys(lambda, key -> reverse key))
+transpose YoungTableau := YoungTableau => lambda -> (conjugate lambda)
+
 ------------------------------------
 -- Miscellaneous
 ------------------------------------
+rowStabilizers = method()
+rowStabilizers YoungTableau := List => lambda -> (
+    -- A row/column is 'preserved' by a permutation if and only if the permutation
+    -- only permutes the fillings present in that row/column.
+    Sn := apply(permutations(sum shape lambda), p -> permutation(p / (i -> i+1)));
+    -- Check that all of the nonfixed points of the permutation are a subset of the
+    -- filling labels for the first row.
+    stabilizers := select(Sn, perm -> isSubset(toList select(1..#perm, i -> perm_i != i), values lambda_1));
+    for rowIndex in 2..numRows lambda do (
+        -- Among the permutations which fix the previous rows, check if they fix the current row.
+        stabilizers = select(stabilizers, perm -> isSubset(toList select(1..#perm, i -> perm_i != i), values lambda_rowIndex));
+    );
+    stabilizers
+)
+
+columnStabilizers = method()
+columnStabilizers YoungTableau := List => lambda -> (rowStabilizers conjugate lambda)
+
+youngSymmetrizer = method()
+youngSymmetrizer YoungTableau := YoungTableau => lambda -> (    
+    -- The group algebra CC[Sn]
+    Sn := toSequence apply(permutations(sum shape lambda), p -> permutation(p / (i -> i+1)));
+    x := getSymbol "x";
+    R := CC(monoid[toSequence(for perm in Sn list x_perm)]);
+    xHashed := hashTable apply(R_*, v -> last baseName => v);
+
+    -- The Young symmetrizer is a sum over all row and column stabilizers where
+    -- the summands take the form sign(h) e_(gh), where sign(h) is the sign of 
+    -- the permutation h and e_i a basis vector for the group algebra group 
+    -- algebra of CC[Sn].
+    sum(for rowStab in rowStabilizers lambda list 
+        sum(for columnStab in columnStabilizers lambda list 
+            ((sign columnStab) * xHashhed#(rowStab * columnStab))))
+)
+
 numberStandardYoungTableaux = method()
 numberStandardYoungTableaux List := ZZ => shape -> (
     -- Theorem of Frame-Robinson-Thrall (1954)
@@ -214,15 +272,6 @@ numberStandardYoungTableaux List := ZZ => shape -> (
 
 
 --- Trying to list all fillings of standard tableaux of a given shape
-
---- Helper function to get back the shape of a given diagram
-shapeOfYoungDiagram = method()
-shapeOfYoungDiagram (YoungDiagram) := List => (youngDiag) -> (
-    rows := numRows youngDiag;
-    for i to rows-1 list armLength(youngDiag, i+1, 0) -- return the number of boxes in each row
-)
-
-
 getThe'i'thSequence = method()
 getThe'i'thSequence (ZZ, ZZ, ZZ) := List => (i, givenLength, possibilitiesForEach) -> (
     
@@ -290,3 +339,19 @@ YD = youngDiagram {4,3,3,2,1,1,0,0}
 YT = youngTableau {{1,2,3},{4,5},{6}}
 
 YT#(2,2)
+
+--------------------------
+-- Sean's scratch space
+--------------------------
+restart
+uninstallPackage "YoungTableaux"
+restart
+installPackage "YoungTableaux"
+restart
+needsPackage "YoungTableaux"
+elapsedTime check "YoungTableaux"
+
+restart
+needsPackage "Permutations"
+myd = youngDiagram {4,2,1}
+lambda = youngTableau {{1,2,3},{4,5},{6}}
