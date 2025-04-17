@@ -79,7 +79,7 @@ new YoungDiagram from HashTable := (typeofYoungDiagram, lambda) -> (new HashTabl
 
 youngDiagram = method()
 youngDiagram VisibleList := YoungDiagram => lambda -> (new YoungDiagram from lambda)
-youngDiagram HashTable := YoungDiagram => lambda -> (new YoungDiagram from lambda)
+youngDiagram HashTable := YoungDiagram => lambda -> (new YoungDiagram from applyValues(lambda, v -> true))
 
 -- Checks if a Young diagram is well defined
 isWellDefined YoungDiagram := Boolean => diagram -> (
