@@ -220,6 +220,11 @@ YoungTableau == YoungTableau := Boolean => (lambda, mu) -> (pairs lambda == pair
 conjugate YoungTableau := YoungTableau => lambda -> (applyKeys(lambda, key -> reverse key))
 transpose YoungTableau := YoungTableau => lambda -> (conjugate lambda)
 
+-- takes a YoungTableau and outputs its corresponding YoungDiagram
+toDiagram = method();
+toDiagram YoungTableau := YoungDiagram => T -> youngDiagram applyValues(T, v -> true)
+toDiagram T
+
 ------------------------------------
 -- Miscellaneous
 ------------------------------------
