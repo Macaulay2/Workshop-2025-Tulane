@@ -214,6 +214,7 @@ doc ///
   Key
     track
     (track, HillClimber)
+    [track, Quiet]
   Headline
     Perform several steps of the hill-climbing algorithm untill the stop condition is met.
   Usage
@@ -221,7 +222,7 @@ doc ///
   Inputs
     hC: HillClimber
       a HillClimber object
-    Quiet: Boolean
+    Quiet => Boolean
       a Boolean that indicates to print messages about the steps or not
   Outputs
     finalPoint: List
