@@ -189,7 +189,7 @@ randomRealRootsFinder = method (
 
 randomRealRootsFinder(Matrix, List) := RandomRealRootsFinder => opts -> (A, start) -> (
     new RandomRealRootsFinder from {
-        A => A,
+        Matr => A,
         Func => getPowerSystemDiscriminant(A),
         Start => start,
         StepSize => opts#StepSize,
@@ -201,18 +201,18 @@ randomRealRootsFinder(Matrix, List) := RandomRealRootsFinder => opts -> (A, star
 )
 
 findEndpoints = method()
-findEndpoints(RandomRealRootsFinder) := List => (hC) -> (
-    ambientDim := length hC#Start;
-    randPoints := matrix for i from 1 to hC#NumDirections list (
+findEndpoints(RandomRealRootsFinder) := List => (rF) -> (
+    ambientDim := length rF#Start;
+    randPoints := matrix for i from 1 to rF#NumDirections list (
         for j from 1 to ambientDim list (
             random(-1.0,1.0)
         )
     );
     norms := (for p in entries randPoints list (for val in p list val^2)) / sum / sqrt;
     randNormalizedPoints := inverse(diagonalMatrix(norms))*randPoints;
-    randEndPoints := toList entries((matrix toList(hC#NumDirections:hC#Start)) + (random(0.0, sub(hC#StepSize,RR)))*randNormalizedPoints); -- (hC#StepSize * random(0.0,1.0))
-    valueAtStartPoint := evalFunc(hC#Func, hC#Start); -- Not `LossFunction`, but `Discriminant`, but let's just pass it as a Loss function for now
-    valuesAtEndPoints := apply(randEndPoints, pt -> evalFunc(hC#Func, pt));
+    randEndPoints := toList entries((matrix toList(rF#NumDirections:rF#Start)) + (random(0.0, sub(rF#StepSize,RR)))*randNormalizedPoints); -- (hC#StepSize * random(0.0,1.0))
+    valueAtStartPoint := evalFunc(rF#Func, rF#Start); -- Not `LossFunction`, but `Discriminant`, but let's just pass it as a Loss function for now
+    valuesAtEndPoints := apply(randEndPoints, pt -> evalFunc(rF#Func, pt));
     correctEndPointIdx := positions(valuesAtEndPoints, valEndPoint -> valEndPoint * valueAtStartPoint < 0);
 
     if #correctEndPointIdx == 0 then error "No valid endPoint found";
@@ -221,17 +221,17 @@ findEndpoints(RandomRealRootsFinder) := List => (hC) -> (
 )
 
 findRealRootsOfDiscriminant = method()
-findRealRootsOfDiscriminant(RandomRealRootsFinder) := List => (hC) -> (
-    realRootsOfStart := computeNumberOfRealRoots(hC#A, hC#Start);
-    endPoints := findEndpoints(hC);
-    zerosOfLoss := for endPoint in endPoints list (binarySearch(m, endPoint, hC#Func, hC#binSearchTol));
+findRealRootsOfDiscriminant(RandomRealRootsFinder) := List => (rF) -> (
+    realRootsOfStart := computeNumberOfRealRoots(rF#Matr, rF#Start);
+    endPoints := findEndpoints(rF);
+    zerosOfLoss := for endPoint in endPoints list (binarySearch(rF#Start, endPoint, rF#Func, rF#binSearchTol));
     directionsToEndPoints := for endPoint in endPoints list (
-        (endPoint - hC#Start) / norm(endPoint - hC#Start)
+        (endPoint - rF#Start) / norm(endPoint - rF#Start)
     );
     smallShiftToEndPoints := for i to #zerosOfLoss-1 list (
-        zerosOfLoss#i + hC#shiftSize * (directionsToEndPoints#i)
+        zerosOfLoss#i + rF#shiftSize * (directionsToEndPoints#i)
     );
-    numRealRootsPerShifts := apply(smallShiftToEndPoints, rt -> computeNumberOfRealRoots(hC#A,rt));
+    numRealRootsPerShifts := apply(smallShiftToEndPoints, rt -> computeNumberOfRealRoots(rF#Matr,rt));
     solutionsIdx := positions(numRealRootsPerShifts, n -> n > realRootsOfStart);
     solutions := smallShiftToEndPoints_solutionsIdx;
     solutions
