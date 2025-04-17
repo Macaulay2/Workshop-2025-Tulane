@@ -1,46 +1,22 @@
 newPackage(
-    "Permutations",
+    "AuxillaryAlgebras",
     AuxiliaryFiles => true,
     Version => "1.0", 
     Date => "April 18, 2025",
-    Keywords => {"Combinatorics"},
+    Keywords => {"Lie Algebras, tensors"},
     Authors => {
-        {Name => "Sean Grate", 
-         Email => "sean.grate@auburn.edu", 
-         HomePage => "https://seangrate.com/"}
+        {Name => "Luke Oeding (and collaborators)", 
+         Email => "oeding@auburn.edu", 
+         HomePage => "https://webhome.auburn.edu/~lao0004/"}
     },
-    Headline => "functions for working with permutations"
+    Headline => "Making graded algebras from actions of Lie algebras"
 )
 
 export {
     -- types
-    "Permutation",
+    "ExtensionAlgebra",
     -- methods
-    "permutation",
-    "cycleDecomposition",
-    "cycleType",
-    "ascents",
-    "descents",
-    "ascendingRuns",
-    "descendingRuns",
-    "exceedances",
-    "saliances",
-    "records",
-    "avoidsPattern",
-    "avoidsPatterns",
-    "isVexillary",
-    "isCartwrightSturmfels",
-    "isCDG",
-    "foataBijection",
-    "ord",
-    "sign",
-    "isEven",
-    "isOdd",
-    "isDerangement",
-    "fixedPoints",
-    "inversions",
-    -- symbols
-    "Weak"
+    "bracket",
 }
 
 -----------------------------------------------------------------------------
@@ -49,15 +25,13 @@ export {
 ------------------------------------
 -- Local utilities
 ------------------------------------
-to1Index := w -> (w / (i -> i+1))
-to0Index := w -> (w / (i -> i-1))
 
 ------------------------------------
--- Permutation type declarations and basic constructors
+--  type declarations and basic constructors
 ------------------------------------
-Permutation = new Type of VisibleList
-Permutation.synonym = "permutation"
-
+AuxillaryAlgebra = new Type of Ring
+AuxillaryAlgebra.synonym = "auxAlg"
+--- keep changing things below:
 new Permutation from VisibleList := (typeofPermutation,w) -> w
 
 permutation = method()
