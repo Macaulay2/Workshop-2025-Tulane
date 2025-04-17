@@ -41,7 +41,8 @@ baseDirectory = GaussianMixtureModels#"source directory"
 --------------------------------------------------------------------
 ----- CODE
 --------------------------------------------------------------------
-load(baseDirectory | "GaussianMixtureModels/Code.m2")
+load(baseDirectory | "GaussianMixtureModels/PowerSystems.m2")
+load(baseDirectory | "GaussianMixtureModels/RootCorrecting.m2")
 --- THINGS TO IMPLEMENT? -- 
 -*
 
@@ -64,6 +65,6 @@ end
 --------------------------------------------------------------------
 uninstallPackage "GaussianMixtureModels";
 restart
-installPackage "GaussianMixtureModels"
---check GaussianMixtureMode
+-- installPackage "GaussianMixtureModels"
+-- check GaussianMixtureModels
 debug needsPackage "GaussianMixtureModels";
