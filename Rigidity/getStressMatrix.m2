@@ -1,10 +1,11 @@
 getStressMatrix = method(Options => {Variable => "x"}, TypicalValue => Matrix)
 
 -- Core function
-getStressMatrix(ZZ, ZZ, List) := Matrix => opts -> (d, n, Gr) -> (
+getStressMatrix(ZZ, List) := Matrix => opts -> (d, Gr) -> (
     G := Gr/toList;
+    n := # unique join(toSequence G);
     -- Left kernel of the rigidity matrix
-    tRigidityMatrix := transpose getRigidityMatrix(d, n, G, Variable => "x");
+    tRigidityMatrix := transpose getRigidityMatrix(d, G, Variable => "x");
     R := ring tRigidityMatrix;
     tRigidityMatrixRational := sub(tRigidityMatrix, frac R);
     stressBasis := mingens ker tRigidityMatrixRational;
@@ -40,16 +41,10 @@ getStressMatrix(ZZ, ZZ, List) := Matrix => opts -> (d, n, Gr) -> (
 
 -- List of edges not given -> use complete graph
 getStressMatrix(ZZ, ZZ) := Matrix => opts -> (d, n) -> (
-    getStressMatrix(d, n, subsets(toList(0..(n-1)), 2), opts)
+    getStressMatrix(d, subsets(toList(0..(n-1)), 2), opts)
 );
 
 -- Input a Graph instead of edge set without number of vertices -> get number of vertices from graph
 getStressMatrix(ZZ, Graph) := Matrix => opts -> (d, G) -> (
-    getStressMatrix(d, length vertexSet G, edges G, opts)
-);
-
--- Input a Graph instead of edge set with number of vertices -> check if number of vertices is correct
-getStressMatrix(ZZ, ZZ, Graph) := Matrix => opts -> (d, n, G) -> (
-    if n =!= length vertexSet G then error("Expected ", n, " to be the number of vertices in ", G);
-    getStressMatrix(d, n, edges G)
+    getStressMatrix(d, edges G, opts)
 );
