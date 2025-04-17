@@ -31,7 +31,7 @@ newPackage(
     },
     Headline => "rigidity theory tools",
     Keywords => {},
-    PackageExports => {"Graphs"},
+    PackageExports => {"Graphs", "NumericalLinearAlgebra"},
     PackageImports => {},
     DebuggingMode => true
 )
@@ -48,7 +48,8 @@ export {
     "isSpanningInSkewSymmetricCompletionMatroid",
     "getSymmetricCompletionMatrix",
     "isSpanningInSymmetricCompletionMatroid",
-    "Field"
+    "Field",
+    "Iterations"
 }
 
 
@@ -58,7 +59,7 @@ export {
 
 getRigidityMatrix = method(Options => {Variable => null}, TypicalValue => Matrix)
 
-isLocallyRigid = method(Options => {Numerical=> false, Field => ZZ}, TypicalValue => Boolean)
+isLocallyRigid = method(Options => {Iterations => 3, Field => ZZ}, TypicalValue => Boolean)
 
 -- Core function
 getRigidityMatrix(ZZ, ZZ, List) := Matrix => opts -> (d, n, G) -> (
@@ -90,47 +91,24 @@ getRigidityMatrix(ZZ, ZZ, Graph) := Matrix => opts -> (d, n, G) -> (
 
 isLocallyRigid(ZZ, ZZ, List) := Boolean => opts -> (d, n, E) -> (
     M := getRigidityMatrix(d, n, E);
-    R := ring M;
-    C := opts.Field; -- coefficientRing R; -- evaluate over an arbitrary field (e.g. given as an option)?   
-    crds := gens R;
-    if opts.Field =!= ZZ 
-    then (
-        listOfTruthValues := apply(
-            toList(0..1), -- number of confidence runs?
-            k -> (
-		randomValues := random(C^1,C^(d*n));
-		fromRtoC := map(C,R,randomValues);
-		d*n - (d+1)*d/2 == rank fromRtoC M
-            ) 
-        );
-        if # set(listOfTruthValues) =!= 1 then error("Expected all the numerical attempts to give the same result. Try again.");
-        all listOfTruthValues
+    C := opts.Field; -- coefficientRing R; -- evaluate over an arbitrary field (e.g. given as an option)? 
+    -- If given ZZ (or nothing) do it symbolically
+    if C === ZZ then return rank M == d*n - (d+1)*d/2; 
+
+    R := ring M;  
+    isExact := not instance(C, InexactField);
+    localRankFunction := if isExact then rank else numericalRank;
+    checkFunction := (i) -> (
+        randomValues := random(C^1,C^(d*n));
+        fromRtoC := map(C,R,randomValues);
+        d*n - (d+1)*d/2 == localRankFunction fromRtoC M
+    );
+    numOfTests := opts.Iterations;
+    if isExact then any(numOfTests, checkFunction)
+    else (
+        truthList := apply(numOfTests, checkFunction);
+        length (truthList -set{false})> length (truthList -set{true}) 
     )
-    else if opts.Numerical -- We need to fix this case
-    then (
-        listOfTruthValuesFiniteFields := apply(
-            toList(0..1),
-            n -> d*n - (d+1)*d/2 == rank(
-		a := symbol a;
-                GF(opts.Field, Variable => a);
-                sub(
-                    getRigidityMatrix(d, n, E), 
-                    apply(
-                        toList(1..d*n), 
-                        i -> crds_i => (
-                            randIndex := random(1,opts.Field);
-                            if randIndex = opts.Field
-                            then 0
-                            else a^randIndex
-                        )
-                    )
-                ) 
-            );
-            if # set(listOfTruthValuesFiniteFields) =!= 1 then error("Expected all the numerical attempts to give the same result. Try again.");
-            all listOfTruthValuesFiniteFields
-        )
-    )
-    else rank getRigidityMatrix(d, n, E) == d*n - (d+1)*d/2
 );
 
 -- local rigidity test on the complete graph
@@ -149,36 +127,43 @@ isLocallyRigid(ZZ, ZZ, Graph) := Boolean => opts -> (d, n, G) -> (
     isLocallyRigid(d, n, edges G, opts)
 );
 
-getStressMatrix = method(Options => {Variable => null}, TypicalValue => Matrix)
+getStressMatrix = method(TypicalValue => Matrix)
 
 -- Core function
-getStressMatrix(ZZ, ZZ, List) := Matrix => opts -> (d, n, G) -> (
-    x := getSymbol toString(opts.Variable);
+getStressMatrix(ZZ, ZZ, List) := Matrix => opts -> (d, n, Gr) -> (
+    G := Gr/toList;
     -- Left kernel of the rigidity matrix
-    tRigidityMatrix := transpose getRigidityMatrix(d, n, G, opts);
+    tRigidityMatrix := transpose getRigidityMatrix(d, n, G, opts, Variable => "x");
     R := ring tRigidityMatrix;
     tRigidityMatrixRational := sub(tRigidityMatrix, frac R);
     stressBasis := mingens ker tRigidityMatrixRational;
     -- New symbolic variables for each element in the basis of the left kernel
     auxiliaryVarCount := numgens source stressBasis;
-    y := symbol y;
-    auxiliaryRing := frac(QQ[gens R, y_1..y_auxiliaryVarCount]);
-    -- Symbolic linear combination of elements in the basis of the left kernel
-    stressBasisLinearSum := 0;
-    for i from 1 to auxiliaryVarCount do (
-        stressBasisLinearSum = stressBasisLinearSum + y_i * sub(submatrix(stressBasis, {i - 1}), auxiliaryRing);
-    );
-    -- Build the symbolic stress matrix from the symbolic linear combination
-    stressMatrix := mutableMatrix(auxiliaryRing, n, n);
-    for i from 0 to (#G - 1) do (
-        edge := G#i;
-        stressMatrix_(edge#0, edge#1) = stressBasisLinearSum_(i, 0);
-    );
-    stressMatrixEntries := entries stressMatrix;
-    for i from 0 to (n - 1) do (
-        stressMatrix_(i, i) = -sum(stressMatrixEntries#i);
-    );
-    matrix(stressMatrix)
+    if auxiliaryVarCount == 0
+    then (
+        stressMatrixZero := mutableMatrix(R, n, n);
+        matrix(stressMatrixZero)
+    )
+    else (
+        y := symbol y;
+        auxiliaryRing := frac(QQ[gens R, y_1..y_auxiliaryVarCount]);
+        -- Symbolic linear combination of elements in the basis of the left kernel
+        stressBasisLinearSum := 0;
+        for i from 1 to auxiliaryVarCount do (
+            stressBasisLinearSum = stressBasisLinearSum + y_i * sub(submatrix(stressBasis, {i - 1}), auxiliaryRing);
+        );
+        -- Build the symbolic stress matrix from the symbolic linear combination
+        stressMatrix := mutableMatrix(auxiliaryRing, n, n);
+        for i from 0 to (#G - 1) do (
+            edge := G#i;
+            stressMatrix_(edge#0, edge#1) = stressBasisLinearSum_(i, 0);
+        );
+        stressMatrixEntries := entries stressMatrix;
+        for i from 0 to (n - 1) do (
+            stressMatrix_(i, i) = -sum(stressMatrixEntries#i);
+        );
+        matrix(stressMatrix)
+    )
 );
 
 -- List of edges not given -> use complete graph
@@ -202,7 +187,7 @@ isGloballyRigid = method(Options => {FiniteField => 1, RandomRuns => 2}, Typical
 
 -- Core function
 isGloballyRigid(ZZ, ZZ, List) := Boolean => opts -> (d, n, G) -> (
-    M := getStressMatrix(d, n, G, opts);
+    M := getStressMatrix(d, n, G);
     if opts.FiniteField == 1 then rank M == n - d - 1
     else (
         variableNum := numgens ring M;
@@ -220,7 +205,7 @@ isGloballyRigid(ZZ, ZZ, List) := Boolean => opts -> (d, n, G) -> (
 )
 
 -- List of edges not given -> use complete graph
-isGloballyRigid(ZZ, ZZ) := Boolean => opts -> (d,n) -> (
+isGloballyRigid(ZZ, ZZ) := Boolean => opts -> (d, n) -> (
     isGloballyRigid(d, n, subsets(toList(0..(n-1)), 2), Numerical => opts.Numerical)
 );
 
@@ -250,7 +235,7 @@ getSkewSymmetricCompletionMatrix(ZZ, ZZ, List) := Matrix => opts -> (r, n, G) ->
     R := QQ(monoid[crds_(1) .. crds_(r*n)]); -- Create a ring with r*n variables
     M := genericMatrix(R, r, n); -- Return a generic r by n matrix over R
     -- Here is the polynomial we might want to switch in the future
-    polynomialLists := apply(G, pair -> (transpose(M) * matrix{{map(R^(r//2),R^(r//2),0),id_(R^(r//2))},{-id_(R^(r//2)),map(R^(r//2),R^(r//2),0)}} * M)_(toSequence(pair))); 
+    polynomialLists := apply(G, pair -> (transpose(M) * matrix{{map(R^(r//2),R^(r//2),0),id_(R^(r//2))},{-id_(R^(r//2)),map(R^(r//2),R^(r//2),0)}} * M)_(toSequence(sort(toList(pair))))); 
     jacobianList := polynomialLists / jacobian;
     -- Folding horizontal concatenation of the jacobian of each polynomial (from each edge)
     transpose fold((a,b) -> a|b, jacobianList)
@@ -261,12 +246,12 @@ getSkewSymmetricCompletionMatrix(ZZ,ZZ) := Matrix => opts -> (r,n) -> (
 );
 
 getSkewSymmetricCompletionMatrix(ZZ, Graph) := Matrix => opts -> (r, G) -> (
-    getSkewSymmetricCompletionMatrix(r, length vertexSet G, edges G)
+    getSkewSymmetricCompletionMatrix(r, length vertexSet G, edges G, opts)
 );
 
 getSkewSymmetricCompletionMatrix(ZZ, ZZ, Graph) := Matrix => opts -> (r, n, G) -> (
     if n =!= length vertexSet G then error("Expected ", n, " to be the number of vertices in ",G);
-    getSkewSymmetricCompletionMatrix(r, n, edges G)
+    getSkewSymmetricCompletionMatrix(r, n, edges G, opts)
 );
 
 isSpanningInSkewSymmetricCompletionMatroid = method(Options => {Numerical => false, FiniteField => 0}, TypicalValue => Boolean);
