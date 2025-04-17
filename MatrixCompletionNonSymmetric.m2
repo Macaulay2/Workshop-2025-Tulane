@@ -20,11 +20,11 @@ newPackage(
 -- Code
 ------------------------------------------------------------------------------
 
-getFiniteCompletion = method(TypicalValue => Matrix)
+getFiniteCompletion = method(Options => {Variable => nulll}, TypicalValue => Matrix)
 
-isFinitelyCompletable = method(Options => TypicalValue => Boolean)
+isFinitelyCompletable = method(TypicalValue => Boolean)
 
-getFiniteCompletion(ZZ, ZZ, ZZ, List) := Boolean => (completionRank, rowDim, colDim, edgeList) -> (
+getFiniteCompletion(ZZ, ZZ, ZZ, List) := Matrix => opts -> (completionRank, rowDim, colDim, edgeList) -> (
     -- Get the matrix incompleteness pattern as a generic matrix
     crds := getSymbol toString(opts.Variable);
     R := QQ(monoid[crds_(1) .. crds_(rowDim*colDim)]); -- Create a ring with d*n variables
@@ -38,5 +38,5 @@ getFiniteCompletion(ZZ, ZZ, ZZ, List) := Boolean => (completionRank, rowDim, col
 );
 
 isFinitelyCompletable(ZZ, ZZ, ZZ, List) := Boolean => (completionRank, rowDim, colDim, edgeList) -> (
-    getFiniteCompletion(completionRank, rowDim, colDim, edgeList) == completionRank*(rowDim + colDim - completionRank)
+    rank getFiniteCompletion(completionRank, rowDim, colDim, edgeList) == completionRank*(rowDim + colDim - completionRank)
 );
