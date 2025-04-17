@@ -310,7 +310,7 @@ highestWeightFilling YoungDiagram := YoungTableau => diagram ->(
 -- assumes given diagram is left justified
 rowsFirstFilling = method()
 rowsFirstFilling YoungDiagram := YoungTableau => diagram ->(
-    count = 1;
+    count := 1;
     return( youngTableau(for i to #diagram^1-1 list (for j to #diagram_(i+1)-1 list(count) do count = count +1) ))
 ) 
 
