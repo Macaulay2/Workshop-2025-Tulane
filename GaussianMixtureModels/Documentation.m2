@@ -105,3 +105,60 @@ doc ///
       solvePowerSystem(A,m)
   SeeAlso
 ///
+
+doc /// 
+  Key
+    HillClimber
+  Headline
+    A general datatype for hill climbing algorithms
+  Description
+    Text
+      The HillClimber datatype is a general framework for hill climbing algorithms. After inputting a starting point, a loss function, and a stopping condition, HillClimber has methods to perform the hill climbing algorithm and keeps track of how many steps it has taken and the current point. The hill climbing algorithm starts at the starting point, generates some number of random directions (NumDirections, which defaults at 10), and then takes a step in that direction of size StepSize (which defaults at size 0.2) until some stopping condition is met.
+  SeeAlso
+    hillClimber
+    (nextStep, HillClimber)
+    (track, HillClimber)
+///
+
+doc ///
+  Key
+    hillClimber
+    (hillClimber, FunctionClosure, FunctionClosure, List)
+  Headline
+    Constructs a @TO2(HillClimber, "HillClimber") object
+  Usage
+    hillClimber(lossFunction, stopCondition, startingPoint)
+  Inputs
+    lossFunction: FunctionClosure
+      A function that takes in a list of points and returns a real number.
+    stopCondition: FunctionClosure
+      A function that takes in a list of points and returns a boolean.
+    startingPoint: List
+      A point to start the hill climbing algorithm at.
+  Outputs
+    HillClimber
+      A HillClimber object.
+  Description
+    Text
+      The hillClimber function constructs a HillClimber object. The lossFunction and stopCondition are both functions that take in a point (represented as a list). The lossFunction should return a real number that represents the "loss" at that point, and the stopCondition should return a boolean that indicates whether the hill climbing algorithm should stop. The startingPoint is the point at which the hill climbing algorithm will start. For example, suppose that we start with a point $(4,8)$ in $\mathbb{R}^2$ and we wish to find a point on the curve $y = x^2 + 1$ via hill climb. Then we can construct the HillClimber object as follows:
+    Example
+      lossFunction = L -> abs(L_1 - ((L_0)^2 + 1)) 
+      stopFunction = L -> lossFunction(L) < 0.001
+      startingPoint = {4,8}
+      hC = hillClimber(lossFunction, stopFunction, startingPoint)
+    Text
+      We can then call the nextStep method to take a step in the hill climbing algorithm:
+    Example
+      nextStep(hC)
+      hC#CurrentStep
+    Text
+      So our new point has moved a little bit towards the curve, and we are on the next step. If we wished to continue until our stopping condition is met, we call track:
+    Example
+      track(hC, Quiet => true)
+    Text
+      Now we have a point very close to the curve after many steps.
+  SeeAlso
+    HillClimber
+    (nextStep, HillClimber)
+    (track, HillClimber)
+///
