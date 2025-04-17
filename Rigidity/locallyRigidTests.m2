@@ -16,5 +16,13 @@ TEST ///
 TEST ///
     G = graph({{1,2},{1,3},{1,4}, {2,3},{3,4},{4,2}, {0,2},{0,3},{0,4}, {1,5},{1,6},{1,7}, {5,6},{6,7},{7,5}, {0,5},{0,6},{0,7}})
     edges(G)
-    isLocallyRigid(2,G)
+    assert(isLocallyRigid(2,G))
+    assert(isLocallyRigid(3,G))
+
 ///
+
+-*
+    if n-1 < d then return length L == (n-1)*n/2;
+    numOfVertices := length(sum (E / set));
+    edge
+*-

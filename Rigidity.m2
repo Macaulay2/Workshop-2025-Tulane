@@ -90,6 +90,7 @@ getRigidityMatrix(ZZ, ZZ, Graph) := Matrix => opts -> (d, n, G) -> (
 );
 
 isLocallyRigid(ZZ, ZZ, List) := Boolean => opts -> (d, n, E) -> (
+    if n-1 < d then return length E == (n-1)*n/2;
     M := getRigidityMatrix(d, n, E);
     C := opts.Field; -- coefficientRing R; -- evaluate over an arbitrary field (e.g. given as an option)? 
     -- If given ZZ (or nothing) do it symbolically
