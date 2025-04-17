@@ -121,6 +121,145 @@ document {
 	     toddCoxeterProcedure}
 	    }
 
+--(map,CG,GG)
+document {
+	Key => {(map, CoxeterGroup, CoxeterGroup)},
+	
+	Headline => "create a map",
+	
+	Usage => "map(H,G)",
+	
+	Inputs => {
+      "H" => CoxeterGroup,
+      "G" => CoxeterGroup
+		},
+	
+	   
+	Outputs => {
+	    GroupMap => {"the map from G to H by sending a generator to the genererator of the same name if there, and else to the identity element."}
+	    },
+	
+	
+	PARA {"This function is provided by the package ", TO CoxeterGroups,"."},
+	
+	PARA {"This function creates a group homorphism between the given Coxeter groups."},
+	PARA {"The image of a generator in the first Coxeter group is sent to the corresponding generator with the same symbol of the second Coxeter group if it exists, if not the generator is sent to the identity element."},
+	
+	--PARA {"The kernel of the sign homomorphism on the symmetric group on 4 letters is the alternating group on 4 letters."},
+	
+	--EXAMPLE { 
+   --    "G = coxeterGroup({a,b},matrix{{1,2},{2,1}})"
+   --    "H = coxeterGroup({c,d},matrix{{1,4},{4,1}})"
+	--    "f = map",
+	--    "A = ker sgn" 
+	--    },
+
+	PARA {"The dihedral group of symmetries of a square admits a homomorphism to the Klein 4 group.
+	    We create this homomorphism."},
+	
+	EXAMPLE {
+         "G = dihedralGroup 8",
+         "H = dihedralGroup 4",
+         "f = map(H,G)"
+	     },
+	    
+	 SeeAlso => {(map, CoxeterGroup, List), (map, CoxeterGroup, CoxeterGroup), 
+	     toddCoxeterProcedure}
+	    }
+
+--(map, CG,CG,List)
+document {
+	Key => {(map, CoxeterGroup, CoxeterGroup,List)},
+	
+	Headline => "create a map",
+	
+	Usage => "map(H,G,L)",
+	
+	Inputs => {
+      "H" => CoxeterGroup,
+      "G" => CoxeterGroup,
+      "L" => List
+		},
+	
+	   
+	Outputs => {
+	    GroupMap => {"the map from G to H where  generators are mapped in order to the entries in L"}
+	    },
+	
+	
+	PARA {"This function is provided by the package ", TO CoxeterGroups,"."},
+	
+	PARA {"This function creates a map from the given list when it defines a group homorphism between the given Coxeter groups."},
+	PARA {"The list gives the images in the first Coxeter group of the generators of the second Coxeter group."},
+	
+	--PARA {"The kernel of the sign homomorphism on the symmetric group on 4 letters is the alternating group on 4 letters."},
+	
+	--EXAMPLE { 
+   --    "G = coxeterGroup({a,b},matrix{{1,2},{2,1}})"
+   --    "H = coxeterGroup({c,d},matrix{{1,4},{4,1}})"
+	--    "f = map",
+	--    "A = ker sgn" 
+	--    },
+
+	PARA {"For example, the dihedral group of symmetries of a square admits a homomorphism to the Klein 4 group.
+	    We create this homomorphism."},
+	
+	EXAMPLE {
+	     "C2 = symmetricGroup 2",
+	     "V = C2 * C2",
+	     "D = dihedralGroup 4",
+	     "f = map(V, D, {V_0, V_1})",
+	     },
+	    
+	 SeeAlso => {(map, CoxeterGroup, List), (map, CoxeterGroup, CoxeterGroup), 
+	     toddCoxeterProcedure}
+	    }
+
+--(map, CG,List)
+document {
+	Key => {(map, CoxeterGroup, List)},
+	
+	Headline => "create a group map",
+	
+	Usage => "map(G,L)",
+	
+	Inputs => {
+      "G" => CoxeterGroup,
+      "L" => List
+		},
+	
+	   
+	Outputs => {
+	    GroupMap => {"the map from G to GL_n where the list is the images of the generators of G in GL_n"}
+	    },
+	
+	
+	PARA {"This function is provided by the package ", TO CoxeterGroups,"."},
+	
+	PARA {"This function creates a map from the given group to GL_n by  mapping in order the generators of the given group the elements of GL_n from the given list."},
+	PARA {"The given list needs to be a list of square matrices that satisfy the relations of the group."},
+	
+	--PARA {"The kernel of the sign homomorphism on the symmetric group on 4 letters is the alternating group on 4 letters."},
+	
+	--EXAMPLE { 
+   --    "G = coxeterGroup({a,b},matrix{{1,2},{2,1}})"
+   --    "H = coxeterGroup({c,d},matrix{{1,4},{4,1}})"
+	--    "f = map",
+	--    "A = ker sgn" 
+	--    },
+
+	--PARA {"The dihedral group of symmetries of a square admits a homomorphism to the Klein 4 group. We create this homomorphism."},
+	
+	EXAMPLE {
+	     "G = dihedralGroup 8",
+        "ms = matrix{{-1,0},{0,-1}}",
+        "mt = matrix{{1,0},{0,1}}",
+	     "f = map(G,{ms,mt})"
+	     },
+	    
+	 SeeAlso => {(map, CoxeterGroup, CoxeterGroup, List), (map, CoxeterGroup, CoxeterGroup), toddCoxeterProcedure}
+	    }
+
 /// EXAMPLE
 
 uninstallPackage "CoxeterGroups"
