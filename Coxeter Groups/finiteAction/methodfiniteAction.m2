@@ -20,12 +20,12 @@ finiteActionCoxeter (List, CoxeterGroup, PolynomialRing):= (L,W,S)  ->(
 	Coxeter group."
 	);
 	A = finiteAction(L, S);
-	A.cache#(symbol Group) = W; 
+	--A.cache#(symbol Group) = W; 
 	return A
 
 );
 
-
+-- ********Example 1*********
 
 W = dihedralGroup(3)
 
@@ -35,4 +35,19 @@ G2 = G1
 matrixGens = {G1, G2}
 
 peek finiteActionCoxeter(matrixGens, W, QQ[x..z])
+
+
+-- ********Example 2*********
+
+W = symmetricGroup 4
+
+rho = reflectionRep W
+
+matrixGens = apply(gens W, s -> rho s)
+
+WPolyRep = finiteActionCoxeter(matrixGens, W, QQ[x..z])
+
+invariants WPolyRep
+
+
 
