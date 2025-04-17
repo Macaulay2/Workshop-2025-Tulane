@@ -192,6 +192,7 @@ isGloballyRigid(ZZ, ZZ, List) := Boolean => opts -> (d, n, G) -> (
 -- with d+1 or fewer vertices is globally rigid if G is a complete
 -- graph (i.e., a simplex), otherwise it is not even locally rigid
 	if n <= d+1 then return # set G == n*(n-1)//2;
+	if not isLocallyRigid(d, n, G) then return false;
     M := getStressMatrix(d, n, G);
     if opts.FiniteField == 1 then rank M == max(n - d - 1, 0)
     else (
