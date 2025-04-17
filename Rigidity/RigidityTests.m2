@@ -1,3 +1,4 @@
+-*
 -- Test 0 : test getRigidityMatrix for /\
 TEST ///
     L = {{0,1},{1,2}}
