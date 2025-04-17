@@ -1,16 +1,15 @@
 doc ///
     Key
         getRigidityMatrix
-        (getRigidityMatrix, ZZ, ZZ, Graph)
         (getRigidityMatrix, ZZ, Graph)
-        (getRigidityMatrix, ZZ, ZZ, List)
+        (getRigidityMatrix, ZZ, List)
         (getRigidityMatrix, ZZ, ZZ)
+        [getRigidityMatrix, Variable]
     Headline
         Constructs the rigidity matrix of a d-framework
     Usage
-        getRigidityMatrix(d, n, G)
         getRigidityMatrix(d, G)
-        getRigidityMatrix(d, n, L)
+        getRigidityMatrix(d, L)
         getRigidityMatrix(d, n)
     Inputs
         d : ZZ
@@ -20,11 +19,12 @@ doc ///
         G : Graph
         L : List
             of pairs of adjacent vertices 
-    Optional Inputs
-        Variable => a symbol, default value ???
+        Variable => Symbol
+            that determines the symbol of the variables in the matrix
     Description
     	Text
-            Computes the rigidity matrix for a d-framework (i.e. a graph G with an embedding map in R^d).
+            Computes the rigidity matrix for a d-framework (i.e. a graph G with an embedding map in R^d). 
+            If no list is provided, computes it for the complete graph
             The rigidity matrix is 1/2 times the Jacobian of the distance map evaluated at generic p, the choice of embedding map.
         Example
             n = 4; d = 2;
@@ -39,16 +39,16 @@ doc ///
 doc ///
     Key
         isLocallyRigid
-        (isLocallyRigid, ZZ, ZZ, Graph)
         (isLocallyRigid, ZZ, Graph)
-        (isLocallyRigid, ZZ, ZZ, List)
+        (isLocallyRigid, ZZ, List)
         (isLocallyRigid, ZZ, ZZ)
+        [isLocallyRigid, Iterations]
+        [isLocallyRigid, Field]
     Headline
         Returns a boolean indicating whether the given framework is locally rigid
     Usage
-        isLocallyRigid(d, n, G)
         isLocallyRigid(d, G)
-        isLocallyRigid(d, n, L)
+        isLocallyRigid(d, L)
         isLocallyRigid(d, n)
     Inputs
         d : ZZ
@@ -58,9 +58,10 @@ doc ///
         G : Graph
         L : List
             of pairs of adjacent vertices 
-    Optional Inputs
-        Iterations => an integer, default 3
-        Field => a field, default ZZ for symbolic computation
+        Iterations => ZZ
+            of iterations
+        Field => Ring
+            that instantiates the variables 
     Description
     	Text
             Tests for local rigidity by checking the rank of the rigidity matrix.
