@@ -9,22 +9,21 @@ solveLagrangeSystem(List,Sequence):= (G,pt)->(
     f:=sum(apply(flatten entries vars R - toList pt, i->i^2));
     a:=#G;
     S:=first flattenRing (R[L_1..L_a]);
-    -- print("???error???");
     l:=sub(f,S)+sub(sum(apply(a,i->L_(i+1)*G_i)),S);
     F:=jacobian(l);
-    -- needsPackage "NumericalAlgebraicGeometry";
-    print(F);
-    print(primaryDecomposition radical ideal F);
+    cd=codim ideal(F);
+    if cd!=dim S then print("Caution: The solution space has positive dimension.");
     s:=solveSystem flatten entries F;
     r:=realPoints s;
-    -- returns: variable order, complex points, only real points, distance function
     return (vars S,s,r,f)
 )
 
 solveLagrange = method()
 solveLagrange(List,Sequence):= (G,pt)->(
     (varOrder,s,r,f) := solveLagrangeSystem(G, pt);
-    r1 := apply(r, i-> drop(coordinates i,1));
+    a:=#G;
+    r1 := apply(r, i-> drop(coordinates i,a));
+    --return (r)
     allValues := apply(r1, j->sub(f, matrix{j}));
     ps:=positions(allValues, i-> i==min(allValues));
     r2:=apply(r1_ps, i-> apply(i, j-> realPart j));
@@ -56,6 +55,14 @@ g1=x^2+y^2+z^2-3
 G = {g1}
 pt = (0,0,0)
 
+(varOrder,s,r,f) = solveLagrangeSystem(G, pt)
+solveLagrange(G, pt)
+
+-- Example 4
+R=QQ[x,y,z]
+g1=x^2-1
+G = {g1}
+pt=(0,0,0) 
 (varOrder,s,r,f) = solveLagrangeSystem(G, pt)
 solveLagrange(G, pt)
 

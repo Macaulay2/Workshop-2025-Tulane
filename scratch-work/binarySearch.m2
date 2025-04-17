@@ -11,9 +11,9 @@ load "../PowerSums/PowerSystems.m2"
 A := matrix{{9,0,0,0},{8,7,0,3},{2,3,4,2},{1,0,2,3}};
 m := {1,2,3,4};
 
-hC := randomRealRootsFinder(A, m);
+rF := randomRealRootsFinder(A, m);
 
-realRootsOfDiscriminant := findRealRootsOfDiscriminant(hC);
+realRootsOfDiscriminant := findRealRootsOfDiscriminant(rF);
 
 -*
 Okay, so `findRealRootsOfDiscriminant` finds the real roots of the discriminant of the system
@@ -21,26 +21,47 @@ Now, given these roots $\hat{m}_i$, let's minimize $\|\hat{m}_i - m_i\|$ for $i 
 We can do this by using the `HillClimber` with the loss function being this minimization problem.
 *-
 
--- let's define the loss function = $\|\hat{m}_i - m_i\|_2^2$
-lossFunction = method()
-lossFunction(List, List) := Number => (x, y) -> (
-    if #x != #y then error "The size of the two lists must be the same";
-    loss := sum(for i to #x-1 list (x#i - y#i)^2);
-    loss
+-- Loss function = $\|\hat{m}_i - m_i\|_2^2$
+lossFunction = method(
+    Options => {
+        Start => rF#Start,
+        Discriminant => rF#Func,
+        DiscriminantConstant => -100,
+    }
+)
+lossFunction(List) := RR => opts -> x -> (
+    if #opts#Start != #x then error "The size of the two lists must be the same";
+    sqrt(sum(for i to #x-1 list (opts#Start#i - x#i)^2)) + opts#DiscriminantConstant*evalFunc(opts#Discriminant, x)
 )
 
--- let's define the stopping condition = $\|\hat{m}_i - m_i\|_2^2 < \epsilon$
+-- Stopping condition = $\|\hat{m}_i - m_i\|_2^2 < \epsilon$
+-- !Wrong one: loss will always be greater than any reasonable tolerance
 stopCondition = method(
     Options => {
         Tolerance => 0.001
     }
 )
-stopCondition(List, List) := Boolean => opts -> (x,y) -> (
-    loss = lossFunction(x, y);
+stopCondition(List) := Boolean => opts -> x -> (
+    loss = lossFunction(x);
     if loss < opts#Tolerance then true else false
 )
 
-hC = hillClimber(lossFunction, stopCondition, flatten entries(observedm - B**RR))
+hC := hillClimber(lossFunction, stopCondition, realRootsOfDiscriminant#0);
+nextStep(hC)
+
+results := for root in realRootsOfDiscriminant list (
+    hC := hillClimber(lossFunction, stopCondition, root);
+    nextStep(hC)
+)
+
+print("Before:")
+distancesBeforeHill := apply(realRootsOfDiscriminant, root -> lossFunction(root));
+print(distancesBeforeHill);
+print("After:");
+distancesAfterHill := apply(results, root -> lossFunction(root));
+print(distancesAfterHill);
+print("Are the optimized roots real?");
+apply(results, root -> computeNumberOfRealRoots(A, root))
 
 end
 
