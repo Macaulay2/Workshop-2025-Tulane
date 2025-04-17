@@ -296,19 +296,27 @@ getThe'i'thSequence (ZZ, ZZ, ZZ) := List => (i, givenLength, possibilitiesForEac
 
 
 
--- Given a Young, diagram fills each box with the row it is in
+-- Given a Young diagram, fills each box with the row it is in
 -- assumes given diagram is left justified
 highestWeightFilling = method()
 highestWeightFilling YoungDiagram := YoungTableau => diagram ->(
     return youngTableau (for i to #diagram^1-1 list (for j to #diagram_(i+1)-1 list i+1 ))
 )
 
--- Given a Young, diagram fills each box 1->n row by row
+-- Given a Young diagram, fills each box 1->n row by row
 -- assumes given diagram is left justified
 rowsFirstFilling = method()
 rowsFirstFilling YoungDiagram := YoungTableau => diagram ->(
-    
-)
+    count = 1;
+    return( youngTableau(for i to #diagram^1-1 list (for j to #diagram_(i+1)-1 list(count) do count = count +1) ))
+) 
+
+
+-- Given a Young diagram, fills each box 1->n column by column
+-- assumes given diagram is left justified
+columnsFirstFilling = method()
+columnsFirstFilling YoungDiagram := YoungTableau => diagram ->( return transpose (rowsFirstFilling(transpose(diagram)))
+) 
 
 
 -----------------------------------------------------------------------------
