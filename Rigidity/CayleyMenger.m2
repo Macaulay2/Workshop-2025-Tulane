@@ -1,4 +1,10 @@
-export {"getAllTrees","raysOfTreePairCone","raysOfUltrametricCone","maximalTreePairs"}
+export {
+    "getAllTrees",
+    "raysOfTreePairCone",
+    "raysOfUltrametricCone",
+    "maximalTreePairs",
+    "edgeListToIndices"
+    }
 
 getAllTrees = method();
 --Returns a list of polynomials, each representing a rooted tree,
