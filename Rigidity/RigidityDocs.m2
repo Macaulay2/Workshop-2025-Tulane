@@ -20,12 +20,12 @@ doc ///
         G : Graph
         L : List
             of pairs of adjacent vertices 
+    Optional Inputs
+        Variable => a symbol, default value ???
     Description
     	Text
             Computes the rigidity matrix for a d-framework (i.e. a graph G with an embedding map in R^d).
-            The rigidity matrix is 1/2 times the Jacobian of the distance map evaluated at p, the choice of embedding map.
-            
-            If provided, expects the vertices of G to be 0 through n-1.
+            The rigidity matrix is 1/2 times the Jacobian of the distance map evaluated at generic p, the choice of embedding map.
         Example
             n = 4; d = 2;
             L = {{0,1}, {0,2}, {1,2}, {1,3}, {2,3}};
@@ -58,6 +58,9 @@ doc ///
         G : Graph
         L : List
             of pairs of adjacent vertices 
+    Optional Inputs
+        Iterations => an integer, default 3
+        Field => a field, default ZZ for symbolic computation
     Description
     	Text
             Tests for local rigidity by checking the rank of the rigidity matrix.
