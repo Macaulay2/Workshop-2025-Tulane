@@ -206,9 +206,7 @@ getStressMatrix(ZZ, ZZ, Graph) := Matrix => opts -> (d, n, G) -> (
 
 -- Core function
 isGloballyRigid(ZZ, ZZ, List) := Boolean => opts -> (d, n, G) -> (
-
     M := getStressMatrix(d, n, G, opts);
-    
     if opts.FiniteField == 1 then rank M == n - d - 1
     else (
         variableNum := numgens ring M;
@@ -219,12 +217,11 @@ isGloballyRigid(ZZ, ZZ, List) := Boolean => opts -> (d, n, G) -> (
                 randomMap := map(ring randomValues, ring M, randomValues);
                 rank randomMap M == n - d - 1
             )
-        )
-        if #set(results) =!= 1 then error("Try again bro");
+        );
+        if #set(results) =!= 1 then error("Try again bro")
         else results#0
     )
-
-);
+)
 
 -- List of edges not given -> use complete graph
 isGloballyRigid(ZZ, ZZ) := Boolean => opts -> (d,n) -> (
@@ -243,9 +240,9 @@ isGloballyRigid(ZZ, ZZ, Graph) := Boolean => opts -> (d, n, G) -> (
 );
 
 -- Random number generator: q = 0 for numeric, q = prime power for finite field
+randomNumber = method()
 randomNumber(ZZ, ZZ) := List => (q, d) -> (
-    if q == 0 then F := RR;
-    else F := GF(q, n);
+    F := if q == 0 then RR else GF(q);
     random(F^1, F^d)
 );
 
