@@ -1,22 +1,23 @@
 newPackage(
-    "Permutations",
+    "YoungSymmetrizers",
     AuxiliaryFiles => true,
     Version => "1.0", 
     Date => "April 18, 2025",
-    Keywords => {"Lie Algebras, tensors"},
+    Keywords => {"Lie Algebras, tensors, Schur functors"},
     Authors => {
         {Name => "Luke Oeding (and collaborators)", 
          Email => "oeding@auburn.edu", 
          HomePage => "https://webhome.auburn.edu/~lao0004/"}
     },
-    Headline => "Making graded algebras from actions of Lie algebras"
+    Headline => "Evaluate tensor products of Schur functors"
 )
 
 export {
     -- types
-    "ExtensionAlgebra",
+    "YoungSymmetrizer",
     -- methods
-    "bracket",
+    "youngSymmetrizer",
+    "highestWeightPolynomial",
 }
 
 -----------------------------------------------------------------------------
@@ -25,9 +26,7 @@ export {
 ------------------------------------
 -- Local utilities
 ------------------------------------
-to1Index := w -> (w / (i -> i+1))
-to0Index := w -> (w / (i -> i-1))
-
+ -- keep changing things below:
 ------------------------------------
 -- Permutation type declarations and basic constructors
 ------------------------------------
