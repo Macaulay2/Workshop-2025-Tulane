@@ -22,6 +22,10 @@ SeeAlso
 ///
 *-
 
+undocumented {
+  (fabricateMoments, List)
+}
+
 doc ///
   Key
    GaussianMixtureModels
@@ -125,26 +129,26 @@ doc ///
     hillClimber
     (hillClimber, FunctionClosure, FunctionClosure, List)
   Headline
-    Constructs a @TO2(HillClimber, "HillClimber") object
+    Constructs a HillClimber object
   Usage
     hillClimber(lossFunction, stopCondition, startingPoint)
   Inputs
     lossFunction: FunctionClosure
-      A function that takes in a list of points and returns a real number.
+      a function that takes in a list of points and returns a real number.
     stopCondition: FunctionClosure
-      A function that takes in a list of points and returns a boolean.
+      a function that takes in a list of points and returns a boolean.
     startingPoint: List
-      A point to start the hill climbing algorithm at.
+      a point to start the hill climbing algorithm at.
   Outputs
     hC: HillClimber
-      A HillClimber object.
+      a HillClimber object.
   Description
     Text
-      The hillClimber function constructs a HillClimber object. The lossFunction and stopCondition are both functions that take in a point (represented as a list). The lossFunction should return a real number that represents the "loss" at that point, and the stopCondition should return a boolean that indicates whether the hill climbing algorithm should stop. The startingPoint is the point at which the hill climbing algorithm will start. For example, suppose that we start with a point $(4,8)$ in $\mathbb{R}^2$ and we wish to find a point on the curve $y = x^2 + 1$ via hill climb. Then we can construct the HillClimber object as follows:
+      The hillClimber function constructs a @TO2(HillClimber, "HillClimber")@ object. The lossFunction and stopCondition are both functions that take in a point (represented as a list). The lossFunction should return a real number that represents the "loss" at that point, and the stopCondition should return a boolean that indicates whether the hill climbing algorithm should stop. The startingPoint is the point at which the hill climbing algorithm will start. For example, suppose that we start with a point $(4,8)$ in $\mathbb{R}^2$ and we wish to find a point on the curve $y = x^2 + 1$ via hill climb. Then we can construct the HillClimber object as follows:
     Example
-      lossFunction = L -> abs(L_1 - ((L_0)^2 + 1)) 
-      stopFunction = L -> lossFunction(L) < 0.001
-      startingPoint = {4,8}
+      lossFunction = L -> abs(L_1 - ((L_0)^2 + 1));
+      stopFunction = L -> lossFunction(L) < 0.001;
+      startingPoint = {4,8};
       hC = hillClimber(lossFunction, stopFunction, startingPoint)
     Text
       We can then call the nextStep method to take a step in the hill climbing algorithm:
