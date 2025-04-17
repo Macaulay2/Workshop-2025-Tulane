@@ -6,7 +6,7 @@ doc ///
         (getSkewSymmetricCompletionMatrix, ZZ, ZZ, List)
         (getSkewSymmetricCompletionMatrix, ZZ, ZZ)
     Headline
-        Constructs the Skew Symmetric Completion matrix of a d-framework
+        Constructs the skew-symmetric completion matrix for given parameters.
     Usage
         getSkewSymmetricCompletionMatrix(d, n, G)
         getSkewSymmetricCompletionMatrix(d, G)
@@ -22,10 +22,7 @@ doc ///
             of pairs of adjacent vertices 
     Description
     	Text
-            Computes the skew symmetric completionn matrix for a d-framework (i.e. a graph G with an embedding map in R^d).
-            "The rigidity matrix is 1/2 times the Jacobian of the distance map evaluated at p, the choice of embedding map."
-            
-            If provided, expects the vertices of G to be 0 through n-1.
+            Given rank r and graph G it constructs the completion matrix for G.
         Example
             d=2
             G = completeGraph 4;
@@ -45,7 +42,7 @@ doc ///
         (isSpanningInSkewSymmetricCompletionMatroid, ZZ, ZZ, List)
         (isSpanningInSkewSymmetricCompletionMatroid, ZZ, ZZ)
     Headline
-        Returns a boolean indicating whether "??????"
+        Tests whether a graph is spanning in the skew-symmetric completion matroid.
     Usage
         isSpanningInSkewSymmetricCompletionMatroid(d, n, G)
         isSpanningInSkewSymmetricCompletionMatroid(d, G)
@@ -60,7 +57,8 @@ doc ///
             of pairs of adjacent vertices
     Description
     	Text
-            Tests for "???" by checking "??" matrix.
+            Tests whether a graph or edge set is spanning the skew-symmetric completion matroid.
+            Given an even integer r for rank and number of vertices n of graph, it returns whether the complete graph on n vertices is spanning.
         Example
             G = completeMultipartiteGraph({3,3})
             isSpanningInSkewSymmetricCompletionMatroid(2, G)
