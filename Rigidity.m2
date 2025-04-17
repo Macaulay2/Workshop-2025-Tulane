@@ -342,18 +342,30 @@ isSpanningInSkewSymmetricCompletionMatroid(ZZ, ZZ, Graph) := Boolean => opts -> 
     isSpanningInSkewSymmetricCompletionMatroid(r, n, edges G, opts)
 );
 
-getSymmetricCompletionMatrix = method(Options => {Variable => null}, TypicalValue => Matrix);
+x = symbol x;
+getSymmetricCompletionMatrix = method(Options => {Variable => x}, TypicalValue => Matrix);
 
+-- input r - rank, n - number of vertices, G - list of set of edges eg {set {1, 2}, {2, 4}}
 getSymmetricCompletionMatrix(ZZ, ZZ, List) := Matrix => opts -> (r, n, G) -> (
-    if r % 2 =!= 0 then error("expected rank to be an even integer");
+
     crds := getSymbol toString(opts.Variable);
     R := QQ(monoid[crds_(1) .. crds_(r*n)]); -- Create a ring with r*n variables
+
     M := genericMatrix(R, r, n); -- Return a generic r by n matrix over R
-    -- Here is the polynomial we might want to switch in the future
-    polynomialLists := apply(G, pair -> (transpose(M) * matrix{{map(R^(r//2),R^(r//2),0),id_(R^(r//2))},{-id_(R^(r//2)),map(R^(r//2),R^(r//2),0)}} * M)_(toSequence(pair))); 
+
+    -- convert sets to lists
+    Glist = G / (pair -> toSequence sort toList pair);
+
+    -- polynomialList obtained from A -> A^T*A
+    polynomialLists := apply(Glist, pair -> (transpose(M)*M)_(pair));
+
     jacobianList := polynomialLists / jacobian;
     -- Folding horizontal concatenation of the jacobian of each polynomial (from each edge)
     transpose fold((a,b) -> a|b, jacobianList)
+);
+
+getSymmetricCompletionMatrix(ZZ,ZZ) := Matrix => opts -> (r,n) -> (
+    getSymmetricCompletionMatrix(r,n, subsets(toList(0..(n-1)), 2), opts)
 );
 
 ------------------------------------------------------------------------------
