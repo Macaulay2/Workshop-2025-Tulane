@@ -230,7 +230,7 @@ getSkewSymmetricCompletionMatrix(ZZ, ZZ, List) := Matrix => opts -> (r, n, G) ->
     R := QQ(monoid[crds_(1) .. crds_(r*n)]); -- Create a ring with r*n variables
     M := genericMatrix(R, r, n); -- Return a generic r by n matrix over R
     -- Here is the polynomial we might want to switch in the future
-    polynomialLists := apply(G, pair -> (transpose(M) * matrix{{map(R^(r//2),R^(r//2),0),id_(R^(r//2))},{-id_(R^(r//2)),map(R^(r//2),R^(r//2),0)}} * M)_(toSequence(pair))); 
+    polynomialLists := apply(G, pair -> (transpose(M) * matrix{{map(R^(r//2),R^(r//2),0),id_(R^(r//2))},{-id_(R^(r//2)),map(R^(r//2),R^(r//2),0)}} * M)_(toSequence(sort(toList(pair))))); 
     jacobianList := polynomialLists / jacobian;
     -- Folding horizontal concatenation of the jacobian of each polynomial (from each edge)
     transpose fold((a,b) -> a|b, jacobianList)
@@ -241,12 +241,12 @@ getSkewSymmetricCompletionMatrix(ZZ,ZZ) := Matrix => opts -> (r,n) -> (
 );
 
 getSkewSymmetricCompletionMatrix(ZZ, Graph) := Matrix => opts -> (r, G) -> (
-    getSkewSymmetricCompletionMatrix(r, length vertexSet G, edges G)
+    getSkewSymmetricCompletionMatrix(r, length vertexSet G, edges G, opts)
 );
 
 getSkewSymmetricCompletionMatrix(ZZ, ZZ, Graph) := Matrix => opts -> (r, n, G) -> (
     if n =!= length vertexSet G then error("Expected ", n, " to be the number of vertices in ",G);
-    getSkewSymmetricCompletionMatrix(r, n, edges G)
+    getSkewSymmetricCompletionMatrix(r, n, edges G, opts)
 );
 
 isSpanningInSkewSymmetricCompletionMatroid = method(Options => {Numerical => false, FiniteField => 0}, TypicalValue => Boolean);
