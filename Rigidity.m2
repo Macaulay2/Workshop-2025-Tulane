@@ -409,7 +409,7 @@ load "./RigidityDocs.m2"
 ------------------------------------------------------------------------------
 
 load "./RigidityTests.m2"
-
+load "./isSpanningInSkewtests.m2"
 end
 
 restart
