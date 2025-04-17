@@ -162,3 +162,38 @@ doc ///
     (nextStep, HillClimber)
     (track, HillClimber)
 ///
+
+
+doc ///
+  Key
+    nextStep
+    (nextStep, HillClimber)
+  Headline
+    Perform one next step of the hill-climbing algorithm.
+  Usage
+    nextStep(hC)
+  Inputs
+    hC: HillClimber
+      a HashTable including the configurations of the hill-climbing algorithm.
+  Outputs
+    nextPoint: List
+      the next point as the starting points when continuing performing the hill-climbing algorithm.
+  Description
+    Text
+      Let's define a hill climber with the loss function, stop condition, and starting point defined below:
+    Example
+      lossFunction = x -> norm transpose matrix{x}
+      stopCondition = x -> if x < 0.001 then true else false
+      startingPoint = {1,2}
+      hC = hillClimber(lossFunction, stopCondition,startingPoint)
+      peek hC
+    Text
+      The following code porforms one step of hill climbing from the starting point and returns the new point it predicts
+    Example
+      nextStep(hC)
+    Text
+      The hill climber is also updated simultaneously if one checks the new CurrentPoint and CurrentStep in hC
+    Example
+      peek hC
+  SeeAlso
+///
