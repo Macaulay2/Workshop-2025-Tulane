@@ -48,5 +48,26 @@ ListSpMon=(n,d)->(
 --Test
 ListSpMon(4,6)
 
+--Orbit Sum for one monomial
+orbSum = (f,G,n) ->(
+    R:=QQ[x_1..x_n];
+    I:= (exponents f)_0;
+    v:= transpose matrix{I};
+    g:=0;
+    S=G*v;
+    for i from 0 to (#S-1) do(
+        g = g + vectorToMonomial(vector(S_i),R);
+    );
+    g
+)
 
+--Orbit Sums for special Monomials
+orbSumList=(G,n,d)->(
+    M:=ListSpMon(n,d);
+    L:={};
+        for i from 0 to (#M-1) do(
+         L = L | { orbSum(M_i,G,n)};
+        );
+        toList(set L)
+) 
 
