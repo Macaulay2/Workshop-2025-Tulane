@@ -136,7 +136,7 @@ HillClimber.GlobalReleaseHook = globalReleaseFunction
 hillClimber = method (
     TypicalValue => HillClimber,
     Options => {
-        StepSize => 0.01,
+        StepSize => 0.5,
         NumDirections => 10
     }
 )
@@ -182,9 +182,12 @@ track = method(
 )
 track(HillClimber) := List => opts -> (hC) -> (
     while not hC#StopCondition(hC#CurrentPoint) do (
-	if not opts#Quiet then (<< "---------------------------------------" << endl;);
-	if not opts#Quiet then (<< "Current Point: " << hC#CurrentPoint << endl;);
-	if not opts#Quiet then (<< "Current Solution: " << solvePowerSystem(A,hC#CurrentPoint) << endl;);
+	if not opts#Quiet then (
+        << "---------------------------------------" << endl;
+        << "Current Point: " << hC#CurrentPoint << endl;
+        << "Current Solution: " << solvePowerSystem(A,hC#CurrentPoint) << endl;
+        << "Loss Function at Current Solution: " << hC#LossFunction hC#CurrentPoint << endl;
+        );
         nextStep(hC);
     );
     if not opts#Quiet then (
