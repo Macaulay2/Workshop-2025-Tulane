@@ -1,7 +1,3 @@
-export{
-    "getFiniteCompletabilityMatrix",
-    "isFinitelyCompletable"
-}
 
 getFiniteCompletabilityMatrix = method(Options => {Variable => null}, TypicalValue => Matrix)
 
