@@ -136,7 +136,7 @@ getPowerSystemDiscriminant(Matrix) := RingElement => A -> (
 - Hill Climbing Algorithm
 *- 
 HillClimber = new Type of MutableHashTable
-HillClimber.synonym = "a hill climber"
+HillClimber.synonym = "hill climber"
 HillClimber.GlobalAssignHook = globalAssignFunction
 HillClimber.GlobalReleaseHook = globalReleaseFunction
 
