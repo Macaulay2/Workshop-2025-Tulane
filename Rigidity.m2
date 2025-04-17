@@ -252,6 +252,7 @@ doc ///
 load "./Rigidity/isLocallyRigid.m2"
 load "./Rigidity/isGloballyRigid.m2"
 load "./Rigidity/RigidityDocs.m2"
+load "./Rigidity/GlobalRigidityDocs.m2"
 load "./Rigidity/MatrixCompletionNonSymmetric.m2"
 
 ------------------------------------------------------------------------------
