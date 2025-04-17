@@ -31,7 +31,8 @@ export {
     "numberStandardYoungTableaux",
     "highestWeightFilling",
     "rowsFirstFilling",
-    "isStandard"
+    "isStandard",
+    "isSemiStandard"
     -- symbols
     -- "Weak"
 }
@@ -201,6 +202,21 @@ isStandard YoungTableau := Boolean => T -> (
     for j from 1 to #(D_1) - 1 do if T#(1,j) >= T#(1,j+1) then return false;
     if (numRows D) == 1 then return true;
     for i from 2 to (numRows D) do for j from 1 to #(D_i) - 1 do if T#(i,j) >= T#(i,j+1) then return false;
+    for i from 2 to (numRows D) do for j from 1 to #(D_i) do if T#(i - 1,j) >= T#(i,j) then return false;
+    true
+)
+
+-- checks if a tableau is a semistandard tableau
+isSemiStandard = method();
+isSemiStandard YoungTableau := Boolean => T -> (
+    D := youngDiagram T;
+    if isWellDefined D == false then return false;
+    if T#(1,1) != 1 then return false;
+    if T#(numRows D, #(D_(numRows D))) < numRows D then return false;
+    if T#(numRows D, #(D_(numRows D))) > #D then return false;
+    for j from 1 to #(D_1) - 1 do if T#(1,j) > T#(1,j+1) then return false;  
+    if (numRows D) == 1 then return true;
+    for i from 2 to (numRows D) do for j from 1 to #(D_i) - 1 do if T#(i,j) > T#(i,j+1) then return false;
     for i from 2 to (numRows D) do for j from 1 to #(D_i) do if T#(i - 1,j) >= T#(i,j) then return false;
     true
 )
