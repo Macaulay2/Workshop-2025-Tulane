@@ -64,28 +64,30 @@ end
 uninstallPackage "GaussianMixtureModels";
 restart
 installPackage "GaussianMixtureModels"
---check GaussianMixtureModels
+--check GaussianMixtureMode
 debug needsPackage "GaussianMixtureModels";
 
 
 A= matrix{{9,0,0,0},{8,7,0,3},{2,3,4,2},{1,0,2,3}}
-m = {1,2,3,4}
-L = solvePowerSystem(A,m)
+m = {4,8,10,50}
+
+getMomentSystemMatrices(4, 2.5)
+--L = solvePowerSystem(A,m)
 --getPowerSystemDiscriminant(A)
 
 lossFunction = method(
     Options => {
         ComplexConstant => 0.5,
-        DistanceConstant => 0.5,
+        DistanceConstant => 0.01,
         Tolerance => 0.001,
     }
 )
 lossFunction(List) := RR => opts -> L -> (
     sol := solvePowerSystem(A,L);
-    rootsPartition := partition( z -> abs(imaginaryPart(z))< opts#Tolerance , sol);
+    rootsPartition := partition( z -> abs(imaginaryPart(z))< 0.001,  sol);
     complexRoots := if rootsPartition#?false then rootsPartition#false else {};
     realRoots := if rootsPartition#?true then rootsPartition#true else {};
-    complexLoss := sqrt(sum(for val in (complexRoots / imaginaryPart) list val^2));
+    complexLoss := sum(for val in (complexRoots / imaginaryPart) list val^2);
     sortedRealRoots := sort(realRoots);
     minPairwiseDistance := min flatten for i from 1 to length(sortedRealRoots) - 1 list (
         sortedRealRoots_{i} - sortedRealRoots_{i-1}
@@ -106,6 +108,17 @@ stopCondition(List) := Boolean => opts -> (L) -> (
 )
 
 hC = hillClimber(lossFunction, stopCondition, m)
+
 nextStep(hC)
+solvePowerSystem(A,hC#CurrentPoint)
+
+for i from 1 to 400 do (
+    << "---------------------------------------" << endl;
+    << "Current Point: " << hC#CurrentPoint << endl;
+    << "Current Solution: " << solvePowerSystem(A,hC#CurrentPoint) << endl;
+)
+
 track hC
+solvePowerSystem(A,hC#CurrentPoint)
+solvePowerSystem(A, hC#StartingPoint)
 
