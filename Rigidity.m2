@@ -43,6 +43,7 @@ export {
     "isGloballyRigid",
     "Numerical",
     "FiniteField",
+    "RandomRuns",
     "getSkewSymmetricCompletionMatrix",
     "isSpanningInSkewSymmetricCompletionMatroid",
     "Field"
@@ -148,31 +149,23 @@ isLocallyRigid(ZZ, ZZ, Graph) := Boolean => opts -> (d, n, G) -> (
 
 getStressMatrix = method(Options => {Variable => null}, TypicalValue => Matrix)
 
--- Option FiniteFields: 0 for numeric, 1 for symbolic, prime power for finite field
-isGloballyRigid = method(Options => {FiniteField => 1}, TypicalValue => Boolean)
-
 -- Core function
 getStressMatrix(ZZ, ZZ, List) := Matrix => opts -> (d, n, G) -> (
-
     x := getSymbol toString(opts.Variable);
-
     -- Left kernel of the rigidity matrix
     tRigidityMatrix := transpose getRigidityMatrix(d, n, G, opts);
     R := ring tRigidityMatrix;
     tRigidityMatrixRational := sub(tRigidityMatrix, frac R);
     stressBasis := mingens ker tRigidityMatrixRational;
-
     -- New symbolic variables for each element in the basis of the left kernel
     auxiliaryVarCount := numgens source stressBasis;
     y := symbol y;
     auxiliaryRing := frac(QQ[gens R, y_1..y_auxiliaryVarCount]);
-
     -- Symbolic linear combination of elements in the basis of the left kernel
     stressBasisLinearSum := 0;
     for i from 1 to auxiliaryVarCount do (
         stressBasisLinearSum = stressBasisLinearSum + y_i * sub(submatrix(stressBasis, {i - 1}), auxiliaryRing);
     );
-    
     -- Build the symbolic stress matrix from the symbolic linear combination
     stressMatrix := mutableMatrix(auxiliaryRing, n, n);
     for i from 0 to (#G - 1) do (
@@ -183,9 +176,7 @@ getStressMatrix(ZZ, ZZ, List) := Matrix => opts -> (d, n, G) -> (
     for i from 0 to (n - 1) do (
         stressMatrix_(i, i) = -sum(stressMatrixEntries#i);
     );
-
     matrix(stressMatrix)
-
 );
 
 -- List of edges not given -> use complete graph
@@ -204,6 +195,9 @@ getStressMatrix(ZZ, ZZ, Graph) := Matrix => opts -> (d, n, G) -> (
     getStressMatrix(d, n, edges G, opts)
 );
 
+-- Option FiniteFields: 0 for numeric, 1 for symbolic, prime power for finite field
+isGloballyRigid = method(Options => {FiniteField => 1, RandomRuns => 2}, TypicalValue => Boolean)
+
 -- Core function
 isGloballyRigid(ZZ, ZZ, List) := Boolean => opts -> (d, n, G) -> (
     M := getStressMatrix(d, n, G, opts);
@@ -211,7 +205,7 @@ isGloballyRigid(ZZ, ZZ, List) := Boolean => opts -> (d, n, G) -> (
     else (
         variableNum := numgens ring M;
         results := apply(
-            toList(0..1), -- change this later
+            toList(1..opts.RandomRuns),
             () -> (
                 randomValues := randomNumber(opts.FiniteField, variableNum);
                 randomMap := map(ring randomValues, ring M, randomValues);
