@@ -43,9 +43,10 @@ export {
     "isGloballyRigid",
     "Numerical",
     "FiniteField",
-    "RandomRuns",
     "getSkewSymmetricCompletionMatrix",
     "isSpanningInSkewSymmetricCompletionMatroid",
+    "getSymmetricCompletionMatrix",
+    "isSpanningInSymmetricCompletionMatroid",
     "Field",
     "Iterations"
 }
@@ -125,13 +126,13 @@ isLocallyRigid(ZZ, ZZ, Graph) := Boolean => opts -> (d, n, G) -> (
     isLocallyRigid(d, n, edges G, opts)
 );
 
-getStressMatrix = method(TypicalValue => Matrix)
+getStressMatrix = method(Options => {Variable => "x"}, TypicalValue => Matrix)
 
 -- Core function
 getStressMatrix(ZZ, ZZ, List) := Matrix => opts -> (d, n, Gr) -> (
     G := Gr/toList;
     -- Left kernel of the rigidity matrix
-    tRigidityMatrix := transpose getRigidityMatrix(d, n, G, opts, Variable => "x");
+    tRigidityMatrix := transpose getRigidityMatrix(d, n, G, Variable => "x");
     R := ring tRigidityMatrix;
     tRigidityMatrixRational := sub(tRigidityMatrix, frac R);
     stressBasis := mingens ker tRigidityMatrixRational;
@@ -155,6 +156,7 @@ getStressMatrix(ZZ, ZZ, List) := Matrix => opts -> (d, n, Gr) -> (
         for i from 0 to (#G - 1) do (
             edge := G#i;
             stressMatrix_(edge#0, edge#1) = stressBasisLinearSum_(i, 0);
+            stressMatrix_(edge#1, edge#0) = stressBasisLinearSum_(i, 0);
         );
         stressMatrixEntries := entries stressMatrix;
         for i from 0 to (n - 1) do (
@@ -177,24 +179,30 @@ getStressMatrix(ZZ, Graph) := Matrix => opts -> (d, G) -> (
 -- Input a Graph instead of edge set with number of vertices -> check if number of vertices is correct
 getStressMatrix(ZZ, ZZ, Graph) := Matrix => opts -> (d, n, G) -> (
     if n =!= length vertexSet G then error("Expected ", n, " to be the number of vertices in ", G);
-    getStressMatrix(d, n, edges G, opts)
+    getStressMatrix(d, n, edges G)
 );
 
 -- Option FiniteFields: 0 for numeric, 1 for symbolic, prime power for finite field
-isGloballyRigid = method(Options => {FiniteField => 1, RandomRuns => 2}, TypicalValue => Boolean)
+isGloballyRigid = method(Options => {FiniteField => 1, Iterations => 3}, TypicalValue => Boolean)
 
 -- Core function
 isGloballyRigid(ZZ, ZZ, List) := Boolean => opts -> (d, n, G) -> (
+-- According to the p.2 Characterizing Generic Global Rigidity:
+-- Asimow and Roth proved that a generic framework in E^d of a graph G
+-- with d+1 or fewer vertices is globally rigid if G is a complete
+-- graph (i.e., a simplex), otherwise it is not even locally rigid
+	if n <= d+1 then return # set G == n*(n-1)//2;
     M := getStressMatrix(d, n, G);
-    if opts.FiniteField == 1 then rank M == n - d - 1
+    if opts.FiniteField == 1 then rank M == max(n - d - 1, 0)
     else (
         variableNum := numgens ring M;
+        F := if opts.FiniteField == 0 then RR else GF(opts.FiniteField);
         results := apply(
-            toList(1..opts.RandomRuns),
+            toList(1..opts.Iterations),
             () -> (
-                randomValues := randomNumber(opts.FiniteField, variableNum);
+                randomValues := random(F^1, F^variableNum);
                 randomMap := map(ring randomValues, ring M, randomValues);
-                rank randomMap M == n - d - 1
+                rank randomMap max(n - d - 1, 0)
             )
         );
         if #set(results) =!= 1 then error("Try again bro")
@@ -216,13 +224,6 @@ isGloballyRigid(ZZ, Graph) := Boolean => opts -> (d, G) -> (
 isGloballyRigid(ZZ, ZZ, Graph) := Boolean => opts -> (d, n, G) -> (
     if n =!= length vertexSet G then error("Expected ", n, " to be the number of vertices in ",G);
     isGloballyRigid(d, n, edges G, opts)
-);
-
--- Random number generator: q = 0 for numeric, q = prime power for finite field
-randomNumber = method()
-randomNumber(ZZ, ZZ) := List => (q, d) -> (
-    F := if q == 0 then RR else GF(q);
-    random(F^1, F^d)
 );
 
 getSkewSymmetricCompletionMatrix = method(Options => {Variable => null}, TypicalValue => Matrix);
@@ -330,6 +331,8 @@ getSymmetricCompletionMatrix(ZZ, ZZ, List) := Matrix => opts -> (r, n, G) -> (
 
     -- convert sets to lists
     Glist := G / (pair -> toSequence sort toList pair);
+    -- fix indexing
+    Glist = Glist / (pair -> (pair#0 -1, pair#1 - 1));
 
     -- polynomialList obtained from A -> A^T*A
     polynomialLists := apply(Glist, pair -> (transpose(M)*M)_(pair));
@@ -341,6 +344,53 @@ getSymmetricCompletionMatrix(ZZ, ZZ, List) := Matrix => opts -> (r, n, G) -> (
 
 getSymmetricCompletionMatrix(ZZ,ZZ) := Matrix => opts -> (r,n) -> (
     getSymmetricCompletionMatrix(r,n, subsets(toList(0..(n-1)), 2), opts)
+);
+
+isSpanningInSymmetricCompletionMatroid = method(Options => {Numerical => false, FiniteField => 0}, TypicalValue => Boolean);
+
+isSpanningInSymmetricCompletionMatroid(ZZ, ZZ, List) := Boolean => opts -> (r, n, E) -> (
+    M := getSymmetricCompletionMatrix(r, n, E);
+    R := ring M;
+    C := coefficientRing R; -- evaluate over an arbitrary field (e.g. given as an option)?   
+    crds := gens R;
+    if opts.Numerical 
+    then (
+        listOfTruthValues := apply(
+            toList(0..1), -- number of confidence runs?
+            k -> (
+        		randomValues := random(C^1,C^(r*n));
+        		fromRtoC := map(C,R,randomValues);
+        		r*n - (r+1)*r/2 == rank fromRtoC M
+            ) 
+        );
+        if # set(listOfTruthValues) =!= 1 then error("Expected all the numerical attempts to give the same result. Try again.");
+        all listOfTruthValues
+    )
+    else if opts.FiniteField =!= 0
+    then (
+        listOfTruthValuesFiniteFields := apply(
+            toList(0..1),
+            n -> r*n - (r+1)*r/2 == rank(
+                a := symbol a; 
+                GF(opts.FiniteField, Variable => a);
+                sub(
+                    getSymmetricCompletionMatrix(r, n, E), 
+                    apply(
+                        toList(1..r*n), 
+                        i -> crds_i => (
+                            randIndex := random(1,opts.FiniteField);
+                            if randIndex = opts.FiniteField
+                            then 0
+                            else a^randIndex
+                        )
+                    )
+                ) 
+            );
+            if # set(listOfTruthValuesFiniteFields) =!= 1 then error("Expected all the numerical attempts to give the same result. Try again.");
+            all listOfTruthValuesFiniteFields
+        )
+    )
+    else rank getSymmetricCompletionMatrix(r, n, E) == r*n - (r-1)*r/2
 );
 
 ------------------------------------------------------------------------------
@@ -364,7 +414,7 @@ load "./RigidityDocs.m2"
 ------------------------------------------------------------------------------
 
 load "./RigidityTests.m2"
-
+load "./isSpanningInSkewtests.m2"
 end
 
 restart
