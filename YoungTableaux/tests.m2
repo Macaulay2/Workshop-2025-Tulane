@@ -46,7 +46,7 @@ TEST ///
     assert(isSemiStandard youngTableau {{1,2,3,7},{4,5,6}} == true)
     assert(isSemiStandard youngTableau {{1,2,3},{4,6},{5}} == true)
     assert(isSemiStandard youngTableau {{1,2,3},{2,3},{6}} == false)
-    assert(isSemiStandard youngTableau {{1,1,1,2,3,9},{3,3,3,3,4},{5,7,8},{6},{7}} == false)
+    assert(isSemiStandard youngTableau {{1,1,1,2,3,9},{3,3,3,3,4},{5,7,8},{6},{7}} == true)
 ///
 
 TEST ///
