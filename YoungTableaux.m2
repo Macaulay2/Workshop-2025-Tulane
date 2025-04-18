@@ -208,7 +208,7 @@ isWellDefined YoungTableau := Boolean => T -> (
 )
 
 -- checks if a tableau is a standard tableau
-isStandard = method();
+isStandard = method()
 isStandard YoungTableau := Boolean => T -> (
     D := youngDiagram T;
     if isWellDefined T == false then return false;
@@ -221,14 +221,14 @@ isStandard YoungTableau := Boolean => T -> (
     true
 )
 
--- checks if a tableau is a semistandard tableau (might need some tweaking)
-isSemiStandard = method();
+-- checks if a tableau is a semistandard tableau
+isSemiStandard = method()
 isSemiStandard YoungTableau := Boolean => T -> (
     D := youngDiagram T;
     if isWellDefined D == false then return false;
-    if T#(1,1) != 1 then return false;
-    if T#(numRows D, #(D_(numRows D))) < numRows D then return false;
-    if T#(numRows D, #(D_(numRows D))) > #D then return false;
+    aux := values T;
+    M := max aux;
+    if set (1 .. M) != set aux then return false;
     for j from 1 to #(D_1) - 1 do if T#(1,j) > T#(1,j+1) then return false;  
     if (numRows D) == 1 then return true;
     for i from 2 to (numRows D) do for j from 1 to #(D_i) - 1 do if T#(i,j) > T#(i,j+1) then return false;
