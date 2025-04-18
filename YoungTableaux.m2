@@ -408,13 +408,24 @@ rowsFirstFilling YoungDiagram := YoungTableau => diagram ->(
     return( youngTableau(for i to #diagram^1-1 list (for j to #diagram_(i+1)-1 list(count) do count = count +1) ))
 ) 
 
-
 -- Given a Young diagram, fills each box 1->n column by column
 -- assumes given diagram is left justified
 columnsFirstFilling = method()
 columnsFirstFilling YoungDiagram := YoungTableau => diagram ->( return transpose (rowsFirstFilling(transpose(diagram)))
 ) 
 
+-- given a Young diagram D, it gives a random tableau using the alphabet 1, 2, ..., #D
+randomFilling = method()
+randomFilling YoungDiagram := YoungTableau => D -> (
+    L := random toList (1 .. #D);
+    aux := 0;
+    youngTableau hashTable flatten for i from 1 to numRows D list(
+    for j from 1 to #(D_i) list(
+        aux = aux + 1;
+        {(i, j), L#(aux - 1)} 
+        )
+    )
+)
 
 -----------------------------------------------------------------------------
 -- **DOCUMENTATION** --
