@@ -198,7 +198,13 @@ youngTableau = method()
 youngTableau List := YoungTableau => lambda -> new YoungTableau from lambda
 youngTableau HashTable := YoungDiagram => lambda -> (new YoungTableau from lambda)
 
-isWellDefined YoungTableau := Boolean => lambda -> (return)
+-- Checks if a Young tableau is well defined
+isWellDefined YoungTableau := Boolean => T -> (
+    D := youngDiagram T;
+    if isWellDefined D == false then return false;
+    if set values T != set toList (1 .. #D) then return false;
+    true
+)
 
 -- checks if a tableau is a standard tableau
 isStandard = method();
