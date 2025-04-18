@@ -211,7 +211,7 @@ isStandard YoungTableau := Boolean => T -> (
     true
 )
 
--- checks if a tableau is a semistandard tableau
+-- checks if a tableau is a semistandard tableau (might need some tweaking)
 isSemiStandard = method();
 isSemiStandard YoungTableau := Boolean => T -> (
     D := youngDiagram T;
