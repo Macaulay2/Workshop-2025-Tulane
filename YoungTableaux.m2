@@ -36,6 +36,7 @@ export {
     "numberStandardYoungTableaux",
     "highestWeightFilling",
     "rowsFirstFilling",
+    "randomFilling",
     "isStandard",
     "isSemiStandard",
     "getCandidateFillings",
