@@ -1,4 +1,9 @@
 TEST ///
+    assert(isWellDefined youngDiagram {2,3,1} == false)
+    assert(isWellDefined youngDiagram {6,3,3,2} == true)
+///
+
+TEST ///
     assert(conjugate youngDiagram {5,4,1} == youngDiagram {3,2,2,2,1})
     assert(transpose youngDiagram {5,4,1} == youngDiagram {3,2,2,2,1})
 ///
