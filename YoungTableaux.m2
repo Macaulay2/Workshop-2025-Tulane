@@ -366,12 +366,13 @@ filledSYT List := List => shape -> (
     for i to #shape-1 do (
         sizeOfTableau = sizeOfTableau + shape#i;
     );
-    nums := for i to sizeOfTableau - 1 list i+1;
+    nums := for i to sizeOfTableau - 1 list (i+1);
     select(getCandidateFillings(shape,nums), i -> isStandard(i))
 )
 
 filledSemiSYT = method()
 filledSemiSYT(List,List) := List => (shape,nums) -> (
+    nums = sort nums;
     sizeOfTableau := 0;
     for i to #shape-1 do (
         sizeOfTableau = sizeOfTableau + shape#i;
