@@ -9,7 +9,10 @@ newPackage(
          Email => "sean.grate@auburn.edu", 
          HomePage => "https://seangrate.com/"},
         {Name => "Andrew Karsten",
-         Email => "akk0071@auburn.edu"}
+         Email => "akk0071@auburn.edu"},
+        {Name => "Pedro Ramírez-Moreno",
+         Email => "pedro.ramirez@cimat.mx",
+         HomePage => "https://sites.google.com/cimat.mx/pedroramirezmoreno"}
     },
     Headline => "functions for working with Young diagrams and tableaux",
     PackageExports => {
