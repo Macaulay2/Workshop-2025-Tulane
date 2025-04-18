@@ -59,7 +59,7 @@ ShuffMon=(f,n)->( -- f is a monomial and n is the number of variables.
 
 --Generate, if posible, the list of special monomials
 ListSpMon=(n,d)->(
-    d=min {d,n*(n-1)/2};
+    d=min {d,n*(n-1)//2};
     R:=QQ[x_1..x_n];
     SpI:=ListSpInd(n,d);
     SpMon:={};
