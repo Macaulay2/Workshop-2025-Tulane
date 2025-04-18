@@ -64,7 +64,7 @@ ListSpMon=(n,d)->(
     SpI:=ListSpInd(n,d);
     SpMon:={};
     for i from 0 to (#SpI - 1) do(SpMon = (SpMon| ShuffMon(vectorToMonomial( vector (SpI_i) , R  ) ,n)));  -- Takes the special index and converts it to a monomial in R of n variables.
-    SpMon --returns the list of special monomials
+    toList set SpMon --returns the list of special monomials
 )
 
 --Test for Special Indexes and Monomials
