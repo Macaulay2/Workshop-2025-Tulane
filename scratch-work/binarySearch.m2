@@ -38,7 +38,7 @@ lossFunction(List) := RR => opts -> x -> (
 -- !Wrong one: loss will always be greater than any reasonable tolerance
 stopCondition = method(
     Options => {
-        Tolerance => 0.001
+        Tolerance => 0.001,
     }
 )
 stopCondition(List) := Boolean => opts -> x -> (
@@ -47,11 +47,12 @@ stopCondition(List) := Boolean => opts -> x -> (
 )
 
 hC := hillClimber(lossFunction, stopCondition, realRootsOfDiscriminant#0);
-nextStep(hC)
+-- nextStep(hC, NumDirections => 10)
 
 results := for root in realRootsOfDiscriminant list (
+    stopCounter = 0;
     hC := hillClimber(lossFunction, stopCondition, root);
-    nextStep(hC)
+    track(hC)
 )
 
 print("Before:")
@@ -161,4 +162,3 @@ numRealRootsPerShifts := apply(smallShiftToEndPoints, rt -> computeNumberOfRealR
 
 solutionsIdx := positions(numRealRootsPerShifts, n -> n > realRootsOfStarting);
 solutions := smallShiftToEndPoints_solutionsIdx;
---realResults = new HashTable from {smallShiftToEndPoints, realRootsPerShift}
