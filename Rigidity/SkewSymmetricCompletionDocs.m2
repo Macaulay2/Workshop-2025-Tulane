@@ -1,14 +1,12 @@
 doc ///
     Key
         getSkewSymmetricCompletionMatrix
-        (getSkewSymmetricCompletionMatrix, ZZ, ZZ, Graph)
-        (getSkewSymmetricCompletionMatrix, ZZ, Graph)
+	(getSkewSymmetricCompletionMatrix, ZZ, Graph)
         (getSkewSymmetricCompletionMatrix, ZZ, ZZ, List)
         (getSkewSymmetricCompletionMatrix, ZZ, ZZ)
     Headline
         Constructs the skew-symmetric completion matrix for given parameters.
     Usage
-        getSkewSymmetricCompletionMatrix(d, n, G)
         getSkewSymmetricCompletionMatrix(d, G)
         getRigidityMatrix(d, n, L)
         getRigidityMatrix(d, n)
@@ -24,12 +22,10 @@ doc ///
     	Text
             Given rank r and graph G it constructs the completion matrix for G.
         Example
-            d=2
+            d=2;
             G = completeGraph 4;
-            n=#G
             getSkewSymmetricCompletionMatrix(d, G)
-            getSkewSymmetricCompletionMatrix(d, n, G)
-            d=2 , n=3
+            d=2; n=3;
             L= {{0,1},{1,2},{2,0}}
             getSkewSymmetricCompletionMatrix(d, n, L}
 ///

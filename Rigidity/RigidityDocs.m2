@@ -32,7 +32,6 @@ doc ///
             getRigidityMatrix(d, n, L)
             getRigidityMatrix(d, n, subsets(toList(0..(n-1)), 2))
             G = completeGraph(n);
-            getRigidityMatrix(d, n, G)
             getRigidityMatrix(d, G)
 ///
 

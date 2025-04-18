@@ -95,11 +95,6 @@ getSkewSymmetricCompletionMatrix(ZZ, Graph) := Matrix => opts -> (r, G) -> (
     getSkewSymmetricCompletionMatrix(r, length vertexSet G, edges G, opts)
 );
 
-getSkewSymmetricCompletionMatrix(ZZ, ZZ, Graph) := Matrix => opts -> (r, n, G) -> (
-    if n =!= length vertexSet G then error("Expected ", n, " to be the number of vertices in ",G);
-    getSkewSymmetricCompletionMatrix(r, n, edges G, opts)
-);
-
 isSpanningInSkewSymmetricCompletionMatroid = method(Options => {Numerical => false, FiniteField => 0}, TypicalValue => Boolean);
 
 isSpanningInSkewSymmetricCompletionMatroid(ZZ, ZZ, List) := Boolean => opts -> (r, n, E) -> (
