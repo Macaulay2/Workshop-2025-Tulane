@@ -49,6 +49,8 @@ export {
 -- Schur modules notation, etc.
 -- refinements of diagrams/Young's lattice/Partition lattice
 -- straightening for STANDARD Young tableaux (see Sagan's book for Garnir elements and the SpechtModule package)
+-- RSK correspondence between tableaux and permutations
+-- promotion and evacuation
 
 -----------------------------------------------------------------------------
 -- **CODE** --
@@ -222,6 +224,56 @@ conjugate YoungTableau := YoungTableau => lambda -> (applyKeys(lambda, key -> re
 transpose YoungTableau := YoungTableau => lambda -> (conjugate lambda)
 
 ------------------------------------
+-- RSK correspondence and more
+------------------------------------
+insertionStep = method()
+insertionStep (Sequence, ZZ, Sequence) := MutableHashTable => (partialTableauPair, rowIdx, permIdxValPair) -> (
+    -- Unpacking arguments: (insertionTableau, recordingTableau), rowIdx, (permIdx, permVal)
+    insertionTableau := partialTableauPair#0;
+    recordingTableau := partialTableauPair#1;
+    permIdx := permIdxValPair#0;
+    permVal := permIdxValPair#1;
+    
+    -- Check if current row exists.
+    if not insertionTableau#?(rowIdx, 1) then (
+        insertionTableau#(rowIdx, 1) = permVal;
+        recordingTableau#(rowIdx, 1) = permIdx;
+    ) else (
+        -- Try to insert the val at the end of the rowIdx row.
+        maxColumnIdx := max((select(keys insertionTableau, coords -> (coords#0) == rowIdx) / (coords -> coords#1)));
+        if (permVal > insertionTableau#(rowIdx, maxColumnIdx)) then (
+            insertionTableau#(rowIdx, maxColumnIdx+1) = permVal;
+            recordingTableau#(rowIdx, maxColumnIdx+1) = permIdx;
+        ) else (
+            -- If val can't be inserted, find the leftmost y such that y > x.
+            -- Replace y with x, and try to insert y into the next row.
+            row := select(pairs insertionTableau, coords -> ((coords#0)#0 == rowIdx) and ((coords#1)> permVal));
+            yIdx := position(sort row, posFillingPair -> posFillingPair#1 > permVal) + 1;
+            yPos := (row#(yIdx-1))#0;
+            yVal := (row#(yIdx-1))#1;
+            yPermIdx := recordingTableau#yPos;
+            
+            insertionTableau#yPos = permVal;
+            recordingTableau#yPos = permIdx;
+
+            partialTableauPair = insertionStep((insertionTableau, recordingTableau), rowIdx+1, (yPermIdx, yVal));
+            insertionTableau = partialTableauPair#0;
+            recordingTableau = partialTableauPair#1;
+        );
+    );
+    (insertionTableau, recordingTableau)
+)
+
+schenstedCorrespondence = method()
+schenstedCorrespondence Permutation := Sequence => (perm) -> (
+    insertionTableau := new MutableHashTable from {(1,1) => perm_1};
+    recordingTableau := new MutableHashTable from {(1,1) => 1};
+    tableauPair := (insertionTableau, recordingTableau);
+    for i in 2..#perm do (tableauPair = insertionStep(tableauPair, 1, (i, perm_i)););
+    (youngTableau tableauPair#0, youngTableau tableauPair#1)
+)
+
+------------------------------------
 -- Miscellaneous
 ------------------------------------
 rowStabilizers = method()
@@ -245,6 +297,8 @@ columnStabilizers YoungTableau := List => lambda -> (rowStabilizers conjugate la
 youngSymmetrizer = method()
 youngSymmetrizer YoungTableau := YoungTableau => lambda -> (    
     -- The group algebra CC[Sn]
+    -- To access the local polynomial ring, we use a fact suggested by Matt
+    -- Mastroeni, who learned it from Justin Chen.
     n := sum shape lambda;
     Sn := toSequence apply(permutations n, p -> permutation(p / (i -> i+1)));
     x := getSymbol "x";
@@ -259,6 +313,8 @@ youngSymmetrizer YoungTableau := YoungTableau => lambda -> (
         sum(for columnStab in columnStabilizers lambda list 
             ((sign columnStab) * xHashed#(extend(rowStab * columnStab, n)))))
 )
+
+
 
 numberStandardYoungTableaux = method()
 numberStandardYoungTableaux List := ZZ => shape -> (
