@@ -1,5 +1,9 @@
 TEST ///
     assert(isWellDefined youngDiagram {2,3,1} == false)
+    assert(isWellDefined youngDiagram {5,3,2,1,1,1} == true)
+    assert(isWellDefined youngDiagram {1} == true)
+    assert(isWellDefined youngDiagram {20} == true)
+    assert(isWellDefined youngDiagram {1,1,2} == false)
     assert(isWellDefined youngDiagram {6,3,3,2} == true)
 ///
 
