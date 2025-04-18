@@ -900,7 +900,7 @@ CoxeterGroup / Subgroup := (W, H) -> (
     quotient H
     )
 
-Subgroup \ CoxeterGroup := (W, H) -> (
+Subgroup \ CoxeterGroup := (H, W) -> (
     if group H =!= W then (
 	error "Expected a subgroup of the given Coxeter group."
 	);
