@@ -8,7 +8,10 @@ newPackage(
 	     {Name => "Matthew Mastroeni", 
 		 Email => "mmastro@iastate.edu", 
 		 HomePage => "https://mnmastro.github.io/"
-		 }
+		 },
+         {Name => "Ethan Clayton",
+         Email => "ewc0025@auburn.edu"
+         }
              },
         Headline => "Coxeter groups",
 	AuxiliaryFiles => true,
