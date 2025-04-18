@@ -32,6 +32,8 @@ export {
     "armLength",
     "legLength",
     "hookLength",
+    "rowStabilizers",
+    "columnStabilizers",
     "youngSymmetrizer",
     "numberStandardYoungTableaux",
     "highestWeightFilling",
@@ -41,7 +43,9 @@ export {
     "isSemiStandard",
     "getCandidateFillings",
     "filledSYT",
-    "filledSemiSYT"
+    "filledSemiSYT",
+    "insertionStep",
+    "schenstedCorrespondence"
     -- symbols
     -- "Weak"
 }
