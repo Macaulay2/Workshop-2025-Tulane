@@ -64,7 +64,7 @@ ShuffMon=(f,n)->( -- f is a monomial and n is the number of variables.
 ListSpMon=(n,d)->(
     d=min {d,n*(n-1)/2};
     R:=QQ[x_1..x_n];
-    SpI:=ListSpInd(d,n);
+    SpI:=ListSpInd(n,d);
     SpMon:={};
     for i from 0 to (#SpI - 1) do(SpMon = (SpMon| ShuffMon(vectorToMonomial( vector (SpI_i) , R  ) ,n)));  -- Takes the special index and converts it to a monomial in R of n variables.
     SpMon --returns the list of special monomials
