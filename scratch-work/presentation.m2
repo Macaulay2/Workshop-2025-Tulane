@@ -1,18 +1,54 @@
-restart 
-debug needsPackage "PowerSums";
+-- I am a statistician, and I observe four moments of a distribution coming from a mixture of four gaussians in the wild. 
 
-m =  matrix {{1.40794}, {3.02808}, {11.4812}, {36.1147}} -- comes from 4 gaussians, means 3/5, 2/9, 8/3, 30/14, variance 1, 1, 1, 1
-A = matrix {{1/4, 0, 0, 0}, {0, 1/4, 0, 0}, {3/4, 0, 1/4, 0}, {0, 3/2, 0, 1/4}}
+-- the following data comes from comes from 4 gaussians, means 3/5, 2/9, 8/3, 30/14, variance 1, 1, 1, 1
+moments =  matrix {{1.40794}, {3.02808}, {11.4812}, {36.1147}} 
+A = matrix {{1/4, 0, 0, 0}, {0, 1/4, 0, 0}, {3/4, 0, 1/4, 0}, {0, 3/2, 0, 1/4}} -- determined by the variance only!
 
-matrix{getPowerSystem(A, flatten entries m)} -- the problem we are solving
+-- Together, they are the moment equations
+matrix{getPowerSystem(A, flatten entries moments)} -- the problem we are solving. x's are parameters.
 
-parameters = time solvePowerSystem(A,flatten entries m)
+--up to permutation, the solution is unique
+parameters = time solvePowerSystem(A,flatten entries moments)
 
-noise = transpose matrix{for i from 1 to numRows m list random(-2.0,2.0)}
-mNoisy = m + noise
+-- The algorithm works by turning the problem into finding the roots of a single univariate polynomial
+-- in this case, the polynomial is
+use RR[y]; p = y^4-5.63176*y^3+9.8022*y^2-5.33983*y+.761911
+-- given any general moments m = (m_1, m_2, m_3, m_4) with this particular A, the polynomial is
+use RR[y, m_1, m_2, m_3, m_4];
+generalP = y^4-4*m_1*y^3+(8*m_1^2-2*m_2)*y^2+(-(32/3)*m_1^3+8*m_1*m_2+4*m_1-(4/3)*m_3)*y+(32/3)*m_1^4-16*m_1^2*m_2-16*m_1^2+2*m_2^2+(16/3)*m_1*m_3+6*m_2-m_4
 
-solvePowerSystem(A, flatten entries mNoisy) -- oh no! it has complex roots!
--- let's try to find a better solution
+-- This works for general (A,m) and is much faster than using numerical techniques
+needsPackage "NumericalAlgebraicGeometry"
+
+(B,m) = (random(ZZ^4, ZZ^4), random(ZZ^4, ZZ^1))
+time solveSystem(getPowerSystem(B, flatten entries m));
+time solvePowerSystem(B, flatten entries m);
+
+-- Realistically, our observations of the moments contain noise.
+noise = transpose matrix{for i from 1 to numRows moments list random(-2.0,2.0)}
+noisyMoments = moments + noise
+
+solvePowerSystem(A, flatten entries noisyMoments) -- oh no! it has complex roots!
+-- Our parameters should be real, as we all know that imaginary numbers do not exist in the real world
+
+-- Our problem: Move m minimally to get a polynomial with all real roots
+
+-- The discriminant of the polynomial above is a hypersurface in the space of our inputs (m_1,...,m_4)
+getPowerSystemDiscriminant(A) 
+-- It divides the space into chambers based on the number of real roots (think b^2-4ac)
+-- We want to move from m into the correct chamber.
+
+-- We have three ways we've coded up to do this:
+-- 1. Hill climbing algorithm
+-- 2. Project onto the correct chamber using euclidean distance 
+-- 3. Use a mesh grid search 
+
+
+-- Lets just do 1. Hill climbing
+-- This generates random directions to move in, and then takes the best one based on some loss function.
+
+-- We've implemented a general HillClimber datatype which takes in 
+-- a loss function, a stopping condition, and a starting point.
 
 lossFunction = method(
     Options => {
@@ -47,9 +83,9 @@ stopCondition(List) := Boolean => opts -> (L) -> (
 )
 
 
-hC = hillClimber(lossFunction, stopCondition, flatten entries( mNoisy))
+hC = hillClimber(lossFunction, stopCondition, flatten entries(noisyMoments))
 
-nextStep(hC)
+nextStep(hC) -- one step
 
-track hC
-flatten entries m 
+track(hC) -- go until stopping condition is met
+flatten entries moments 
