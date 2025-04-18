@@ -8,7 +8,7 @@ U = QQ[X_1..X_n]
 allMonomials = (entries basis(d, U))#0
 aVars = apply(exponents(sum(allMonomials)), p -> a_(p#0, p#1));
 aVars
-S = QQ[aVars, X_1..X_n] --do we want all these parameters?
+S = QQ[aVars, X_1..X_n]
 gens S
 
 fromUtoS = map(S, U, take(gens S, -n))
@@ -47,23 +47,81 @@ transformeddForm = SLnLinearChangeofVars(universaldForm)
 coefficient(X_1*X_2,fromRtoR'(transformeddForm))
 
 
--- === 4. Form μ^*(a_1^2) and expand ===
-muStarA1sq = expand (muStar#1)^2
+-- ***** form the Omega matrix ****
 
--- === 5. Define the differential operator Ω^2 ===
-Omega2 = f -> (
-    term1 = diff(z(2,2), diff(z(2,2), diff(z(1,1), diff(z(1,1), f))))  -- :contentReference[oaicite:5]{index=5}
-    term2 = 2 * diff(z(2,2), diff(z(1,2), diff(z(2,1), diff(z(1,1), f))))
-    term3 = diff(z(1,2), diff(z(1,2), diff(z(2,1), diff(z(2,1), f))))
-    term1 - term2 + term3
-)                                                                      -- :contentReference[oaicite:6]{index=6}
 
--- === 6. Compute c_{2,2} = Ω^2(det(Z)^2) ===
-Z  = matrix {{z(1,1), z(1,2)}, {z(2,1), z(2,2)}}
-c22 = Omega2(det Z^2)
+permutations toList(1..n)
 
--- === 7. Finally, the Reynolds operator on a1^2 ===
-R_a1sq = Omega2(muStarA1sq) / c22
+cayleyOmega = n -> (
+    xVars = x_(1,1)..x_(n,n);
 
--- Display results:
-muStarA1sq, c22, R_a1sq
+    R = QQ[xVars];
+
+    omega = F -> (
+      -- 3.3.1 sum over all σ ∈ S_n of sign(σ)·(∏_{i=0..n-1} ∂/∂x_{i,σ(i)}) F
+      sum apply(permutations splice {1..n}, sigma -> (
+        sgn = sign permutation sigma;
+        --print(sigma);
+        -- start from F and differentiate one variable at a time:
+        G = fold((g,i) -> (
+                 j   = sigma#(i-1);
+                 --print(diff(x_(i,j), g));
+                 diff(x_(i,j), g)
+               ), F, toList(1..n));
+        --print(sgn * G);
+        sgn * G
+      ))
+    );
+
+    -- 3.4 Return the operator (and carry its ring around in closure):
+    omega
+)
+
+C2 = cayleyOmega 2;
+R2 = QQ[x_(1,1)..x_(2,2)]
+M = genericMatrix(R2, x_(1,1), 2, 2)
+detM = det M
+C2 (detM)
+
+
+--******** omega constant c_p,n*************
+
+C3 = cayleyOmega 3;
+R3 = QQ[x_(1,1)..x_(3,3)];
+M3 = genericMatrix(R3, x_(1,1), 3, 3)
+detM3 = det M3
+C3 C3 (detM3)
+
+cayleyConstant = (p,n) -> (
+    Cn = cayleyOmega n;
+    RRRR = QQ[x_(1,1)..x_(n,n)];
+    M = genericMatrix(RRRR, x_(1,1), n, n);
+    cpn = det M;
+    
+    for i from 1 to p do (
+        print(ring cpn);
+        cpn = Cn(cpn)
+    );
+    cpn
+)
+
+cayleyConstant(2,3)
+
+--******** reynolds GLn (4.5.27)*************
+
+n = 3
+p = 2
+Cn = cayleyOmega n;
+R = QQ[x_(1,1)..x_(n,n)];
+M = genericMatrix(R, x_(1,1), n, n)
+f = random (p, R)
+f / det M
+omegaf = f
+for i from 1 to p do (
+    omegaf = Cn(omegaf)
+);
+cpn = cayleyConstant(p,n)
+
+omegaf / 
+
+
