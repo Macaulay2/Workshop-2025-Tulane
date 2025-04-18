@@ -44,9 +44,6 @@ ListSpInd=(n,d)->( --intakes the number of variables n and the degree d.
         ); 
     SpI  -- Returns the list of special indexes 
 )
---Test
-ListSpInd(6,4)
-
 
 -- Shuffle every monomial
 ShuffMon=(f,n)->( -- f is a monomial and n is the number of variables.
@@ -70,8 +67,13 @@ ListSpMon=(n,d)->(
     SpMon --returns the list of special monomials
 )
 
---Test
+--Test for Special Indexes and Monomials
+ListSpInd(6,4)
+ListSpMon(2,6)
+ListSpMon(4,1)
 ListSpMon(4,6)
+ListSpMon(4,8)
+ListSpMon(7,8)
 
 
 --Orbit Sum for one monomial
