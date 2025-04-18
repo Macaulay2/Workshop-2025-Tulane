@@ -185,3 +185,57 @@ doc ///
     (armLength, YoungDiagram, ZZ, ZZ)
     (legLength, YoungDiagram, ZZ, ZZ)
 ///
+
+doc ///
+  Key
+    (getCandidateFillings, List, List)
+  Headline
+    Mainly a helper function for filledSYT and filledSemiSYT
+  Usage
+    getCandidateFillings(shape,numbers)
+  Inputs
+    shape: This is the list that describes the shape of the tableaux to be produced
+    numbers: These are the numbers that are to be filled in the boxes
+  Outputs
+    A list of all ways to fill the tableaux of the given shape with the given numbers
+  Description
+    Text
+      The main point of this function is to be used as a helper in filledSYT and filledSemiSYT
+  Caveat
+    Not going to give valid fillings necessarily. This other functions that call this as a helper do the proper filtering
+    ///
+
+doc ///
+  Key
+    (filledSYT, List)
+  Headline
+    List all the standard fillings of tableaux of a given shape
+  Usage
+    filledSYT(shape)
+  Inputs
+    shape: This is the list that describes the shape of the tableaux to be produced
+  Outputs
+    A list of all ways to fill the standard tableaux of the given shape
+  Description
+    Text
+      This is a function that will list all the standard fillings of a tableau of a given shape. shape = {4,2,1} for example will give the tableau of shape (4,2,1)
+///
+
+doc ///
+  Key
+    (filledSemiSYT, List, List)
+  Headline
+    A method to list all the semistandard fillings with given numbers and given shape
+  Usage
+    filledSemiSYT(shape,numbers)
+  Inputs
+    shape: This is the list that describes the shape of the tableaux to be produced
+    numbers: These are the numbers that are to be filled in the boxes
+  Outputs
+    A list of all ways to fill the tableaux of the given shape with the given numbers
+  Description
+    Text
+      This is a method to give all the possible semistandard fillings of a tableaux of a given shape
+  Caveat
+    When listing the numbers to be filled, this is a multiset. For example, if you want a filling with three 1's, two 2's, and three 3's, you should pass {1,1,1,2,2,3,3,3} for the numbers slot
+    ///
