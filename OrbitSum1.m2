@@ -21,6 +21,7 @@ IsListSp = (I,n) -> (
 
 --Generate, if posible, the list of special monomials
 ListSpMon=(n,d)->(
+    if d>(.5*n*(n-1)) then return "There are no special monomials with that degree";
     R:=QQ[x_1..x_n];
    L:=partitions d;
    M:={};
@@ -29,6 +30,7 @@ ListSpMon=(n,d)->(
 )
 --Test
 ListSpMon(4,1)
+ListSpMon(4,8)
 ListSpMon(7,8)
 ListSpMon(27,8)
 
