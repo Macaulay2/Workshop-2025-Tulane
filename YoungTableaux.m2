@@ -12,7 +12,10 @@ newPackage(
          Email => "akk0071@auburn.edu"},
         {Name => "Pedro Ramírez-Moreno",
          Email => "pedro.ramirez@cimat.mx",
-         HomePage => "https://sites.google.com/cimat.mx/pedroramirezmoreno"}
+         HomePage => "https://sites.google.com/cimat.mx/pedroramirezmoreno"},
+         {Name => "Stephen Stern",
+         Email => "sstern2@unl.edu",
+         HomePage => "https://sterns.github.io/"}
     },
     Headline => "functions for working with Young diagrams and tableaux",
     PackageExports => {
