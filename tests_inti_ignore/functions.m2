@@ -112,8 +112,16 @@ highestWeight = (tab1,tab2,tab3) -> (
 )
 
 time highestWeight(tab1,tab1,tab3)
-highestWeight({{1,2,3}, {4}}, {{1,2,4}, {3}}, {{1,3,4}, {2}})
+time highestWeight(tab1,tab1,tab1)
+ highestWeight({{1,2,3}, {4}}, {{1,2,4}, {3}}, {{1,3,4}, {2}})
 
+-- try this
+
+tab1 = {{0,1,2},{3,4,5},{6,7,8}}
+tab2 = {{0,3,6},{1,4,7},{2,5,8}}
+tab3 = {{0,3,5},{1,4,6},{2,7,8}}
+
+time highestWeight(tab1,tab2,tab3)
 restart
 
 -- Sample input
