@@ -29,8 +29,8 @@ doc ///
         Example
             n = 4; d = 2;
             L = {{0,1}, {0,2}, {1,2}, {1,3}, {2,3}};
-            getRigidityMatrix(d, n, L)
-            getRigidityMatrix(d, n, subsets(toList(0..(n-1)), 2))
+            getRigidityMatrix(d, L)
+            getRigidityMatrix(d, subsets(toList(0..(n-1)), 2))
             G = completeGraph(n);
             getRigidityMatrix(d, G)
 ///
@@ -67,10 +67,9 @@ doc ///
         Example
             n = 4; d = 2;
             L = {{0,1}, {0,2}, {1,2}, {1,3}, {2,3}};
-            isLocallyRigid(d, n, L)
-            isLocallyRigid(d, n, subsets(toList(0..(n-1)), 2))
+            isLocallyRigid(d, L)
+            isLocallyRigid(d, subsets(toList(0..(n-1)), 2))
             G = completeGraph(n);
-            isLocallyRigid(d, n, G)
             isLocallyRigid(d, G)
 ///
 

@@ -1,14 +1,14 @@
 doc ///
     Key
         getSkewSymmetricCompletionMatrix
-	(getSkewSymmetricCompletionMatrix, ZZ, Graph)
+	    (getSkewSymmetricCompletionMatrix, ZZ, Graph)
         (getSkewSymmetricCompletionMatrix, ZZ, ZZ, List)
         (getSkewSymmetricCompletionMatrix, ZZ, ZZ)
     Headline
         Constructs the skew-symmetric completion matrix for given parameters.
     Usage
         getSkewSymmetricCompletionMatrix(d, G)
-        getRigidityMatrix(d, n, L)
+        getRigidityMatrix(d, L)
         getRigidityMatrix(d, n)
     Inputs
         d : ZZ
@@ -27,27 +27,23 @@ doc ///
             getSkewSymmetricCompletionMatrix(d, G)
             d=2; n=3;
             L= {{0,1},{1,2},{2,0}}
-            getSkewSymmetricCompletionMatrix(d, n, L}
+            getSkewSymmetricCompletionMatrix(d, n, L)
 ///
 
 doc ///
     Key
         isSpanningInSkewSymmetricCompletionMatroid
-        (isSpanningInSkewSymmetricCompletionMatroid, ZZ, ZZ, Graph)
         (isSpanningInSkewSymmetricCompletionMatroid, ZZ, Graph)
         (isSpanningInSkewSymmetricCompletionMatroid, ZZ, ZZ, List)
         (isSpanningInSkewSymmetricCompletionMatroid, ZZ, ZZ)
     Headline
         Tests whether a graph is spanning in the skew-symmetric completion matroid.
     Usage
-        isSpanningInSkewSymmetricCompletionMatroid(d, n, G)
         isSpanningInSkewSymmetricCompletionMatroid(d, G)
-        isSpanningInSkewSymmetricCompletionMatroid(d, n, L)
+        isSpanningInSkewSymmetricCompletionMatroid(d, L)
     Inputs
         d : ZZ
             corresponding to the dimension of the embedding space
-        n : ZZ
-            corresponding to the number of vertices
         G : Graph
         L : List
             of pairs of adjacent vertices
@@ -62,6 +58,6 @@ doc ///
             isSpanningInSkewSymmetricCompletionMatroid(4, G)
             L= {{0,1},{1,2},{2,0}}
             d=4, n=3
-            isSpanningInSkewSymmetricCompletionMatroid(4, 3, G)
+            isSpanningInSkewSymmetricCompletionMatroid(d, n, L)
 ///
 
