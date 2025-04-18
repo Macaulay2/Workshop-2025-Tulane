@@ -19,7 +19,7 @@ document {
 	
 	PARA {"The Bruhat order of a Coxeter group W is the partial order on its elements whose
 	    covering relations are precisely the relations w < v where w = v*t for some reflection
-	    t of W sand w has smaller length than v.  This function determines w <= v in the Bruhat
+	    t of W and w has smaller length than v.  This function determines w <= v in the Bruhat
 	    order for any two elements w and v of W by making use of the fact that w <= v if and
 	    only if some reduced subword of v is equal to w."},
 	    
