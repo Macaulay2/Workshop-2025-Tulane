@@ -7,7 +7,12 @@ newPackage(
     Authors => {
         {Name => "Sean Grate", 
          Email => "sean.grate@auburn.edu", 
-         HomePage => "https://seangrate.com/"}
+         HomePage => "https://seangrate.com/"},
+        {Name => "Andrew Karsten",
+         Email => "akk0071@auburn.edu"},
+        {Name => "Pedro Ramírez-Moreno",
+         Email => "pedro.ramirez@cimat.mx",
+         HomePage => "https://sites.google.com/cimat.mx/pedroramirezmoreno"}
     },
     Headline => "functions for working with Young diagrams and tableaux",
     PackageExports => {
@@ -30,7 +35,13 @@ export {
     "youngSymmetrizer",
     "numberStandardYoungTableaux",
     "highestWeightFilling",
-    "rowsFirstFilling"
+    "rowsFirstFilling",
+    "randomFilling",
+    "isStandard",
+    "isSemiStandard",
+    "getCandidateFillings",
+    "filledSYT",
+    "filledSemiSYT"
     -- symbols
     -- "Weak"
 }
@@ -80,7 +91,7 @@ new YoungDiagram from HashTable := (typeofYoungDiagram, lambda) -> (new HashTabl
 
 youngDiagram = method()
 youngDiagram VisibleList := YoungDiagram => lambda -> (new YoungDiagram from lambda)
-youngDiagram HashTable := YoungDiagram => lambda -> (new YoungDiagram from lambda)
+youngDiagram HashTable := YoungDiagram => lambda -> (new YoungDiagram from applyValues(lambda, v -> true))
 
 -- Checks if a Young diagram is well defined
 isWellDefined YoungDiagram := Boolean => diagram -> (
@@ -190,7 +201,42 @@ youngTableau = method()
 youngTableau List := YoungTableau => lambda -> new YoungTableau from lambda
 youngTableau HashTable := YoungDiagram => lambda -> (new YoungTableau from lambda)
 
-isWellDefined YoungTableau := Boolean => lambda -> (return)
+-- Checks if a Young tableau is well defined
+isWellDefined YoungTableau := Boolean => T -> (
+    D := youngDiagram T;
+    if isWellDefined D == false then return false;
+    if set values T != set toList (1 .. #D) then return false;
+    true
+)
+
+-- checks if a tableau is a standard tableau
+isStandard = method();
+isStandard YoungTableau := Boolean => T -> (
+    D := youngDiagram T;
+    if isWellDefined T == false then return false;
+    if T#(1,1) != 1 then return false;
+    --if T#(numRows D, #(D_(numRows D))) != #D then return false;
+    for j from 1 to #(D_1) - 1 do if T#(1,j) >= T#(1,j+1) then return false;
+    if (numRows D) == 1 then return true;
+    for i from 2 to (numRows D) do for j from 1 to #(D_i) - 1 do if T#(i,j) >= T#(i,j+1) then return false;
+    for i from 2 to (numRows D) do for j from 1 to #(D_i) do if T#(i - 1,j) >= T#(i,j) then return false;
+    true
+)
+
+-- checks if a tableau is a semistandard tableau (might need some tweaking)
+isSemiStandard = method();
+isSemiStandard YoungTableau := Boolean => T -> (
+    D := youngDiagram T;
+    if isWellDefined D == false then return false;
+    if T#(1,1) != 1 then return false;
+    if T#(numRows D, #(D_(numRows D))) < numRows D then return false;
+    if T#(numRows D, #(D_(numRows D))) > #D then return false;
+    for j from 1 to #(D_1) - 1 do if T#(1,j) > T#(1,j+1) then return false;  
+    if (numRows D) == 1 then return true;
+    for i from 2 to (numRows D) do for j from 1 to #(D_i) - 1 do if T#(i,j) > T#(i,j+1) then return false;
+    for i from 2 to (numRows D) do for j from 1 to #(D_i) do if T#(i - 1,j) >= T#(i,j) then return false;
+    true
+)
 
 ------------------------------------
 -- Young tableaux string representations
@@ -327,48 +373,116 @@ numberStandardYoungTableaux List := ZZ => shape -> (
 )
 
 
-----------------------------------
+---- Given a list (shape) of a diagram, find all the standard fillings
+getCandidateFillings = method()
+getCandidateFillings(List,List) := List => (shape,nums) -> (
+    numberRows := #shape;
+    --- get the size by adding the number of boxes in each row
+    tempSize := 0;
+    for i to numberRows-1 do (
+        tempSize = tempSize + shape#i;
+    );
+    --- tempSize is the size of the tableau. We can think of each row the number i
+    --- goes in to, and once we know the rows every number goes in we automatically
+    --- know the filling on that row. This doesn't guarantee a valid filling though.
 
-
---- Trying to list all fillings of standard tableaux of a given shape
-getThe'i'thSequence = method()
-getThe'i'thSequence (ZZ, ZZ, ZZ) := List => (i, givenLength, possibilitiesForEach) -> (
+    --- Make a vector that will keep track and make sure we don't put too many things
+    --- in a row
     
+    openBoxesVec := new MutableList from shape;
+    gotTempList := true;
+    --- want a list of all the possible maps from {1,...,n} -> numRows
+    for i from 1 to numberRows ^ tempSize list (
+        gotTempList = true;
+        for i to #shape-1 do (
+            openBoxesVec#i = shape#i;
+        );
+        --- We want the output to be a list of lists, since each sublist is the map
+        tempList := for j to tempSize - 1 list (
+            if not gotTempList then continue;
+            tempQuotient := i // (numberRows ^ j);
+            tempOut := tempQuotient % numberRows;
+            --- decrement the number of available boxes left in that row and if we
+            --- have put more numbers than boxes we  have gotten something invalid
+            openBoxesVec#tempOut = openBoxesVec#tempOut - 1;
+            if openBoxesVec#tempOut < 0 then (
+                gotTempList = false;
+            );
+            tempOut
+        );
+        if not gotTempList then continue;
+        --- tempList is a candidate map right now. We turn this in to a tableau list
+        --- to then feed to the tableau method
+        tempTList := new MutableList from for j to numberRows - 1 list (new MutableList from {});
+        for j to tempSize - 1 do (
+            tempTList#(tempList#j) = append(tempTList#(tempList#j),nums#j);
+        );
+        tableauList := for i to #tempTList - 1 list (
+            tempInner := for j to #(tempTList#i) - 1 list (tempTList#i)#j;
+            tempInner
+        );
+        youngTableau tableauList
+    )
 )
 
---- Given a list (shape) of a diagram, find all the standard fillings
--- getCandidateFillings = methods()
--- getCandidateFillings (List) := YoungTableau => (shape) -> (
---     -- sizeOfTableau := (
---     --     --- get the size by adding the number of boxes in each row
---     --     tempSize := 0;
---     --     for i to #shape-1 do (
---     --         tempSize = tempSize + shape#i;
---     --     );
---     --     tempSize
---     -- );
---     -- tempPlacements := for i to ?????? list (
---     --     -- Range over all possible sequences 
+--- Still need to write this
+filledSYT = method()
+filledSYT List := List => shape -> (
+    sizeOfTableau := 0;
+    for i to #shape-1 do (
+        sizeOfTableau = sizeOfTableau + shape#i;
+    );
+    nums := for i to sizeOfTableau - 1 list (i+1);
+    select(getCandidateFillings(shape,nums), i -> isStandard(i))
+)
 
---     -- );
--- )
+filledSemiSYT = method()
+filledSemiSYT(List,List) := List => (shape,nums) -> (
+    nums = sort nums;
+    sizeOfTableau := 0;
+    for i to #shape-1 do (
+        sizeOfTableau = sizeOfTableau + shape#i;
+    );
+    if sizeOfTableau != #nums then (
+        print "Cannot create a semi-standard tableau with i different number of entries than boxes";
+        return
+    );
+    unique select(getCandidateFillings(shape,nums), i -> isSemiStandard(i))
+)
 
-
-
--- Given a Young, diagram fills each box with the row it is in
+-- Given a Young diagram, fills each box with the row it is in
 -- assumes given diagram is left justified
 highestWeightFilling = method()
 highestWeightFilling YoungDiagram := YoungTableau => diagram ->(
     return youngTableau (for i to #diagram^1-1 list (for j to #diagram_(i+1)-1 list i+1 ))
 )
 
--- Given a Young, diagram fills each box 1->n row by row
+-- Given a Young diagram, fills each box 1->n row by row
 -- assumes given diagram is left justified
 rowsFirstFilling = method()
 rowsFirstFilling YoungDiagram := YoungTableau => diagram ->(
-    
-)
+    count := 1;
+    return( youngTableau(for i to #diagram^1-1 list (for j to #diagram_(i+1)-1 list(count) do count = count +1) ))
+) 
 
+-- Given a Young diagram, fills each box 1->n column by column
+-- assumes given diagram is left justified
+columnsFirstFilling = method()
+columnsFirstFilling YoungDiagram := YoungTableau => diagram ->( return transpose (rowsFirstFilling(transpose(diagram)))
+) 
+
+-- given a Young diagram D, it gives a random tableau using the alphabet 1, 2, ..., #D
+randomFilling = method()
+randomFilling YoungDiagram := YoungTableau => D -> (
+    L := random toList (1 .. #D);
+    aux := 0;
+    youngTableau hashTable flatten for i from 1 to numRows D list(
+    for j from 1 to #(D_i) list(
+        aux = aux + 1;
+        {(i, j), L#(aux - 1)} 
+        )
+    )
+)
 
 -----------------------------------------------------------------------------
 -- **DOCUMENTATION** --
@@ -394,8 +508,27 @@ needsPackage "YoungTableaux"
 elapsedTime check "YoungTableaux"
 viewHelp "YoungTableaux"
 
+--------------------------
+-- Andrew's scratch space
+--------------------------
+
 YD = youngDiagram {4,3,3,2,1,1,0,0}
 YT = youngTableau {{1,2,3},{4,5},{6}}
+shape = {4,2,1}
+fill = {1,2,3,4,5,6,7}
+listToTableauxList(fill,shape)
+getCandidateFillings {4,2,1}
+
+shape = {4,2,1}
+FSYT = #(filledSYT shape)
+NSYT = numberStandardYoungTableaux shape
+CSYT = #(getCandidateFillings(shape,{1,2,3,4,5,6,7}))
+filledSYT shape
+tempTableau = youngTableau {{1,4,5,6},{2,7},{3}}
+isStandard tempTableau 
+semiShape = {4,3,2}
+stuff = {1,1,2,2,3,3,3,4,4}
+filledSemiSYT(semiShape,stuff)
 
 YT#(2,2)
 
@@ -414,3 +547,5 @@ restart
 needsPackage "Permutations"
 myd = youngDiagram {4,2,1}
 lambda = youngTableau {{1,2,3},{4,5},{6}}
+
+tempCand = getCandidateFillings {4,2,1}
