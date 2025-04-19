@@ -13,8 +13,11 @@ newPackage(
          Email => "ewc0025@auburn.edu"
          },
          {Name => "Aniketh Sivakumar", 
-		 Email => "asivakumar@tulane.edu",
-		 }
+		 Email => "asivakumar@tulane.edu"
+		 },
+         {Name => "David Crosby",
+         Email => "dlc019@uark.edu"
+         }
              },
         Headline => "Coxeter groups",
 	AuxiliaryFiles => true,
