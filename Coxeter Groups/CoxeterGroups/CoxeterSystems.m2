@@ -680,19 +680,42 @@ dynkinDiagram CoxeterGroup := DynkinDiagram => W -> (
 
 -----------------------------------------------------------------
 
+
+isDefinedAt = method()
+isDefinedAt (Function, String) := (f, x) -> (
+    try (
+        f x;
+        true
+    ) else (
+        false
+    )
+)
+
+
 specificDynkin = method()
 
 specificDynkin String := DynkinDiagram => name -> (
     if not (set("A", "B", "C", "D", "E", "F", "G", "H", "I"))#?(first name) then (
 	error "specificDynkin: Expected the first character to be A, B, C, D, E, F, G, H, or I."
 	);
-    n := value last name;
-    if not instance(value last name, ZZ) then (
-	error "specificDynkin: Expected the last character to be an integer."
+    if name#1 == "'" then (
+		m:= substring(name,2);
+	)
+	else if instance(value(name#1),ZZ) then (
+		m:=substring(name,1);
+	)
+	else error "specificDynkin: Not one of the named Dynkin diagrams.";
+
+	if value(m#0)==0 then (
+		error "Enter a valid positive integer"
 	);
-    if #name > 2 and (#name =!= 3 or name#1 =!= "'") then (
-	error "specificDynkin: Not one of the named Dynkin diagrams."
-	); 
+
+	for i from 0 to #m-1 do if not (isDefinedAt(value,m#i) and instance(value m#i,ZZ)) then (
+		error "specificDynkin: Expected a valid positive integer."
+	);
+
+	n:=value m;
+
     if first name == "A" then (
 	if n <= 0 then error "specificDynkin: Expected a positive integer.";
 	if n >= 2 then (
@@ -767,6 +790,7 @@ specificDynkin String := DynkinDiagram => name -> (
 	dynkinDiagram(pathGraph 2, {{0,1} => n})
 	)
     )
+
 
 
 -- SPECIFIC COXETER GROUPS

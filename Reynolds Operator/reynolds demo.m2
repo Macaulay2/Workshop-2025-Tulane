@@ -16,9 +16,9 @@ CasimirOperator = v -> (
 
 ------------------------------------------------------------
 -- The Reynolds operator algorithm following Algorithm 4.5.19.
-reynoldsOperator = v -> (
+reynoldsOperatorDemo = v -> (
     vList := {v};  -- initialize with v₀ = v.
-    while true do (
+    while not any (vList, v -> v == matrix {{0}, {0}}) do (
         print("Iteration " | toString(#vList - 1) | ": Last vector = " | toString(last vList));
         
         -- Form the matrix M whose columns are the vectors in vList.
@@ -52,17 +52,26 @@ reynoldsOperator = v -> (
                 )
             )
         );
+
+        if (iszero Cas(last vList)) then
+            break;
         -- No dependence. Compute the next iterate.
-        vList = append(vList, CasimirOperator(last vList))
+        vList = append(vList, Cas(last vList))
     )
 )
 
 ------------------------------------------------------------
 
-rinv1 = reynoldsOperator(v1)
+rinv1 = reynoldsOperatorDemo(v1)
 print "Reynolds operator applied to v1:"
 print rinv1
 
-rinv2 = reynoldsOperator(v2)
+rinv2 = reynoldsOperatorDemo(v2)
 print "Reynolds operator applied to v2:"
 print rinv2
+
+
+for i from 1 to 10 do (
+    if i == 5 then break;
+    print("Iteration " | toString(i));
+)
