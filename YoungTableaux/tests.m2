@@ -50,18 +50,18 @@ TEST ///
 ///
 
 TEST ///
-    assert(isCorner ((1,2), youngDiagram {2,3,1}) == false)
-    assert(isCorner ((1,1), youngDiagram {2,3,1}) == false)
-    assert(isCorner ((6,1), youngDiagram {5,3,2,1,1,1}) == true)
-    assert(isCorner ((1,6), youngDiagram {5,3,2,1,1,1}) == false)
-    assert(isCorner ((1,2), youngDiagram {1}) == false)
-    assert(isCorner ((1,1), youngDiagram {1}) == true)
-    assert(isCorner ((3,9), youngDiagram {20}) == false)
-    assert(isCorner ((1,1), youngDiagram {20}) == false)
-    assert(isCorner ((2,1), youngDiagram {1,1,2}) == false)
-    assert(isCorner ((3,2), youngDiagram {1,1,2}) == true)
-    assert(isCorner ((3,3), youngDiagram {6,3,3,2}) == true)
-    assert(isCorner ((4,1), youngDiagram {6,3,3,2}) == false)
+    assert(isCorner (youngDiagram {2,3,1}, (1,2)) == false)
+    assert(isCorner (youngDiagram {2,3,1}, (1,1)) == false)
+    assert(isCorner (youngDiagram {5,3,2,1,1,1}, (6,1)) == true)
+    assert(isCorner (youngDiagram {5,3,2,1,1,1}, (1,6)) == false)
+    assert(isCorner (youngDiagram {1}, (1,2)) == false)
+    assert(isCorner (youngDiagram {1}, (1,1)) == true)
+    assert(isCorner (youngDiagram {20}, (3,9)) == false)
+    assert(isCorner (youngDiagram {20}, (1,1)) == false)
+    assert(isCorner (youngDiagram {1,1,2}, (2,1)) == false)
+    assert(isCorner (youngDiagram {1,1,2}, (3,2)) == true)
+    assert(isCorner (youngDiagram {6,3,3,2}, (3,3)) == true)
+    assert(isCorner (youngDiagram {6,3,3,2}, (4,1)) == false)
 ///
 
 TEST ///
