@@ -432,7 +432,7 @@ randomFilling YoungDiagram := YoungTableau => D -> (
     )
 )
 
--- given a Young diagram D, checks if a given key of the form (a,b) is a corner of the diagram
+-- given a Young diagram, checks if a given key of the form (a,b) is a corner of the diagram
 isCorner = method()
 isCorner (YoungDiagram, Sequence) := Boolean => (diagram, key) -> (
     if diagram #? key == false then return false;
