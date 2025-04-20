@@ -50,6 +50,21 @@ TEST ///
 ///
 
 TEST ///
+    assert(isCorner ((1,2), youngDiagram {2,3,1}) == false)
+    assert(isCorner ((1,1), youngDiagram {2,3,1}) == false)
+    assert(isCorner ((6,1), youngDiagram {5,3,2,1,1,1}) == true)
+    assert(isCorner ((1,6), youngDiagram {5,3,2,1,1,1}) == false)
+    assert(isCorner ((1,2), youngDiagram {1}) == false)
+    assert(isCorner ((1,1), youngDiagram {1}) == true)
+    assert(isCorner ((3,9), youngDiagram {20}) == false)
+    assert(isCorner ((1,1), youngDiagram {20}) == false)
+    assert(isCorner ((2,1), youngDiagram {1,1,2}) == false)
+    assert(isCorner ((3,2), youngDiagram {1,1,2}) == true)
+    assert(isCorner ((3,3), youngDiagram {6,3,3,2}) == true)
+    assert(isCorner ((4,1), youngDiagram {6,3,3,2}) == false)
+///
+
+TEST ///
     assert(conjugate youngDiagram {5,4,1} == youngDiagram {3,2,2,2,1})
     assert(transpose youngDiagram {5,4,1} == youngDiagram {3,2,2,2,1})
 ///
