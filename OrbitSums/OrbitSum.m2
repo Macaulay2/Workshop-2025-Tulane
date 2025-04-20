@@ -117,4 +117,3 @@ beginDocumentation()
 load "./SubringsDoc.m2"
 
 end
-
