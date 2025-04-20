@@ -1,9 +1,23 @@
 newPackage("Permgroups",
     Version => "0.1",
-    Date => "April 17th, 2025",
-    Authors => {
-        {Name => "...", Email => "..."}
-    }
+    Date => "April 18th, 2025",
+     Authors => {
+	{Name => "Summer Strom",
+         Email => "",
+         HomePage => ""},
+        {Name => "Lilia Alanís-López", 
+         Email => "lilia.alanislpz@tec.mx", 
+         HomePage => "https://sites.google.com/tec.mx/liliaalanislopez/"},
+	{Name => "Dalena Vien",
+         Email => "",
+	HomePage => ""},
+        {Name => "Indalecio Ruiz",
+         Email => "",
+         HomePage => ""},
+         {Name => "Francesca Gandini",
+         Email => "",
+         HomePage => ""}
+    },
     Headline => "Package for permutation groups and orbit sums"
     Keywords => {"Permutation groups"}{"orbit sums"}{"documentation"},
     Description => "This package computes orbit sums of special monomials under the action of a permutation group. It includes functions to generate check special monomials, and compute orbit sums for special monomials. The package is designed for use in invariant theory and related fields."
