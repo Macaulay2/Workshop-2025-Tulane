@@ -1,5 +1,4 @@
 -*
-
    Copyright 2023, ??????
     
    You may redistribute this file under the terms of the GNU General Public
@@ -51,7 +50,6 @@ doc ///
         Example
 
 ///
-
 
 doc ///
     Key
