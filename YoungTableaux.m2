@@ -42,6 +42,7 @@ export {
     "randomFilling",
     "isStandard",
     "isSemiStandard",
+    "isCorner",
     "getCandidateFillings",
     "filledSYT",
     "filledSemiSYT"
@@ -429,6 +430,17 @@ randomFilling YoungDiagram := YoungTableau => D -> (
         {(i, j), L#(aux - 1)} 
         )
     )
+)
+
+-- given a Young diagram D, checks if a given key of the form (a,b) is a corner of the diagram
+isCorner = method()
+isCorner (Sequence, YoungDiagram) := Boolean => (key, diagram) -> (
+    if diagram #? key == false then return false;
+    a := key_0;
+    b := key_1;
+    if diagram #? (a, b + 1) then return false;
+    if diagram #? (a + 1, b) then return false;
+    true 
 )
 
 -----------------------------------------------------------------------------
