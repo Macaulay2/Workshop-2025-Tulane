@@ -443,6 +443,22 @@ isCorner (YoungDiagram, Sequence) := Boolean => (diagram, key) -> (
     true 
 )
 
+-- given a Young diagram, outputs a random corner (a,b) of the diagram 
+-- the corner is taken randomly according to Greene, Nijenhuis, and S Wilf
+trial = method()
+trial YoungDiagram := Sequence => diagram -> (
+    pivot := first random keys diagram;
+    while not isCorner(diagram, pivot) do (
+        a := pivot_0;
+        b := pivot_1;
+        legBoxes := for i from 1 to legLength(diagram, pivot) list (a + i, b);
+        armBoxes := for j from 1 to armLength(diagram, pivot) list (a, b + j);
+        pivotCandidates := armBoxes | legBoxes;
+        pivot = first random pivotCandidates
+    );
+    pivot
+)
+
 -----------------------------------------------------------------------------
 -- **DOCUMENTATION** --
 -----------------------------------------------------------------------------
