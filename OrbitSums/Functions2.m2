@@ -60,8 +60,6 @@ ListSpMon=(n,d)->(
 --Test
 ListSpInd(2,6)
 ListSpMon(2,6)
-(ListSpMon(4,6))_0
-(ListSpMon(4,6))_11
 
 --Orbit Sum for one monomial
 orbSum = (f,G,n) ->(
@@ -85,4 +83,3 @@ orbSumList=(G,n,d)->(
         );
         toList(set L)
 ) 
-
