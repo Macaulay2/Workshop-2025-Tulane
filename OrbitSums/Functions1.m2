@@ -1,4 +1,4 @@
---We need a previous package
+--We need a previous package 
 needsPackage "SRdeformations"
 
 -- Getting the special Monomials (modulo permutations of the variables)
@@ -102,5 +102,3 @@ orbSumList(G,4,3)
         for i from 1 to n do( L = L | { orbSum((SPoly(i,n)),G,n)});
         toList(set L)
     )
-
-    OrbSumSi(4,G)
