@@ -459,6 +459,18 @@ trial YoungDiagram := Sequence => diagram -> (
     pivot
 )
 
+-- given a Young diagram, outpus a uniformly random Standard tableau,
+-- according to the algorithm in Greene, Nijenhuis, and S Wilf
+randomStandardTableau = method()
+randomStandardTableau YoungDiagram := YoungTableau => diagram -> (
+    n := #diagram;
+    youngTableau hashTable for i from 0 to n - 1 list (
+        cornerKey := trial diagram;
+        if i < n - 1 then diagram = youngDiagram hashTable apply(delete(cornerKey, keys diagram), k -> (k, true));
+        {cornerKey, n - i}
+    )
+)
+
 -----------------------------------------------------------------------------
 -- **DOCUMENTATION** --
 -----------------------------------------------------------------------------
