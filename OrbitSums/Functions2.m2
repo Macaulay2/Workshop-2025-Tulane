@@ -82,4 +82,4 @@ orbSumList=(G,n,d)->(
          L = L | { orbSum(M_i,G,n)};
         );
         toList(set L)
-) 
+)
