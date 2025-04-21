@@ -35,12 +35,15 @@ export {
     "armLength",
     "legLength",
     "hookLength",
+    "shape",
     "rowStabilizers",
     "columnStabilizers",
     "youngSymmetrizer",
     "numberStandardYoungTableaux",
     "highestWeightFilling",
     "rowsFirstFilling",
+    "columnsFirstFilling",
+    "canonicalFilling",
     "randomFilling",
     "isStandard",
     "isSemiStandard",
@@ -48,15 +51,14 @@ export {
     "filledSYT",
     "filledSemiSYT",
     "insertionStep",
-    "schenstedCorrespondence"
+    "schenstedCorrespondence",
+    "readingWord"
     -- symbols
     -- "Weak"
 }
 
 -- WISHLIST
 -- Lie algebra action on tableaux
--- Young symmetrizers
--- semistandard/standard tableaux
 -- Gelfand-Tsetlin symmetrizers/basis
 -- Pieri maps => formal linear combinations of tableaux (hash table)
 -- straightening laws/multi-straightening laws of tensor products of tableaux (see https://arxiv.org/pdf/1710.05214v2 for some ideas)
@@ -277,8 +279,9 @@ conjugate YoungTableau := YoungTableau => lambda -> (applyKeys(lambda, key -> re
 transpose YoungTableau := YoungTableau => lambda -> (conjugate lambda)
 
 ------------------------------------
--- RSK correspondence and more
+-- Schensted correspondence and more
 ------------------------------------
+-- permutation -> pair of tableaux
 insertionStep = method()
 insertionStep (Sequence, ZZ, Sequence) := MutableHashTable => (partialTableauPair, rowIdx, permIdxValPair) -> (
     -- Unpacking arguments: (insertionTableau, recordingTableau), rowIdx, (permIdx, permVal)
@@ -326,9 +329,31 @@ schenstedCorrespondence Permutation := Sequence => (perm) -> (
     (youngTableau tableauPair#0, youngTableau tableauPair#1)
 )
 
+-- pair of tableaux -> permutation
+reverseInsertionStep = method()
+reverseInsertionStep (YoungTableau, YoungTableau) := Permutation => (insertionTableau, recordingTableau) -> (
+    -- Basically, follow the insertion step backward to figure out where the last insertion happened.
+)
+
+schenstedCorrespondence (YoungTableau, YoungTableau) := Permutation => (insertionTableau, recordingTableau) -> (
+    lastRowIdx := (shape insertionTableau)#(-1);
+    lastColumnIdx := max(apply(keys insertionTableau_lastRowIdx, coords -> coords#1));
+    perm := new MutableList from {insertionTableau#(lastRowIdx, lastColumnIdx)};
+    for i in 2..(sum shape insertionTableau) do (perm = reverseInsertionStep(insertionTableau, recordingTableau, 1, perm););
+    permutation perm
+)
+
+
 ------------------------------------
 -- Miscellaneous
 ------------------------------------
+readingWord = method()
+readingWord YoungTableau := List => (lambda) -> (
+    rowsData := reverse apply(1..numRows lambda, i -> sort pairs lambda_i);
+    rowsValues := apply(rowsData, row -> row / (rowEntry -> rowEntry#1));
+    fold(rowsValues, (i, j) -> i | j)
+)
+
 rowStabilizers = method()
 rowStabilizers YoungTableau := List => lambda -> (
     -- A row/column is 'preserved' by a permutation if and only if the permutation
@@ -337,9 +362,11 @@ rowStabilizers YoungTableau := List => lambda -> (
     -- Check that all of the nonfixed points of the permutation are a subset of the
     -- filling labels for the first row.
     stabilizers := select(Sn, perm -> isSubset(toList select(1..#perm, i -> perm_i != i), values lambda_1));
+    print(toString(lambda_1) | "     " | toString(stabilizers));
     for rowIndex in 2..numRows lambda do (
         -- Among the permutations which fix the previous rows, check if they fix the current row.
         stabilizers = select(stabilizers, perm -> isSubset(toList select(1..#perm, i -> perm_i != i), values lambda_rowIndex));
+        print(toString(lambda_rowIndex) | "     " | toString(stabilizers));
     );
     stabilizers
 )
@@ -350,13 +377,10 @@ columnStabilizers YoungTableau := List => lambda -> (rowStabilizers conjugate la
 youngSymmetrizer = method()
 youngSymmetrizer YoungTableau := YoungTableau => lambda -> (    
     -- The group algebra CC[Sn]
-    -- To access the local polynomial ring, we use a fact suggested by Matt
-    -- Mastroeni, who learned it from Justin Chen.
     n := sum shape lambda;
     Sn := toSequence apply(permutations n, p -> permutation(p / (i -> i+1)));
-    x := getSymbol "x";
-    R := CC(monoid[toSequence(for perm in Sn list x_perm)]);
-    xHashed := hashTable apply(R_*, v -> last baseName v => v);
+    x := local x;
+    R := CC[toSequence(for perm in Sn list x_perm)];
 
     -- The Young symmetrizer is a sum over all row and column stabilizers where
     -- the summands take the form sign(h) e_(gh), where sign(h) is the sign of 
@@ -364,7 +388,7 @@ youngSymmetrizer YoungTableau := YoungTableau => lambda -> (
     -- algebra of CC[Sn].
     sum(for rowStab in rowStabilizers lambda list 
         sum(for columnStab in columnStabilizers lambda list 
-            ((sign columnStab) * xHashed#(extend(rowStab * columnStab, n)))))
+            ((sign columnStab) * x_(extend(rowStab * columnStab, n)))))
 )
 
 
@@ -431,6 +455,8 @@ getCandidateFillings(List,List) := List => (shape,nums) -> (
         youngTableau tableauList
     )
 )
+getCandidateFillings(List, Sequence) := List => (shape, nums) -> (getCandidateFillings(shape, toList nums))
+getCandidateFillings(Sequence, Sequence) := List => (shape, nums) -> (getCandidateFillings(toList shape, toList nums))
 
 --- Still need to write this
 filledSYT = method()
@@ -470,7 +496,10 @@ rowsFirstFilling = method()
 rowsFirstFilling YoungDiagram := YoungTableau => diagram ->(
     count := 1;
     return( youngTableau(for i to #diagram^1-1 list (for j to #diagram_(i+1)-1 list(count) do count = count +1) ))
-) 
+)
+
+canonicalFilling = method()
+canonicalFilling YoungDiagram := YoungTableau => diagram -> (rowsFirstFilling diagram)
 
 -- Given a Young diagram, fills each box 1->n column by column
 -- assumes given diagram is left justified
