@@ -52,4 +52,45 @@ WPolyRep = finiteActionCoxeter(matrixGens, W, QQ[x_1..x_4])
 invariants(WPolyRep,2)
 
 
+-- ********Example 3*********
 
+W = hyperoctahedralGroup 4
+
+typeBpermutationRep = gensofW -> (
+	listofGensofW = apply(gensofW, s -> toList s);
+	--print(listofGensofW);
+	m = #(listofGensofW#0);
+	n = #listofGensofW;
+	--print(m);
+	--print(n);
+	listofGensofWAbs = new MutableList from listofGensofW;
+	--print(listofGensofWAbs);
+	for i from 0 to n-1 do(
+		listofGensofWAbs#i = new MutableList from listofGensofWAbs#i;
+		for j from 0 to m-1 do(
+			listofGensofWAbs#i#j = abs(listofGensofWAbs#i#j);
+			listofGensofWAbs#i#j = listofGensofWAbs#i#j - 1;
+		);
+	);
+	listofGensofWAbs = apply(listofGensofWAbs, s -> new List from s);
+	listofGensofWAbs = new List from listofGensofWAbs;
+	--print("here we go:"|toString(listofGensofWAbs));
+	listofmatsW = apply(listofGensofWAbs, s -> mutableMatrix (id_(ZZ^m))_(s));
+	--print(listofmatsW);
+	listofmatsW = new MutableList from listofmatsW;
+	for i from 0 to n-1 do(
+		for j from 0 to m-1 do(
+			if listofGensofW#i#j < 0 then(
+				listofmatsW#i = matrix rowMult(listofmatsW#i, j, -1);
+			);
+		);
+		listofmatsW#i = matrix listofmatsW#i;
+	);
+	new List from listofmatsW
+)
+
+typeBmatrices = typeBpermutationRep(gens W)
+
+WPolyRep = finiteAction(typeBmatrices, QQ[x_1..x_4])
+
+invariants(WPolyRep,6)
