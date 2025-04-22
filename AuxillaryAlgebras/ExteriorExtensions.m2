@@ -1,11 +1,15 @@
 s-- -*- coding: utf-8 -*-
 newPackage(
     "ExteriorExtensions",
-    Version => "0.3",
-    Date => "December 18, 2023",
+    Version => "0.4",
+    Date => "June 10, 2024",
     Authors => {
 	{Name => "Luke Oeding", Email => "oeding@auburn.edu", HomePage => "http://webhome.auburn.edu/~lao0004/"}},
-    Headline => "Builds a graded algebra that equivariantly extends a Lie algebra",
+    Headline => "Builds a graded algebra that equivariantly extends the Lie
+    algebra sl_n via the non-zero graded piece of the exterior algebra by
+    defining the bracket products. Constructs matrix representations of
+    adjoint operators. Computes ranks of blocks coming from the grading.",
+    Keywords => {"Lie Algebras, Jordan Decomposition, Tensor invariants"},
     DebuggingMode => true
     )
 export {
@@ -31,10 +35,7 @@ export {
 --------------------------------------------------------------------------------
 -- CODE
 --------------------------------------------------------------------------------
--- Description: Builds a graded algebra that equivariantly extends the Lie 
---  algebra sl_n via the non-zero graded piece of the exterior algebra by
---  defining the bracket products. Constructs matrix representations of
---  adjoint operators. Computes ranks of blocks coming from the grading."
+
 --------------------------------
 -- subroutines (not exported) --
 --------------------------------
@@ -59,9 +60,13 @@ ExteriorExtensionElement = new Type of RingElement;
 -- no output - defines global variables and functions for the relevant rings, and the bracket operations
 -- global mutableExports defined: exteriorAlgebra, star, grade, basisG, bracket, Ad, ranks, traces, getBlock, blockRanks, prettyBlockRanks, structureTensor, structureTensorMatrices, KillingMatrix
 buildAlgebra = method()
-buildAlgebra(ZZ,ZZ) := (pow, nvars) -> (e:=local e; buildAlgebra(pow, nvars, e, QQ))  --- it's OK to work over different fields, but at this time the user doesn't choose this
-buildAlgebra(ZZ,ZZ,Ring) := (pow, nvars, KK) -> (e:=local e;  buildAlgebra(pow, nvars, e, KK))
+--- The user just picks the first exterior module to add - the exterior power pow, and the number of variables nvars, the symbol e and the field QQ are chosen by default.
+buildAlgebra(ZZ,ZZ) := (pow, nvars) -> (e:=local e; buildAlgebra(pow, nvars, e, QQ))
+-- here the user picks their own ring KK, and we've tested  fraction fields, finite field extensions, rational numbers and finite fields, but do not currently expect this to function properly over RR or CC.
+buildAlgebra(ZZ,ZZ,Ring) := (pow, nvars, KK) -> (e:=local e;  buildAlgebra(pow, nvars, e, KK)) 
+-- the user may provide their own symbol
 buildAlgebra(ZZ,ZZ,Symbol) := (pow, nvars, e) -> buildAlgebra(pow, nvars, e, QQ)
+--- the user may provide their own symbol and ground ring.
 buildAlgebra(ZZ,ZZ,Symbol,Ring) := (pow, nvars,e, KK) ->(
   extensionAlg := new ExteriorExtension of ExteriorExtensionElement;
   ----------------------------------------------------------------------------------------------------------------
@@ -99,7 +104,8 @@ buildAlgebra(ZZ,ZZ,Symbol,Ring) := (pow, nvars,e, KK) ->(
   -- function to convert from the degree of the input to the grading on the algebra.
   findGrade2 := elt ->(if class elt === Matrix then (return 0) else for i from 1 to grade-1 do if degree elt === degree (first basisG#i) then return i);
   extensionAlg.findGrade = findGrade2;
-  Qmat := transpose ( ( matrix apply(nvars-1, i-> getDiagonal( basisCartanSln_i)) )_(toList(0..nvars-2))); -- inverting this submatrix works because we only need to make the change of basis on traceless matrices
+  Qmat := transpose ( ( matrix apply(nvars-1, i-> getDiagonal( basisCartanSln_i)) )_(toList(0..nvars-2)));
+  -- inverting this submatrix works because we only need to make the change of basis on traceless matrices
   genMatSln := sum(lDim, i -> sub(basisG0#i,LieAlg)*LieAlg_i); -- a generic matrix in sln
   matrix2LieAlg2 := mat -> (Mat:=sub(mat,LieAlg);
     use LieAlg;
@@ -267,11 +273,12 @@ Key
   ExteriorExtension
 
 Headline
-  A new ring constructed from the direct sum of a Lie algebra \(\mathfrak{sl}_n\) with the non-zero part of an exterior algebra \(\bigwedge^\bullet \mathbb{K}^n \setminus \mathbb K \).
+  A new ring constructed from the direct sum of a Lie algebra and a module
 
 Description
   Text
     A ring of type ExteriorExtension is built by the command {\tt buildAlgebra}. The menu lists the ways to interact with an ExteriorExtension.
+    The operation takes the Lie alggebra \(\mathfrak{sl}_n(\mathbb{F}\) of traceless \(n \times n\) matrices over a field \(\mathbb{F}\) and appends the non-zero graded piece of an exterior algebra \(\bigoplus_{i=1}^{n-1}\bigwedge^i \mathbb{F}^n \).
   Example
     ea = buildAlgebra(4,8);
 
@@ -402,7 +409,7 @@ Key
   getDiagonal
 
 Headline
-  Extract the diagonal of a matrix.
+  Extract the diagonal of a matrix
 
 Usage
   v = getDiagonal(A)
@@ -414,7 +421,7 @@ Outputs
 
 Description
   Text
-    Extract the diagonal of a matrix.
+    Extract the diagonal of a matrix
   Example
     A = random(QQ^4,QQ^4)
     v = getDiagonal A
@@ -689,7 +696,7 @@ Key
   prettyBlockRanks
 
 Headline
-  same as blockRanks, but prettier.
+  same as blockRanks, but prettier
 
 Description
   Text
