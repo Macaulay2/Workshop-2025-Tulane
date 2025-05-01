@@ -94,14 +94,14 @@ YoungDiagram.synonym = "youngDiagram"
 
 -- This creates a left-justified Young diagram
 new YoungDiagram from VisibleList := (typeofYoungDiagram, lambda) -> (
-    new HashTable from flatten for i to #lambda-1 list (for j to (lambda_i)-1 list (i+1,j+1)=>true)
+    new HashTable from flatten for i to #lambda-1 list (for j to (lambda_i)-1 list (i+1,j+1)=>" ")
 )
 -- This creates any variation of a Young diagram
 new YoungDiagram from HashTable := (typeofYoungDiagram, lambda) -> (new HashTable from lambda)
 
 youngDiagram = method()
 youngDiagram VisibleList := YoungDiagram => lambda -> (new YoungDiagram from lambda)
-youngDiagram HashTable := YoungDiagram => lambda -> (new YoungDiagram from applyValues(lambda, v -> true))
+youngDiagram HashTable := YoungDiagram => lambda -> (new YoungDiagram from applyValues(lambda, v -> " "))
 
 -- Checks if a Young diagram is well defined
 isWellDefined YoungDiagram := Boolean => diagram -> (
@@ -117,9 +117,84 @@ toString YoungDiagram := String => lambda -> ("YoungDiagram " | toString(shape l
 toExternalString YoungDiagram := String => lambda -> (toString lambda)
 
 net YoungDiagram := Net => lambda -> (
-    boxes := apply(toList(1..numRows lambda)**toList(1..numColumns lambda), (i, j) -> if lambda#?(i,j) then netList({" "}, Alignment=>Center, HorizontalSpace=>1, VerticalSpace=>0) 
-                                                                                                       else netList({" "}, Alignment=>Center, HorizontalSpace=>1, VerticalSpace=>0, Boxes=>false));
-    stack apply(pack(numColumns lambda, boxes), boxList -> fold(boxList, (i,j) -> i | j))
+    -- Calculate boundary of diagram
+    iVals := apply(keys lambda, coords -> coords_0);
+    jVals := apply(keys lambda, coords -> coords_1);
+    
+    -- one "|" character is roughly equivalent to three "-" characters
+    valueStringLengths := applyValues(lambda, val -> length toString val);
+    maxValWidth := max values valueStringLengths;
+    numDashChars := max(3, maxValWidth + 2);
+    numPipeChars := round(numDashChars / 3);
+    printingLineIdx := (numPipeChars + 2) // 2;
+
+    -- Go through each line of the diagram and print according to adjacencies.
+    -- Build the string and then trim according to the gluing conditions.
+    templateTopBottomEdge := "+" | concatenate(numDashChars:"-") | "+";
+    templateEmptyRow := "|" | concatenate(numDashChars:" ") | "|";
+    templateValRow := "| REPLACEME |";
+    templateBox := new MutableList from flatten {templateTopBottomEdge,
+                                                 for i from 1 to numPipeChars list if (i == printingLineIdx) then templateValRow else templateEmptyRow,
+                                                 templateTopBottomEdge};
+    
+    fullGridOfBoxes := new MutableHashTable from apply(toList(min(iVals)..max(iVals))**toList(min(jVals)..max(jVals)), coords -> (coords, copy templateBox));
+    for rowIdx from min(iVals) to max(iVals) do (
+        for colIdx from min(jVals) to max(jVals) do (
+            -- Draw box if box is actually there; otherwise, fill with emptiness.
+            if lambda#?(rowIdx, colIdx) then (
+                -- Fill in REPLACEME with the value of the box.
+                -- Ensure all boxes have the same width with appropriate padding
+                -- based on the maximum width of the contents of the boxes.
+                padSize := maxValWidth - #(toString(lambda#(rowIdx, colIdx)));
+                replacementString := pad("", floor(padSize/2)) | toString(lambda#(rowIdx, colIdx)) | pad("", ceiling(padSize/2));
+                fullGridOfBoxes#(rowIdx, colIdx)#(printingLineIdx) = 
+                    replace("REPLACEME", replacementString, fullGridOfBoxes#(rowIdx, colIdx)#(printingLineIdx));
+                -- Only draw north/west edges if on the boundary of the diagram.
+                if (fullGridOfBoxes#?(rowIdx-1, colIdx)) then (
+                    fullGridOfBoxes#(rowIdx, colIdx) = drop(fullGridOfBoxes#(rowIdx, colIdx), 1);
+                );
+                if (fullGridOfBoxes#?(rowIdx, colIdx-1) and lambda#?(rowIdx, colIdx-1)) then (
+                    fullGridOfBoxes#(rowIdx, colIdx) = apply(fullGridOfBoxes#(rowIdx, colIdx), boxRow -> concatenate drop(toList boxRow, 1))
+                );
+            ) else (                
+                fullGridOfBoxes#(rowIdx, colIdx)#(printingLineIdx) = templateEmptyRow;
+                -- Trim top if there are any boxes in the row above.
+                if any(apply(keys(lambda_rowIdx), coords -> lambda#?(rowIdx-1, coords#1)), i -> i == true) then (
+                    fullGridOfBoxes#(rowIdx, colIdx) = drop(fullGridOfBoxes#(rowIdx, colIdx), 1);
+                );
+                -- Trim bottom if there are any boxes in the row below.
+                if any(apply(keys(lambda_rowIdx), coords -> lambda#?(rowIdx+1, coords#1)), i -> i == true) then (
+                    fullGridOfBoxes#(rowIdx, colIdx) = drop(fullGridOfBoxes#(rowIdx, colIdx), 1);
+                );
+                -- Trim left if there is a box to the left.
+                if (lambda#?(rowIdx, colIdx-1)) then (
+                    fullGridOfBoxes#(rowIdx, colIdx) = apply(fullGridOfBoxes#(rowIdx, colIdx), boxRow -> concatenate drop(toList boxRow, 1));
+                );
+                -- Trim right.
+                fullGridOfBoxes#(rowIdx, colIdx) = apply(fullGridOfBoxes#(rowIdx, colIdx), boxRow -> concatenate drop(toList boxRow, -1));
+                -- Replace box with empty space.
+                fullGridOfBoxes#(rowIdx, colIdx) = apply(fullGridOfBoxes#(rowIdx, colIdx), boxRow -> concatenate((#boxRow):" "));
+
+                -- Keep borders if there is a box below, but trim corners if boxes are drawn there.
+                if (lambda#?(rowIdx+1, colIdx)) then (
+                    fullGridOfBoxes#(rowIdx, colIdx)#(-1) = templateTopBottomEdge;
+                    if (lambda#?(rowIdx+1, colIdx-1)) then (
+                        fullGridOfBoxes#(rowIdx, colIdx)#(-1) = concatenate drop(toList templateTopBottomEdge, 1);
+                    );
+                    if (lambda#?(rowIdx, colIdx+1)) then (
+                        fullGridOfBoxes#(rowIdx, colIdx)#(-1) = concatenate drop(toList templateTopBottomEdge, -1);
+                    );
+                    fullGridOfBoxes#(rowIdx, colIdx) = prepend(concatenate(#fullGridOfBoxes#(rowIdx, colIdx)#(-1):" "), fullGridOfBoxes#(rowIdx, colIdx));
+                );
+            );
+            -- form the box at (i,j) into one string
+            fullGridOfBoxes#(rowIdx, colIdx) = stack fullGridOfBoxes#(rowIdx, colIdx);
+        );
+    );
+    -- join the strings together meaningfully
+    maxWidth := max(jVals) - min(jVals) + 1;
+    groupByRow := pack((sort pairs fullGridOfBoxes) / (rowPair -> rowPair#1), maxWidth);
+    stack(groupByRow / horizontalJoin)
 )
 
 ------------------------------------
@@ -130,6 +205,7 @@ YoungDiagram _ ZZ := ZZ => (lambda, n) -> (selectKeys(lambda, coords -> coords#0
 YoungDiagram _ List := List => (lambda, l) -> (selectKeys(lambda, coords -> member(coords#0, l)))
 YoungDiagram _ Sequence := List => (lambda, s) -> (selectKeys(lambda, coords -> member(coords#0, s)))
 
+-- select the j-th column(s) of the Young diagram
 YoungDiagram ^ ZZ := ZZ => (lambda, n) -> (selectKeys(lambda, coords -> coords#1 == n))
 YoungDiagram ^ List := List => (lambda, l) -> (selectKeys(lambda, coords -> member(coords#1, l)))
 YoungDiagram ^ Sequence := List => (lambda, s) -> (selectKeys(lambda, coords -> member(coords#1, s)))
@@ -260,15 +336,6 @@ toString YoungTableau := String => lambda -> (
         boxesToFill#(coords#0-1) = append(boxesToFill#(coords#0-1), filling);
     );
     "YoungTableau " | toString(new List from (for row in boxesToFill list new List from row))
-)
-
-net YoungTableau := Net => lambda -> (
-    maxBoxWidth := max((values lambda) / (val -> #toString(val)));
-    emptyBox := pad("", maxBoxWidth); 
-    customPad := (s) -> (pad("", floor((maxBoxWidth-#s)/2)) | s | pad("", ceiling((maxBoxWidth-#s)/2)));
-    boxes := apply(toList(1..numRows lambda)**toList(1..numColumns lambda), (i, j) -> if lambda#?(i,j) then netList({customPad toString(lambda#(i,j))}, Alignment=>Center, HorizontalSpace=>1, VerticalSpace=>0) 
-                                                                                                       else netList({emptyBox}, Alignment=>Center, HorizontalSpace=>1, VerticalSpace=>0, Boxes=>false));
-    stack apply(pack(numColumns lambda, boxes), boxList -> fold(boxList, (i,j) -> i | j))
 )
 
 ------------------------------------
