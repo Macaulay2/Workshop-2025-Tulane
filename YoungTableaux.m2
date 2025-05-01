@@ -47,6 +47,7 @@ export {
     "randomFilling",
     "isStandard",
     "isSemiStandard",
+    "isCorner",
     "getCandidateFillings",
     "filledSYT",
     "filledSemiSYT",
@@ -517,6 +518,45 @@ randomFilling YoungDiagram := YoungTableau => D -> (
         aux = aux + 1;
         {(i, j), L#(aux - 1)} 
         )
+    )
+)
+
+-- given a Young diagram, checks if a given key of the form (a,b) is a corner of the diagram
+isCorner = method()
+isCorner (YoungDiagram, Sequence) := Boolean => (diagram, key) -> (
+    if diagram #? key == false then return false;
+    a := key_0;
+    b := key_1;
+    if diagram #? (a, b + 1) then return false;
+    if diagram #? (a + 1, b) then return false;
+    true 
+)
+
+-- given a Young diagram, outputs a random corner (a,b) of the diagram 
+-- the corner is taken randomly according to Greene, Nijenhuis, and S Wilf
+trial = method()
+trial YoungDiagram := Sequence => diagram -> (
+    pivot := first random keys diagram;
+    while not isCorner(diagram, pivot) do (
+        a := pivot_0;
+        b := pivot_1;
+        legBoxes := for i from 1 to legLength(diagram, pivot) list (a + i, b);
+        armBoxes := for j from 1 to armLength(diagram, pivot) list (a, b + j);
+        pivotCandidates := armBoxes | legBoxes;
+        pivot = first random pivotCandidates
+    );
+    pivot
+)
+
+-- given a Young diagram, outpus a uniformly random Standard tableau,
+-- according to the algorithm in Greene, Nijenhuis, and S Wilf
+randomStandardTableau = method()
+randomStandardTableau YoungDiagram := YoungTableau => diagram -> (
+    n := #diagram;
+    youngTableau hashTable for i from 0 to n - 1 list (
+        cornerKey := trial diagram;
+        if i < n - 1 then diagram = youngDiagram hashTable apply(delete(cornerKey, keys diagram), k -> (k, true));
+        {cornerKey, n - i}
     )
 )
 
