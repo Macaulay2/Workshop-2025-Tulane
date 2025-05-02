@@ -53,7 +53,8 @@ export {
     "filledSemiSYT",
     "insertionStep",
     "schenstedCorrespondence",
-    "readingWord"
+    "readingWord",
+    "majorIndex"
     -- symbols
     -- "Weak"
 }
@@ -415,6 +416,21 @@ schenstedCorrespondence (YoungTableau, YoungTableau) := Permutation => (insertio
 ------------------------------------
 -- Miscellaneous
 ------------------------------------
+descents YoungTableau := List => (lambda) -> (
+    rowIndices := unique apply(keys lambda, coords -> coords#0);
+    groupByRow := new HashTable from apply(rowIndices, 
+                                           rowIdx -> rowIdx => new HashTable from applyKeys(lambda_rowIdx, coords -> coords#1));
+    valuesByRow := applyValues(groupByRow, row -> set values row);
+    minIdx := min rowIndices;
+    maxIdx := max rowIndices;
+    union for rowIdx from minIdx to maxIdx-1 list (
+        select(valuesByRow#rowIdx, val -> any(rowIdx+1..maxIdx, otherRowIdx -> member(val+1, valuesByRow#otherRowIdx)))
+    )
+)
+
+majorIndex = method()
+majorIndex YoungTableau := ZZ => (lambda) -> (sum descents lambda)
+
 readingWord = method()
 readingWord YoungTableau := List => (lambda) -> (
     rowsData := reverse apply(1..numRows lambda, i -> sort pairs lambda_i);
