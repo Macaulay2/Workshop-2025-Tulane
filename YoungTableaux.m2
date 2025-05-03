@@ -256,6 +256,8 @@ hookLength (YoungDiagram, Sequence) := ZZ => (lambda, coords) -> (hookLength(lam
 ------------------------------------
 
 
+
+
 ------------------------------------
 -- SkewDiagram type declarations and basic constructors
 ------------------------------------
@@ -265,9 +267,30 @@ SkewDiagram.synonym = "skewDiagram"
 new SkewDiagram from YoungDiagram := (typeofSkewDiagram, lambda) -> (new HashTable from lambda)
 
 skewDiagram = method()
-skewDiagram (List, List) := SkewDiagram => (lambdaShape, muShape) -> new SkewDiagram from (youngDiagram((set keys youngDiagram lambdaShape) - (set keys youngDiagram muShape)))
+skewDiagram (YoungDiagram, YoungDiagram) := SkewDiagram => (lambda, mu) -> new SkewDiagram from (youngDiagram((set keys lambda) - (set keys mu)))
+skewDiagram (List, List) := SkewDiagram => (lambdaShape, muShape) -> skewDiagram(youngDiagram lambdaShape, youngDiagram muShape)
 
 isWellDefined SkewDiagram := Boolean => lambda -> (return)
+
+shape SkewDiagram := Sequence => diagram -> (
+    rowIndices := unique apply(keys diagram, coords -> coords#0);
+    groupByRow := new HashTable from apply(rowIndices, 
+                                           rowIdx -> rowIdx => keys applyKeys(diagram_rowIdx, coords -> coords#1));
+    minIdx := min rowIndices;
+    maxIdx := max rowIndices;
+    lambdaShape := for rowIdx from minIdx to maxIdx list (if groupByRow#?rowIdx then max(groupByRow#rowIdx) else 0);
+    muShape := for rowIdx from minIdx to maxIdx list (if groupByRow#?rowIdx then min(groupByRow#rowIdx)-1 else 0);
+    -- trim unncecessary zeros from mu (lambda might have more rows than mu)
+    muShape = muShape_(select(#muShape, i -> muShape_{i ..< #muShape} != toList((#muShape - i):0)));
+    (lambdaShape, muShape)
+)
+
+------------------------------------
+-- Skew diagram string representations
+------------------------------------
+toString YoungDiagram := String => lambda -> ("SkewDiagram" | toString(shape lambda))
+toExternalString YoungDiagram := String => lambda -> (toString lambda)
+
 
 
 ------------------------------------
@@ -416,7 +439,7 @@ schenstedCorrespondence (YoungTableau, YoungTableau) := Permutation => (insertio
 ------------------------------------
 -- Miscellaneous
 ------------------------------------
-descents YoungTableau := List => (lambda) -> (
+descents YoungTableau := Set => (lambda) -> (
     rowIndices := unique apply(keys lambda, coords -> coords#0);
     groupByRow := new HashTable from apply(rowIndices, 
                                            rowIdx -> rowIdx => new HashTable from applyKeys(lambda_rowIdx, coords -> coords#1));
@@ -476,16 +499,15 @@ youngSymmetrizer YoungTableau := YoungTableau => lambda -> (
 )
 
 
-
 numberStandardYoungTableaux = method()
-numberStandardYoungTableaux List := ZZ => shape -> (
+numberStandardYoungTableaux YoungDiagram := ZZ => lambda -> (
     -- Theorem of Frame-Robinson-Thrall (1954)
     -- Do I need to be careful using // if I know the result is an integer?
-    num := (sum shape)!;
-    lambda := youngDiagram shape;
+    num := (sum shape lambda)!;
     den := product for coords in keys lambda list hookLength(lambda, coords);
     return num // den
 )
+numberStandardYoungTableaux List := ZZ => lambda -> numberStandardYoungTableaux youngDiagram lambda
 
 
 ---- Given a list (shape) of a diagram, find all the standard fillings
