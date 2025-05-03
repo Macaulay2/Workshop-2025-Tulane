@@ -157,15 +157,17 @@ net YoungDiagram := Net => lambda -> (
                 if (fullGridOfBoxes#?(rowIdx, colIdx-1) and lambda#?(rowIdx, colIdx-1)) then (
                     fullGridOfBoxes#(rowIdx, colIdx) = apply(fullGridOfBoxes#(rowIdx, colIdx), boxRow -> concatenate drop(toList boxRow, 1))
                 );
-            ) else (                
+            ) else (  
+                rowOfGrid := selectKeys(new HashTable from fullGridOfBoxes, coords -> coords#0 == rowIdx);
+
                 fullGridOfBoxes#(rowIdx, colIdx)#(printingLineIdx) = templateEmptyRow;
                 -- Trim top if there are any boxes in the row above.
-                if any(apply(keys(lambda_rowIdx), coords -> lambda#?(rowIdx-1, coords#1)), i -> i == true) then (
+                if any(apply(keys rowOfGrid, coords -> lambda#?(rowIdx-1, coords#1)), i -> i == true) then (
                     fullGridOfBoxes#(rowIdx, colIdx) = drop(fullGridOfBoxes#(rowIdx, colIdx), 1);
                 );
                 -- Trim bottom if there are any boxes in the row below.
-                if any(apply(keys(lambda_rowIdx), coords -> lambda#?(rowIdx+1, coords#1)), i -> i == true) then (
-                    fullGridOfBoxes#(rowIdx, colIdx) = drop(fullGridOfBoxes#(rowIdx, colIdx), 1);
+                if any(apply(keys rowOfGrid, coords -> lambda#?(rowIdx+1, coords#1)), i -> i == true) then (
+                    fullGridOfBoxes#(rowIdx, colIdx) = drop(fullGridOfBoxes#(rowIdx, colIdx), -1);
                 );
                 -- Trim left if there is a box to the left.
                 if (lambda#?(rowIdx, colIdx-1)) then (
