@@ -64,11 +64,9 @@ doc ///
     (conjugate, YoungDiagram)
 ///
 
--- YoungDiagram
--- (youngDiagram, VisibleList)
 doc ///
   Key
-    YoungDiagram
+    youngDiagram
     (youngDiagram, VisibleList)
   Headline
     the youngDiagram type
@@ -83,11 +81,35 @@ doc ///
       If a list contains any other elements or does not consist of the entire range, then an error is thrown.
 ///
 
--- (conjugate, YoungDiagram)
--- (transpose, YoungDiagram)
 doc ///
   Key
+    shape
+    (shape, YoungDiagram)
+  Headline
+    computes shape of a Young diagram (or tableau)
+  Usage
+    shape lambda
+  Inputs
+    lambda:YoungDiagram
+  Outputs
+    :List
+  Description
+    Text
+      The shape of a Young diagram is an ordered list of the lengths of its rows.
+    Example
+      lambda = youngDiagram {4,3,1}
+      shape lambda
+    Text
+      The shape of a tableau is the shape of its underlying diagram.
+  SeeAlso
+    (shape, SkewDiagram)
+///
+
+doc ///
+  Key
+    conjugate
     (conjugate, YoungDiagram)
+    transpose
     (transpose, YoungDiagram)
   Headline
     computes the conjugate (or transpose) of a Young diagram
@@ -99,7 +121,7 @@ doc ///
     :YoungDiagram
   Description
     Text
-      Computes the conjugate (or transpose) of a Young diagram.
+      Computes the {\em conjugate} (or {\em transpose}) of a Young diagram.
       The conjugate is obtained by reading the diagram along the columns instead of the rows.
 
     Example
@@ -107,13 +129,13 @@ doc ///
       conjugate lambda
 ///
 
-
--- (armLength, YoungDiagram, ZZ, ZZ)
 doc ///
   Key
+    armLength
     (armLength, YoungDiagram, ZZ, ZZ)
+    (armLength, YoungDiagram, Sequence)
   Headline
-    computes the arm length the box at (i,j) of a Young diagram
+    computes the arm length the box at $(i,j)$ of a Young diagram
   Usage
     armLength(lambda, i, j)
   Inputs
@@ -124,22 +146,23 @@ doc ///
     :ZZ
   Description
     Text
-      SOME FILLER TEXT.
-
+      The {\em arm length} of the box at $(i,j)$ of a Young diagram is defined
+      as the number of boxes to the right of it.
     Example
       lambda = youngDiagram {4,3,1}
       armLength(lambda, 1, 2)
   SeeAlso
-    (legLength, YoungDiagram, ZZ, ZZ)
-    (hookLength, YoungDiagram, ZZ, ZZ)
+    legLength
+    hookLength
 ///
 
--- (legLength, YoungDiagram, ZZ, ZZ)
 doc ///
   Key
+    legLength
     (legLength, YoungDiagram, ZZ, ZZ)
+    (legLength, YoungDiagram, Sequence)
   Headline
-    computes the leg length the box at (i,j) of a Young diagram
+    computes the leg length the box at $(i,j)$ of a Young diagram
   Usage
     legLength(lambda, i, j)
   Inputs
@@ -150,20 +173,21 @@ doc ///
     :ZZ
   Description
     Text
-      SOME FILLER TEXT.
-
+      The {\em leg length} of the box at $(i,j)$ of a Young diagram is defined
+      as the number of boxes to below it.
     Example
       lambda = youngDiagram {4,3,1}
       legLength(lambda, 1, 2)
   SeeAlso
-    (armLength, YoungDiagram, ZZ, ZZ)
-    (hookLength, YoungDiagram, ZZ, ZZ)
+    armLength
+    hookLength
 ///
 
--- (hookLength, YoungDiagram, ZZ, ZZ)
 doc ///
   Key
+    hookLength
     (hookLength, YoungDiagram, ZZ, ZZ)
+    (hookLength, YoungDiagram, Sequence)
   Headline
     computes the hook length the box at (i,j) of a Young diagram
   Usage
@@ -176,12 +200,317 @@ doc ///
     :ZZ
   Description
     Text
-      SOME FILLER TEXT.
-
+      The {\em hook length} of the box at $(i,j)$ is the number of boxes to 
+      the right and below it, plus one for the box itself. Alternatively, it 
+      is the sum of the arm length and leg length of the box, plus one.
     Example
       lambda = youngDiagram {4,3,1}
       hookLength(lambda, 1, 2)
   SeeAlso
-    (armLength, YoungDiagram, ZZ, ZZ)
-    (legLength, YoungDiagram, ZZ, ZZ)
+    armLength
+    legLength
+///
+
+
+
+doc ///
+  Key
+    skewDiagram
+    (skewDiagram, YoungDiagram, YoungDiagram)
+    (skewDiagram, List, List)
+  Headline
+    constructs the skew diagram defined by two Young diagrams
+  Usage
+    skewDiagram(lambda, mu)
+  Inputs
+    lambda:List
+    mu:List
+  Outputs
+    :ZZ
+  Description
+    Text
+      If $\lambda$ and $\mu$ are two Young diagrams, then the skew diagram, 
+      denoted $\lambda/\mu$, is a diagram obtained by removing the boxes of 
+      $\mu$ from $\lambda$.
+    Example
+      lambda = youngDiagram {4,3,1}
+      mu = youngDiagram {2,1}
+      skewDiagram(lambda, mu)
+  SeeAlso
+    youngDiagram
+///
+
+doc ///
+  Key
+    (shape, SkewDiagram)
+  Headline
+    computes shape of a skew diagram
+  Usage
+    shape lambda
+  Inputs
+    :SkewDiagram
+  Outputs
+    :Sequence
+  Description
+    Text
+      The shape of a skew diagram $(\lambda, \mu)$, denoted by $\lambda/\mu$,
+      is the ordered pair of the shapes of $\lambda$ and $\mu$, respectively.
+    Example
+      lambda = youngDiagram {4,3,1}
+      mu = youngDiagram {2,1}
+      rho = skewDiagram(lambda, mu)
+      shape rho
+  SeeAlso
+    shape
+    (shape, YoungDiagram)
+///
+
+
+
+doc ///
+  Key
+    youngTableau
+    (youngTableau, List)
+    (youngTableau, HashTable)
+  Headline
+    constructs a Young tableau
+  Usage
+    youngTableau lambda
+  Inputs
+    diagramShape:List
+  Outputs
+    :YoungTableau
+  Description
+    Text
+      A Young tableau can be constructed from a list of lists specifying the 
+      fillings of the cells of the tableau.
+    Example
+      lambda = youngTableau {{1,2,3},{4,5},{6}}
+    Text
+      Alternatively, a Young tableau can be construced from a hash table whose
+      keys are the coordinates of the cells and whose values are the fillings
+      of the cells.
+    Example
+      lambda = youngTableau hashTable {(1,1) => 1, (1,2) => 2, (1,3) => 3, 
+                                       (2,1) => 4, (2,2) => 5, 
+                                       (3,1) => 6}
+  SeeAlso
+    canonicalFilling
+    rowsFirstFilling
+    columnsFirstFilling
+    highestWeightFilling
+    randomFilling
+///
+
+doc ///
+  Key
+    (descents, YoungTableau)
+  Headline
+    computes the descents of a Young tableau
+  Usage
+    descents lambda
+  Inputs
+    lambda:YoungTableau
+  Outputs
+    :Set
+  Description
+    Text
+      The descent set of a Young tableau is the set  of integers $k$ such that 
+      $k+1$ appears in a row strictly below $k$. The elements of the descent set
+      are called {\em descents}.
+    Example
+      lambda = canonicalFilling youngDiagram {4,3,1}
+      descents lambda
+  SeeAlso
+    majorIndex
+///
+
+doc ///
+  Key
+    majorIndex
+    (majorIndex, YoungTableau)
+  Headline
+    computes the major Index of a Young tableau
+  Usage
+    majorIndex lambda
+  Inputs
+    lambda:YoungTableau
+  Outputs
+    :ZZ
+  Description
+    Text
+      The {\em major index} of a Young tableau is the sum of the descents of the 
+      tableau.
+    Example
+      lambda = canonicalFilling youngDiagram {4,3,1}
+      majorIndex lambda
+  SeeAlso
+    (descents, YoungTableau)
+///
+
+doc ///
+  Key
+    readingWord
+    (readingWord, YoungTableau)
+  Headline
+    computes the reading word of a Young tableau
+  Usage
+    readingWord lambda
+  Inputs
+    lambda:YoungTableau
+  Outputs
+    :List
+  Description
+    Text
+      The {\em reading word} of a Young tableau is the list of integers obtained 
+      by reading the tableau from left to right, bottom to top (in English notation).
+    Example
+      lambda = canonicalFilling youngDiagram {4,3,1}
+      readingWord lambda
+///
+
+doc ///
+  Key
+    rowStabilizers
+    (rowStabilizers, YoungTableau)
+    columnStabilizers
+    (columnStabilizers, YoungTableau)
+  Headline
+    computes the permutations which fixes the rows (or columns) of a Young tableau
+  Usage
+    rowStabilizers lambda
+  Inputs
+    lambda:YoungTableau
+  Outputs
+    :List
+  Description
+    Text
+      A row (or column) is preserved by a permutation if and only if the 
+      permutation only permutes the fillings present in that row (or column).
+    Example
+      lambda = canonicalFilling youngDiagram {4,3,1}
+      rowStabilizers lambda
+///
+
+doc ///
+  Key
+    numberStandardYoungTableaux
+    (numberStandardYoungTableaux, YoungDiagram)
+    (numberStandardYoungTableaux, List)
+  Headline
+    computes the number of standard Young tableaux of a given shape
+  Usage
+    numberStandardYoungTableaux diagramShape
+  Inputs
+    diagramShape:List
+  Outputs
+    :ZZ
+  Description
+    Text
+      Given a Young diagram $\lambda$, the number of standard Young tableaux of
+      shape $\lambda$ (denoted $f^\lambda$) can be computed with the hook-length 
+      formula. Regarding $\lambda$ as a partition of $n$ (so that $n = \sum_i \lambda_i$),
+      and letting $h_{\lambda}(i,j)$ be the hook length of the box at $(i,j)$, 
+      we have
+      $$f^\lambda = \frac{n!}{\prod_{(i,j) \in \lambda} h_{\lambda}(i,j)}$$
+      where the product is taken over all the boxes of $\lambda$.
+    Example
+      lambda = youngDiagram {4,3,1}
+      numberStandardYoungTableaux lambda
+///
+
+doc ///
+  Key
+    canonicalFilling
+    (canonicalFilling, YoungDiagram)
+    rowsFirstFilling
+    (rowsFirstFilling, YoungDiagram)
+    columnsFirstFilling
+    (columnsFirstFilling, YoungDiagram)
+  Headline
+    constructs a Young tableau by filling the cells with $1,2,\ldots,n$
+  Usage
+    canonicalFilling lambda
+  Inputs
+    lambda:YoungDiagram
+  Outputs
+    :YoungTableau
+  Description
+    Text
+      If $\lambda$ is a Young diagram representing a parition of $n$, then the
+      {\em canonical filling} of $\lambda$ is the Young tableau obtained by
+      filling the cells of $\lambda$ with the integers $1,2,\ldots,n$ from
+      left to right, top to bottom (in English notation). This filling can be 
+      obtained by either the {\tt canonicalFilling} or {\tt rowsFirstFilling}
+      methods.
+    Example
+      lambda = youngDiagram {4,3,1}
+      canonicalFilling lambda
+    Text
+      The {\tt columnsFirstFilling} method does the same thing as the 
+      {\tt canonicalFilling} method, but fills the cells from top to bottom,
+      left to right (in English notation).
+    Example
+      lambda = youngDiagram {4,3,1}
+      columnsFirstFilling lambda
+  SeeAlso
+    highestWeightFilling
+    randomFilling
+///
+
+doc ///
+  Key
+    highestWeightFilling
+    (highestWeightFilling, YoungDiagram)
+  Headline
+    constructs a Young tableau by filling the cells according to their rows
+  Usage
+    highestWeightFilling lambda
+  Inputs
+    lambda:YoungDiagram
+  Outputs
+    :YoungTableau
+  Description
+    Text
+      If $\lambda$ is a Young diagram representing a parition of $n$, then the
+      {\em highest weight filling} of $\lambda$ is the Young tableau obtained by
+      filling the cells of $\lambda$ with the index of the row the cell is in;
+      i.e., cell $(i,j)$ is filled with $i$.
+    Example
+      lambda = youngDiagram {4,3,1}
+      highestWeightFilling lambda
+  SeeAlso
+    canonicalFilling
+    rowsFirstFilling
+    columnsFirstFilling
+    randomFilling
+///
+
+doc ///
+  Key
+    randomFilling
+    (randomFilling, YoungDiagram)
+  Headline
+    constructs a Young tableau with a random filling
+  Usage
+    randomFilling lambda
+  Inputs
+    lambda:YoungDiagram
+  Outputs
+    :YoungTableau
+  Description
+    Text
+      Regarding a Young diagram $\lambda$ as a partition of $n$, the 
+      {\tt randomFilling} method constructs a Young tableau by filling the cells 
+      of $\lambda$ with the integers $1,2,\ldots,n$ in a random order.
+    Example
+      lambda = youngDiagram {4,3,1}
+      randomFilling lambda
+  Caveat
+    The resulting tableau is not guaranteed to be standard (nor semi-standard).
+  SeeAlso
+    canonicalFilling
+    rowsFirstFilling
+    columnsFirstFilling
+    highestWeightFilling
 ///
