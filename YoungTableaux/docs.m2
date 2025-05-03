@@ -211,6 +211,29 @@ doc ///
     legLength
 ///
 
+doc ///
+  Key
+    (content, YoungDiagram, Sequence)
+    (content, YoungDiagram, ZZ, ZZ)
+  Headline
+    computes the content of a Young diagram
+  Usage
+    content lambda
+  Inputs
+    lambda:YoungDiagram
+    coords:Sequence
+  Outputs
+    :ZZ
+  Description
+    Text
+      The {\em content} of a cell $(i,j)$ of a Young diagram is $j-i$.
+    Example
+      lambda = youngDiagram {4,3,1}
+      content(lambda, (1,2))
+  SeeAlso
+    (content, YoungTableau)
+///
+
 
 
 doc ///
@@ -300,6 +323,51 @@ doc ///
     columnsFirstFilling
     highestWeightFilling
     randomFilling
+///
+
+doc ///
+  Key
+    yamanouchiWord
+    (yamanouchiWord, YoungTableau)
+  Headline
+    computes the Yamanouchi word associated to a standard Young tableau
+  Usage
+    yamanouchiWord lambda
+  Inputs
+    lambda:YoungTableau
+  Outputs
+    :List
+  Description
+    Text
+      The {\em Yamanouchi word} associated to a standard Young tableau is an 
+      ordered list $w$ such that $w_i = j$ if $i$ appears in row $j$ of the
+      tableau.
+    Example
+      lambda = canonicalFilling youngDiagram {4,3,1}
+      yamanouchiWord lambda
+///
+
+doc ///
+  Key
+    (content, YoungTableau)
+    (content, YoungTableau, Sequence)
+    (content, YoungTableau, ZZ, ZZ)
+  Headline
+    computes the content of a Young tableau
+  Usage
+    content lambda
+  Inputs
+    lambda:YoungTableau
+  Outputs
+    :List
+  Description
+    Text
+      The {\em content} of a cell $(i,j)$ of a Young tableau is the filling of
+      that cell. The {\em content} of a Young tableau is a multiset whose elements 
+      of the contents of the cells of the tableau.
+    Example
+      lambda = canonicalFilling youngDiagram {4,3,1}
+      content lambda
 ///
 
 doc ///

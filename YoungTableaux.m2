@@ -54,7 +54,8 @@ export {
     "insertionStep",
     "schenstedCorrespondence",
     "readingWord",
-    "majorIndex"
+    "majorIndex",
+    "yamanouchiWord"
     -- symbols
     -- "Weak"
 }
@@ -256,8 +257,8 @@ hookLength (YoungDiagram, Sequence) := ZZ => (lambda, coords) -> (hookLength(lam
 ------------------------------------
 -- Miscellaneous
 ------------------------------------
-
-
+content (YoungDiagram, Sequence) := ZZ => (lambda, coords) -> (coords#1 - coords#0)
+content (YoungDiagram, ZZ, ZZ) := ZZ => (lambda, i, j) -> (j - i)
 
 
 ------------------------------------
@@ -373,7 +374,7 @@ conjugate YoungTableau := YoungTableau => lambda -> (applyKeys(lambda, key -> re
 transpose YoungTableau := YoungTableau => lambda -> (conjugate lambda)
 
 ------------------------------------
--- Schensted correspondence and more
+-- Schensted correspondence
 ------------------------------------
 -- permutation -> pair of tableaux
 insertionStep = method()
@@ -437,10 +438,24 @@ schenstedCorrespondence (YoungTableau, YoungTableau) := Permutation => (insertio
     permutation perm
 )
 
+------------------------------------
+-- Yamanouchi words/Companion map
+------------------------------------
+yamanouchiWord = method()
+yamanouchiWord YoungTableau := List => (lambda) -> (
+    -- lambda must be a standard Young tableau
+    -- w_i = j if i occurs in the j-th row of lambda
+    transposedHashTable := applyPairs(new HashTable from lambda, (coords, val) -> val => coords#0);
+    for val in sort keys transposedHashTable list transposedHashTable#val
+)
 
 ------------------------------------
 -- Miscellaneous
 ------------------------------------
+content YoungTableau := List => (lambda) -> (values lambda)
+content (YoungTableau, Sequence) := ZZ => (lambda, coords) -> (lambda#coords)
+content (YoungTableau, ZZ, ZZ) := ZZ => (lambda, i, j) -> (lambda#(i,j))
+
 descents YoungTableau := Set => (lambda) -> (
     rowIndices := unique apply(keys lambda, coords -> coords#0);
     groupByRow := new HashTable from apply(rowIndices, 
