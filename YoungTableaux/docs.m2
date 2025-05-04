@@ -327,6 +327,40 @@ doc ///
 
 doc ///
   Key
+    robinsonSchenstedCorrespondence
+    (robinsonSchenstedCorrespondence, Permutation)
+    (robinsonSchenstedCorrespondence, YoungTableau, YoungTableau)
+  Headline
+    computes the image of a permutation under the Robinson-Schensted correspondence
+  Usage
+    robinsonSchenstedCorrespondence perm
+  Inputs
+    perm:Permutation
+  Outputs
+    :Sequence
+  Description
+    Text
+      The {\em Robinson-Schensted correspondence} is a bijection between permutations
+      and pairs of standard Young tableaux of the same shape. For a permutation 
+      $p$ with corresponding tableaux $(P,Q)$, the tableau $P$ is called the 
+      {\em insertion tableau} and $Q$ is called the {\em recording tableau}.
+    Example
+      p = permutation {2,4,6,1,3,5}
+      robinsonSchenstedCorrespondence p
+    Text
+      The inverse image takes the pair $(P,Q)$ to the corresponding permutation $p$.
+    Example 
+      P = youngTableau hashTable({(1,1) => 1, (1,2) => 3, (1,3) => 5,
+                                  (2,1) => 2, (2,2) => 4, (2,3) => 6})
+      Q = youngTableau hashTable({(1,1) => 1, (1,2) => 2, (1,3) => 3,
+                                  (2,1) => 4, (2,2) => 5, (2,3) => 6})
+      robinsonSchenstedCorrespondence(P, Q)
+  Caveat
+    This is only a correspondence between permutations and standard Young tableaux.
+///
+
+doc ///
+  Key
     yamanouchiWord
     (yamanouchiWord, YoungTableau)
   Headline

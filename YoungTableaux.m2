@@ -51,14 +51,14 @@ export {
     "getCandidateFillings",
     "filledSYT",
     "filledSemiSYT",
-    "insertionStep",
-    "schenstedCorrespondence",
+    "rowInsertion",
+    "robinsonSchenstedCorrespondence",
     "readingWord",
     "majorIndex",
     "yamanouchiWord",
-    "companionMap"
+    "companionMap",
     -- symbols
-    -- "Weak"
+    "RowIndex"
 }
 
 -- WISHLIST
@@ -374,69 +374,76 @@ YoungTableau == YoungTableau := Boolean => (lambda, mu) -> (pairs lambda == pair
 conjugate YoungTableau := YoungTableau => lambda -> (applyKeys(lambda, key -> reverse key))
 transpose YoungTableau := YoungTableau => lambda -> (conjugate lambda)
 
-------------------------------------
--- Schensted correspondence
-------------------------------------
--- permutation -> pair of tableaux
-insertionStep = method()
-insertionStep (Sequence, ZZ, Sequence) := MutableHashTable => (partialTableauPair, rowIdx, permIdxValPair) -> (
-    -- Unpacking arguments: (insertionTableau, recordingTableau), rowIdx, (permIdx, permVal)
-    insertionTableau := partialTableauPair#0;
-    recordingTableau := partialTableauPair#1;
-    permIdx := permIdxValPair#0;
-    permVal := permIdxValPair#1;
-    
-    -- Check if current row exists.
-    if not insertionTableau#?(rowIdx, 1) then (
-        insertionTableau#(rowIdx, 1) = permVal;
-        recordingTableau#(rowIdx, 1) = permIdx;
-    ) else (
-        -- Try to insert the val at the end of the rowIdx row.
-        maxColumnIdx := max((select(keys insertionTableau, coords -> (coords#0) == rowIdx) / (coords -> coords#1)));
-        if (permVal > insertionTableau#(rowIdx, maxColumnIdx)) then (
-            insertionTableau#(rowIdx, maxColumnIdx+1) = permVal;
-            recordingTableau#(rowIdx, maxColumnIdx+1) = permIdx;
-        ) else (
-            -- If val can't be inserted, find the leftmost y such that y > x.
-            -- Replace y with x, and try to insert y into the next row.
-            row := select(pairs insertionTableau, coords -> ((coords#0)#0 == rowIdx) and ((coords#1)> permVal));
-            yIdx := position(sort row, posFillingPair -> posFillingPair#1 > permVal) + 1;
-            yPos := (row#(yIdx-1))#0;
-            yVal := (row#(yIdx-1))#1;
-            yPermIdx := recordingTableau#yPos;
-            
-            insertionTableau#yPos = permVal;
-            recordingTableau#yPos = permIdx;
-
-            partialTableauPair = insertionStep((insertionTableau, recordingTableau), rowIdx+1, (yPermIdx, yVal));
-            insertionTableau = partialTableauPair#0;
-            recordingTableau = partialTableauPair#1;
-        );
+rowInsertion = method(Options => {RowIndex => 1})
+rowInsertion (YoungTableau, ZZ) := YoungTableau => opts -> (lambda, val) -> (
+    -- If the tableau is empty, just insert val.
+    if lambda == youngTableau {} then lambda = youngTableau hashTable({(opts.RowIndex, 1) => val})
+    -- Otherwise, if val is >= the entries in the first row, append it to the end of that row.
+    else (if all(values lambda_(opts.RowIndex), filling -> val >= filling) then (
+        lambda = youngTableau merge(lambda, hashTable({(opts.RowIndex, #lambda_(opts.RowIndex)+1) => val}),
+                                    (i,j) -> j);
+    )
+    -- If this is not possible, find the leftmost entry y such that y > val.
+    -- Replace y with val, and repeat the process on the next row with y.
+    else (
+        yIdx := (first sort keys selectValues(lambda_(opts.RowIndex), filling -> filling > val))#1;
+        y := lambda#(opts.RowIndex, yIdx);
+        newBox := hashTable({(opts.RowIndex, yIdx) => val});
+        lambda = youngTableau merge(lambda, newBox, (i,j) -> j);
+        lambda = rowInsertion(lambda, y, RowIndex => opts.RowIndex+1);
     );
-    (insertionTableau, recordingTableau)
+    );
+    lambda
 )
 
-schenstedCorrespondence = method()
-schenstedCorrespondence Permutation := Sequence => (perm) -> (
-    insertionTableau := new MutableHashTable from {(1,1) => perm_1};
-    recordingTableau := new MutableHashTable from {(1,1) => 1};
-    tableauPair := (insertionTableau, recordingTableau);
-    for i in 2..#perm do (tableauPair = insertionStep(tableauPair, 1, (i, perm_i)););
-    (youngTableau tableauPair#0, youngTableau tableauPair#1)
-)
+------------------------------------
+-- Robinson-Schensted correspondence
+------------------------------------
+robinsonSchenstedCorrespondence = method()
+robinsonSchenstedCorrespondence Permutation := Sequence => (perm) -> (
+    insertionTableau := youngTableau youngDiagram {};
+    recordingTableau := new MutableHashTable from {};
+    for idxValPair in pairs perm do (
+        (idx, val) := idxValPair;
+        insertionTableau = rowInsertion(insertionTableau, val);
 
--- pair of tableaux -> permutation
-reverseInsertionStep = method()
-reverseInsertionStep (YoungTableau, YoungTableau) := Permutation => (insertionTableau, recordingTableau) -> (
-    -- Basically, follow the insertion step backward to figure out where the last insertion happened.
+        -- Add a new box to the recording tableau so that its shape matches the 
+        -- insertion tableau's.
+        missingBoxIdx := first elements((set keys insertionTableau) - (set keys recordingTableau));
+        recordingTableau#missingBoxIdx = idx+1; -- 1-indexing correction
+    );
+    (insertionTableau, youngTableau recordingTableau)
 )
+robinsonSchenstedCorrespondence (YoungTableau, YoungTableau) := Permutation => (insertionTableau, recordingTableau) -> (
+    n := #insertionTableau;
+    permutation reverse for idx in reverse(1..n) list (
+        -- Move the last-moved box from the forward pass of the algorithm 
+        -- back up the insertion tableau until no longer possible.
+        boxIdx := first keys selectValues(recordingTableau, val -> val == idx);
+        rowIdx := boxIdx#0;
 
-schenstedCorrespondence (YoungTableau, YoungTableau) := Permutation => (insertionTableau, recordingTableau) -> (
-    lastRowIdx := (shape insertionTableau)#(-1);
-    lastColumnIdx := max(apply(keys insertionTableau_lastRowIdx, coords -> coords#1));
-    perm := new MutableList from {insertionTableau#(lastRowIdx, lastColumnIdx)};
-    for i in 2..(sum shape insertionTableau) do (perm = reverseInsertionStep(insertionTableau, recordingTableau, 1, perm););
-    permutation perm
+        -- Get rid of the box in the insertion tableau and move the value to 
+        -- the queue.
+        val := insertionTableau#(boxIdx);
+        insertionTableau = youngTableau merge(insertionTableau, hashTable({boxIdx => null}), 
+                                              (i,j) -> continue);
+        if #insertionTableau == 0 then (val)
+        else (
+            -- Push the value up the tableau until the top is reached, replacing 
+            -- with new values as necessary.
+            while rowIdx != 1 do (
+                rowIdx -= 1;
+                -- Find rightmost entry y in row such that y < val.
+                yIdx := (last sort keys selectValues(insertionTableau_rowIdx, filling -> filling < val))#1;
+                y := insertionTableau#(rowIdx, yIdx);
+                -- Replace y with val, and repeat the process on the next row with y.
+                insertionTableau = youngTableau merge(insertionTableau, hashTable({(rowIdx, yIdx) => val}), 
+                                                      (i,j) -> j);
+                val = y;
+            )
+        );
+        val
+    )
 )
 
 ------------------------------------
