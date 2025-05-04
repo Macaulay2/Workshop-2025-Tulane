@@ -359,9 +359,10 @@ doc ///
   Key
     robinsonSchenstedCorrespondence
     (robinsonSchenstedCorrespondence, Permutation)
+    (RSKCorrespondence, Permutation)
     (robinsonSchenstedCorrespondence, YoungTableau, YoungTableau)
   Headline
-    computes the image of a permutation or a pair of Young tableaux Robinson-Schensted correspondence
+    computes the image of a permutation or a pair of Young tableaux under the Robinson-Schensted correspondence
   Usage
     robinsonSchenstedCorrespondence perm
   Inputs
@@ -389,6 +390,91 @@ doc ///
     This is only a correspondence between permutations and standard Young tableaux.
   SeeAlso
     rowInsertion
+    RSKCorrespondence
+///
+
+doc ///
+  Key
+    RSKCorrespondence
+    (RSKCorrespondence, Matrix)
+    (RSKCorrespondence, YoungTableau, YoungTableau)
+  Headline
+    computes the image of a matrix or a pair of Young tableaux under the RSK correspondence
+  Usage
+    RSKCorrespondence M
+  Inputs
+    M:Matrix
+  Outputs
+    :Sequence
+  Description
+    Text
+      The {\em Robinson-Schensted-Knuth (RSK) correspondence} is a bijection 
+      between matrices with non-negative integer entries and pairs of semi-standard 
+      Young tableaux. For a permutation $M$ with corresponding tableaux $(P,Q)$, 
+      the tableau $P$ is called the {\em insertion tableau} and $Q$ is called the 
+      {\em recording tableau}.
+
+      If $R_i$ denotes the sum of the $i$-th row of $M$, then $P$ has shape 
+      $\lambda = (R_1, R_2, \ldots, R_k)$. Similarly, if $C_i$ denotes the sum
+      of the $i$-th column of $M$, then $Q$ has shape $\mu = (C_1, C_2, \ldots, C_k)$.
+    Example
+      M = matrix {{1,0,2},{0,2,0},{1,1,0}}
+      RSKCorrespondence M
+    Text
+      Given the tableau $P$ of shape $\lambda$ and the tableau $Q$ of shape $\mu$,
+      the inverse image takes the pair $(P,Q)$ to the corresponding
+      $\vert \lambda \vert \times \vert \mu \vert$ matrix $M$ whose entries are
+      non-negative integers.
+    Example 
+      P = youngTableau hashTable {(1,1) => 1, (1,2) => 1, (1,3) => 2, (1,4) => 2,
+                                  (2,1) => 2, (2,2) => 3, 
+                                  (3,1) => 3}
+      Q = youngTableau hashTable {(1,1) => 1, (1,2) => 1, (1,3) => 1, (1,4) => 3,
+                                  (2,1) => 2, (2,2) => 2, 
+                                  (3,1) => 3}
+      RSKCorrespondence(P, Q)
+    Text
+      If the input to {\tt RSKCorrespondence} is a permutation, this method
+      defaults to using the @TO robinsonSchenstedCorrespondence@ method.
+      Similarly, if the input pair of matrices are both standard Young tableaux,
+      then this method defaults to using the @TO robinsonSchenstedCorrespondence@ 
+      method.
+  Caveat
+    This is only a correspondence between matrices with non-negative integer 
+    entries and pairs of semi-standard Young tableaux.
+  SeeAlso
+    rowInsertion
+    biword
+    robinsonSchenstedCorrespondence
+///
+
+doc ///
+  Key
+    biword
+    (biword, Matrix)
+  Headline
+    computes the biword of a matrix
+  Usage
+    biword M
+  Inputs
+    M:Matrix
+  Outputs
+    :Matrix
+  Description
+    Text
+      Given a matrix $M$ whose entries are non-negative integers, the {\em biword}
+      is a $2 \times k$ matrix ($k$ is the sum of all the entries of $M$) whose
+      columns record the entries of $M$ via multiplicity of columns in the biword.
+      More precisely, the biword of $M$ has $M_(i,j)$ columns whose entries are
+      $(i,j)$, and the columns of the biword are lexicographically sorted.
+    Example
+      M = matrix {{1,0,2},{0,2,0},{1,1,0}}
+      biword M
+  Caveat
+    This method requires that the input matrix only has non-negative integer 
+    entries.
+  SeeAlso
+    RSKCorrespondence
 ///
 
 doc ///

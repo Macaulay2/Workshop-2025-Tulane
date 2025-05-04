@@ -53,6 +53,8 @@ export {
     "filledSemiSYT",
     "rowInsertion",
     "robinsonSchenstedCorrespondence",
+    "biword",
+    "RSKCorrespondence",
     "readingWord",
     "majorIndex",
     "yamanouchiWord",
@@ -444,6 +446,111 @@ robinsonSchenstedCorrespondence (YoungTableau, YoungTableau) := Permutation => (
         );
         val
     )
+)
+
+------------------------------------
+-- RSK correspondence
+------------------------------------
+biword = method()
+biword Matrix := Matrix => (M) -> (
+        -- Ensure that the entries of the matrix are all non-negative
+    if not all (apply(flatten entries M, m -> m >= 0)) then error("The biword of a matrix requires the matrix to only have non-negative entries.");
+
+    -- So, extract the (coordinate, value) pairs of the matrix.
+    -- For each coordinate (i,j), the corresponding biword is the matrix 
+    -- consisting of the columns (i,j) repeated M_(i,j) times.
+    -- Concatenate these sub-biwords together, and then sort the columns lexicographically.
+    -- The result is the biword associated with the matrix.
+    coordsVals := new HashTable from flatten for rowIdxColumnsPair in pairs entries M list (
+        (rowIdx, column) := rowIdxColumnsPair;
+        rowIdx += 1;
+        for colIdxValPair in pairs column list (
+            (colIdx, val) := colIdxValPair;
+            colIdx += 1;
+            if val != 0 then (((rowIdx, colIdx), val)) else continue
+        )
+    );
+    repeatCoords := (coords, val) -> transpose matrix toList((val:coords) / toList);
+    coordsValPairs := pairs coordsVals;
+    biword := fold((word, nextEntry) -> word | (repeatCoords(nextEntry#0, nextEntry#1)), 
+                   repeatCoords(coordsValPairs#0#0, coordsValPairs#0#1), 
+                   coordsValPairs_{1 ..< #coordsValPairs});
+    -- There is no built-way to sort a matrix of numbers lexicographically...?
+    transpose matrix sort entries transpose biword
+)
+
+RSKCorrespondence = method()
+-- It is faster to use robinsonSchenstedCorrespondence than to convert the 
+-- permutation to a matrix and apply RSKCorrespondence. This is probably due
+-- to the computation of the biword in RSKCorrespondence.
+RSKCorrespondence Permutation := Sequence => (perm) -> (robinsonSchenstedCorrespondence perm)
+RSKCorrespondence Matrix := Sequence => (M) -> (
+    -- Set up the algorithm
+    biwordM := biword M;
+    insertionTableau := youngTableau youngDiagram {};
+    recordingTableau := new MutableHashTable from {};
+    -- Perform row-insertion using the bottom row of the biword; record new boxes.
+    for idxValPair in entries transpose biwordM do (
+        (idx, val) := toSequence idxValPair;
+        insertionTableau = rowInsertion(insertionTableau, val);
+
+        -- Add a new box to the recording tableau so that its shape matches the 
+        -- insertion tableau's.
+        missingBoxIdx := first elements((set keys insertionTableau) - (set keys recordingTableau));
+        recordingTableau#missingBoxIdx = idx;
+    );
+    (insertionTableau, youngTableau recordingTableau)
+)
+RSKCorrespondence (YoungTableau, YoungTableau) := Matrix => (insertionTableau, recordingTableau) -> (
+    -- If the tableaux are both standard, this is simply the Robinson-Schensted correspondence.
+    if isStandard insertionTableau and isStandard recordingTableau then (
+        return robinsonSchenstedCorrespondence(insertionTableau, recordingTableau);
+    );
+    
+    -- Recover the biword from the pair of tableaux.
+    groupRecordByVal := new HashTable from for val in unique values recordingTableau list (
+        (val, keys selectValues(recordingTableau, filling -> filling == val))
+    );
+    biwordM := matrix flatten for idx in rsort keys groupRecordByVal list (
+        for boxIdx in sort groupRecordByVal#idx list (
+            -- Move the last-moved box from the forward pass of the algorithm 
+            -- back up the insertion tableau until no longer possible.
+            rowIdx := boxIdx#0;
+
+            -- Get rid of the box in the insertion tableau and move the value to 
+            -- the queue.
+            val := insertionTableau#(boxIdx);
+            insertionTableau = youngTableau merge(insertionTableau, hashTable({boxIdx => null}), 
+                                                (i,j) -> continue);
+            if #insertionTableau == 0 then {idx, val}
+            else (
+                -- Push the value up the tableau until the top is reached, replacing 
+                -- with new values as necessary.
+                while rowIdx != 1 do (
+                    rowIdx -= 1;
+                    -- Find rightmost entry y in row such that y < val.
+                    yIdx := (last sort keys selectValues(insertionTableau_rowIdx, filling -> filling < val))#1;
+                    y := insertionTableau#(rowIdx, yIdx);
+                    -- Replace y with val, and repeat the process on the next row with y.
+                    insertionTableau = youngTableau merge(insertionTableau, hashTable({(rowIdx, yIdx) => val}), 
+                                                        (i,j) -> j);
+                    val = y;
+                );
+                {idx, val}
+            )
+        )
+    );
+    -- Go through the columns of the biword and count how many times (i,j) appears.
+    -- This is equal to the entry at position (i,j) in the corresponding matrix.
+    counts := tally entries biwordM;
+    nrows := max(keys counts / (key -> key#0));
+    ncols := max(keys counts / (key -> key#1));
+    M := mutableMatrix(ZZ, nrows, ncols);
+    for idxValPair in pairs counts do (
+        (idx, val) := idxValPair;
+        M_(toSequence(idx - {1,1})) = val;
+    );
+    matrix M
 )
 
 ------------------------------------
