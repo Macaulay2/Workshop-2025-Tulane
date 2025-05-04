@@ -55,7 +55,8 @@ export {
     "schenstedCorrespondence",
     "readingWord",
     "majorIndex",
-    "yamanouchiWord"
+    "yamanouchiWord",
+    "companionMap"
     -- symbols
     -- "Weak"
 }
@@ -447,6 +448,27 @@ yamanouchiWord YoungTableau := List => (lambda) -> (
     -- w_i = j if i occurs in the j-th row of lambda
     transposedHashTable := applyPairs(new HashTable from lambda, (coords, val) -> val => coords#0);
     for val in sort keys transposedHashTable list transposedHashTable#val
+)
+
+companionMap = method()
+companionMap YoungTableau := List => (lambda) -> (
+    if not isStandard lambda then (error("companionMap requires a standard Young tableau."););
+    yamanouchiWord lambda
+)
+companionMap List := YoungTableau => (word) -> (
+    lambda := new MutableHashTable;
+    for rowIdx in unique word do (
+        fillings := positions(word, j -> j == rowIdx) / (idx -> idx+1);
+        for colIdxFillingPair in pairs fillings do (
+            colIdx := colIdxFillingPair#0 + 1;
+            filling := colIdxFillingPair#1;
+            lambda#(rowIdx, colIdx) = filling;
+        )
+    );
+    lambda = youngTableau lambda;
+    if not isWellDefined lambda then (error("companionMap(" | toString(word) | ") does not yield a well-defined Young tableau."););
+    if not isStandard lambda then (error(toString(word) | " does not define a standard Young tableau."););
+    lambda
 )
 
 ------------------------------------

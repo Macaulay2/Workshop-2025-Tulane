@@ -345,6 +345,44 @@ doc ///
     Example
       lambda = canonicalFilling youngDiagram {4,3,1}
       yamanouchiWord lambda
+  Caveat
+    In this package, the Yamanouchi word is only defined for standard Young 
+    tableaux.
+  SeeAlso
+    companionMap
+///
+
+doc ///
+  Key
+    companionMap
+    (companionMap, YoungTableau)
+    (companionMap, List)
+  Headline
+    computes the image of a standard Young tableau under the companion map
+  Usage
+    yamanouchiWord lambda
+  Inputs
+    lambda:YoungTableau
+  Outputs
+    :List
+  Description
+    Text
+      The {\em companion map} is a bijection between standard Young tableaux
+      of shape $\lambda$ and Yamanouchi words of weight $\lambda$. The image 
+      of a standard Young tableau under the companion map is the ordered list
+      $w$ such that $w_i = j$ if $i$ appears in row $j$ of the tableau.
+    Example
+      lambda = canonicalFilling youngDiagram {4,3,1}
+      companionMap lambda
+    Text
+      The image of a Yamanouchi word $w$ under the companion map is the standard
+      Young tableau $\lambda$ where the $i$-th row of $\lambda$ has fillings
+      $j_1 <= j_2 <= \ldots <= j_k$ where $w_{j_l} = i$.
+    Example
+      w = {1,1,1,1,2,2,2,3}
+      companionMap w
+  SeeAlso
+    yamanouchiWord
 ///
 
 doc ///
