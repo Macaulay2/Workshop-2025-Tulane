@@ -327,11 +327,41 @@ doc ///
 
 doc ///
   Key
+    rowInsertion
+    (rowInsertion, YoungTableau, ZZ)
+    [rowInsertion, RowIndex]
+  Headline
+    performs row insertion on a tableau
+  Usage
+    rowInsertion(lambda, k)
+  Inputs
+    lambda:Permutation
+  Outputs
+    :YoungTableau
+  Description
+    Text
+      Row insertion is a method of inserting a new cell into a Young tableau
+      while preserving the tableau's properties. The new cell is inserted
+      into the first row if possible, and if not, it pushes another cell from
+      the first row down to the second row, and so on.
+    Example
+      lambda = youngTableau hashTable({(1,1) => 1, (1,2) => 4, (1,3) => 6,
+                                       (2,1) => 2})
+      rowInsertion(lambda, 3)
+    Text
+      Optionally, {\tt RowIndex} can be passed as an argument to specify the 
+      starting row for the row-insertion algorithm. The default is the first row.
+  SeeAlso
+    robinsonSchenstedCorrespondence
+///
+
+doc ///
+  Key
     robinsonSchenstedCorrespondence
     (robinsonSchenstedCorrespondence, Permutation)
     (robinsonSchenstedCorrespondence, YoungTableau, YoungTableau)
   Headline
-    computes the image of a permutation under the Robinson-Schensted correspondence
+    computes the image of a permutation or a pair of Young tableaux Robinson-Schensted correspondence
   Usage
     robinsonSchenstedCorrespondence perm
   Inputs
@@ -357,6 +387,8 @@ doc ///
       robinsonSchenstedCorrespondence(P, Q)
   Caveat
     This is only a correspondence between permutations and standard Young tableaux.
+  SeeAlso
+    rowInsertion
 ///
 
 doc ///
