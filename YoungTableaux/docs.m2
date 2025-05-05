@@ -384,11 +384,41 @@ doc ///
 
     Example
       lambda = youngTableau hashTable {(1,1) => 1, (1,2) => 1, (1,3) => 1, (1,4) => 1, (1,5) => 1, (1,6) => 1, (1, 7) => 2, (1,8) => 2, (1,9) => 2, (1,10) => 2, (1,11) =>3,
-                                      (2,1) => 2, (2,2) => 2, (2,3) => 2, (2,4) => 2, (2,5) => 2, (2,6) => 2, (2,7) => 3,
-                                      (3,1) => 3, (3,2) => 4, (3,3) => 4, (3,4) => 4, (3,5) => 4}
+                                       (2,1) => 2, (2,2) => 2, (2,3) => 2, (2,4) => 2, (2,5) => 2, (2,6) => 2, (2,7) => 3,
+                                       (3,1) => 3, (3,2) => 4, (3,3) => 4, (3,4) => 4, (3,5) => 4}
       benderKnuthInvolution(lambda, 2)
   Caveat
     For a tableau of shape $\lambda$, this is only defined for $1 \keq k \leq \lambda - 1$.
+  SeeAlso
+    promotion
+///
+
+doc ///
+  Key
+    promotion
+    (promotion, YoungTableau)
+  Headline
+    computes the promotion of a standard Young tableau
+  Usage
+    promotion lambda
+  Inputs
+    lambda:YoungTableau
+  Outputs
+    :YoungTableau
+  Description
+    Text
+      For a standard Young tableau $T$ of shape $\lambda$ with $\vert \lambda \vert = n$,
+      the promotion of $T$ is defined as the composition $(\circ BK_{n-1} \circ \ldots \circ BK_1)(T)$,
+      where $BK_k$ is a Bender-Knuth involution.
+    Example
+      lambda = youngTableau hashTable {(1,1) => 1, (1,2) => 3, (1,3) => 4, (1,4) => 5,
+                                       (2,1) => 2, (2,2) => 6, (2,3) => 8,
+                                       (3,1) => 7, (3,2) => 9}
+      promotion lambda
+  Caveat
+    Promotion is only defined for standard Young tableaux.
+  SeeAlso
+    benderKnuthInvolution
 ///
 
 doc ///

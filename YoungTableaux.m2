@@ -53,6 +53,7 @@ export {
     "filledSemiSYT",
     "rowInsertion",
     "benderKnuthInvolution",
+    "promotion",
     "robinsonSchenstedCorrespondence",
     "biword",
     "RSKCorrespondence",
@@ -427,6 +428,13 @@ benderKnuthInvolution (YoungTableau, ZZ) := YoungTableau => (lambda, k) -> (
         )
     );
     merge(lambda, swappedTableau, (i,j) -> j)
+)
+
+promotion = method()
+promotion YoungTableau := YoungTableau => (lambda) -> (
+    if not isStandard lambda then error("promotion is only valid when the tableau is standard.");
+    
+    fold((tableau, k) -> benderKnuthInvolution(tableau, k), lambda, 1 ..< (max content lambda))
 )
 
 
