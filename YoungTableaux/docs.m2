@@ -335,7 +335,7 @@ doc ///
   Usage
     rowInsertion(lambda, k)
   Inputs
-    lambda:Permutation
+    lambda:YoungTableau
   Outputs
     :YoungTableau
   Description
@@ -353,6 +353,39 @@ doc ///
       starting row for the row-insertion algorithm. The default is the first row.
   SeeAlso
     robinsonSchenstedCorrespondence
+///
+
+doc ///
+  Key
+    benderKnuthInvolution
+    (benderKnuthInvolution, YoungTableau, ZZ)
+  Headline
+    computes a Bender-Knuth involution on a semi-standard Young tabelau tableau
+  Usage
+    benderKnuthInvolution(lambda, k)
+  Inputs
+    lambda:YoungTableau
+    k:ZZ
+  Outputs
+    :YoungTableau
+  Description
+    Text
+      The Bender-Knuth operation $BK_k$ is an involution on the set of semi-standard
+      Young tableaux of weight $w$. The operation is defined as follows:
+      
+      @UL {
+        LI{ "Ignore any cells whose content is not $k$ or $k+1$." },
+        LI{ "Ignore any columns whose content contains $k$ and $k+1$." },
+        LI{ "For each (disjoint) row in the remaining tableau, swap the number of times $k$ and $k+1$ appear, maintaining the semi-standard property." }
+      }@
+      
+    Example
+      lambda = youngTableau hashTable {(1,1) => 1, (1,2) => 1, (1,3) => 1, (1,4) => 1, (1,5) => 1, (1,6) => 1, (1, 7) => 2, (1,8) => 2, (1,9) => 2, (1,10) => 2, (1,11) =>3,
+                                      (2,1) => 2, (2,2) => 2, (2,3) => 2, (2,4) => 2, (2,5) => 2, (2,6) => 2, (2,7) => 3,
+                                      (3,1) => 3, (3,2) => 4, (3,3) => 4, (3,4) => 4, (3,5) => 4}
+      benderKnuthInvolution(lambda, 2)
+  Caveat
+    For a tableau of shape $\lambda$, this is only defined for $1 \keq k \leq \lambda - 1$.
 ///
 
 doc ///

@@ -52,6 +52,7 @@ export {
     "filledSYT",
     "filledSemiSYT",
     "rowInsertion",
+    "benderKnuthInvolution",
     "robinsonSchenstedCorrespondence",
     "biword",
     "RSKCorrespondence",
@@ -398,6 +399,36 @@ rowInsertion (YoungTableau, ZZ) := YoungTableau => opts -> (lambda, val) -> (
     );
     lambda
 )
+
+benderKnuthInvolution = method()
+benderKnuthInvolution (YoungTableau, ZZ) := YoungTableau => (lambda, k) -> (
+    if not isMember(k, toList(1 ..< (max content lambda))) then error(toString(k) | " must be in the range 1.." | toString((max content lambda) - 1));
+    if not isSemiStandard lambda then error("benderKnuthInvolution is only valid when the tableau is semistandard.");
+
+    -- Only keep the cells which contain k or k+1.
+    -- Remove columns which contain k and k+1, too.
+    -- For each (disjoint) row, swap the lengths of the runs of k and k+1 entries.
+    filteredTableau := selectValues(lambda, filling -> member(filling, (k, k+1)));
+    filteredTableau = filteredTableau^(select(1..numColumns lambda, colIdx -> not isSubset({k, k+1}, content lambda^colIdx)));
+    rowIndices := unique(keys filteredTableau / (coords -> coords#0));
+    swappedTableau := youngTableau hashTable flatten for rowIdx in rowIndices list (
+        row := filteredTableau_rowIdx;
+        -- Swap the lengths of the runs of k and k+1.
+        colIndices := sort(keys row / (coords -> coords#1));
+        kPlusOneRunLength := #(positions(colIndices, colIdx -> row#(rowIdx, colIdx) == k+1));
+        -- Swap the lengths of the runs of k and k+1.
+        kPlusOneCounter := 0;
+        pairs hashTable for colIdx in colIndices list (
+            if kPlusOneCounter < kPlusOneRunLength then (
+                kPlusOneCounter += 1;
+                (rowIdx, colIdx) => k
+            )
+            else ((rowIdx, colIdx) => k+1)
+        )
+    );
+    merge(lambda, swappedTableau, (i,j) -> j)
+)
+
 
 ------------------------------------
 -- Robinson-Schensted correspondence
