@@ -66,6 +66,7 @@ doc ///
 
 doc ///
   Key
+    YoungDiagram
     youngDiagram
     (youngDiagram, VisibleList)
   Headline
@@ -238,9 +239,10 @@ doc ///
 
 doc ///
   Key
+    SkewDiagram
     skewDiagram
-    (skewDiagram, YoungDiagram, YoungDiagram)
     (skewDiagram, List, List)
+    (skewDiagram, YoungDiagram, YoungDiagram)
   Headline
     constructs the skew diagram defined by two Young diagrams
   Usage
@@ -292,6 +294,7 @@ doc ///
 
 doc ///
   Key
+    YoungTableau
     youngTableau
     (youngTableau, List)
     (youngTableau, HashTable)
@@ -378,7 +381,7 @@ doc ///
         LI{ "Ignore any columns whose content contains $k$ and $k+1$." },
         LI{ "For each (disjoint) row in the remaining tableau, swap the number of times $k$ and $k+1$ appear, maintaining the semi-standard property." }
       }@
-      
+
     Example
       lambda = youngTableau hashTable {(1,1) => 1, (1,2) => 1, (1,3) => 1, (1,4) => 1, (1,5) => 1, (1,6) => 1, (1, 7) => 2, (1,8) => 2, (1,9) => 2, (1,10) => 2, (1,11) =>3,
                                       (2,1) => 2, (2,2) => 2, (2,3) => 2, (2,4) => 2, (2,5) => 2, (2,6) => 2, (2,7) => 3,
