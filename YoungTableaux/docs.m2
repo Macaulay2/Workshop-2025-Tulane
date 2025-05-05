@@ -562,6 +562,30 @@ doc ///
 
 doc ///
   Key
+    weight
+    (weight, YoungTableau)
+  Headline
+    computes the weight of a Young tableau
+  Usage
+    weight lambda
+  Inputs
+    lambda:YoungTableau
+  Outputs
+    :List
+  Description
+    Text
+      If $\lambda$ is a Young taleau with its content taking values in $[n]$, 
+      then the {\em weight} of $\lambda$ is the ordered list $w$ of lenght $n$
+      where $w_i$ is the number of times $i$ appears in $lambda$.
+    Example
+      lambda = highestWeightFilling youngDiagram {4,3,1}
+      weight lambda
+  SeeAlso
+    (content, YoungTableau)
+///
+
+doc ///
+  Key
     (descents, YoungTableau)
   Headline
     computes the descents of a Young tableau

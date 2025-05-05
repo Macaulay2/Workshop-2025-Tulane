@@ -59,6 +59,7 @@ export {
     "majorIndex",
     "yamanouchiWord",
     "companionMap",
+    "weight",
     -- symbols
     "RowIndex"
 }
@@ -591,6 +592,13 @@ companionMap List := YoungTableau => (word) -> (
 content YoungTableau := List => (lambda) -> (values lambda)
 content (YoungTableau, Sequence) := ZZ => (lambda, coords) -> (lambda#coords)
 content (YoungTableau, ZZ, ZZ) := ZZ => (lambda, i, j) -> (lambda#(i,j))
+
+weight = method()
+weight YoungTableau := List => (lambda) -> (
+    paddedCounts := hashTable toList apply(1..(max content lambda), i -> i => 0);
+    paddedCounts = merge(tally content lambda, paddedCounts, (i, j) -> i);
+    (sort pairs paddedCounts) / (keyValPair -> keyValPair#1)
+)
 
 descents YoungTableau := Set => (lambda) -> (
     rowIndices := unique apply(keys lambda, coords -> coords#0);
