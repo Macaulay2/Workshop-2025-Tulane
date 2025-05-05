@@ -28,29 +28,17 @@ export {
     "YoungDiagram",
     "YoungTableau",
     "SkewDiagram",
-    -- methods
+    -- diagram methods
     "youngDiagram",
-    "youngTableau",
     "skewDiagram",
+    "shape",
     "armLength",
     "legLength",
     "hookLength",
-    "shape",
-    "rowStabilizers",
-    "columnStabilizers",
-    "youngSymmetrizer",
-    "numberStandardYoungTableaux",
-    "highestWeightFilling",
-    "rowsFirstFilling",
-    "columnsFirstFilling",
-    "canonicalFilling",
-    "randomFilling",
+    -- tableau methods
+    "youngTableau",
     "isStandard",
     "isSemiStandard",
-    "isCorner",
-    "getCandidateFillings",
-    "filledSYT",
-    "filledSemiSYT",
     "rowInsertion",
     "benderKnuthInvolution",
     "promotion",
@@ -59,12 +47,26 @@ export {
     "robinsonSchenstedCorrespondence",
     "biword",
     "RSKCorrespondence",
-    "readingWord",
-    "majorIndex",
     "yamanouchiWord",
     "companionMap",
     "weight",
-    -- symbols
+    "majorIndex",
+    "readingWord",
+    "rowStabilizers",
+    "columnStabilizers",
+    "youngSymmetrizer",
+    "highestWeightFilling",
+    "rowsFirstFilling",
+    "canonicalFilling",
+    "columnsFirstFilling",
+    "randomFilling",
+    "isCorner",
+    -- enumeration methods
+    "numberStandardYoungTableaux",
+    "getCandidateFillings",
+    "filledSYT",
+    "filledSemiSYT",
+    -- optional arguments and symbols
     "RowIndex"
 }
 
@@ -80,8 +82,6 @@ export {
 -- Schur modules notation, etc.
 -- refinements of diagrams/Young's lattice/Partition lattice
 -- straightening for STANDARD Young tableaux (see Sagan's book for Garnir elements and the SpechtModule package)
--- RSK correspondence between tableaux and permutations
--- promotion and evacuation
 
 -----------------------------------------------------------------------------
 -- **CODE** --
@@ -142,21 +142,3 @@ stuff = {1,1,2,2,3,3,3,4,4}
 filledSemiSYT(semiShape,stuff)
 
 YT#(2,2)
-
---------------------------
--- Sean's scratch space
---------------------------
-restart
-uninstallPackage "YoungTableaux"
-restart
-installPackage "YoungTableaux"
-restart
-needsPackage "YoungTableaux"
-elapsedTime check "YoungTableaux"
-
-restart
-needsPackage "Permutations"
-myd = youngDiagram {4,2,1}
-lambda = youngTableau {{1,2,3},{4,5},{6}}
-
-tempCand = getCandidateFillings {4,2,1}
