@@ -391,6 +391,7 @@ doc ///
     For a tableau of shape $\lambda$, this is only defined for $1 \keq k \leq \lambda - 1$.
   SeeAlso
     promotion
+    evacuation
 ///
 
 doc ///
@@ -419,6 +420,81 @@ doc ///
     Promotion is only defined for standard Young tableaux.
   SeeAlso
     benderKnuthInvolution
+    evacuation
+///
+
+doc ///
+  Key
+    evacuation
+    (evacuation, YoungTableau)
+  Headline
+    computes the evacuation of a semi-standard Young tableau
+  Usage
+    evacuation lambda
+  Inputs
+    lambda:YoungTableau
+  Outputs
+    :YoungTableau
+  Description
+    Text
+      For a semi-standard Young tableau $T$ of shape $\lambda$ with $\vert \lambda \vert = n$,
+      the promotion of $T$ is defined as the composition 
+      $((BK_1) \circ (BK_2 \circ BK_1) \circ \ldots \circ (\circ BK_{n-1} \circ \ldots \circ BK_1))(T)$,
+      where $BK_k$ is a Bender-Knuth involution.
+    Example
+      lambda = youngTableau hashTable {(1,1) => 1, (1,2) => 3, (1,3) => 4, (1,4) => 8,
+                                      (2,1) => 2, (2,2) => 5, (2,3) => 6,
+                                      (3,1) => 7, (3,2) => 9}
+      evacuation lambda
+    Example
+      lambda = youngTableau hashTable {(1,1) => 1, (1,2) => 3, (1,3) => 8,
+                                      (2,1) => 2, (2,2) => 4,
+                                      (3,1) => 5, (3,2) => 9,
+                                      (4,1) => 6, (4,2) => 10,
+                                      (5,1) => 7}
+      evacuation lambda
+  Caveat
+    Evacuation is only defined for semi-standard Young tableaux.
+  SeeAlso
+    benderKnuthInvolution
+    dualEvacuation
+///
+
+doc ///
+  Key
+    dualEvacuation
+    (dualEvacuation, YoungTableau)
+  Headline
+    computes the dual evacuation of a semi-standard Young tableau
+  Usage
+    dualEvacuation lambda
+  Inputs
+    lambda:YoungTableau
+  Outputs
+    :YoungTableau
+  Description
+    Text
+      For a semi-standard Young tableau $T$ of shape $\lambda$ with $\vert \lambda \vert = n$,
+      the promotion of $T$ is defined as the composition 
+      $((BK_{n-1}) \circ (BK_{n-2} \circ BK_{n-1}) \circ \ldots \circ (\circ BK_1 \circ \ldots \circ BK_{n-1}))(T)$,
+      where $BK_k$ is a Bender-Knuth involution.
+    Example
+      lambda = youngTableau hashTable {(1,1) => 1, (1,2) => 3, (1,3) => 4, (1,4) => 8,
+                                      (2,1) => 2, (2,2) => 5, (2,3) => 6,
+                                      (3,1) => 7, (3,2) => 9}
+      dualEvacuation lambda
+    Example
+      lambda = youngTableau hashTable {(1,1) => 1, (1,2) => 3, (1,3) => 8,
+                                      (2,1) => 2, (2,2) => 4,
+                                      (3,1) => 5, (3,2) => 9,
+                                      (4,1) => 6, (4,2) => 10,
+                                      (5,1) => 7}
+      dualEvacuation lambda
+  Caveat
+    Dual evacuation is only defined for semi-standard Young tableaux.
+  SeeAlso
+    benderKnuthInvolution
+    evacuation
 ///
 
 doc ///

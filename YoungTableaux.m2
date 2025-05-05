@@ -54,6 +54,8 @@ export {
     "rowInsertion",
     "benderKnuthInvolution",
     "promotion",
+    "evacuation",
+    "dualEvacuation",
     "robinsonSchenstedCorrespondence",
     "biword",
     "RSKCorrespondence",
@@ -437,6 +439,21 @@ promotion YoungTableau := YoungTableau => (lambda) -> (
     if not isStandard lambda then error("promotion is only valid when the tableau is standard.");
     
     fold((tableau, k) -> benderKnuthInvolution(tableau, k), lambda, 1 ..< (max content lambda))
+)
+
+evacuation = method()
+evacuation YoungTableau := YoungTableau => (lambda) -> (
+    if not isSemiStandard lambda then error("evacuation is only valid when the tableau is semi-standard.");
+    intermediateInvolution := (initialTableau, m) -> fold((tableau, k) -> benderKnuthInvolution(tableau, k), initialTableau, 1 .. m); 
+    fold((tableau, m) -> intermediateInvolution(tableau, m), lambda, reverse(1 ..< (max content lambda)))
+)
+
+dualEvacuation = method()
+dualEvacuation YoungTableau := YoungTableau => (lambda) -> (
+    if not isSemiStandard lambda then error("dualEvacuation is only valid when the tableau is semi-standard.");
+    n := max content lambda;
+    intermediateInvolution := (initialTableau, m) -> fold((tableau, k) -> benderKnuthInvolution(tableau, n-k), initialTableau, 1 .. m); 
+    fold((tableau, m) -> intermediateInvolution(tableau, m), lambda, reverse(1 ..< (max content lambda)))
 )
 
 
