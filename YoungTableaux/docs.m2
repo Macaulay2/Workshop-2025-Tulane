@@ -348,8 +348,8 @@ doc ///
       into the first row if possible, and if not, it pushes another cell from
       the first row down to the second row, and so on.
     Example
-      lambda = youngTableau hashTable({(1,1) => 1, (1,2) => 4, (1,3) => 6,
-                                       (2,1) => 2})
+      lambda = youngTableau {{1,4,6},
+                             {2}}
       rowInsertion(lambda, 3)
     Text
       Optionally, {\tt RowIndex} can be passed as an argument to specify the 
@@ -383,9 +383,9 @@ doc ///
       }@
 
     Example
-      lambda = youngTableau hashTable {(1,1) => 1, (1,2) => 1, (1,3) => 1, (1,4) => 1, (1,5) => 1, (1,6) => 1, (1, 7) => 2, (1,8) => 2, (1,9) => 2, (1,10) => 2, (1,11) =>3,
-                                       (2,1) => 2, (2,2) => 2, (2,3) => 2, (2,4) => 2, (2,5) => 2, (2,6) => 2, (2,7) => 3,
-                                       (3,1) => 3, (3,2) => 4, (3,3) => 4, (3,4) => 4, (3,5) => 4}
+      lambda = youngTableau {{1,1,1,1,1,1,2,2,2,2,3},
+                             {2,2,2,2,2,2,3},
+                             {3,4,4,4,4}}
       benderKnuthInvolution(lambda, 2)
   Caveat
     For a tableau of shape $\lambda$, this is only defined for $1 \keq k \leq \lambda - 1$.
@@ -412,9 +412,9 @@ doc ///
       the promotion of $T$ is defined as the composition $(\circ BK_{n-1} \circ \ldots \circ BK_1)(T)$,
       where $BK_k$ is a Bender-Knuth involution.
     Example
-      lambda = youngTableau hashTable {(1,1) => 1, (1,2) => 3, (1,3) => 4, (1,4) => 5,
-                                       (2,1) => 2, (2,2) => 6, (2,3) => 8,
-                                       (3,1) => 7, (3,2) => 9}
+      lambda = youngTableau {{1,3,4,5},
+                             {2,6,8},
+                             {7,9}}
       promotion lambda
   Caveat
     Promotion is only defined for standard Young tableaux.
@@ -442,16 +442,16 @@ doc ///
       $((BK_1) \circ (BK_2 \circ BK_1) \circ \ldots \circ (\circ BK_{n-1} \circ \ldots \circ BK_1))(T)$,
       where $BK_k$ is a Bender-Knuth involution.
     Example
-      lambda = youngTableau hashTable {(1,1) => 1, (1,2) => 3, (1,3) => 4, (1,4) => 8,
-                                      (2,1) => 2, (2,2) => 5, (2,3) => 6,
-                                      (3,1) => 7, (3,2) => 9}
+      lambda = youngTableau {{1,3,4,8},
+                             {2,5,6},
+                             {7,9}}
       evacuation lambda
     Example
-      lambda = youngTableau hashTable {(1,1) => 1, (1,2) => 3, (1,3) => 8,
-                                      (2,1) => 2, (2,2) => 4,
-                                      (3,1) => 5, (3,2) => 9,
-                                      (4,1) => 6, (4,2) => 10,
-                                      (5,1) => 7}
+      lambda = youngTableau {{1,3,8},
+                             {2,4},
+                             {5,9},
+                             {6,10},
+                             {7}}
       evacuation lambda
   Caveat
     Evacuation is only defined for semi-standard Young tableaux.
@@ -479,16 +479,16 @@ doc ///
       $((BK_{n-1}) \circ (BK_{n-2} \circ BK_{n-1}) \circ \ldots \circ (\circ BK_1 \circ \ldots \circ BK_{n-1}))(T)$,
       where $BK_k$ is a Bender-Knuth involution.
     Example
-      lambda = youngTableau hashTable {(1,1) => 1, (1,2) => 3, (1,3) => 4, (1,4) => 8,
-                                      (2,1) => 2, (2,2) => 5, (2,3) => 6,
-                                      (3,1) => 7, (3,2) => 9}
+      lambda = youngTableau {{1,3,4,8},
+                             {2,5,6},
+                             {7,9}}
       dualEvacuation lambda
     Example
-      lambda = youngTableau hashTable {(1,1) => 1, (1,2) => 3, (1,3) => 8,
-                                      (2,1) => 2, (2,2) => 4,
-                                      (3,1) => 5, (3,2) => 9,
-                                      (4,1) => 6, (4,2) => 10,
-                                      (5,1) => 7}
+      lambda = youngTableau {{1,3,8},
+                             {2,4},
+                             {5,9},
+                             {6,10},
+                             {7}}
       dualEvacuation lambda
   Caveat
     Dual evacuation is only defined for semi-standard Young tableaux.
@@ -523,10 +523,10 @@ doc ///
     Text
       The inverse image takes the pair $(P,Q)$ to the corresponding permutation $p$.
     Example 
-      P = youngTableau hashTable({(1,1) => 1, (1,2) => 3, (1,3) => 5,
-                                  (2,1) => 2, (2,2) => 4, (2,3) => 6})
-      Q = youngTableau hashTable({(1,1) => 1, (1,2) => 2, (1,3) => 3,
-                                  (2,1) => 4, (2,2) => 5, (2,3) => 6})
+      P = youngTableau {{1,3,5},
+                        {2,4,6}}
+      Q = youngTableau {{1,2,3},
+                        {4,5,6}}
       robinsonSchenstedCorrespondence(P, Q)
   Caveat
     This is only a correspondence between permutations and standard Young tableaux.
@@ -568,12 +568,12 @@ doc ///
       $\vert \lambda \vert \times \vert \mu \vert$ matrix $M$ whose entries are
       non-negative integers.
     Example 
-      P = youngTableau hashTable {(1,1) => 1, (1,2) => 1, (1,3) => 2, (1,4) => 2,
-                                  (2,1) => 2, (2,2) => 3, 
-                                  (3,1) => 3}
-      Q = youngTableau hashTable {(1,1) => 1, (1,2) => 1, (1,3) => 1, (1,4) => 3,
-                                  (2,1) => 2, (2,2) => 2, 
-                                  (3,1) => 3}
+      P = youngTableau {{1,1,2,2},
+                        {2,3},
+                        {3}}
+      Q = youngTableau {{1,1,1,3},
+                        {2,2},
+                        {3}}
       RSKCorrespondence(P, Q)
     Text
       If the input to {\tt RSKCorrespondence} is a permutation, this method
@@ -610,7 +610,9 @@ doc ///
       More precisely, the biword of $M$ has $M_(i,j)$ columns whose entries are
       $(i,j)$, and the columns of the biword are lexicographically sorted.
     Example
-      M = matrix {{1,0,2},{0,2,0},{1,1,0}}
+      M = matrix {{1,0,2},
+                  {0,2,0},
+                  {1,1,0}}
       biword M
   Caveat
     This method requires that the input matrix only has non-negative integer 
