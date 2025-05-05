@@ -125,6 +125,8 @@ toString YoungDiagram := String => lambda -> ("YoungDiagram " | toString(shape l
 toExternalString YoungDiagram := String => lambda -> (toString lambda)
 
 net YoungDiagram := Net => lambda -> (
+    if (#lambda == 0) then return "";
+
     -- Calculate boundary of diagram
     iVals := apply(keys lambda, coords -> coords_0);
     jVals := apply(keys lambda, coords -> coords_1);
@@ -212,13 +214,13 @@ net YoungDiagram := Net => lambda -> (
 ------------------------------------
 -- select the i-th row(s) of the Young diagram
 YoungDiagram _ ZZ := ZZ => (lambda, n) -> (selectKeys(lambda, coords -> coords#0 == n))
-YoungDiagram _ List := List => (lambda, l) -> (selectKeys(lambda, coords -> member(coords#0, l)))
-YoungDiagram _ Sequence := List => (lambda, s) -> (selectKeys(lambda, coords -> member(coords#0, s)))
+YoungDiagram _ List := List => (lambda, l) -> (selectKeys(lambda, coords -> isMember(coords#0, l)))
+YoungDiagram _ Sequence := List => (lambda, s) -> (selectKeys(lambda, coords -> isMember(coords#0, s)))
 
 -- select the j-th column(s) of the Young diagram
 YoungDiagram ^ ZZ := ZZ => (lambda, n) -> (selectKeys(lambda, coords -> coords#1 == n))
-YoungDiagram ^ List := List => (lambda, l) -> (selectKeys(lambda, coords -> member(coords#1, l)))
-YoungDiagram ^ Sequence := List => (lambda, s) -> (selectKeys(lambda, coords -> member(coords#1, s)))
+YoungDiagram ^ List := List => (lambda, l) -> (selectKeys(lambda, coords -> isMember(coords#1, l)))
+YoungDiagram ^ Sequence := List => (lambda, s) -> (selectKeys(lambda, coords -> isMember(coords#1, s)))
 
 numRows YoungDiagram := ZZ => lambda -> (max apply(keys lambda, coords -> coords#0))
 numColumns YoungDiagram := ZZ => lambda -> (max apply(keys lambda, coords -> coords#1))
@@ -409,7 +411,7 @@ benderKnuthInvolution (YoungTableau, ZZ) := YoungTableau => (lambda, k) -> (
     -- Only keep the cells which contain k or k+1.
     -- Remove columns which contain k and k+1, too.
     -- For each (disjoint) row, swap the lengths of the runs of k and k+1 entries.
-    filteredTableau := selectValues(lambda, filling -> member(filling, (k, k+1)));
+    filteredTableau := selectValues(lambda, filling -> isMember(filling, (k, k+1)));
     filteredTableau = filteredTableau^(select(1..numColumns lambda, colIdx -> not isSubset({k, k+1}, content lambda^colIdx)));
     rowIndices := unique(keys filteredTableau / (coords -> coords#0));
     swappedTableau := youngTableau hashTable flatten for rowIdx in rowIndices list (
@@ -647,7 +649,7 @@ descents YoungTableau := Set => (lambda) -> (
     minIdx := min rowIndices;
     maxIdx := max rowIndices;
     union for rowIdx from minIdx to maxIdx-1 list (
-        select(valuesByRow#rowIdx, val -> any(rowIdx+1..maxIdx, otherRowIdx -> member(val+1, valuesByRow#otherRowIdx)))
+        select(valuesByRow#rowIdx, val -> any(rowIdx+1..maxIdx, otherRowIdx -> isMember(val+1, valuesByRow#otherRowIdx)))
     )
 )
 
