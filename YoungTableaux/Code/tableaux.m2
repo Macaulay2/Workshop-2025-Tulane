@@ -350,11 +350,27 @@ weight YoungTableau := List => (lambda) -> (
     (sort pairs paddedCounts) / (keyValPair -> keyValPair#1)
 )
 
+inversions YoungTableau := List => (T) -> (
+    if not isStandard T then error("inversions is only valid when the tableau is standard.");
+
+    rowIndices := sort unique apply(keys T, coords -> coords#0);
+    previousContents := set content T_(rowIndices#0);
+    flatten for rowIdx in drop(rowIndices, 1) list (
+        rowContent := set content T_rowIdx;
+        -- for each entry i in the current row, record any pairs where j < i for all the contents in the previous rows
+        newInversions := toList select(previousContents**rowContent, (i, j) -> j < i);
+        previousContents = union(previousContents, rowContent);
+        newInversions
+    )
+)
+
 sign YoungTableau := ZZ => (T) -> (
     if not isStandard T then error("sign is only valid when the tableau is standard.");
 
-    -- The sign of a standard Young tableau is equal to (-1)^(numInversion readingWord T)
-    (-1)^(#(inversions permutation readingWord T))
+    -- The sign of a standard Young tableau is equal to (-1)^(numInversions readingWord T).
+    -- Equivalently, it is equal to (-1)^(numInversions T). However, the latter 
+    -- formula seems to be faster to compute on average.
+    (-1)^(#(inversions T))
 )
 
 descents YoungTableau := Set => (lambda) -> (

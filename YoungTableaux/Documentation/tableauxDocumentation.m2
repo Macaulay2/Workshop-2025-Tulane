@@ -551,6 +551,41 @@ doc ///
 
 doc ///
   Key
+    (inversions, YoungTableau)
+  Headline
+    computes the inversions of a Young tableau
+  Usage
+    inversions T
+  Inputs
+    T:YoungTableau
+  Outputs
+    :List
+  Description
+    Text
+      For a standard Young tableau $T$, the pair $(i,j)$ is an {\em inversion}
+      if $j$ appears in a row below $i$ and $j < i$. The set of all such pairs
+      comprises the set of inversions of $T$.
+    Example
+      T = youngTableau {{1,3,6,7},
+                        {2,4,8},
+                        {5},
+                        {9}}
+      inversions T
+  Caveat
+    Inversions in a Young tableau are only defined for standard Young tableaux.
+  References
+    @UL {
+          LI{ "[R04] Astrid Reifegerste, ",
+              HREF("https://link.springer.com/article/10.1007/s00026-004-0208-4", EM "Permutation sign under the Robinson-Schensted-Knuth correspondence"),
+              ", Ann. Comb. 8 (2004), no. 1, 103–112."}
+    }@
+  SeeAlso
+    isStandard
+    inversions
+///
+
+doc ///
+  Key
     (sign, YoungTableau)
   Headline
     computes the sign of a Young tableau
@@ -562,13 +597,18 @@ doc ///
     :ZZ
   Description
     Text
-      For a standard Young tableau $T$, its reading word $w$ is a permutation. The
-      sign of $T$, denoted $\text{sign}(T)$, is defined as
+      For a standard Young tableau $T$, the {\em sign} of $T$ is defined as the 
+      value $(-1)^{\text{inv}(T)}$, where $\text{inv}(T)$ is the number of 
+      inversions in $T$.
+
+      Equivalently, the reading word of $T$ $w$ is a permutation. So,
       $\text{sign}(T) = (-1)^{\text{inv}(w)}$, where $\text{inv}(w)$ is the number 
-      of inversions.
+      of inversions in $w$.
     Example
       T = youngTableau {{1,2,3},{4,5}}
       sign T
+  Caveat
+    The sign of a Young tableau is only defined for standard Young tableaux.
   References
     @UL {
           LI{ "[R04] Astrid Reifegerste, ",
