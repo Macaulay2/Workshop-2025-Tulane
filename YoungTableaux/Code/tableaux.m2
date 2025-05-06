@@ -70,7 +70,7 @@ toString YoungTableau := String => lambda -> (
 ------------------------------------
 -- Basic Young tableau operations
 ------------------------------------
-YoungTableau == YoungTableau := Boolean => (lambda, mu) -> (pairs lambda == pairs mu)
+YoungTableau == YoungTableau := Boolean => (lambda, mu) -> (pairs lambda === pairs mu)
 
 conjugate YoungTableau := YoungTableau => lambda -> (applyKeys(lambda, key -> reverse key))
 transpose YoungTableau := YoungTableau => lambda -> (conjugate lambda)
