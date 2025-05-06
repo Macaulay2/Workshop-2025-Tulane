@@ -569,6 +569,12 @@ doc ///
     Example
       T = youngTableau {{1,2,3},{4,5}}
       sign T
+  References
+    @UL {
+          LI{ "[R04] Astrid Reifegerste, ",
+              HREF("https://link.springer.com/article/10.1007/s00026-004-0208-4", EM "Permutation sign under the Robinson-Schensted-Knuth correspondence"),
+              ", Ann. Comb. 8 (2004), no. 1, 103–112."}
+    }@
   SeeAlso
     isStandard
     readingWord
