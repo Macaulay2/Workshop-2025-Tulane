@@ -551,6 +551,32 @@ doc ///
 
 doc ///
   Key
+    (sign, YoungTableau)
+  Headline
+    computes the sign of a Young tableau
+  Usage
+    sign T
+  Inputs
+    T:YoungTableau
+  Outputs
+    :ZZ
+  Description
+    Text
+      For a standard Young tableau $T$, its reading word $w$ is a permutation. The
+      sign of $T$, denoted $\text{sign}(T)$, is defined as
+      $\text{sign}(T) = (-1)^{\text{inv}(w)}$, where $\text{inv}(w)$ is the number 
+      of inversions.
+    Example
+      T = youngTableau {{1,2,3},{4,5}}
+      sign T
+  SeeAlso
+    isStandard
+    readingWord
+    inversions
+///
+
+doc ///
+  Key
     (descents, YoungTableau)
   Headline
     computes the descents of a Young tableau

@@ -350,6 +350,13 @@ weight YoungTableau := List => (lambda) -> (
     (sort pairs paddedCounts) / (keyValPair -> keyValPair#1)
 )
 
+sign YoungTableau := ZZ => (T) -> (
+    if not isStandard T then error("sign is only valid when the tableau is standard.");
+
+    -- The sign of a standard Young tableau is equal to (-1)^(numInversion readingWord T)
+    (-1)^(#(inversions permutation readingWord T))
+)
+
 descents YoungTableau := Set => (lambda) -> (
     rowIndices := unique apply(keys lambda, coords -> coords#0);
     groupByRow := new HashTable from apply(rowIndices, 
