@@ -137,7 +137,7 @@ numColumns YoungDiagram := ZZ => lambda -> (max apply(keys lambda, coords -> coo
 ------------------------------------
 -- Basic Young diagram operations
 ------------------------------------
-YoungDiagram == YoungDiagram := Boolean => (lambda, mu) -> (pairs lambda === pairs mu)
+YoungDiagram == YoungDiagram := Boolean => (lambda, mu) -> (set keys lambda == set keys mu)
 
 conjugate YoungDiagram := YoungDiagram => lambda -> (applyKeys(lambda, key -> reverse key))
 transpose YoungDiagram := YoungDiagram => lambda -> (conjugate lambda)
