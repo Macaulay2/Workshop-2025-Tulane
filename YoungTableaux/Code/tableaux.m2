@@ -6,15 +6,15 @@ YoungTableau.synonym = "youngTableau"
 
 -- This constructs a left-aligned Young tableau given a list of lists 
 -- containing each filled entry
-new YoungTableau from List := (typeofYoungTableau, lambda) -> (
-    new HashTable from flatten for i to #lambda-1 list (for j to #(lambda_i)-1 list (i+1,j+1)=>lambda_i_j)
+new YoungTableau from List := (typeofYoungTableau, T) -> (
+    new HashTable from flatten for i to #T-1 list (for j to #(T_i)-1 list (i+1,j+1)=>T_i_j)
 )
 -- This creates any variation of a Young tableau
-new YoungDiagram from HashTable := (typeofYoungDiagram, lambda) -> (new HashTable from lambda)
+new YoungDiagram from HashTable := (typeofYoungDiagram, T) -> (new HashTable from T)
 
 youngTableau = method()
-youngTableau List := YoungTableau => lambda -> new YoungTableau from lambda
-youngTableau HashTable := YoungDiagram => lambda -> (new YoungTableau from lambda)
+youngTableau List := YoungTableau => T -> new YoungTableau from T
+youngTableau HashTable := YoungDiagram => T -> (new YoungTableau from T)
 
 -- Checks if a Young tableau is well defined
 isWellDefined YoungTableau := Boolean => T -> (
@@ -56,10 +56,10 @@ isSemiStandard YoungTableau := Boolean => T -> (
 ------------------------------------
 -- Young tableaux string representations
 ------------------------------------
-toString YoungTableau := String => lambda -> (
-    maxHeight := max(apply(keys lambda, coords -> coords#0));
+toString YoungTableau := String => T -> (
+    maxHeight := max(apply(keys T, coords -> coords#0));
     boxesToFill := new MutableList from (for i in 1..maxHeight list new MutableList from {});
-    for coordsFillingPair in sort pairs lambda do (
+    for coordsFillingPair in sort pairs T do (
         coords := coordsFillingPair#0;
         filling := coordsFillingPair#1;
         boxesToFill#(coords#0-1) = append(boxesToFill#(coords#0-1), filling);
@@ -70,43 +70,43 @@ toString YoungTableau := String => lambda -> (
 ------------------------------------
 -- Basic Young tableau operations
 ------------------------------------
-YoungTableau == YoungTableau := Boolean => (lambda, mu) -> (set pairs lambda == set pairs mu)
+YoungTableau == YoungTableau := Boolean => (T, mu) -> (set pairs T == set pairs mu)
 
-conjugate YoungTableau := YoungTableau => lambda -> (applyKeys(lambda, key -> reverse key))
-transpose YoungTableau := YoungTableau => lambda -> (conjugate lambda)
+conjugate YoungTableau := YoungTableau => T -> (applyKeys(T, key -> reverse key))
+transpose YoungTableau := YoungTableau => T -> (conjugate T)
 
 rowInsertion = method(Options => {RowIndex => 1})
-rowInsertion (YoungTableau, ZZ) := YoungTableau => opts -> (lambda, val) -> (
+rowInsertion (YoungTableau, ZZ) := YoungTableau => opts -> (T, val) -> (
     -- If the tableau is empty, just insert val.
-    if lambda == youngTableau {} then lambda = youngTableau hashTable({(opts.RowIndex, 1) => val})
+    if T == youngTableau {} then T = youngTableau hashTable({(opts.RowIndex, 1) => val})
     -- Otherwise, if val is >= the entries in the first row, append it to the end of that row.
-    else (if all(values lambda_(opts.RowIndex), filling -> val >= filling) then (
-        lambda = youngTableau merge(lambda, hashTable({(opts.RowIndex, #lambda_(opts.RowIndex)+1) => val}),
+    else (if all(values T_(opts.RowIndex), filling -> val >= filling) then (
+        T = youngTableau merge(T, hashTable({(opts.RowIndex, #T_(opts.RowIndex)+1) => val}),
                                     (i,j) -> j);
     )
     -- If this is not possible, find the leftmost entry y such that y > val.
     -- Replace y with val, and repeat the process on the next row with y.
     else (
-        yIdx := (first sort keys selectValues(lambda_(opts.RowIndex), filling -> filling > val))#1;
-        y := lambda#(opts.RowIndex, yIdx);
+        yIdx := (first sort keys selectValues(T_(opts.RowIndex), filling -> filling > val))#1;
+        y := T#(opts.RowIndex, yIdx);
         newBox := hashTable({(opts.RowIndex, yIdx) => val});
-        lambda = youngTableau merge(lambda, newBox, (i,j) -> j);
-        lambda = rowInsertion(lambda, y, RowIndex => opts.RowIndex+1);
+        T = youngTableau merge(T, newBox, (i,j) -> j);
+        T = rowInsertion(T, y, RowIndex => opts.RowIndex+1);
     );
     );
-    lambda
+    T
 )
 
 benderKnuthInvolution = method()
-benderKnuthInvolution (YoungTableau, ZZ) := YoungTableau => (lambda, k) -> (
-    if not isMember(k, toList(1 ..< (max content lambda))) then error(toString(k) | " must be in the range 1.." | toString((max content lambda) - 1));
-    if not isSemiStandard lambda then error("benderKnuthInvolution is only valid when the tableau is semistandard.");
+benderKnuthInvolution (YoungTableau, ZZ) := YoungTableau => (T, k) -> (
+    if not isMember(k, toList(1 ..< (max content T))) then error(toString(k) | " must be in the range 1.." | toString((max content T) - 1));
+    if not isSemiStandard T then error("benderKnuthInvolution is only valid when the tableau is semistandard.");
 
     -- Only keep the cells which contain k or k+1.
     -- Remove columns which contain k and k+1, too.
     -- For each (disjoint) row, swap the lengths of the runs of k and k+1 entries.
-    filteredTableau := selectValues(lambda, filling -> isMember(filling, (k, k+1)));
-    filteredTableau = filteredTableau^(select(1..numColumns lambda, colIdx -> not isSubset({k, k+1}, content lambda^colIdx)));
+    filteredTableau := selectValues(T, filling -> isMember(filling, (k, k+1)));
+    filteredTableau = filteredTableau^(select(1..numColumns T, colIdx -> not isSubset({k, k+1}, content T^colIdx)));
     rowIndices := unique(keys filteredTableau / (coords -> coords#0));
     swappedTableau := youngTableau hashTable flatten for rowIdx in rowIndices list (
         row := filteredTableau_rowIdx;
@@ -123,29 +123,29 @@ benderKnuthInvolution (YoungTableau, ZZ) := YoungTableau => (lambda, k) -> (
             else ((rowIdx, colIdx) => k+1)
         )
     );
-    merge(lambda, swappedTableau, (i,j) -> j)
+    merge(T, swappedTableau, (i,j) -> j)
 )
 
 promotion = method()
-promotion YoungTableau := YoungTableau => (lambda) -> (
-    if not isStandard lambda then error("promotion is only valid when the tableau is standard.");
+promotion YoungTableau := YoungTableau => (T) -> (
+    if not isStandard T then error("promotion is only valid when the tableau is standard.");
     
-    fold((tableau, k) -> benderKnuthInvolution(tableau, k), lambda, 1 ..< (max content lambda))
+    fold((tableau, k) -> benderKnuthInvolution(tableau, k), T, 1 ..< (max content T))
 )
 
 evacuation = method()
-evacuation YoungTableau := YoungTableau => (lambda) -> (
-    if not isSemiStandard lambda then error("evacuation is only valid when the tableau is semi-standard.");
+evacuation YoungTableau := YoungTableau => (T) -> (
+    if not isSemiStandard T then error("evacuation is only valid when the tableau is semi-standard.");
     intermediateInvolution := (initialTableau, m) -> fold((tableau, k) -> benderKnuthInvolution(tableau, k), initialTableau, 1 .. m); 
-    fold((tableau, m) -> intermediateInvolution(tableau, m), lambda, reverse(1 ..< (max content lambda)))
+    fold((tableau, m) -> intermediateInvolution(tableau, m), T, reverse(1 ..< (max content T)))
 )
 
 dualEvacuation = method()
-dualEvacuation YoungTableau := YoungTableau => (lambda) -> (
-    if not isSemiStandard lambda then error("dualEvacuation is only valid when the tableau is semi-standard.");
-    n := max content lambda;
+dualEvacuation YoungTableau := YoungTableau => (T) -> (
+    if not isSemiStandard T then error("dualEvacuation is only valid when the tableau is semi-standard.");
+    n := max content T;
     intermediateInvolution := (initialTableau, m) -> fold((tableau, k) -> benderKnuthInvolution(tableau, n-k), initialTableau, 1 .. m); 
-    fold((tableau, m) -> intermediateInvolution(tableau, m), lambda, reverse(1 ..< (max content lambda)))
+    fold((tableau, m) -> intermediateInvolution(tableau, m), T, reverse(1 ..< (max content T)))
 )
 
 
@@ -308,45 +308,45 @@ RSKCorrespondence (YoungTableau, YoungTableau) := Matrix => (insertionTableau, r
 -- Yamanouchi words/Companion map
 ------------------------------------
 yamanouchiWord = method()
-yamanouchiWord YoungTableau := List => (lambda) -> (
-    -- lambda must be a standard Young tableau
-    -- w_i = j if i occurs in the j-th row of lambda
-    transposedHashTable := applyPairs(new HashTable from lambda, (coords, val) -> val => coords#0);
+yamanouchiWord YoungTableau := List => (T) -> (
+    -- T must be a standard Young tableau
+    -- w_i = j if i occurs in the j-th row of T
+    transposedHashTable := applyPairs(new HashTable from T, (coords, val) -> val => coords#0);
     for val in sort keys transposedHashTable list transposedHashTable#val
 )
 
 companionMap = method()
-companionMap YoungTableau := List => (lambda) -> (
-    if not isStandard lambda then (error("companionMap requires a standard Young tableau."););
-    yamanouchiWord lambda
+companionMap YoungTableau := List => (T) -> (
+    if not isStandard T then (error("companionMap requires a standard Young tableau."););
+    yamanouchiWord T
 )
 companionMap List := YoungTableau => (word) -> (
-    lambda := new MutableHashTable;
+    T := new MutableHashTable;
     for rowIdx in unique word do (
         fillings := positions(word, j -> j == rowIdx) / (idx -> idx+1);
         for colIdxFillingPair in pairs fillings do (
             colIdx := colIdxFillingPair#0 + 1;
             filling := colIdxFillingPair#1;
-            lambda#(rowIdx, colIdx) = filling;
+            T#(rowIdx, colIdx) = filling;
         )
     );
-    lambda = youngTableau lambda;
-    if not isWellDefined lambda then (error("companionMap(" | toString(word) | ") does not yield a well-defined Young tableau."););
-    if not isStandard lambda then (error(toString(word) | " does not define a standard Young tableau."););
-    lambda
+    T = youngTableau T;
+    if not isWellDefined T then (error("companionMap(" | toString(word) | ") does not yield a well-defined Young tableau."););
+    if not isStandard T then (error(toString(word) | " does not define a standard Young tableau."););
+    T
 )
 
 ------------------------------------
 -- Miscellaneous
 ------------------------------------
-content YoungTableau := List => (lambda) -> (values lambda)
-content (YoungTableau, Sequence) := ZZ => (lambda, coords) -> (lambda#coords)
-content (YoungTableau, ZZ, ZZ) := ZZ => (lambda, i, j) -> (lambda#(i,j))
+content YoungTableau := List => (T) -> (values T)
+content (YoungTableau, Sequence) := ZZ => (T, coords) -> (T#coords)
+content (YoungTableau, ZZ, ZZ) := ZZ => (T, i, j) -> (T#(i,j))
 
 weight = method()
-weight YoungTableau := List => (lambda) -> (
-    paddedCounts := hashTable toList apply(1..(max content lambda), i -> i => 0);
-    paddedCounts = merge(tally content lambda, paddedCounts, (i, j) -> i);
+weight YoungTableau := List => (T) -> (
+    paddedCounts := hashTable toList apply(1..(max content T), i -> i => 0);
+    paddedCounts = merge(tally content T, paddedCounts, (i, j) -> i);
     (sort pairs paddedCounts) / (keyValPair -> keyValPair#1)
 )
 
@@ -373,10 +373,10 @@ sign YoungTableau := ZZ => (T) -> (
     (-1)^(#(inversions T))
 )
 
-descents YoungTableau := Set => (lambda) -> (
-    rowIndices := unique apply(keys lambda, coords -> coords#0);
+descents YoungTableau := Set => (T) -> (
+    rowIndices := unique apply(keys T, coords -> coords#0);
     groupByRow := new HashTable from apply(rowIndices, 
-                                           rowIdx -> rowIdx => new HashTable from applyKeys(lambda_rowIdx, coords -> coords#1));
+                                           rowIdx -> rowIdx => new HashTable from applyKeys(T_rowIdx, coords -> coords#1));
     valuesByRow := applyValues(groupByRow, row -> set values row);
     minIdx := min rowIndices;
     maxIdx := max rowIndices;
@@ -386,39 +386,39 @@ descents YoungTableau := Set => (lambda) -> (
 )
 
 majorIndex = method()
-majorIndex YoungTableau := ZZ => (lambda) -> (sum descents lambda)
+majorIndex YoungTableau := ZZ => (T) -> (sum descents T)
 
 readingWord = method()
-readingWord YoungTableau := List => (lambda) -> (
-    rowsData := reverse apply(1..numRows lambda, i -> sort pairs lambda_i);
+readingWord YoungTableau := List => (T) -> (
+    rowsData := reverse apply(1..numRows T, i -> sort pairs T_i);
     rowsValues := apply(rowsData, row -> row / (rowEntry -> rowEntry#1));
     fold(rowsValues, (i, j) -> i | j)
 )
 
 rowStabilizers = method()
-rowStabilizers YoungTableau := List => lambda -> (
+rowStabilizers YoungTableau := List => T -> (
     -- A row/column is 'preserved' by a permutation if and only if the permutation
     -- only permutes the fillings present in that row/column.
-    Sn := apply(permutations(sum shape lambda), p -> permutation(p / (i -> i+1)));
+    Sn := apply(permutations(sum shape T), p -> permutation(p / (i -> i+1)));
     -- Check that all of the nonfixed points of the permutation are a subset of the
     -- filling labels for the first row.
-    stabilizers := select(Sn, perm -> isSubset(toList select(1..#perm, i -> perm_i != i), values lambda_1));
-    print(toString(lambda_1) | "     " | toString(stabilizers));
-    for rowIndex in 2..numRows lambda do (
+    stabilizers := select(Sn, perm -> isSubset(toList select(1..#perm, i -> perm_i != i), values T_1));
+    print(toString(T_1) | "     " | toString(stabilizers));
+    for rowIndex in 2..numRows T do (
         -- Among the permutations which fix the previous rows, check if they fix the current row.
-        stabilizers = select(stabilizers, perm -> isSubset(toList select(1..#perm, i -> perm_i != i), values lambda_rowIndex));
-        print(toString(lambda_rowIndex) | "     " | toString(stabilizers));
+        stabilizers = select(stabilizers, perm -> isSubset(toList select(1..#perm, i -> perm_i != i), values T_rowIndex));
+        print(toString(T_rowIndex) | "     " | toString(stabilizers));
     );
     stabilizers
 )
 
 columnStabilizers = method()
-columnStabilizers YoungTableau := List => lambda -> (rowStabilizers conjugate lambda)
+columnStabilizers YoungTableau := List => T -> (rowStabilizers conjugate T)
 
 youngSymmetrizer = method()
-youngSymmetrizer YoungTableau := YoungTableau => lambda -> (    
+youngSymmetrizer YoungTableau := YoungTableau => T -> (    
     -- The group algebra CC[Sn]
-    n := sum shape lambda;
+    n := sum shape T;
     Sn := toSequence apply(permutations n, p -> permutation(p / (i -> i+1)));
     x := local x;
     R := CC[toSequence(for perm in Sn list x_perm)];
@@ -427,8 +427,8 @@ youngSymmetrizer YoungTableau := YoungTableau => lambda -> (
     -- the summands take the form sign(h) e_(gh), where sign(h) is the sign of 
     -- the permutation h and e_i a basis vector for the group algebra group 
     -- algebra of CC[Sn].
-    sum(for rowStab in rowStabilizers lambda list 
-        sum(for columnStab in columnStabilizers lambda list 
+    sum(for rowStab in rowStabilizers T list 
+        sum(for columnStab in columnStabilizers T list 
             ((sign columnStab) * x_(extend(rowStab * columnStab, n)))))
 )
 

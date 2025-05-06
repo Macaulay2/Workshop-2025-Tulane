@@ -90,7 +90,7 @@ doc ///
   Usage
     toString lambda
   Inputs
-    lambda:YoungTableau
+    T:YoungTableau
   Outputs
     :String
   Description
@@ -111,7 +111,7 @@ doc ///
   Usage
     lambda == mu
   Inputs
-    lambda:YoungTableau
+    T:YoungTableau
     mu:YoungTableau
   Outputs
     :Boolean
@@ -147,7 +147,7 @@ doc ///
   Usage
     rowInsertion(lambda, k)
   Inputs
-    lambda:YoungTableau
+    T:YoungTableau
   Outputs
     :YoungTableau
   Description
@@ -188,7 +188,7 @@ doc ///
   Usage
     benderKnuthInvolution(lambda, k)
   Inputs
-    lambda:YoungTableau
+    T:YoungTableau
     k:ZZ
   Outputs
     :YoungTableau
@@ -224,7 +224,7 @@ doc ///
   Usage
     promotion lambda
   Inputs
-    lambda:YoungTableau
+    T:YoungTableau
   Outputs
     :YoungTableau
   Description
@@ -253,7 +253,7 @@ doc ///
   Usage
     evacuation lambda
   Inputs
-    lambda:YoungTableau
+    T:YoungTableau
   Outputs
     :YoungTableau
   Description
@@ -290,7 +290,7 @@ doc ///
   Usage
     dualEvacuation lambda
   Inputs
-    lambda:YoungTableau
+    T:YoungTableau
   Outputs
     :YoungTableau
   Description
@@ -451,7 +451,7 @@ doc ///
   Usage
     yamanouchiWord lambda
   Inputs
-    lambda:YoungTableau
+    T:YoungTableau
   Outputs
     :List
   Description
@@ -479,7 +479,7 @@ doc ///
   Usage
     yamanouchiWord lambda
   Inputs
-    lambda:YoungTableau
+    T:YoungTableau
   Outputs
     :List
   Description
@@ -512,7 +512,7 @@ doc ///
   Usage
     content lambda
   Inputs
-    lambda:YoungTableau
+    T:YoungTableau
   Outputs
     :List
   Description
@@ -534,7 +534,7 @@ doc ///
   Usage
     weight lambda
   Inputs
-    lambda:YoungTableau
+    T:YoungTableau
   Outputs
     :List
   Description
@@ -629,7 +629,7 @@ doc ///
   Usage
     descents lambda
   Inputs
-    lambda:YoungTableau
+    T:YoungTableau
   Outputs
     :Set
   Description
@@ -653,7 +653,7 @@ doc ///
   Usage
     majorIndex lambda
   Inputs
-    lambda:YoungTableau
+    T:YoungTableau
   Outputs
     :ZZ
   Description
@@ -676,7 +676,7 @@ doc ///
   Usage
     readingWord lambda
   Inputs
-    lambda:YoungTableau
+    T:YoungTableau
   Outputs
     :List
   Description
@@ -699,7 +699,7 @@ doc ///
   Usage
     rowStabilizers lambda
   Inputs
-    lambda:YoungTableau
+    T:YoungTableau
   Outputs
     :List
   Description
@@ -720,7 +720,7 @@ doc ///
   Usage
     highestWeightFilling lambda
   Inputs
-    lambda:YoungDiagram
+    T:YoungDiagram
   Outputs
     :YoungTableau
   Description
@@ -752,7 +752,7 @@ doc ///
   Usage
     canonicalFilling lambda
   Inputs
-    lambda:YoungDiagram
+    T:YoungDiagram
   Outputs
     :YoungTableau
   Description
@@ -787,7 +787,7 @@ doc ///
   Usage
     randomFilling lambda
   Inputs
-    lambda:YoungDiagram
+    T:YoungDiagram
   Outputs
     :YoungTableau
   Description
