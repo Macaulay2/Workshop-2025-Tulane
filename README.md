@@ -2,6 +2,10 @@
 
 ## Welcome to the Tulane 2025 Workshop Repository!
 
-Please use this repository throughout the workshop to track and contribute to the projects. You can also keep using this repository after the workshop has ended to continue collaborating on your projects.
+### InvarinatRing branch
 
-See the [wiki tab](https://github.com/Macaulay2/Workshop-2025-Tulane/wiki) for project descriptions, schedules, guides, etc. You can also use the [projects tab](https://github.com/Macaulay2/Workshop-2025-Tulane/projects) to keep track of remaining tasks in your project.
+You can work on your code here, but eventually should be posted on the [InvariantRing repo](https://github.com/galettof/InvariantRing)
+
+Tutorials on GitHub for mathematicians, M2, and the InvariantRing package are available from [GitHub for mathematicians, M2 edition](https://fragandi.github.io/CURITutorialDevelopment2025/ch-M2.html) 
+
+You can also add/edit possible projects by modyfing the Projects.md file in this folder
