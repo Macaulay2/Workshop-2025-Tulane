@@ -122,14 +122,14 @@ net YoungDiagram := Net => lambda -> (
 -- Indexing into Young diagrams
 ------------------------------------
 -- select the i-th row(s) of the Young diagram
-YoungDiagram _ ZZ := ZZ => (lambda, n) -> (selectKeys(lambda, coords -> coords#0 == n))
-YoungDiagram _ List := List => (lambda, l) -> (selectKeys(lambda, coords -> isMember(coords#0, l)))
-YoungDiagram _ Sequence := List => (lambda, s) -> (selectKeys(lambda, coords -> isMember(coords#0, s)))
+YoungDiagram _ ZZ := YoungDiagram => (lambda, n) -> (selectKeys(lambda, coords -> coords#0 == n))
+YoungDiagram _ List := YoungDiagram => (lambda, l) -> (selectKeys(lambda, coords -> isMember(coords#0, l)))
+YoungDiagram _ Sequence := YoungDiagram => (lambda, s) -> (selectKeys(lambda, coords -> isMember(coords#0, s)))
 
 -- select the j-th column(s) of the Young diagram
-YoungDiagram ^ ZZ := ZZ => (lambda, n) -> (selectKeys(lambda, coords -> coords#1 == n))
-YoungDiagram ^ List := List => (lambda, l) -> (selectKeys(lambda, coords -> isMember(coords#1, l)))
-YoungDiagram ^ Sequence := List => (lambda, s) -> (selectKeys(lambda, coords -> isMember(coords#1, s)))
+YoungDiagram ^ ZZ := YoungDiagram => (lambda, n) -> (selectKeys(lambda, coords -> coords#1 == n))
+YoungDiagram ^ List := YoungDiagram => (lambda, l) -> (selectKeys(lambda, coords -> isMember(coords#1, l)))
+YoungDiagram ^ Sequence := YoungDiagram => (lambda, s) -> (selectKeys(lambda, coords -> isMember(coords#1, s)))
 
 numRows YoungDiagram := ZZ => lambda -> (max apply(keys lambda, coords -> coords#0))
 numColumns YoungDiagram := ZZ => lambda -> (max apply(keys lambda, coords -> coords#1))
@@ -208,5 +208,5 @@ shape SkewDiagram := Sequence => diagram -> (
 ------------------------------------
 -- Skew diagram string representations
 ------------------------------------
-toString YoungDiagram := String => lambda -> ("SkewDiagram" | toString(shape lambda))
-toExternalString YoungDiagram := String => lambda -> (toString lambda)
+toString SkewDiagram := String => lambda -> ("SkewDiagram" | toString(shape lambda))
+toExternalString SkewDiagram := String => lambda -> (toString lambda)

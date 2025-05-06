@@ -3,17 +3,248 @@ doc ///
     YoungDiagram
     youngDiagram
     (youngDiagram, VisibleList)
+    (youngDiagram, HashTable)
   Headline
     the youngDiagram type
   Description
     Text
       Young diagrams are constructed from lists. To create a {\bf Young diagram}, 
-      use the {\tt youngDiagram} method:
+      use the {\tt youngDiagram} method.
     Example
       lambda = youngDiagram {5,4,1}
     Text
-      Young diagrams must be constructed from lists consisting of only non-increasing positive integers. 
-      If a list contains any other elements or does not consist of the entire range, then an error is thrown.
+      Young diagrams can also be constructed from hash tables where the keys are
+      the coordinates of the cells in the diagram. Since Young diagrams are just
+      boxes, the values of the hash table are forgotten and replaced with whitespace.
+    Example
+      lambda = youngTableau {{1,2,3},{4,5}}
+      youngDiagram lambda
+  Caveat
+    Young diagrams must be constructed from lists consisting of only non-increasing positive integers. 
+    If a list contains any other elements or does not consist of the entire range, then an error is thrown.
+///
+
+doc ///
+  Key
+    (toString, YoungDiagram)
+    (toExternalString, YoungDiagram)
+  Headline
+    produces a string representation of a Young diagram
+  Usage
+    toString lambda
+  Inputs
+    lambda:YoungDiagram
+  Outputs
+    :String
+  Description
+    Text
+      The string representation encodes a Young diagram by its shape.
+    Example
+      lambda = youngDiagram {4,3,1}
+      toString lambda
+  SeeAlso
+    (net, YoungDiagram)
+///
+
+doc ///
+  Key
+    (net, YoungDiagram)
+  Headline
+    display a Young diagram
+  Usage
+    net lambda
+  Inputs
+    lambda:YoungDiagram
+  Outputs
+    :Net
+  Description
+    Text
+      The net of a Young diagram is a graphical representation of the diagram
+      as boxes in a grid.
+    Example
+      lambda = youngDiagram {4,3,1}
+      net lambda
+    Text
+      The net of a Young tableau is the net of its underlying diagram with the
+      boxes filled in according to the content of the tableau.
+    Example
+      lambda = youngTableau {{1,2,3},{4,5},{6}}
+      net lambda
+///
+
+doc ///
+  Key
+    (symbol _, YoungDiagram, ZZ)
+  Headline
+    selects the $n$-th row of a Young diagram
+  Usage
+    lambda_n
+  Inputs
+    lambda:YoungDiagram
+    n:ZZ
+  Outputs
+    :YoungDiagram
+  Description
+    Text
+      Returns the $n$-th row of a Young diagram.
+    Example
+      lambda = youngDiagram {4,3,1}
+      lambda_2
+  Caveat
+    To be consistent with the rest of the package, the first row is indexed by 1.
+  SeeAlso
+    (symbol _, YoungDiagram, List)
+    (symbol _, YoungDiagram, Sequence)
+///
+
+doc ///
+  Key
+    (symbol _, YoungDiagram, List)
+    (symbol _, YoungDiagram, Sequence)
+  Headline
+    selects a subset of rows of a Young diagram
+  Usage
+    lambda_l
+  Inputs
+    lambda:YoungDiagram
+    l:List
+  Outputs
+    :YoungDiagram
+  Description
+    Text
+      Returns the subset of rows indexed by the given list.
+    Example
+      lambda = youngDiagram {4,3,1}
+      lambda_{1,3}
+  Caveat
+    To be consistent with the rest of the package, the first row is indexed by 1.
+  SeeAlso
+    (symbol _, YoungDiagram, ZZ)
+///
+
+doc ///
+  Key
+    (symbol ^, YoungDiagram, ZZ)
+  Headline
+    selects the $n$-th column of a Young diagram
+  Usage
+    lambda_n
+  Inputs
+    lambda:YoungDiagram
+    n:ZZ
+  Outputs
+    :YoungDiagram
+  Description
+    Text
+      Returns the $n$-th column of a Young diagram.
+    Example
+      lambda = youngDiagram {4,3,1}
+      lambda^1
+  Caveat
+    To be consistent with the rest of the package, the first column is indexed by 1.
+  SeeAlso
+    (symbol ^, YoungDiagram, List)
+    (symbol ^, YoungDiagram, Sequence)
+///
+
+doc ///
+  Key
+    (symbol ^, YoungDiagram, List)
+    (symbol ^, YoungDiagram, Sequence)
+  Headline
+    selects a subset of rows of a Young diagram
+  Usage
+    lambda^l
+  Inputs
+    lambda:YoungDiagram
+    l:List
+  Outputs
+    :YoungDiagram
+  Description
+    Text
+      Returns the subset of rows indexed by the given list.
+    Example
+      lambda = youngDiagram {4,3,1}
+      lambda^{1,4}
+  Caveat
+    To be consistent with the rest of the package, the first row is indexed by 1.
+  SeeAlso
+    (symbol ^, YoungDiagram, ZZ)
+///
+
+
+doc ///
+  Key
+    (numRows, YoungDiagram)
+  Headline
+    computes the number of rows in a Young diagram
+  Usage
+    numRows lambda
+  Inputs
+    lambda:YoungDiagram
+  Outputs
+    :ZZ
+  Description
+    Example
+      lambda = youngDiagram {4,3,1}
+      numRows lambda
+  SeeAlso
+    (numColumns, YoungDiagram)
+    shape
+///
+
+doc ///
+  Key
+    (numColumns, YoungDiagram)
+  Headline
+    computes the number of columns in a Young diagram
+  Usage
+    numColumns lambda
+  Inputs
+    lambda:YoungDiagram
+  Outputs
+    :ZZ
+  Description
+    Example
+      lambda = youngDiagram {4,3,1}
+      numColumns lambda
+  SeeAlso
+    (numRows, YoungDiagram)
+    shape
+///
+
+doc ///
+  Key
+    (symbol ==, YoungDiagram, YoungDiagram)
+  Headline
+    whether two Young diagrams are equal
+  Usage
+    lambda == mu
+  Inputs
+    lambda:YoungDiagram
+    mu:YoungDiagram
+  Outputs
+    :Boolean
+  Description
+    Text
+      Since Young diagrams are implemented as hash tables, two Young diagrams
+      are considered equal if they have the same set of keys.
+    Example
+      lambda = youngDiagram {4,3,1}
+      mu = youngDiagram {3,2,1}
+      lambda == mu
+    Text
+      This implementation means that if two Young diagrams are shifted versions
+      of each other, they are not considered equal.
+    Example
+      lambda = youngDiagram hashTable {(1,1) => " ", (1,2) => " ",
+                                       (2,1) => " "}
+      -- mu is lambda shifted to the right by one.
+      mu = youngDiagram hashTable {(1,2) => " ", (1,3) => " ",
+                                   (2,2) => " "}
+      lambda == mu
+  SeeAlso
+    (symbol ==, YoungTableau, YoungTableau)
 ///
 
 doc ///
@@ -44,8 +275,10 @@ doc ///
   Key
     conjugate
     (conjugate, YoungDiagram)
+    (conjugate, YoungTableau)
     transpose
     (transpose, YoungDiagram)
+    (transpose, YoungTableau)
   Headline
     computes the conjugate (or transpose) of a Young diagram
   Usage
@@ -222,4 +455,29 @@ doc ///
   SeeAlso
     shape
     (shape, YoungDiagram)
+///
+
+doc ///
+  Key
+    (toString, SkewDiagram)
+    (toExternalString, SkewDiagram)
+  Headline
+    produces a string representation of a skew diagram
+  Usage
+    toString lambda
+    toExternalString lambda
+  Inputs
+    lambda:SkewDiagram
+  Outputs
+    :String
+  Description
+    Text
+      The string representation encodes a skew diagram by its shape.
+    Example
+      lambda = youngDiagram {4,3,1}
+      mu = youngDiagram {2,1}
+      rho = skewDiagram(lambda, mu)
+      toString rho
+  SeeAlso
+    (net, YoungDiagram)
 ///
