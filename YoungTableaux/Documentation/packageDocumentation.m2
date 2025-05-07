@@ -34,7 +34,7 @@ doc ///
       Young diagrams are constructed from lists. To create a {\bf Young diagram}, 
       use the {\tt youngDiagram} method:
     Example
-      lambda = youngDiagram {5,4,1}
+      T = youngDiagram {5,4,1}
     Text
       Young diagrams must be constructed from lists consisting of only non-increasing positive integers. 
       If a list contains any other elements or does not consist of the entire range, then an error is thrown.
@@ -48,7 +48,7 @@ doc ///
       In {\tt Macaulay2}, this implemented as a list of lists of integers.
       To create a {\bf Young tableau}, use the {\tt youngTableau} method:
     Example
-      lambda = youngTableau {{1,2,4,7,8},{3,5,6,9},{10}};
+      T = youngTableau {{1,2,4,7,8},{3,5,6,9},{10}};
 
     --
     Text
@@ -58,8 +58,8 @@ doc ///
       We can compute the {\em conjugate} (or {\em transpose} of a Young diagram/tableau.
       This corresponds to reading the diagram/tableau along the columns instead of the rows.
     Example
-      lambda = youngDiagram {5,4,1};
-      conjugate lambda
+      T = youngDiagram {5,4,1};
+      conjugate T
   SeeAlso
     (conjugate, YoungDiagram)
 ///

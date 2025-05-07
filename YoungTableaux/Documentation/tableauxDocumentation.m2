@@ -7,7 +7,7 @@ doc ///
   Headline
     constructs a Young tableau
   Usage
-    youngTableau lambda
+    youngTableau T
   Inputs
     diagramShape:List
   Outputs
@@ -17,15 +17,15 @@ doc ///
       A Young tableau can be constructed from a list of lists specifying the 
       fillings of the cells of the tableau.
     Example
-      lambda = youngTableau {{1,2,3},{4,5},{6}}
+      T = youngTableau {{1,2,3},{4,5},{6}}
     Text
       Alternatively, a Young tableau can be construced from a hash table whose
       keys are the coordinates of the cells and whose values are the fillings
       of the cells.
     Example
-      lambda = youngTableau hashTable {(1,1) => 1, (1,2) => 2, (1,3) => 3, 
-                                       (2,1) => 4, (2,2) => 5, 
-                                       (3,1) => 6}
+      T = youngTableau hashTable {(1,1) => 1, (1,2) => 2, (1,3) => 3, 
+                                  (2,1) => 4, (2,2) => 5, 
+                                  (3,1) => 6}
   SeeAlso
     canonicalFilling
     rowsFirstFilling
@@ -88,7 +88,7 @@ doc ///
   Headline
     produces a string representation of a Young tableau
   Usage
-    toString lambda
+    toString T
   Inputs
     T:YoungTableau
   Outputs
@@ -97,8 +97,8 @@ doc ///
     Text
       The string representation encodes a Young diagram by its rows and contents.
     Example
-      lambda = youngTableau {{1,2,3},{4,5},{6}}
-      toString lambda
+      T = youngTableau {{1,2,3},{4,5},{6}}
+      toString T
   SeeAlso
     (net, YoungDiagram)
 ///
@@ -109,10 +109,10 @@ doc ///
   Headline
     whether two Young tableaux are equal
   Usage
-    lambda == mu
+    T == U
   Inputs
     T:YoungTableau
-    mu:YoungTableau
+    U:YoungTableau
   Outputs
     :Boolean
   Description
@@ -120,19 +120,19 @@ doc ///
       Since Young tableaux are implemented as hash tables, two Young tableaux
       are considered equal if they have the same set of of (key, value) pairs.
     Example
-      lambda = canonicalFilling youngDiagram {3,2,1}
-      mu = rowsFirstFilling youngDiagram {3,2,1}
-      lambda == mu
+      T = canonicalFilling youngDiagram {3,2,1}
+      U = rowsFirstFilling youngDiagram {3,2,1}
+      T == U
     Text
       This implementation means that if two Young tableaux are shifted versions
       of each other, they are not considered equal.
     Example
-      lambda = youngDiagram hashTable {(1,1) => 1, (1,2) => 2,
-                                       (2,1) => 3}
-      -- mu is lambda shifted to the right by one.
-      mu = youngDiagram hashTable {(1,2) => 1, (1,3) => 2,
+      T = youngDiagram hashTable {(1,1) => 1, (1,2) => 2,
+                                  (2,1) => 3}
+      -- U is T shifted to the right by one.
+      U = youngDiagram hashTable {(1,2) => 1, (1,3) => 2,
                                    (2,2) => 3}
-      lambda == mu
+      T == U
   SeeAlso
     (symbol ==, YoungDiagram, YoungDiagram)
 ///
@@ -145,7 +145,7 @@ doc ///
   Headline
     performs row insertion on a tableau
   Usage
-    rowInsertion(lambda, k)
+    rowInsertion(T, k)
   Inputs
     T:YoungTableau
   Outputs
@@ -157,9 +157,9 @@ doc ///
       into the first row if possible, and if not, it pushes another cell from
       the first row down to the second row, and so on.
     Example
-      lambda = youngTableau {{1,4,6},
-                             {2}}
-      rowInsertion(lambda, 3)
+      T = youngTableau {{1,4,6},
+                        {2}}
+      rowInsertion(T, 3)
     Text
       Optionally, {\tt RowIndex} can be passed as an argument to specify the 
       starting row for the row-insertion algorithm. The default is the first row.
@@ -186,7 +186,7 @@ doc ///
   Headline
     computes a Bender-Knuth involution on a semi-standard Young tabelau tableau
   Usage
-    benderKnuthInvolution(lambda, k)
+    benderKnuthInvolution(T, k)
   Inputs
     T:YoungTableau
     k:ZZ
@@ -204,10 +204,10 @@ doc ///
       }@
 
     Example
-      lambda = youngTableau {{1,1,1,1,1,1,2,2,2,2,3},
-                             {2,2,2,2,2,2,3},
-                             {3,4,4,4,4}}
-      benderKnuthInvolution(lambda, 2)
+      T = youngTableau {{1,1,1,1,1,1,2,2,2,2,3},
+                        {2,2,2,2,2,2,3},
+                        {3,4,4,4,4}}
+      benderKnuthInvolution(T, 2)
   Caveat
     For a tableau of shape $\lambda$, this is only defined for $1 \keq k \leq \lambda - 1$.
   SeeAlso
@@ -222,7 +222,7 @@ doc ///
   Headline
     computes the promotion of a standard Young tableau
   Usage
-    promotion lambda
+    promotion T
   Inputs
     T:YoungTableau
   Outputs
@@ -233,10 +233,10 @@ doc ///
       the promotion of $T$ is defined as the composition $(\circ BK_{n-1} \circ \ldots \circ BK_1)(T)$,
       where $BK_k$ is a Bender-Knuth involution.
     Example
-      lambda = youngTableau {{1,3,4,5},
-                             {2,6,8},
-                             {7,9}}
-      promotion lambda
+      T = youngTableau {{1,3,4,5},
+                        {2,6,8},
+                        {7,9}}
+      promotion T
   Caveat
     Promotion is only defined for standard Young tableaux.
   SeeAlso
@@ -251,7 +251,7 @@ doc ///
   Headline
     computes the evacuation of a semi-standard Young tableau
   Usage
-    evacuation lambda
+    evacuation T
   Inputs
     T:YoungTableau
   Outputs
@@ -263,17 +263,17 @@ doc ///
       $((BK_1) \circ (BK_2 \circ BK_1) \circ \ldots \circ (\circ BK_{n-1} \circ \ldots \circ BK_1))(T)$,
       where $BK_k$ is a Bender-Knuth involution.
     Example
-      lambda = youngTableau {{1,3,4,8},
-                             {2,5,6},
-                             {7,9}}
-      evacuation lambda
+      T = youngTableau {{1,3,4,8},
+                        {2,5,6},
+                        {7,9}}
+      evacuation T
     Example
-      lambda = youngTableau {{1,3,8},
-                             {2,4},
-                             {5,9},
-                             {6,10},
-                             {7}}
-      evacuation lambda
+      T = youngTableau {{1,3,8},
+                        {2,4},
+                        {5,9},
+                        {6,10},
+                        {7}}
+      evacuation T
   Caveat
     Evacuation is only defined for semi-standard Young tableaux.
   SeeAlso
@@ -288,7 +288,7 @@ doc ///
   Headline
     computes the dual evacuation of a semi-standard Young tableau
   Usage
-    dualEvacuation lambda
+    dualEvacuation T
   Inputs
     T:YoungTableau
   Outputs
@@ -300,17 +300,17 @@ doc ///
       $((BK_{n-1}) \circ (BK_{n-2} \circ BK_{n-1}) \circ \ldots \circ (\circ BK_1 \circ \ldots \circ BK_{n-1}))(T)$,
       where $BK_k$ is a Bender-Knuth involution.
     Example
-      lambda = youngTableau {{1,3,4,8},
-                             {2,5,6},
-                             {7,9}}
-      dualEvacuation lambda
+      T = youngTableau {{1,3,4,8},
+                        {2,5,6},
+                        {7,9}}
+      dualEvacuation T
     Example
-      lambda = youngTableau {{1,3,8},
-                             {2,4},
-                             {5,9},
-                             {6,10},
-                             {7}}
-      dualEvacuation lambda
+      T = youngTableau {{1,3,8},
+                        {2,4},
+                        {5,9},
+                        {6,10},
+                        {7}}
+      dualEvacuation T
   Caveat
     Dual evacuation is only defined for semi-standard Young tableaux.
   SeeAlso
@@ -449,7 +449,7 @@ doc ///
   Headline
     computes the Yamanouchi word associated to a standard Young tableau
   Usage
-    yamanouchiWord lambda
+    yamanouchiWord T
   Inputs
     T:YoungTableau
   Outputs
@@ -460,8 +460,8 @@ doc ///
       ordered list $w$ such that $w_i = j$ if $i$ appears in row $j$ of the
       tableau.
     Example
-      lambda = canonicalFilling youngDiagram {4,3,1}
-      yamanouchiWord lambda
+      T = canonicalFilling youngDiagram {4,3,1}
+      yamanouchiWord T
   Caveat
     In this package, the Yamanouchi word is only defined for standard Young 
     tableaux.
@@ -477,7 +477,7 @@ doc ///
   Headline
     computes the image of a standard Young tableau under the companion map
   Usage
-    yamanouchiWord lambda
+    yamanouchiWord T
   Inputs
     T:YoungTableau
   Outputs
@@ -489,8 +489,8 @@ doc ///
       of a standard Young tableau under the companion map is the ordered list
       $w$ such that $w_i = j$ if $i$ appears in row $j$ of the tableau.
     Example
-      lambda = canonicalFilling youngDiagram {4,3,1}
-      companionMap lambda
+      T = canonicalFilling youngDiagram {4,3,1}
+      companionMap T
     Text
       The image of a Yamanouchi word $w$ under the companion map is the standard
       Young tableau $\lambda$ where the $i$-th row of $\lambda$ has fillings
@@ -510,7 +510,7 @@ doc ///
   Headline
     computes the content of a Young tableau
   Usage
-    content lambda
+    content T
   Inputs
     T:YoungTableau
   Outputs
@@ -521,8 +521,8 @@ doc ///
       that cell. The {\em content} of a Young tableau is a multiset whose elements 
       of the contents of the cells of the tableau.
     Example
-      lambda = canonicalFilling youngDiagram {4,3,1}
-      content lambda
+      T = canonicalFilling youngDiagram {4,3,1}
+      content T
 ///
 
 doc ///
@@ -532,7 +532,7 @@ doc ///
   Headline
     computes the weight of a Young tableau
   Usage
-    weight lambda
+    weight T
   Inputs
     T:YoungTableau
   Outputs
@@ -543,8 +543,8 @@ doc ///
       then the {\em weight} of $\lambda$ is the ordered list $w$ of lenght $n$
       where $w_i$ is the number of times $i$ appears in $lambda$.
     Example
-      lambda = highestWeightFilling youngDiagram {4,3,1}
-      weight lambda
+      T = highestWeightFilling youngDiagram {4,3,1}
+      weight T
   SeeAlso
     (content, YoungTableau)
 ///
@@ -627,7 +627,7 @@ doc ///
   Headline
     computes the descents of a Young tableau
   Usage
-    descents lambda
+    descents T
   Inputs
     T:YoungTableau
   Outputs
@@ -638,8 +638,8 @@ doc ///
       $k+1$ appears in a row strictly below $k$. The elements of the descent set
       are called {\em descents}.
     Example
-      lambda = canonicalFilling youngDiagram {4,3,1}
-      descents lambda
+      T = canonicalFilling youngDiagram {4,3,1}
+      descents T
   SeeAlso
     majorIndex
 ///
@@ -651,7 +651,7 @@ doc ///
   Headline
     computes the major Index of a Young tableau
   Usage
-    majorIndex lambda
+    majorIndex T
   Inputs
     T:YoungTableau
   Outputs
@@ -661,8 +661,8 @@ doc ///
       The {\em major index} of a Young tableau is the sum of the descents of the 
       tableau.
     Example
-      lambda = canonicalFilling youngDiagram {4,3,1}
-      majorIndex lambda
+      T = canonicalFilling youngDiagram {4,3,1}
+      majorIndex T
   SeeAlso
     (descents, YoungTableau)
 ///
@@ -674,7 +674,7 @@ doc ///
   Headline
     computes the reading word of a Young tableau
   Usage
-    readingWord lambda
+    readingWord T
   Inputs
     T:YoungTableau
   Outputs
@@ -684,8 +684,8 @@ doc ///
       The {\em reading word} of a Young tableau is the list of integers obtained 
       by reading the tableau from left to right, bottom to top (in English notation).
     Example
-      lambda = canonicalFilling youngDiagram {4,3,1}
-      readingWord lambda
+      T = canonicalFilling youngDiagram {4,3,1}
+      readingWord T
 ///
 
 doc ///
@@ -705,8 +705,8 @@ doc ///
       The {\em row word} of a Young tableau is the list of integers obtained 
       by reading the tableau from left to right, top to bottom (in English notation).
     Example
-      lambda = canonicalFilling youngDiagram {4,3,1}
-      rowWord lambda
+      T = canonicalFilling youngDiagram {4,3,1}
+      rowWord T
   SeeAlso
     inversions
 ///
@@ -720,7 +720,7 @@ doc ///
   Headline
     computes the permutations which fixes the rows (or columns) of a Young tableau
   Usage
-    rowStabilizers lambda
+    rowStabilizers T
   Inputs
     T:YoungTableau
   Outputs
@@ -730,8 +730,8 @@ doc ///
       A row (or column) is preserved by a permutation if and only if the 
       permutation only permutes the fillings present in that row (or column).
     Example
-      lambda = canonicalFilling youngDiagram {4,3,1}
-      rowStabilizers lambda
+      T = canonicalFilling youngDiagram {4,3,1}
+      rowStabilizers T
 ///
 
 doc ///
@@ -741,7 +741,7 @@ doc ///
   Headline
     constructs a Young tableau by filling the cells according to their rows
   Usage
-    highestWeightFilling lambda
+    highestWeightFilling T
   Inputs
     T:YoungDiagram
   Outputs
@@ -753,8 +753,8 @@ doc ///
       filling the cells of $\lambda$ with the index of the row the cell is in;
       i.e., cell $(i,j)$ is filled with $i$.
     Example
-      lambda = youngDiagram {4,3,1}
-      highestWeightFilling lambda
+      T = youngDiagram {4,3,1}
+      highestWeightFilling T
   SeeAlso
     canonicalFilling
     rowsFirstFilling
@@ -773,7 +773,7 @@ doc ///
   Headline
     constructs a Young tableau by filling the cells with $1,2,\ldots,n$
   Usage
-    canonicalFilling lambda
+    canonicalFilling T
   Inputs
     T:YoungDiagram
   Outputs
@@ -787,15 +787,15 @@ doc ///
       obtained by either the {\tt canonicalFilling} or {\tt rowsFirstFilling}
       methods.
     Example
-      lambda = youngDiagram {4,3,1}
-      canonicalFilling lambda
+      T = youngDiagram {4,3,1}
+      canonicalFilling T
     Text
       The {\tt columnsFirstFilling} method does the same thing as the 
       {\tt canonicalFilling} method, but fills the cells from top to bottom,
       left to right (in English notation).
     Example
-      lambda = youngDiagram {4,3,1}
-      columnsFirstFilling lambda
+      T = youngDiagram {4,3,1}
+      columnsFirstFilling T
   SeeAlso
     highestWeightFilling
     randomFilling
@@ -808,7 +808,7 @@ doc ///
   Headline
     constructs a Young tableau with a random filling
   Usage
-    randomFilling lambda
+    randomFilling T
   Inputs
     T:YoungDiagram
   Outputs
@@ -819,8 +819,8 @@ doc ///
       {\tt randomFilling} method constructs a Young tableau by filling the cells 
       of $\lambda$ with the integers $1,2,\ldots,n$ in a random order.
     Example
-      lambda = youngDiagram {4,3,1}
-      randomFilling lambda
+      T = youngDiagram {4,3,1}
+      randomFilling T
   Caveat
     The resulting tableau is not guaranteed to be standard (nor semi-standard).
   SeeAlso
