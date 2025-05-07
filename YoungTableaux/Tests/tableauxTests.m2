@@ -73,6 +73,41 @@ TEST ///
 ///
 
 TEST ///
+    -- promotion and evacuation
+    -- Specific example
+    T = youngTableau {{1,3,4,5},
+                      {2,6,8},
+                      {7,9}}
+    actualPromotionT = youngTableau {{1,2,3,4},
+                                     {5,7,9},
+                                     {6,8}}
+    assert((promotion T) == actualPromotionT)
+
+    -- FACT: Promotion commutes with transpose
+    (assert((promotion transpose T) == (transpose promotion T)))
+
+    -- FACT [Schützenberger]: If T has rectangular shape and has n boxes, then 
+    --       applying promotion n times returns T.
+    T = canonicalFilling youngTableau {{1,2,3},
+                                       {4,5,6}}
+    runningTableau = T
+    for i in 1..#T do (runningTableau = promotion runningTableau;)
+    assert(runningTableau == T)
+
+    -- FACT: Let T be a standard Young tableau with n boxes. Then
+    --       (1) evacuation^2(T) = T
+    --       (2) dualEvacuation^2(T) = T
+    --       (3) promotion^n(T) = evacuation dualEvacuation T
+    -- TODO: Replace this with a random standard Young tableau
+    T = canonicalFilling youngDiagram {5,4,3,2,1}
+    assert((evacuation evacuation T) == T)
+    assert((dualEvacuation dualEvacuation T) == T)
+    runningTableau = T
+    for i in 1..#T do (runningTableau = promotion runningTableau;)
+    assert(runningTableau  == (evacuation dualEvacuation T))
+///
+
+TEST ///
     -- biword
     -- Example taken from https://en.wikipedia.org/wiki/Robinson%E2%80%93Schensted%E2%80%93Knuth_correspondence
     A = matrix {{1,0,2},{0,2,0},{1,1,0}}
