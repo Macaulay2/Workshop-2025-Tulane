@@ -13,11 +13,13 @@ YoungDiagram.synonym = "youngDiagram"
 new YoungDiagram from VisibleList := (typeofYoungDiagram, lambda) -> (
     new HashTable from flatten for i to #lambda-1 list (for j to (lambda_i)-1 list (i+1,j+1)=>" ")
 )
+new YoungDiagram from Partition := (typeofYoungDiagram, lambda) -> (new YoungDiagram from toList lambda)
 -- This creates any variation of a Young diagram
 new YoungDiagram from HashTable := (typeofYoungDiagram, lambda) -> (new HashTable from lambda)
 
 youngDiagram = method()
 youngDiagram VisibleList := YoungDiagram => lambda -> (new YoungDiagram from lambda)
+youngDiagram Partition := youngDiagram => lambda -> (youngDiagram toList lambda)
 youngDiagram HashTable := YoungDiagram => lambda -> (new YoungDiagram from applyValues(lambda, v -> " "))
 
 -- Checks if a Young diagram is well defined
