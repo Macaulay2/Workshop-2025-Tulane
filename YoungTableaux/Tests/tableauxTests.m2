@@ -151,9 +151,8 @@ TEST ///
     
     -- Theorem 4.3 of [R04]: sign(rw(T)) = sign(P) * sign(Q) * (-1)^e, where e is the sum of
     -- the even-indexed rows of P.
-    evenIndices = select(#(shape P), even) / (i -> i+1)
-    -- WAITING FOR FIX: The `Permutations` package has a bug in computing the sign of a permutation. 
-    -- assert((sign p) == ((sign P) * (sign Q) * (-1)^(#(P_evenIndices))))
+    evenIndices = select(1..(#(shape P)+1), even)
+    assert((sign p) == ((sign P) * (sign Q) * (-1)^(#(P_evenIndices))))
 
     -- Example 4.4 from [R04]
     p = permutation {2,9,1,5,6,4,8,3,7}
@@ -167,13 +166,22 @@ TEST ///
                             {8}}
     (P, Q) = RSKCorrespondence p
     assert((P == actualP) and (Q == actualQ))
-    evenIndices = select(#(shape P), even) / (i -> i+1)
-    -- WAITING FOR FIX: The `Permutations` package has a bug in computing the sign of a permutation.
-    -- assert((sign p) == ((sign P) * (sign Q) * (-1)^(#(P_evenIndices))))
+    evenIndices = select(1..(#(shape P)+1), even)
+    assert((sign p) == ((sign P) * (sign Q) * (-1)^(#(P_evenIndices))))
 ///
 
 TEST ///
     -- inversions
+    -- FACT: For a standard Young tableau, the inversion set of its row word is
+    -- the same as the inversion set of the tableau.
+    T = youngTableau {{1,3,6,7},
+                      {2,4,8},
+                      {5},
+                      {9}}
+    p = permutation rowWord T
+    inversionsOfRowWord = set (apply(inversions p, idxPair -> rsort (p_(idxPair / (i -> i-1)))) / toSequence)
+    assert((set inversions T) == inversionsOfRowWord)
+
     -- Example 4.4 of [R04]
     P = youngTableau {{1,3,6,7},
                       {2,4,8},
