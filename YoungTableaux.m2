@@ -52,6 +52,7 @@ export {
     "weight",
     "majorIndex",
     "readingWord",
+    "rowWord",
     "rowStabilizers",
     "columnStabilizers",
     "youngSymmetrizer",

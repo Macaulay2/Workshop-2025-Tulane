@@ -390,9 +390,14 @@ majorIndex YoungTableau := ZZ => (T) -> (sum descents T)
 
 readingWord = method()
 readingWord YoungTableau := List => (T) -> (
-    rowsData := reverse apply(1..numRows T, i -> sort pairs T_i);
-    rowsValues := apply(rowsData, row -> row / (rowEntry -> rowEntry#1));
+    rowsValues := reverse apply(1..numRows T, i -> (sort pairs T_i) / last);
     fold(rowsValues, (i, j) -> i | j)
+)
+
+rowWord = method()
+rowWord YoungTableau := List => (T) -> (
+    rowsValues := apply(1..numRows T, i -> (sort pairs T_i) / last);
+    fold((i, j) -> i | j, rowsValues)
 )
 
 rowStabilizers = method()

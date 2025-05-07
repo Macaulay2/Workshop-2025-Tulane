@@ -690,6 +690,42 @@ doc ///
 
 doc ///
   Key
+    rowWord
+    (rowWord, YoungTableau)
+  Headline
+    computes the row word of a Young tableau
+  Usage
+    row T
+  Inputs
+    T:YoungTableau
+  Outputs
+    :List
+  Description
+    Text
+      The {\em row word} of a Young tableau is the list of integers obtained 
+      by reading the tableau from left to right, top to bottom (in English notation).
+    Example
+      lambda = canonicalFilling youngDiagram {4,3,1}
+      rowWord lambda
+    Text
+      Note that if $T$ is a row word, then the inversions of the tableau are the same
+      as the inversions of its row word (as a permutation).
+    Example
+      T = youngTableau {{1,3,6,7},
+                        {2,4,8},
+                        {5},
+                        {9}}
+      inversions T
+
+      -- The definition of inversions in a Young tableau reverse the pairs when
+      -- compared to the definition of inversions in a permutation.
+      inversions rowWord T
+  SeeAlso
+    inversions
+///
+
+doc ///
+  Key
     rowStabilizers
     (rowStabilizers, YoungTableau)
     columnStabilizers
