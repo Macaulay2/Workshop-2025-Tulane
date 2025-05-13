@@ -28,7 +28,10 @@ expression LieAlgebraModule := M -> if hasAttribute(M,ReverseDictionary) then ex
 
 net LieAlgebraModule := net @@ expression
 texMath LieAlgebraModule := texMath @@ expression
+toString LieAlgebraModule := toString @@ expression;
+toExternalString LieAlgebraModule := toString @@ describe;
 
+-- helper
 new LieAlgebraModule from Sequence := (T,s) -> new LieAlgebraModule from {
     "LieAlgebra" => s#0,
     "DecompositionIntoIrreducibles" => if class s#1 === VirtualTally then s#1 else new VirtualTally from s#1,
@@ -73,12 +76,12 @@ zeroModule = method(TypicalValue => LieAlgebraModule)
 zeroModule LieAlgebra := g -> new LieAlgebraModule from (g,{})
 
 
-LieAlgebraModule ^** ZZ := (cacheValue'(0,symbol ^**)) ((M,n) -> (
+LieAlgebraModule ^** ZZ := (M, n) -> M.cache#(symbol ^**, n) ??= (
 	if n<0 then "error nonnegative powers only";
     	if n==0 then trivialModule M#"LieAlgebra"
     	else if n==1 then M
     	else M**(M^**(n-1)) -- order matters for speed purposes
-    ))
+    )
 
 -*
 -- the implementation below seems more reasonable but it's actually slower in most circumstances
@@ -129,17 +132,8 @@ dual LieAlgebraModule := {} >> o -> lookup(starInvolution,LieAlgebraModule)
 
 
 
-LieAlgebraModule == LieAlgebraModule := (V,W)-> (V===W)
-
--*
-isIsomorphic = method(
-    TypicalValue => Boolean
-    )
-isIsomorphic(LieAlgebraModule,LieAlgebraModule) := (M,N) -> ( -- actually this is the same as ===
-    if M#"LieAlgebra" != N#"LieAlgebra" then return false;
-    M#"DecompositionIntoIrreducibles"===N#"DecompositionIntoIrreducibles"
-)
-*-
+isIsomorphic(LieAlgebraModule,LieAlgebraModule) := o -> (V,W) -> V===W
+LieAlgebraModule == LieAlgebraModule := (V,W) -> V===W
 
 LieAlgebraModule == ZZ := (M,n) -> if n=!=0 then error "attempted to compare module to nonzero integer" else #(M#"DecompositionIntoIrreducibles") == 0
 
@@ -630,7 +624,7 @@ weightDiagram = method(
 weightDiagram LieAlgebraModule := o -> (M) -> new VirtualTally from listForm character(M,o)
 weightDiagram(LieAlgebra,Vector) := weightDiagram(LieAlgebra,List) := o -> (g,v) -> new VirtualTally from listForm character(g,v,o)
 
-fac := memoize((type,m) -> ( -- possible denominator in Weyl product formula factors
+fac := memoize((type,m) -> ( -- possible denominator in Weyl product formula factors, ultimately coming from the choice of normalisation of the Killing form
     lcm append(apply(positiveCoroots(type,m), u -> numerator (killingForm(type,m,u,u)/2)),1) -- append is for g=0
     ))
 
@@ -715,19 +709,19 @@ adams (ZZ,LieAlgebraModule) := (k,M) -> (
     else LieAlgebraModuleFromWeights(applyKeys(weightDiagram M, w -> k*w),g) -- primitive but works
 )
 
-symmetricPower(ZZ,LieAlgebraModule) := (cacheValue'(1,symmetricPower)) ((n,M) -> (
+symmetricPower(ZZ,LieAlgebraModule) := (n,M) -> M.cache#(symbol symmetricPower, n) ??= (
     if n<0 then error "nonnegative powers only";
     if n==0 then trivialModule M#"LieAlgebra"
     else if n==1 then M
     else (directSum apply(1..n, k -> adams(k,M) ** symmetricPower(n-k,M)))^(1/n)
-    ))
+    )
 
-exteriorPower(ZZ,LieAlgebraModule) := o -> (cacheValue'(1,exteriorPower)) ((n,M) -> (
+exteriorPower(ZZ,LieAlgebraModule) := o -> (n, M) -> M.cache#(symbol exteriorPower, n) ??= (
     if n<0 then error "nonnegative powers only";
     if n==0 then trivialModule M#"LieAlgebra"
     else if n==1 then M
     else (directSum apply(1..n, k -> (adams(k,M) ** exteriorPower(n-k,M))^((-1)^(k-1)) ))^(1/n)
-    ))
+    )
 
 LieAlgebraModule @ LieAlgebraModule := (M,M') -> new LieAlgebraModule from (
     M#"LieAlgebra" ++ M'#"LieAlgebra",
@@ -789,12 +783,12 @@ LieAlgebraModule ** LieAlgebraModule := (V,W) -> ( -- cf Humpheys' intro to LA &
     scanPairs(W#"DecompositionIntoIrreducibles", (w,a) -> -- loop over highest weights of W
     	scanPairs(wd, (v,b) -> ( -- loop over all weights of V
     		u:=v+w+rho;
-		t:=1; i:=-1;
+		t:=a*b; i:=-1;
 		while not any(u,zero) and ((i=position(u,j->j<0)) =!= null) do (
-	    	    u=u-u#i*sr#i;
-	    	    t=-t;
+		    u-=u#i*sr#i;
+		    t=-t;
 	    	    );
-		if i === null then add(u-rho,a*b*t);
+		if i === null then add(u-rho,t);
 		)));
     new LieAlgebraModule from (g,ans)
     )
@@ -951,110 +945,16 @@ fusionCoefficient(LieAlgebraModule,LieAlgebraModule,LieAlgebraModule,ZZ) := (U,V
     fullFusionProduct_nu
 )
 
--- branching rule
-blocks = C -> ( -- given a Cartan (or adjacency) matrix, decompose into irreducible blocks
-    n:=numRows C;
-    L:=toList(0..n-1);
-    B:={};
-    while #L>0 do (
-	-- start a new block
-	i:=first L; L=drop(L,1);
-	b:={i}; j:=0;
-	while j<#b do (
-	    L':=select(L,k->C_(b#j,k)!=0); -- we're assuming undirected adjacency or Cartan
-	    b=b|L';
-	    scan(L',k->L=delete(k,L));
-	    j=j+1;
-	    );
-    	B=append(B,b);
-    	);
-    B
-)
-
-lieTypeFromCartan := C -> ( -- used internally. returns (type,m,order) where order is permutation of rows/cols
-    -- in principle one could conceive not permuting at all but it would require some rewrite (positiveRoots, etc)
-    B:=blocks C;
-    type':=(); m':=(); L:={}; -- L is permutation of rows/columns to match normal Cartan matrix
-    scan(B, b -> (
-	    c:=C^b_b;
-	    n:=numRows c;
-	    -- first pass, covers 99% of cases
-	    t:=scan("A".."G",t->if c === (try cartanMatrix(t,n)) then break t);
-	    if t === null then (
-		-- let's try harder
-		local c';
-		t=scan("A".."G",t->(
-			c'=try cartanMatrix(t,n);
-			if c'=!=null and det c == det c' and sort sum entries c == sort sum entries c' -- fun fact: characterizes uniquely
-			then break t;
-			));
-		if t === null then error ("not the Cartan matrix of a semi-simple Lie algebra");
-		-- just try every permutation, damnit
-		p:=scan(permutations n,p->if c_p^p==c' then break p);
-		if p === null then error ("not the Cartan matrix of a semi-simple Lie algebra");
-    	    	b=b_p;
-		);
-	    type'=append(type',t); m'=append(m',n);
-	    L=L|b;
-	    ));
-    (type',m',L)
-    )
-
-new LieAlgebra from Matrix := (T,C) -> ( -- define a Lie algebra based on its Cartan matrix
-    if numColumns C == 0 then return new LieAlgebra from {"LieAlgebraRank"=>(),"RootSystemType"=>(),subLieAlgebra=>hashTable{null=>id_(ZZ^0)}};
-    (type,m,L):=lieTypeFromCartan C;
-    h:=directSum apply(type,m,simpleLieAlgebra); -- lazy though avoids unsequence, worrying about rings etc
-    assert(cartanMatrix h == C_L^L);
-    h
-    )
-
-subLieAlgebra = method ( TypicalValue => LieAlgebra )
-
-subLieAlgebra (LieAlgebra, List) := (g,S) -> subLieAlgebra(g,if #S==0 then map(ZZ^(rank g),0,0) else matrix transpose apply(S,s ->
-	if class s === ZZ then apply(rank g, j -> if j+1 == s then 1 else 0)
-	else if instance(s,Vector) and rank class s == rank g then entries s
-	else if class s === List and #s == rank g then s
-	else error "wrong argument"))
-
--*
-    -- identify the sub-Dynkin diagram
-    S=deepSplice S;
-    if #S == 0 then return new LieAlgebra from {"LieAlgebraRank"=>(),"RootSystemType"=>()}
-    S=apply(S,i->i-1);
-    C:=(cartanMatrix g)^S_S;
-    h:=new LieAlgebra from C;
-    )
-*-
-
-subLieAlgebra (LieAlgebra,Matrix) := (g,M) -> ( -- matrix of coroots
-    if ring M =!= ZZ then try M=lift(M,ZZ) else error "matrix must be integer";
-    -- in the simply laced case it'd be simply transpose M * cartanMatrix g * M. in general have to work harder
-    if numRows M != rank g then error "wrong size of coroots";
-    G := transpose M * inverse quadraticFormMatrix g * M; -- new inverse quadratic form <coroot_i|coroot_j>
-    D := diagonalMatrix apply(numColumns M,i->2/G_(i,i)); -- inverse square norm of new simple coroots
-    C := lift(D * G,ZZ);
-    (type,m,L):=lieTypeFromCartan C;
-    M=M_L; -- permuted matrix of coroots
-    if M == id_(ZZ^(rank g)) then return g; -- not necessary but simpler
-    subs:=hashTable{null=>id_(ZZ^(plus m))};
-    subs=merge(applyValues(applyKeys(g#subLieAlgebra, k -> if k===null then g else k), A -> A*M),subs,last);
-    new LieAlgebra from {
-	"LieAlgebraRank"=>unsequence m,
-	"RootSystemType"=>unsequence type,
-	subLieAlgebra=>subs
-	}
-    )
-    
-
 branchingRule = method ( TypicalValue => LieAlgebraModule )
 
+branchingRule (LieAlgebraModule, String) :=
 branchingRule (LieAlgebraModule, Matrix) :=
 branchingRule (LieAlgebraModule, List) := (M,S) -> branchingRule(M,subLieAlgebra(M#"LieAlgebra",S))
 
 branchingRule (LieAlgebraModule, LieAlgebra) := (M,h) -> ( -- here h must be a (known) subalgebra of that of M
     g:=M#"LieAlgebra";
     if g===h then return M; -- annoying special case
-    S:=try h#subLieAlgebra#g else error "not a Lie subalgebra";
+    S:=try h#"Embeddings"#g else error "not a Lie subalgebra";
     --    f:=if class S===List then a -> a_S else a -> entries(transpose S*vector a);
     f:=a -> entries(transpose S*vector a); -- lame but what we get for using Lists rather than vectors
     LieAlgebraModuleFromWeights(applyKeys(weightDiagram M,f,plus),h)

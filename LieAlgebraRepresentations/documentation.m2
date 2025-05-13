@@ -78,19 +78,90 @@ doc ///
     Outputs
         b:Boolean
     Description
-        Text
-	    This function tests equality of the underlying hash tables of $g$ and $h$ are the same.    
-	       
         Example
 	    g=simpleLieAlgebra("A",2)
 	    h=simpleLieAlgebra("A",2)
 	    g==h
+        Text
+	    When dealing with subalgebras, Lie algebras can be isomorphic but different:
+        Example
+	    g1=subLieAlgebra(g,{1}); describe g1
+	    g2=subLieAlgebra(g,{2}); describe g2
+	    g1==g2 -- false!
 ///
 
 TEST ///
     assert(simpleLieAlgebra("A",2) == simpleLieAlgebra("A",2))
 ///
 
+
+doc ///
+    Key
+        (symbol _,LieAlgebra,ZZ)
+    Headline
+        selects one summand of a semi-simple Lie Algebra
+    Usage
+        g_n
+    Inputs
+        g:LieAlgebra
+	n:ZZ
+    Outputs
+        h:LieAlgebra
+    Description
+        Example
+	    g=simpleLieAlgebra("A",2) ++ simpleLieAlgebra("A",2)
+	    g_0
+        Text
+	    Note that the same result can be obtained by using @TO subLieAlgebra@:
+	Example
+	    dynkinDiagram g
+	    g_0 == subLieAlgebra(g,{1,2})
+	    g_1 == subLieAlgebra(g,{3,4})
+///
+
+TEST ///
+    g=𝔞_1++𝔞_2
+    assert(g_0 == subLieAlgebra(g,{1}))
+    assert(isIsomorphic(g_0,𝔞_1))
+///
+
+doc ///
+    Key
+        (symbol _*,LieAlgebra)
+    Headline
+        gives the list of summands of a semi-simple Lie Algebra
+    Usage
+        g_*
+    Inputs
+        g:LieAlgebra
+    Description
+        Example
+	    g=simpleLieAlgebra("A",2) ++ simpleLieAlgebra("A",3)
+	    g_*
+///
+
+doc ///
+    Key
+        embedding
+	(embedding,LieAlgebra,LieAlgebra)
+    Headline
+        gives the embedding of Cartan subalgebras of one Lie algebra into another
+    Usage
+        embedding(g,h)
+    Inputs
+        g:LieAlgebra
+        h:LieAlgebra
+    Description
+        Example
+	    h=simpleLieAlgebra("F",4)
+	    g=subLieAlgebra(h,{0,1}); describe g
+	    embedding(g,h)
+	    embedding(subLieAlgebra(h,"principal"),h)
+///
+TEST ///
+    assert(embedding(𝔞_1,𝔞_1)==1)
+    assert(embedding(subLieAlgebra(𝔤_2,"principal"),𝔤_2)==matrix{{6},{10}}) -- 2*rho^v
+///
 
 doc ///
     Key
@@ -678,46 +749,28 @@ TEST ///
     assert(casimirScalar(V) === 8/3)
 ///
 
--*
+
 doc ///
     Key
         isIsomorphic
-	(isIsomorphic,LieAlgebraModule,LieAlgebraModule)
+	(isIsomorphic,LieAlgebra,LieAlgebra)
     Headline
-        tests whether two Lie algebra modules are isomorphic
+        tests whether two Lie algebra are isomorphic
     Usage
-        isIsomorphic(V,W)
+        isIsomorphic(g,h)
     Inputs
-        V:LieAlgebraModule
-	W:LieAlgebraModule
+        g:LieAlgebra
+	h:LieAlgebra
     Outputs
         b:Boolean
     Description
-        Text
-	    To test whether two Lie algebra modules are isomorphic, we first test whether they are modules over the same Lie algebra, and if so, then test whether they have the same decomposition into irreducible Lie algebra modules.
-        
 	Example
-	    g=simpleLieAlgebra("A",2)
-	    M=irreducibleLieAlgebraModule({2,1},g)
-	    N=irreducibleLieAlgebraModule({1,2},g)
-	    Z=irreducibleLieAlgebraModule({0,0},g)
-	    isIsomorphic(M,N)
-	    isIsomorphic(M,M)
-	    isIsomorphic(M,M**Z)
-	    isIsomorphic(M**N,N**M)
+	    g=simpleLieAlgebra("D",4)
+	    h=subLieAlgebra(g,{2,{1,0,1,1}})
+	    isIsomorphic(h,simpleLieAlgebra("G",2))
 ///
 
-TEST ///
-    g=simpleLieAlgebra("A",2);
-    M=irreducibleLieAlgebraModule({2,1},g);
-    N=irreducibleLieAlgebraModule({1,2},g);
-    Z=irreducibleLieAlgebraModule({0,0},g);
-    assert(isIsomorphic(M,N) === false)
-    assert(isIsomorphic(M,M) === true)
-    assert(isIsomorphic(M,M**Z) === true)
-    assert(isIsomorphic(M**N,N**M) ===true)
-///
-
+-*
 doc ///
     Key
         MaxWordLength
@@ -960,26 +1013,47 @@ doc ///
     	subLieAlgebra
 	(subLieAlgebra,LieAlgebra,List)
 	(subLieAlgebra,LieAlgebra,Matrix)
+	(subLieAlgebra,LieAlgebra,String)
     Headline
         Define a sub-Lie algebra of an existing one
     Usage
        subLieAlgebra(g,S)
     Inputs
         g:LieAlgebra
-	S:{List,Matrix}
+	S:{List,Matrix,String}
     Outputs
         h:LieAlgebra
     Description
         Text
-	   @TT "S"@ must be a subset of vertices of the Dynkin diagram of @TT "g"@ (as labelled by @TO dynkinDiagram@);
-	   or a matrix whose columns are the simple coroots of the subalgebra expanded in the basis of simple coroots of @TT "g"@.
+	   For the purposes of this function, a sub-Lie algebra means an embedding of a Lie algebra into another up to linear equivalence.
+	   According to Dynkin's theory, this means that it is determined by the restriction of the embedding to the Cartan subalgebra,
+	   and that is the data provided by @TT "S"@.
+	   Specifically, @TT "S"@ must be either a subset of vertices of the Dynkin diagram of @TT "g"@ (as labelled by @TO dynkinDiagram@):
 	Example
 	   g=𝔢_8; dynkinDiagram g
 	   subLieAlgebra(g,{1,2,3,4,5,8})
+	Text
+	   The vertices are labelled from 1 to the rank of g; because we frequently want to consider the lowest root, it is labelled 0:
+	Example
 	   h=𝔣_4; dynkinDiagram h
-	   subLieAlgebra(h,matrix transpose{{1,0,0,0},{0,1,0,0},{0,0,1,0},-{2,3,2,1}}) -- simple coroots 1,2,3 and opposite of highest root
+	   subLieAlgebra(h,{0,1,2,3})
+	Text
+	   Or @TT "S"@ must be a matrix whose columns are the simple coroots of the subalgebra expanded in the basis of simple coroots of @TT "g"@:
+	Example
+	   g=𝔢_6
+	   h=subLieAlgebra(g,{2,4,{0,0,1,0,1,0},{1,0,0,0,0,1}}); describe h
+	   branchingRule(adjointModule g,h)
+	Text
+	  Or @TT "S"@ is the string @TT "principal"@, which is currently the only predefined subalgebra:
+	Example
+	   g=𝔞_2; h=subLieAlgebra(g,"principal"); describe h
+	   V=LL_(2,4) g; qdim V
+	   W=branchingRule(V,h); describe W
+	   character W
+	Text
+	  In simply laced types, principal specialisation (character of principal subalgebra) and q-dimension agree.
     Caveat
-        If @TT "S"@ is a matrix, does not check if the map of root lattices leads to a valid Lie algebra embeddng.
+        If @TT "S"@ is a matrix, does not check if the map of Cartan subalgebras leads to a valid Lie algebra embedding.
 ///
 
 TEST ///
@@ -993,6 +1067,7 @@ assert ( k#"LieAlgebraRank" === (1,1,1) and k#"RootSystemType" === ("A","A","A")
 doc ///
     Key
         branchingRule
+	(branchingRule,LieAlgebraModule,String)
         (branchingRule,LieAlgebraModule,List)
         (branchingRule,LieAlgebraModule,Matrix)
         (branchingRule,LieAlgebraModule,LieAlgebra)
@@ -1002,12 +1077,12 @@ doc ///
         branchingRule(V,S)
     Inputs
         V:LieAlgebraModule
-	S:{List,Matrix,LieAlgebra}
+	S:{String,List,Matrix,LieAlgebra}
     Outputs
         V':LieAlgebraModule
     Description
         Text
-	   @TT "S"@ must be a subset of vertices of the Dynkin diagram of the Lie algebra of @TT "V"@, or a matrix, see @TO subLieAlgebra@;
+	   @TT "S"@ must be a subset of vertices of the Dynkin diagram of the Lie algebra of @TT "V"@, or a matrix, or a string, see @TO subLieAlgebra@;
 	   or a sub-Lie algebra.
 	   Returns @TT "V"@ viewed as a module over the Lie subalgebra determined by @TT "S"@.
 	Example
@@ -1021,7 +1096,7 @@ g=simpleLieAlgebra("A",2);
 M=LL_(4,2) g;
 assert(dim branchingRule(M,{1}) == dim M)
 h=subLieAlgebra(g,matrix vector {2,2})
-assert(branchingRule(LL_(1,0)(g),h) == LL_2(h))
+assert(branchingRule(LL_(1,0)(g),h) === LL_2(h))
 ///
 
 doc ///
@@ -1038,6 +1113,9 @@ doc ///
 	   h=simpleLieAlgebra("G",2);
 	   g++h
 	   directSum(g,g,h)
+	Text
+	  Note that this is external direct sum, so if $g_i$ is a sub-Lie algebra of $h_i$, $i=1,2$,
+	  then $g_1\oplus g_2$ is a sub-Lie algebra of $h_1\oplus h_2$.
 ///
 
 doc ///
@@ -1069,7 +1147,7 @@ k=g++h
 A=LL_(1,2) g
 B=LL_(2,1) h
 M=LL_(1,2,2,1) k;
-assert ( M == A @ B )
+assert ( M === A @ B )
 assert(character(M,Strategy=>"Weyl")==character(M,Strategy=>"Freudenthal"))
 ///
 
