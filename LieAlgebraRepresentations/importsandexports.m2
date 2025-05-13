@@ -23,7 +23,8 @@ export {
     "isSimple",
     "cartanMatrix",
     "𝔞", "𝔟", "𝔠", "𝔡", "𝔢", "𝔣", "𝔤",
-    "subLieAlgebra"
+    "subLieAlgebra",
+    "embedding"
     }
 
 -- From lieAlgebraModules.m2
