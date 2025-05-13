@@ -2,32 +2,6 @@
 --Eijm = (i0,j0,m) -> ( matrix apply(m, i -> apply(m, j -> if i==i0 and j==j0 then 1/1 else 0/1)) );
 Hin = (i,n) -> ( Eijm(i,i,n) - Eijm(i+1,i+1,n));
 
-
-slnBasisElements = (n) -> (
-    Hbasis := apply(n-1, i -> Hin(i,n));
-    Xbasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then Eijm(i,j,n))));   
-    Ybasis := flatten apply(n, i -> delete(null,apply(n, j -> if j<i then Eijm(i,j,n))));    
-    flatten {Hbasis, Xbasis, Ybasis}
-);
-
-
-
-
-
-
-slnDualBasis = (n,B) -> (
-    Hcoeffs := entries(inverse(1/1*cartanMatrix("A",n-1)));
-    Hdual := apply(n-1, i -> sum apply(n-1, j -> (Hcoeffs_i_j)*(B_j)));
-    Hlabels := apply(n-1, i -> (i,i));
-    Xlabels := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then (i,j))));   
-    Ylabels := flatten apply(n, i -> delete(null,apply(n, j -> if j<i then (i,j))));
-    labels := flatten {Hlabels, Xlabels, Ylabels};
-    Xdual := apply(Xlabels, p -> B_(first select(#labels, i -> labels_i==(p_1,p_0))));
-    Ydual := apply(Ylabels, p -> B_(first select(#labels, i -> labels_i==(p_1,p_0))));
-    flatten {Hdual, Xdual, Ydual}
-);
-
-
 -- Want to change between Dynkin basis of the weight lattice and L_i basis
 -- Use the formula omega_j = L_1+...+L_j from [FH, Section 15]
 -- Very similar to the formula for type C in [FH, Section 17.2]
@@ -64,45 +38,106 @@ LiminusLj = (i,j,n) -> (
 );
 
 
-slnBasisWeights = (n) -> (
-    Hbasis := apply(n-1, i -> apply(n-1, i -> 0));
-    Xbasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then LiminusLj(i,j,n) )));   
-    Ybasis := flatten apply(n, i -> delete(null,apply(n, j -> if j<i then LiminusLj(i,j,n) ))); 
+
+
+-- May 2025: change the order to match the positive roots in lex-level order
+slnBasisElements = memoize((n) -> (
+    Hbasis := apply(n-1, i -> Hin(i,n));
+    PhiPlus := positiveRoots("A",n-1);
+    unorderedXbasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then Eijm(i,j,n))));
+    Xbasisweights := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then LiminusLj(i,j,n) )));
+    unorderedYbasis := flatten apply(n, i -> delete(null,apply(n, j -> if j<i then Eijm(i,j,n))));
+    Ybasisweights := flatten apply(n, i -> delete(null,apply(n, j -> if j<i then LiminusLj(i,j,n) )));
+    Xbasis := apply(#PhiPlus, i -> first delete(null,apply(#Xbasisweights, j -> if Xbasisweights_j==PhiPlus_i then unorderedXbasis_j)));
+    Ybasis := apply(#PhiPlus, i -> first delete(null,apply(#Ybasisweights, j -> if Ybasisweights_j==-PhiPlus_i then unorderedYbasis_j)));
     flatten {Hbasis, Xbasis, Ybasis}
+));
+
+
+
+
+
+
+slnDualBasis = (n,B) -> (
+    Hcoeffs := entries(inverse(1/1*cartanMatrix("A",n-1)));
+    Hdual := apply(n-1, i -> sum apply(n-1, j -> (Hcoeffs_i_j)*(B_j)));
+    l:=lift((#B-(n-1))/2,ZZ);
+    Xbasis := apply(l, i -> B_(n-1+i));
+    Ybasis := apply(l, i -> B_(n-1+l+i));
+    flatten {Hdual, Ybasis, Xbasis}
 );
 
 
+
+
+slnBasisWeights = (n) -> (
+    PhiPlus:=positiveRoots("A",n-1);
+    Hbasis := apply(n-1, i -> apply(n-1, i -> 0)); 
+    flatten {Hbasis, PhiPlus, apply(PhiPlus, i -> -i)}
+);
+
+
+labelOfMatrix = (E) -> (
+    S:=sparse E;
+    k:=first keys(S#"Entries");
+    (k_0,k_1)
+);
+
+
+labelOfMatrix1 = (E) -> (
+    S:=sparse E;
+    k:=first keys(S#"Entries");
+    (k_0+1,k_1+1)
+);
+
+
+
+slnBasisSubscripts = memoize((n) -> (
+    B:=slnBasisElements(n);
+    l:=lift((#B-(n-1))/2,ZZ);
+    apply(l, i -> labelOfMatrix(B_(n-1+i)))  
+));
+
+
 slnBasisLabels = (n) -> (
-    Hbasis := apply(n-1, i -> "H_"|toString(i));
-    Xbasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then "E_"|toString(i,j) )));   
-    Ybasis := flatten apply(n, i -> delete(null,apply(n, j -> if j<i then "E_"|toString(i,j) ))); 
-    flatten {Hbasis, Xbasis, Ybasis}
+    B:=slnBasisElements(n);
+    l:=lift((#B-(n-1))/2,ZZ);
+    HbasisLabels := apply(n-1, i -> "H_"|toString(i+1));
+    XandYbasisLabels := apply(2*l, i -> "E_"|toString(labelOfMatrix1(B_(n-1+i))));  
+    flatten {HbasisLabels, XandYbasisLabels}
 );
 
 
 
 slnRaisingOperatorIndices = (n) -> (
-    h:=lift(n*(n-1)/2,ZZ);
-    apply(h, i -> (n-1)+i)
+    l:=lift(n*(n-1)/2,ZZ);
+    apply(l, i -> (n-1)+i)
 );
 
 
 
 slnLoweringOperatorIndices = (n) -> (
-    h:=lift(n*(n-1)/2,ZZ);
-    apply(h, i -> (n-1)+h+i)
+    l:=lift(n*(n-1)/2,ZZ);
+    apply(l, i -> (n-1)+l+i)
 );
 
 
+
+
+
+-- Need to update this
 writeInslnBasis = (M) -> (
     n:=numRows M;
     Hcoeffs:=apply(n-1, i -> sum apply(i+1, j -> M_(j,j)));
-    Xcoeffs := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then M_(i,j))));   
-    Ycoeffs := flatten apply(n, i -> delete(null,apply(n, j -> if j<i then M_(i,j))));    
+    L:=slnBasisSubscripts(n);
+    l:=#L;
+    Xcoeffs := apply(L, p -> M_p);   
+    Ycoeffs := apply(L, p -> M_(p_1,p_0));     
     flatten {Hcoeffs,Xcoeffs,Ycoeffs}
 );
 
-br = (A,B) -> A*B-B*A
+br = (A,B) -> A*B-B*A;
+
 
 
 -- Lie algebra
@@ -125,7 +160,8 @@ slnBasis = (n) -> (
 	"Labels"=>slnBasisLabels(n),
 	"RaisingOperatorIndices"=>slnRaisingOperatorIndices(n),
 	"LoweringOperatorIndices"=>slnLoweringOperatorIndices(n),
-	"WriteInBasis"=>writeInslnBasis
+	"WriteInBasis"=>writeInslnBasis,
+	"FundamentalDominantWeightValues"=>matrix apply(n-1, i -> apply(n-1, j -> if i==j then 1 else 0/1))
     }
 );
 

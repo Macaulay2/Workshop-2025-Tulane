@@ -1,7 +1,7 @@
 -- Restrict a sparse matrix to a subdomain and subcodomain
 
 restrictRaisingOperatoritoWtmuSpace = (rho,i,mu) -> (
-    W:=rho#"Character";
+    W:=rho#"Module";
     CB:=rho#"Basis";
     L:=rho#"RepresentationMatrices";
     ROI:=CB#"RaisingOperatorIndices";
@@ -23,7 +23,7 @@ weightMuHighestWeightVectorsInW = method(
 );    
 
 weightMuHighestWeightVectorsInW(List,LieAlgebraRepresentation) := (mu,rho) -> (
-    W:=rho#"Character";
+    W:=rho#"Module";
     CB:=rho#"Basis";
     L:=rho#"RepresentationMatrices";
     ROI:=CB#"RaisingOperatorIndices";
@@ -97,10 +97,10 @@ VInSymdW = method(
 );
 
 VInSymdW(LieAlgebraRepresentation,ZZ,LieAlgebraRepresentation,Matrix) := (rhoV,d,rhoW,hwv) -> (
-    V:=rhoV#"Character";
+    V:=rhoV#"Module";
     CBV:=rhoV#"Basis";
     LV:=rhoV#"RepresentationMatrices";
-    W:=rhoW#"Character";
+    W:=rhoW#"Module";
     CBW:=rhoW#"Basis";
     LW:=rhoW#"RepresentationMatrices";
     -- Check that they use the same basis of g
@@ -129,10 +129,10 @@ VInWedgekW = method(
 );    
 
 VInWedgekW(LieAlgebraRepresentation,ZZ,LieAlgebraRepresentation,Matrix) := (rhoV,k,rhoW,hwv) -> (
-    V:=rhoV#"Character";
+    V:=rhoV#"Module";
     CBV:=rhoV#"Basis";
     LV:=rhoV#"RepresentationMatrices";
-    W:=rhoW#"Character";
+    W:=rhoW#"Module";
     CBW:=rhoW#"Basis";
     LW:=rhoW#"RepresentationMatrices";
     -- Check that they use the same basis of g
@@ -161,13 +161,13 @@ UInVtensorW = method(
 );
 
 UInVtensorW(LieAlgebraRepresentation,LieAlgebraRepresentation,LieAlgebraRepresentation,Matrix) := (rhoU,rhoV,rhoW,hwv) -> (
-    U:=rhoU#"Character";
+    U:=rhoU#"Module";
     CBU:=rhoU#"Basis";
     LU:=rhoU#"RepresentationMatrices";    
-    V:=rhoV#"Character";
+    V:=rhoV#"Module";
     CBV:=rhoV#"Basis";
     LV:=rhoV#"RepresentationMatrices";
-    W:=rhoW#"Character";
+    W:=rhoW#"Module";
     CBW:=rhoW#"Basis";
     LW:=rhoW#"RepresentationMatrices";
     -- Check that they use the same basis of g

@@ -26,10 +26,10 @@ export {
     "subLieAlgebra"
     }
 
--- From lieAlgebraCharacters.m2
+-- From lieAlgebraModules.m2
 export {
-    "LieAlgebraCharacter", 
-    "irreducibleLieAlgebraCharacter", "LL", "ω",
+    "LieAlgebraModule", 
+    "irreducibleLieAlgebraModule", "LL", "ω",
 --    "isIsomorphic",
     "casimirScalar",
     "weightDiagram",
@@ -37,11 +37,11 @@ export {
     "fusionProduct",
     "fusionCoefficient",
 --    "MaxWordLength",
-    "LieAlgebraCharacterFromWeights",
-    "trivialCharacter",
-    "standardCharacter",
-    "adjointCharacter",
-    "zeroCharacter",
+    "LieAlgebraModuleFromWeights",
+    "trivialModule",
+    "standardModule",
+    "adjointModule",
+    "zeroModule",
     "isIrreducible",
     "character",
     "adams",

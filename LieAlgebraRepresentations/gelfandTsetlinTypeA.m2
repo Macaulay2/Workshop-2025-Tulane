@@ -270,14 +270,14 @@ GTrepresentationMatrices = method(
     TypicalValue=>List
 );
 
-GTrepresentationMatrices(LieAlgebraCharacter) := (V) -> (
+GTrepresentationMatrices(LieAlgebraModule) := (V) -> (
     if not isIrreducible(V) then error "Not implemented for reducible modules yet" << endl;
     lambda:=first keys(V#"DecompositionIntoIrreducibles");
     lambdaPartition:=dynkinToPartition(lambda);
     n:=#lambdaPartition;
     BGT:=gtPatterns(lambdaPartition);
-    Xlabels:=flatten apply(n, i -> delete(null,apply(n, j -> if i<j then (i+1,j+1))));
-    Ylabels:=flatten apply(n, i -> delete(null,apply(n, j -> if j<i then (i+1,j+1))));
+    Xlabels:=apply(slnBasisSubscripts(n), p ->  (p_0+1,p_1+1));
+    Ylabels:=apply(slnBasisSubscripts(n), p ->  (p_1+1,p_0+1));
     -- Create the representation matrices in order of |i-j|
     M:=new MutableHashTable from {};
     -- d=1

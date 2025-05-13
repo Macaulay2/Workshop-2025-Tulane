@@ -2,8 +2,8 @@
 -- licensed under GPL v2 or any later version
 newPackage(
     "LieAlgebraRepresentations",
-    Version => "0.95",
-    Date => "April 17, 2025",
+    Version => "0.96",
+    Date => "May 12, 2025",
     AuxiliaryFiles=>true,
     Headline => "Lie algebra representations and characters",
     Authors => {
@@ -27,7 +27,7 @@ newPackage(
 
 needs "./LieAlgebraRepresentations/importsandexports.m2"
 needs "./LieAlgebraRepresentations/lieAlgebras.m2"
-needs "./LieAlgebraRepresentations/lieAlgebraCharacters.m2"
+needs "./LieAlgebraRepresentations/lieAlgebraModules.m2"
 needs "./LieAlgebraRepresentations/lieAlgebraBases.m2"
 needs "./LieAlgebraRepresentations/representationsCasimirReynolds.m2"
 needs "./LieAlgebraRepresentations/basesAsWords.m2"

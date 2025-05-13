@@ -148,6 +148,7 @@ so2n1Basis = (n) -> (
 	"Labels"=>so2n1BasisLabels(n),
 	"RaisingOperatorIndices"=>so2n1RaisingOperatorIndices(n),
 	"LoweringOperatorIndices"=>so2n1LoweringOperatorIndices(n),
-	"WriteInBasis"=>writeInso2n1Basis
+	"WriteInBasis"=>writeInso2n1Basis,
+	"FundamentalDominantWeightValues"=>inverse(DtoLMatrixTypeB(n))
     }
 );

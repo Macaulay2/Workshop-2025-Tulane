@@ -9,9 +9,9 @@ lieAlgebraRepresentation = method(
 );
 
 
-lieAlgebraRepresentation(LieAlgebraCharacter,LieAlgebraBasis,List):=(V,LAB,L) -> (
+lieAlgebraRepresentation(LieAlgebraModule,LieAlgebraBasis,List):=(V,LAB,L) -> (
     new LieAlgebraRepresentation from {
-        "Character"=>V,
+        "Module"=>V,
         "Basis"=>LAB,
 	"RepresentationMatrices"=>L
     }
@@ -35,7 +35,7 @@ trivialRepresentation(LieAlgebra) := (g) -> (
 
 trivialRepresentation(LieAlgebraBasis) := CB -> (   
     L := apply(#(CB#"BasisElements"), i -> matrix {{0/1}});
-    V := trivialCharacter(CB#"LieAlgebra");
+    V := trivialModule(CB#"LieAlgebra");
     lieAlgebraRepresentation(V,CB,L)
 );
 
@@ -55,7 +55,7 @@ standardRepresentation(LieAlgebra) := g -> (
 );
 
 standardRepresentation(LieAlgebraBasis) := CB -> (
-    V := standardCharacter(CB#"LieAlgebra");
+    V := standardModule(CB#"LieAlgebra");
     lieAlgebraRepresentation(V,CB,CB#"BasisElements")
 );
 
@@ -80,7 +80,7 @@ adjointRepresentation(LieAlgebraBasis) := CB -> (
     B := CB#"BasisElements";
     ad := X -> transpose matrix apply(B, Y -> writeInBasis br(X,Y));
     L := apply(B, X -> ad X);
-    V := adjointCharacter(CB#"LieAlgebra");
+    V := adjointModule(CB#"LieAlgebra");
     lieAlgebraRepresentation(V,CB,L)
 );
 
@@ -94,22 +94,26 @@ representationWeights = method(
 );
 
 representationWeights(LieAlgebraRepresentation) := memoize((rho) -> (
-    W:=rho#"Character";
+    W:=rho#"Module";
     CB:=rho#"Basis";
     L:=rho#"RepresentationMatrices";
     sparseGenerators:=instance(L_0,SparseMatrix); 
     Wweights:={};
     m:=CB#"LieAlgebra"#"LieAlgebraRank";
+    L1:={};
     if not sparseGenerators then (
-	 return apply(dim W, i -> apply(m, j -> lift((L_j)_(i,i),ZZ)))
+	 L1=apply(dim W, i -> apply(m, j -> (L_j)_(i,i)))
     ) else (
-         return apply(dim W, i -> apply(m, j -> if ((L_j)#"Entries")#?(i,i) then lift(((L_j)#"Entries")#(i,i),ZZ) else 0))
-    )
+         L1=apply(dim W, i -> apply(m, j -> if ((L_j)#"Entries")#?(i,i) then ((L_j)#"Entries")#(i,i) else 0))
+    );
+    M:=CB#"FundamentalDominantWeightValues";
+    L2:=apply(L1, v -> flatten entries(M*(transpose matrix {v})));
+    apply(L2, v -> apply(v, i -> lift(i,ZZ)))
 ));
 
 
 
--- Let V be a LieAlgebraCharacter with a representation rho installed
+-- Let V be a LieAlgebraModule with a representation rho installed
 
 -- The Casimir operator is sum_i rho(Bstar_i)*rho(B_i)
 
@@ -118,7 +122,7 @@ casimirOperator = method(
 
 
 casimirOperator(LieAlgebraRepresentation) := (rho) -> (
-    W:=rho#"Character";
+    W:=rho#"Module";
     CB:=rho#"Basis";
     L:=rho#"RepresentationMatrices";
     rhoB:=apply(L, M->dense M);
@@ -138,8 +142,8 @@ casimirSpectrum = method(
 );
 
 
-casimirSpectrum(LieAlgebraCharacter) := (W) -> (
-    unique sort apply(keys(W#"DecompositionIntoIrreducibles"), w -> casimirScalar(irreducibleLieAlgebraCharacter(w,W#"LieAlgebra")))
+casimirSpectrum(LieAlgebraModule) := (W) -> (
+    unique sort apply(keys(W#"DecompositionIntoIrreducibles"), w -> casimirScalar(irreducibleLieAlgebraModule(w,W#"LieAlgebra")))
 );
 
 
@@ -154,7 +158,7 @@ casimirProjection(LieAlgebraRepresentation,ZZ) := (rho,z) -> (
 
 casimirProjection(LieAlgebraRepresentation,QQ) := (rho,z) -> (
     Cas:=casimirOperator(rho);
-    W:=rho#"Character";
+    W:=rho#"Module";
     L:=delete(1/1*z,casimirSpectrum(W));
     N:=dim W;
     I:={};

@@ -13,7 +13,7 @@ LieAlgebraBasis = new Type of HashTable
 -- RaisingOperatorIndices
 -- LoweringOperatorIndices
 -- WriteInBasis
-
+-- FundamentalDominantWeightValues
 
 net(LieAlgebraBasis) := CB -> net "Enhanced basis of"expression(CB#"LieAlgebra")
 

@@ -108,7 +108,7 @@ symmetricPowerRepresentation = method(
 );
 
 symmetricPowerRepresentation(ZZ,LieAlgebraRepresentation) := (d,rho) -> (
-    xiV:=rho#"Character";
+    xiV:=rho#"Module";
     CB:=rho#"Basis";
     rhoB:=rho#"RepresentationMatrices";
     xiW:=symmetricPower(d,xiV);
@@ -203,7 +203,7 @@ exteriorPowerRepresentation = method(
 
 
 exteriorPowerRepresentation(ZZ,LieAlgebraRepresentation) := (k,rho) -> (
-    V:=rho#"Character";
+    V:=rho#"Module";
     CB:=rho#"Basis";
     rhoB:=rho#"RepresentationMatrices";
     W:=exteriorPower(k,V);
@@ -264,8 +264,8 @@ tensorProductRepresentation = method(
 );
 
 tensorProductRepresentation(LieAlgebraRepresentation,LieAlgebraRepresentation) := (rhoV,rhoW) -> (
-    V:=rhoV#"Character";
-    W:=rhoW#"Character";
+    V:=rhoV#"Module";
+    W:=rhoW#"Module";
     CBV:=rhoV#"Basis";
     CBW:=rhoW#"Basis";
     LV:=rhoV#"RepresentationMatrices";
@@ -345,7 +345,7 @@ end
 --------------------------------------------------
 
 sl2=simpleLieAlgebra("A",1);
-V = standardCharacter(sl2);
+V = standardModule(sl2);
 peek V
 -- So V only has character information
 -- Add the data of the standard representation
@@ -370,7 +370,7 @@ sym2rho_1 == {sparseMatrix(3,3,QQ,new HashTable from {(0,0) => 2, (2,2) => -2}),
 ------------------------------------------------------------
 
 sl3=simpleLieAlgebra("A",2);
-V = standardCharacter(sl3);
+V = standardModule(sl3);
 peek V
 -- So V only has character information
 -- Add the data of the standard representation
@@ -394,10 +394,10 @@ wedge2rho = W.cache#representation
 ------------------------------------------------------------
 
 sl3=simpleLieAlgebra("A",2);
-V = irreducibleLieAlgebraCharacter({1,1},sl3);
+V = irreducibleLieAlgebraModule({1,1},sl3);
 CB = lieAlgebraBasis("A",2);
 installRepresentation(V,CB,GTrepresentationMatrices(V,{1,1}));
-W = irreducibleLieAlgebraCharacter({1,0},sl3);
+W = irreducibleLieAlgebraModule({1,0},sl3);
 installRepresentation(W,CB,GTrepresentationMatrices(W,{1,0}));
 
 U = tensorProductRepresentation(0,V,0,W);

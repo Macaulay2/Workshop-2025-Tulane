@@ -137,7 +137,8 @@ sp2nBasis = (n) -> (
 	"Labels"=>sp2nBasisLabels(n),
 	"RaisingOperatorIndices"=>sp2nRaisingOperatorIndices(n),
 	"LoweringOperatorIndices"=>sp2nLoweringOperatorIndices(n),
-	"WriteInBasis"=>writeInsp2nBasis
+	"WriteInBasis"=>writeInsp2nBasis,
+	"FundamentalDominantWeightValues"=>inverse(DtoLMatrixTypeC(n))
     }
 );
 

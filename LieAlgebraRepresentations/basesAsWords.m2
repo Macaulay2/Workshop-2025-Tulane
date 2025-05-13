@@ -6,14 +6,14 @@
 
 LieAlgebraModuleElement = new Type of HashTable
 -- The keys are:
--- LieAlgebraCharacter
+-- LieAlgebraModule
 -- Terms, a hashtable
 ---- The keys are VLB patterns
 ---- The values are the coefficients 
 
 
 lieAlgebraModuleElement = (V,L) -> (
-    new LieAlgebraModuleElement from {"LieAlgebraCharacter"=>V,"Terms"=>L} 
+    new LieAlgebraModuleElement from {"LieAlgebraModule"=>V,"Terms"=>L} 
 );
 
 
@@ -30,8 +30,8 @@ simplify = (L) -> (
 
 
 LieAlgebraModuleElement + LieAlgebraModuleElement := (F1,F2) -> (
-    V1:=F1#"LieAlgebraCharacter";
-    V2:=F2#"LieAlgebraCharacter";
+    V1:=F1#"LieAlgebraModule";
+    V2:=F2#"LieAlgebraModule";
     if V1=!=V2 then error "Not elements of the same module";
     L:=join(F1#"Terms",F2#"Terms");
     lieAlgebraModuleElement(V1, simplify(L))
@@ -39,7 +39,7 @@ LieAlgebraModuleElement + LieAlgebraModuleElement := (F1,F2) -> (
 
 
 Number * LieAlgebraModuleElement := (c,f) -> (
-    lieAlgebraModuleElement(f#"LieAlgebraCharacter", apply(f#"Terms", p -> {p_0,c*p_1}))
+    lieAlgebraModuleElement(f#"LieAlgebraModule", apply(f#"Terms", p -> {p_0,c*p_1}))
 );
 
 - LieAlgebraModuleElement := (F1) -> (
@@ -51,7 +51,7 @@ LieAlgebraModuleElement - LieAlgebraModuleElement := (F1,F2) -> (
 );
 
 LieAlgebraModuleElement == LieAlgebraModuleElement := (F1,F2) -> (
-    F1- F2 === zeroElement(F1#"LieAlgebraCharacter")
+    F1- F2 === zeroElement(F1#"LieAlgebraModule")
 );
 
 
@@ -123,7 +123,7 @@ basisWordsFromMatrixGenerators = method(
 );
 
 basisWordsFromMatrixGenerators(LieAlgebraRepresentation) := (rho) -> (
-    V:=rho#"Character";
+    V:=rho#"Module";
     CB:=rho#"Basis";
     rhoB:=rho#"RepresentationMatrices";
     Vlambdaweights :=representationWeights(rho);
@@ -134,7 +134,7 @@ basisWordsFromMatrixGenerators(LieAlgebraRepresentation) := (rho) -> (
     if mults!={1} then error "V is not irreducible";
     lambdaDynkin:=first wts;
     LoweringOperators1:=apply(CB#"LoweringOperatorIndices", i -> rhoB_i);
-    v1 := transpose matrix {apply(numrows(LoweringOperators1_0), i -> if i==0 then 1/1 else 0/1)};
+    v1 := weightMuHighestWeightVectorsInW(lambdaDynkin,rho);
     Words:=new MutableHashTable from {};
     WordsAndVectorsByWeight1 := new MutableHashTable from apply(keys(WD), k -> k=>{});
     BasesByWeight1 := new MutableHashTable from apply(keys(WD), k -> k=>{});
@@ -220,7 +220,7 @@ end
 g = simpleLieAlgebra("A",3);
 CB = lieAlgebraBasis("A",3);
 lambda = {2,0,0};
-V=irreducibleLieAlgebraCharacter(lambda,g);
+V=irreducibleLieAlgebraModule(lambda,g);
 matrixGens = GTrepresentationMatrices(V,lambda);
 installRepresentation(V,CB,matrixGens)
 basisWordsFromMatrixGenerators(V)
