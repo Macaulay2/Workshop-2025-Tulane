@@ -138,7 +138,7 @@ VInWedgekW(LieAlgebraRepresentation,ZZ,LieAlgebraRepresentation,Matrix) := (rhoV
     -- Check that they use the same basis of g
     if CBV =!= CBW then error "V and W do not use the same basis" << endl;
     CB:=CBV;
-    WedgekW:=exteriorPowerRepresentation(k,rhoW);
+    WedgekW:=exteriorPower(k,rhoW);
     n:=dim W;
     Bk := subsets(apply(n, i -> i),k);
     p:=getSymbol "p";

@@ -16,44 +16,19 @@ typeBVin = (i,n) -> ( Eijm(n+i,2*n,2*n+1) - Eijm(2*n,i,2*n+1));
 
 ------------------------------------------------
 
-so2n1BasisElements = (n) -> (
-    B:={};
-    Hbasis := apply(n, i -> typeBHin(i,n));
-    Xbasis := flatten apply(n, i -> delete(null,apply(n, j -> if j!=i then typeBXijn(i,j,n))));   
-    Ybasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then typeBYijn(i,j,n)))); 
-    Zbasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then typeBZijn(j,i,n))));
-    Ubasis := flatten apply(n, i -> typeBUin(i,n));
-    Vbasis := flatten apply(n, i -> typeBVin(i,n));
-    flatten {Hbasis, Xbasis, Ybasis, Zbasis, Ubasis, Vbasis}
-);
-
-so2n1DualBasis = (n) -> (
-    B:={};
-    Hbasis := apply(n, i -> typeBHin(i,n));
-    Xbasis := flatten apply(n, i -> delete(null,apply(n, j -> if j!=i then typeBXijn(j,i,n))));   
-    Zbasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then typeBZijn(j,i,n)))); 
-    Ybasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then typeBYijn(i,j,n))));
-    Vbasis := flatten apply(n, i -> -typeBVin(i,n));
-    Ubasis := flatten apply(n, i -> -typeBUin(i,n));
-    flatten {Hbasis, Xbasis, Zbasis, Ybasis, Vbasis, Ubasis}
-);
-
-
---myTrace = M -> sum (apply(numgens target M, i -> M_(i,i)))
---killingform=(M,N) -> myTrace(matrix M*N)
---myBasis = so2n1BasisElements(3);
---myDualBasis = so2n1DualBasis(3);
---matrix apply(length myBasis, i -> apply ( length myDualBasis, j -> killingform(myBasis_i,myDualBasis_j)))
 
 DtoLMatrixTypeB = memoize((n) -> (
     M:=apply(n, i -> apply(n, j -> if j<i then 0 else if j<n-1 then 1 else 1/2));    
     matrix M
 ));
 
+
+
 DtoLTypeB = (v) -> (
     M:=DtoLMatrixTypeB(#v);
     flatten entries(M*(transpose matrix {v}))
 );
+
 
 
 LtoDTypeB = (v) -> (
@@ -63,8 +38,8 @@ LtoDTypeB = (v) -> (
 );
 
 
----
-so2n1BasisWeights = (n) -> (
+
+unorderedso2n1BasisWeights = (n) -> (
     -- First make the weights in the Li basis
     -- Cartan subalgebra: weight 0
     Hweights := apply(n, i -> apply(n, i -> 0));
@@ -78,37 +53,90 @@ so2n1BasisWeights = (n) -> (
     Uweights := apply(n, i -> apply(n, k -> if k==i then 1 else 0/1));
     -- Vi has weight -Li
     Vweights := apply(n, i -> apply(n, k -> if k==i then -1 else 0/1));
-
     Lweights:= flatten {Hweights, Xweights, Yweights, Zweights, Uweights, Vweights};
     apply(Lweights, v -> LtoDTypeB v)
 );
 
 
-so2n1BasisLabels = (n) -> (
-    B:={};
-    Hbasis := apply(n, i -> "H_"|toString(i));
-    Xbasis := flatten apply(n, i -> delete(null,apply(n, j -> if j!=i then "X_"|toString(i,j) )));   
-    Ybasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then "Y_"|toString(i,j) ))); 
-    Zbasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then "Z_"|toString(j,i) ))); 
-    Ubasis := apply(n, i -> "U_"|toString(i) ); 
-    Vbasis := apply(n, i -> "V_"|toString(i) ); 
-    flatten {Hbasis, Xbasis, Ybasis, Zbasis, Ubasis, Vbasis}
+so2n1BasisWeights = (n) -> (
+    PhiPlus:=positiveRoots("B",n);
+    l:=#PhiPlus;
+    flatten {apply(n, i -> apply(n, j -> 0)), PhiPlus, apply(PhiPlus, v -> -v)}
 );
+
+
+-- Permutation to take the basis in the order we originally programmed
+-- to the lex level order by positive roots
+so2n1Permutation = memoize((n) -> (
+    unorderedBasisWeights:=unorderedso2n1BasisWeights(n);
+    Hperm:=apply(n, i -> i);
+    PhiPlus:=positiveRoots("B",n);
+    positiveRootPerm:=apply(#PhiPlus, i -> first delete(null,apply(#unorderedBasisWeights, j -> if unorderedBasisWeights_j==PhiPlus_i then j)));
+    negativeRootPerm:=apply(#PhiPlus, i -> first delete(null,apply(#unorderedBasisWeights, j -> if unorderedBasisWeights_j==-(PhiPlus_i) then j)));
+    flatten {Hperm,positiveRootPerm,negativeRootPerm}
+));
+
+
+
+
+so2n1BasisElements = (n) -> (
+    -- Create the basis elements
+    Hbasis := apply(n, i -> typeBHin(i,n));
+    Xbasis := flatten apply(n, i -> delete(null,apply(n, j -> if j!=i then typeBXijn(i,j,n))));   
+    Ybasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then typeBYijn(i,j,n)))); 
+    Zbasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then typeBZijn(j,i,n))));
+    Ubasis := flatten apply(n, i -> typeBUin(i,n));
+    Vbasis := flatten apply(n, i -> typeBVin(i,n));
+    unorderedBasis:=flatten {Hbasis, Xbasis, Ybasis, Zbasis, Ubasis, Vbasis};
+    -- Put them in the order of the positive roots
+    sigma:=so2n1Permutation(n);
+    apply(sigma, i -> unorderedBasis_i)
+);
+
+
+
+so2n1DualBasis = (n) -> (
+    -- Create the basis elements
+    Hbasis := apply(n, i -> typeBHin(i,n));
+    Xbasis := flatten apply(n, i -> delete(null,apply(n, j -> if j!=i then typeBXijn(j,i,n))));   
+    Zbasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then typeBZijn(j,i,n)))); 
+    Ybasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then typeBYijn(i,j,n))));
+    Vbasis := flatten apply(n, i -> -typeBVin(i,n));
+    Ubasis := flatten apply(n, i -> -typeBUin(i,n));
+    unorderedDualBasis:=flatten {Hbasis, Xbasis, Zbasis, Ybasis, Vbasis, Ubasis};
+    -- Put them in the order determined by the positive roots
+    sigma:=so2n1Permutation(n);
+    apply(sigma, i -> unorderedDualBasis_i)
+);
+
+
+
+so2n1BasisLabels = (n) -> (
+    -- Create the labels
+    Hbasis := apply(n, i -> "H_"|toString(i));
+    Xbasis := flatten apply(n, i -> delete(null,apply(n, j -> if j!=i then "X_"|toString(i+1,j+1) )));   
+    Ybasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then "Y_"|toString(i+1,j+1) ))); 
+    Zbasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then "Z_"|toString(j+1,i+1) ))); 
+    Ubasis := apply(n, i -> "U_"|toString(i+1) ); 
+    Vbasis := apply(n, i -> "V_"|toString(i+1) ); 
+    unorderedBasisLabels:=flatten {Hbasis, Xbasis, Ybasis, Zbasis, Ubasis, Vbasis};
+    -- Put them in the order determined by the positive roots
+    sigma:=so2n1Permutation(n);
+    apply(sigma, i -> unorderedBasisLabels_i)
+);
+
 
 
 so2n1RaisingOperatorIndices = (n) -> (
-    XRaisingOperators := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then typeBXijn(i,j,n))));   
-    YRaisingOperators := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then typeBYijn(i,j,n)))); 
-    URaisingOperators := apply(n, i -> typeBUin(i, n));
-    so2n1RaisingOperators:=flatten {XRaisingOperators, YRaisingOperators, URaisingOperators};
-    B:=so2n1BasisElements(n);
-    select(#B, i -> member(B_i,so2n1RaisingOperators))
+    l:=#(positiveRoots("B",n));
+    apply(l, i -> n+i)
 );
 
+
+
 so2n1LoweringOperatorIndices = (n) -> (
-    L:=so2n1RaisingOperatorIndices(n);
-    B:=so2n1BasisElements(n);
-    select(#B, i -> i>=n and not member(i,L))
+    l:=#(positiveRoots("B",n));
+    apply(l, i -> n+l+i)
 );
 
 
@@ -116,6 +144,7 @@ so2n1LoweringOperatorIndices = (n) -> (
 
 -- writeInso2n1Basis
 writeInso2n1Basis = (M) -> (
+    -- Get the coefficients in the original order
     n:=lift((numrows(M)-1)/2,ZZ);
     Hcoeffs:= apply(n, i -> M_(i,i));
     Xcoeffs:= flatten apply(n, i -> delete(null,apply(n, j -> if j!=i then M_(i,j)))); 
@@ -123,7 +152,10 @@ writeInso2n1Basis = (M) -> (
     Zcoeffs := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then M_(n+j,i))));
     Ucoeffs := apply(n, i -> M_(i,2*n));
     Vcoeffs := apply(n, i -> M_(n+i,2*n));    
-    return flatten {Hcoeffs, Xcoeffs, Ycoeffs, Zcoeffs, Ucoeffs, Vcoeffs}
+    unorderedBasisCoefficients:= flatten {Hcoeffs, Xcoeffs, Ycoeffs, Zcoeffs, Ucoeffs, Vcoeffs};
+    -- Put them in the order determined by the positive roots
+    sigma:=so2n1Permutation(n);
+    apply(sigma, i -> unorderedBasisCoefficients_i)
 );
 
 

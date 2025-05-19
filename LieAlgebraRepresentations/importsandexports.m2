@@ -3,58 +3,61 @@ debug Core;
 
 
 
-
-
 -- From lieAlgebras.m2
-
 export {
     --for the LieAlgebra type:
     "LieAlgebra",
+    "characterRing",
     "simpleLieAlgebra",
+    "𝔞", "𝔟", "𝔠", "𝔡", "𝔢", "𝔣", "𝔤",
+    "isSimple",
+    "dynkinDiagram",
     "dualCoxeterNumber", 
     "highestRoot",
     "starInvolution",
-    "killingForm",
-    "weylAlcove",
-    "positiveRoots",
-    "positiveCoroots",
-    "simpleRoots",
-    "dynkinDiagram",
-    "isSimple",
-    "cartanMatrix",
-    "𝔞", "𝔟", "𝔠", "𝔡", "𝔢", "𝔣", "𝔤",
     "subLieAlgebra",
     "embedding"
-    }
+}
+
+
 
 -- From lieAlgebraModules.m2
 export {
-    "LieAlgebraModule", 
+    "LieAlgebraModule",
+    "isIrreducible",
+    "trivialModule",
+    "zeroModule",
+    "adjointModule",
+    "standardModule",
     "irreducibleLieAlgebraModule", "LL", "ω",
 --    "isIsomorphic",
+    "cartanMatrix",
+    "killingForm",
+    "weylAlcove",    
     "casimirScalar",
+    "simpleRoots",
+    "positiveRoots",
+    "positiveCoroots",
+    "character",    
     "weightDiagram",
+    "qdim",
+    "LieAlgebraModuleFromWeights",
+    "adams",    
     "tensorCoefficient",
     "fusionProduct",
     "fusionCoefficient",
---    "MaxWordLength",
-    "LieAlgebraModuleFromWeights",
-    "trivialModule",
-    "standardModule",
-    "adjointModule",
-    "zeroModule",
-    "isIrreducible",
-    "character",
-    "adams",
-    "qdim",
     "branchingRule"
     }
 
 
+
 -- From LieAlgebraBases.m2
 export {"LieAlgebraBasis",
-    "lieAlgebraBasis"
+    "lieAlgebraBasis",
+    "universalEnvelopingAlgebra",
+    "uNminus"
     }
+
 
 
 -- From representationsCasimirReynolds.m2
@@ -72,6 +75,22 @@ export {"LieAlgebraRepresentation",
 
 
 
+-- From basesAsWords.m2
+export {
+    "basisWordsFromMatrixGenerators",
+    "isomorphismOfRepresentations"
+    }
+
+
+
+-- From deGraafAlgorithm.m2
+export {
+    "deGraafBases",
+    "deGraafRepresentation"
+}
+
+
+
 -- From gelfandTsetlinTypeA.m2
 export {"dynkinToPartition",
     "GTPattern",
@@ -82,22 +101,12 @@ export {"dynkinToPartition",
     }
 
 
+
 -- From symWedgeTensor.m2
 export {
-    "symmetricPowerRepresentation",
-    "exteriorPowerRepresentation",
-    "tensorProductRepresentation",
     "isLieAlgebraRepresentation"    
     }
 
-
--- From basesAsWords.m2
-export {--"LieAlgebraModuleElement",
-    --"lieAlgebraModuleElement",
-    --"zeroElement",
-    --"simplify",
-    "basisWordsFromMatrixGenerators"
-    }
 
 
 -- From highestWeightVectorsAndSubmoduless.m2

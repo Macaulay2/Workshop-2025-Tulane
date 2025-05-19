@@ -209,6 +209,34 @@ basisWordsFromMatrixGenerators(LieAlgebraRepresentation) := (rho) -> (
 )
 
 
+isomorphismOfRepresentations = method(
+    TypicalValue=>Matrix
+);
+
+-- gives matrix P such that P*(L2_i)*Pinv == L1_i
+-- or Pinv*(L1_i)*P = L2_i
+isomorphismOfRepresentations(LieAlgebraRepresentation,LieAlgebraRepresentation) := (rho1, rho2) -> (
+    V:=rho1#"Module";
+    if rho2#"Module"!=V then error "The representations are not isomorphic" << endl;
+    if not isIrreducible(V) then error "Not implemented yet for reducible representations"<<endl;
+    LAB:=rho1#"Basis";
+    if rho2#"Basis"=!=LAB then error "Not implemented yet when the representations have different Lie algebra bases" << endl;
+    lambda:=first keys(V#"DecompositionIntoIrreducibles");
+    vlambda:=weightMuHighestWeightVectorsInW(lambda,rho1);
+    LOMaps:=apply(LAB#"LoweringOperatorIndices", i -> dense((rho1#"RepresentationMatrices")_i));
+    basisWords:=basisWordsFromMatrixGenerators(rho2);
+    act:=(X,f) -> X*f;
+    P:=matrixFromColumns(apply(basisWords, w -> applyWord(w,vlambda,act,LOMaps)));
+    -- Check this before returning it
+    Pinv := inverse P;
+    L1:=rho1#"RepresentationMatrices";
+    L2:=rho2#"RepresentationMatrices";
+    g:=LAB#"LieAlgebra";
+    if not all(dim g, i -> dense(L2_i) == Pinv*(dense(L1_i))*P) then error "Isomorphism not found" << endl;
+    P
+);
+
+
 
 end
 

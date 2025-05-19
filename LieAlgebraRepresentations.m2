@@ -2,8 +2,8 @@
 -- licensed under GPL v2 or any later version
 newPackage(
     "LieAlgebraRepresentations",
-    Version => "0.96",
-    Date => "May 12, 2025",
+    Version => "0.97",
+    Date => "May 18, 2025",
     AuxiliaryFiles=>true,
     Headline => "Lie algebra representations and characters",
     Authors => {
@@ -18,7 +18,7 @@ newPackage(
 	  },
     Keywords => {"Lie Groups and Lie Algebras"},
     PackageImports => {"ReesAlgebra"},
-    PackageExports => {"SparseMatrices","SpechtModule","Polyhedra","Isomorphism"},
+    PackageExports => {"SparseMatrices","SpechtModule","Polyhedra","Isomorphism","AssociativeAlgebras"},
     DebuggingMode => true
     )
 
@@ -31,6 +31,7 @@ needs "./LieAlgebraRepresentations/lieAlgebraModules.m2"
 needs "./LieAlgebraRepresentations/lieAlgebraBases.m2"
 needs "./LieAlgebraRepresentations/representationsCasimirReynolds.m2"
 needs "./LieAlgebraRepresentations/basesAsWords.m2"
+needs "./LieAlgebraRepresentations/deGraafAlgorithm.m2"
 needs "./LieAlgebraRepresentations/gelfandTsetlinTypeA.m2"
 needs "./LieAlgebraRepresentations/symWedgeTensor.m2"
 needs "./LieAlgebraRepresentations/highestWeightVectorsAndSubmodules.m2"

@@ -1,5 +1,3 @@
-
-
 doc ///
     Key
        LieAlgebraRepresentations
@@ -9,6 +7,10 @@ doc ///
         Text 
             This package implements finite-dimensional representations of finite-dimensional complex semisimple Lie algebras and their characters. 
 ///
+
+
+
+-- From lieAlgebras.m2
 
 doc ///
     Key
@@ -30,6 +32,12 @@ doc ///
 	Text
 	    See also @TO (NewFromMethod,LieAlgebra,Matrix)@.
 ///
+
+
+
+-- Missing documentation: characterRing
+
+
 
 doc ///
     Key
@@ -65,6 +73,8 @@ TEST ///
     assert(A=simpleLieAlgebra("A",1); A#"LieAlgebraRank"===1 and A#"RootSystemType"==="A" and isSimple A)
 ///
 
+
+
 doc ///
     Key
 	(symbol ==, LieAlgebra, LieAlgebra)
@@ -93,6 +103,29 @@ doc ///
 TEST ///
     assert(simpleLieAlgebra("A",2) == simpleLieAlgebra("A",2))
 ///
+
+
+
+doc ///
+    Key
+        isIsomorphic
+	(isIsomorphic,LieAlgebra,LieAlgebra)
+    Headline
+        tests whether two Lie algebra are isomorphic
+    Usage
+        isIsomorphic(g,h)
+    Inputs
+        g:LieAlgebra
+	h:LieAlgebra
+    Outputs
+        b:Boolean
+    Description
+	Example
+	    g=simpleLieAlgebra("D",4)
+	    h=subLieAlgebra(g,{2,{1,0,1,1}})
+	    isIsomorphic(h,simpleLieAlgebra("G",2))
+///
+
 
 
 doc ///
@@ -125,6 +158,8 @@ TEST ///
     assert(isIsomorphic(g_0,𝔞_1))
 ///
 
+
+
 doc ///
     Key
         (symbol _*,LieAlgebra)
@@ -140,28 +175,7 @@ doc ///
 	    g_*
 ///
 
-doc ///
-    Key
-        embedding
-	(embedding,LieAlgebra,LieAlgebra)
-    Headline
-        gives the embedding of Cartan subalgebras of one Lie algebra into another
-    Usage
-        embedding(g,h)
-    Inputs
-        g:LieAlgebra
-        h:LieAlgebra
-    Description
-        Example
-	    h=simpleLieAlgebra("F",4)
-	    g=subLieAlgebra(h,{0,1}); describe g
-	    embedding(g,h)
-	    embedding(subLieAlgebra(h,"principal"),h)
-///
-TEST ///
-    assert(embedding(𝔞_1,𝔞_1)==1)
-    assert(embedding(subLieAlgebra(𝔤_2,"principal"),𝔤_2)==matrix{{6},{10}}) -- 2*rho^v
-///
+
 
 doc ///
     Key
@@ -192,6 +206,8 @@ TEST ///
     assert(dualCoxeterNumber("A",2) === 3)
 ///
 
+
+
 doc ///
     Key
         highestRoot
@@ -217,59 +233,9 @@ doc ///
 
 TEST ///
     assert(highestRoot("A",2) === {1,1})
-///	
-
-doc ///
-    Key
-        positiveRoots
-	(positiveRoots,LieAlgebra)
-        positiveCoroots
-	(positiveCoroots,LieAlgebra)
-    Headline
-        returns the positive (co)roots of a simple Lie algebra
-    Usage
-        positiveRoots(g), positiveCoroots(g)
-    Inputs
-        g:LieAlgebra
-    Outputs
-        t:List
-    Description
-        Text  
-            Let R be an irreducible root system of rank m, and choose a base of simple roots $\Delta = \{\alpha_1,...,\alpha_m\}$.
-	    This function returns all the roots that are nonnegative linear combinations of the simple roots (expressed in the basis of fundamental weights).
-	    The formulas implemented here are taken from the tables following Bourbaki's {\it Lie Groups and Lie Algebras} Chapter 6.
-	    
-	Text       
-	    In the example below, we see that for $sl_3$, the positive roots are $\alpha_1$, $\alpha_2$, and $\alpha_1+\alpha_2$.
-
-	Text
-	    Each positive root may be written $\alpha = \sum n_i \alpha_i$, where the coefficients $n_i$ are nonnegative integers. The sum $\sum n_i$
-	    is called the level of $\alpha$. The positive roots are ordered first by the level, then lexicographically by their coefficients in the basis
-	    of simple roots. 
-	    
-	Example
-	    sl3=simpleLieAlgebra("A",2)
-	    positiveRoots(sl3)
 ///
 
-TEST ///
-    assert(set positiveRoots(simpleLieAlgebra("A",2)) === set {{2, -1}, {-1, 2}, {1,1} })
-///	
 
-doc ///
-    Key
-        simpleRoots
-	(simpleRoots,String,ZZ)
-	(simpleRoots,LieAlgebra)
-    Headline
-        returns the simple roots of a simple Lie algebra
-    Usage
-        simpleRoots(g), simpleRoots("A",2)
-    Inputs
-        g:LieAlgebra
-    Outputs
-        t:List
-///
 
 doc ///
     Key
@@ -316,68 +282,86 @@ TEST ///
 
 doc ///
     Key
-        killingForm
-	(killingForm,LieAlgebra,List,List)
-	(killingForm,LieAlgebra,Vector,Vector)
-    Headline 
-        computes the scaled Killing form applied to two weights
-    Usage 
-        killingForm(g,v,w)
-    Inputs 
+    	subLieAlgebra
+	(subLieAlgebra,LieAlgebra,List)
+	(subLieAlgebra,LieAlgebra,Matrix)
+	(subLieAlgebra,LieAlgebra,String)
+    Headline
+        Define a sub-Lie algebra of an existing one
+    Usage
+       subLieAlgebra(g,S)
+    Inputs
         g:LieAlgebra
-	v:List
-	w:List
+	S:{List,Matrix,String}
+    Outputs
+        h:LieAlgebra
     Description
         Text
-	    Let $\mathbf{g}$ be a Lie algebra.  The Killing form on $\mathbf{g}$ is the symmetric bilinear form given by $(x,y) = Tr(\mathrm{ad}_x \mathrm{ad}_y)$.  It can restricted to a Cartan subalgebra $\mathbf{h}$ and transferred to $\mathbf{h}^*$, yielding a symmetric bilinear form on weights.  One popular convention is to scale the Killing form so that $(\theta,\theta) =2$, where $\theta$ is the highest root.
-	    
-        Example
-            g=simpleLieAlgebra("A",2)
-	    killingForm(g,{1,0},{0,1})
+	   For the purposes of this function, a sub-Lie algebra means an embedding of a Lie algebra into another up to linear equivalence.
+	   According to Dynkin's theory, this means that it is determined by the restriction of the embedding to the Cartan subalgebra,
+	   and that is the data provided by @TT "S"@.
+	   Specifically, @TT "S"@ must be either a subset of vertices of the Dynkin diagram of @TT "g"@ (as labelled by @TO dynkinDiagram@):
+	Example
+	   g=𝔢_8; dynkinDiagram g
+	   subLieAlgebra(g,{1,2,3,4,5,8})
+	Text
+	   The vertices are labelled from 1 to the rank of g; because we frequently want to consider the lowest root, it is labelled 0:
+	Example
+	   h=𝔣_4; dynkinDiagram h
+	   subLieAlgebra(h,{0,1,2,3})
+	Text
+	   Or @TT "S"@ must be a matrix whose columns are the simple coroots of the subalgebra expanded in the basis of simple coroots of @TT "g"@:
+	Example
+	   g=𝔢_6
+	   h=subLieAlgebra(g,{2,4,{0,0,1,0,1,0},{1,0,0,0,0,1}}); describe h
+	   branchingRule(adjointModule g,h)
+	Text
+	  Or @TT "S"@ is the string @TT "principal"@, which is currently the only predefined subalgebra:
+	Example
+	   g=𝔞_2; h=subLieAlgebra(g,"principal"); describe h
+	   V=LL_(2,4) g; qdim V
+	   W=branchingRule(V,h); describe W
+	   character W
+	Text
+	  In simply laced types, principal specialisation (character of principal subalgebra) and q-dimension agree.
+    Caveat
+        If @TT "S"@ is a matrix, does not check if the map of Cartan subalgebras leads to a valid Lie algebra embedding.
 ///
 
 TEST ///
-    g=simpleLieAlgebra("A",2)
-    assert(killingForm(g,{1,0},{0,1}) === 1/3)
-    assert(lift(matrix table(simpleRoots g,simpleRoots g,(v,w)->killingForm(g,v,w)),ZZ) == cartanMatrix g) -- true for all simply laced
+    g = simpleLieAlgebra("E",8)
+    h = subLieAlgebra(g,{2,3,4,5})
+    assert ( h#"LieAlgebraRank" === 4 and h#"RootSystemType" === "D" )
+    k = subLieAlgebra(h,{1,3,4})
+    assert ( k#"LieAlgebraRank" === (1,1,1) and k#"RootSystemType" === ("A","A","A") )
 ///
-	
+
+
+
 doc ///
     Key
-        weylAlcove
-	(weylAlcove,String,ZZ,ZZ)
-	(weylAlcove,LieAlgebra,ZZ)
-	(weylAlcove,ZZ,LieAlgebra)
-    Headline 
-        the dominant integral weights of level less than or equal to l
-    Usage 
-        weylAlcove(g,l)
-    Inputs 
+        embedding
+	(embedding,LieAlgebra,LieAlgebra)
+    Headline
+        gives the embedding of Cartan subalgebras of one Lie algebra into another
+    Usage
+        embedding(g,h)
+    Inputs
         g:LieAlgebra
-        l:ZZ
+        h:LieAlgebra
     Description
-        Text
-            Let $\mathbf{g}$ be a Lie algebra, and let $l$ be a nonnegative integer.
-	    Choose a Cartan subalgebra $\mathbf{h}$ and a base $\Delta= \{ \alpha_1,\ldots,\alpha_n\}$ of simple roots of $\mathbf{g}$.
-	    These choices determine a highest root $\theta$. (See @TO highestRoot@).
-	    Let $\mathbf{h}_{\mathbf{R}}^*$ be the real span of $\Delta$, and let $(,)$ denote the Killing form, normalized so that $(\theta,\theta)=2$.
-	    The fundamental Weyl chamber is $C^{+} = \{ \lambda \in \mathbf{h}_{\mathbf{R}}^*  : (\lambda,\alpha_i) \ge 0, i=1,\ldots,n \}$.
-	    The fundamental Weyl alcove is the subset of the fundamental Weyl chamber such that $(\lambda,\theta) \leq l$.
-	    This function computes the set of integral weights in the fundamental Weyl alcove.
-	    
-        Text
-            In the example below, we see that the Weyl alcove of $sl_3$ at level 3 contains 10 integral weights.
-	    
-	Example 
-	    g=simpleLieAlgebra("A",2)
-	    weylAlcove(g,3)
+        Example
+	    h=simpleLieAlgebra("F",4)
+	    g=subLieAlgebra(h,{0,1}); describe g
+	    embedding(g,h)
+	    embedding(subLieAlgebra(h,"principal"),h)
+///
+TEST ///
+    assert(embedding(𝔞_1,𝔞_1)==1)
+    assert(embedding(subLieAlgebra(𝔤_2,"principal"),𝔤_2)==matrix{{6},{10}}) -- 2*rho^v
 ///
 
-TEST ///
-    g=simpleLieAlgebra("A",2)
-    assert(set(weylAlcove(g,3)) === set {{0, 0}, {1, 0}, {0, 1}, {1, 1}, {2, 0}, {2, 1}, {0, 2}, {1, 2}, {3, 0}, {0, 3}}) 
-///	
-	
+-- From lieAlgebraModules.m2
 
 doc ///
     Key
@@ -393,6 +377,85 @@ doc ///
 	    g=simpleLieAlgebra("A",2)
 	    M=irreducibleLieAlgebraModule(g,{1,1})
 ///
+
+
+
+doc ///
+    Key
+        isIrreducible
+	(isIrreducible,LieAlgebraModule)
+    Headline
+        Whether a Lie algebra module is irreducible or not
+    Description
+        Example
+	    g=simpleLieAlgebra("A",2)
+	    M=irreducibleLieAlgebraModule({2,1},g)
+	    isIrreducible M
+	    isIrreducible(M++M)
+	    isIrreducible(M**M)
+///	
+
+TEST ///
+    g=simpleLieAlgebra("A",2);
+    assert(isIrreducible irreducibleLieAlgebraModule({2,1},g))
+///
+
+
+
+doc ///
+    Key
+        trivialModule
+	(trivialModule,LieAlgebra)
+    Headline
+        The trivial module of a Lie algebra
+    Description
+        Text
+	    Returns the one-dimensional module with zero highest weight.
+///
+
+
+
+doc ///
+    Key
+        zeroModule
+	(zeroModule,LieAlgebra)
+    Headline
+        The zero module of a Lie algebra
+    Description
+        Text
+	    Returns the zero-dimensional module.
+///
+
+
+
+doc ///
+    Key
+        adjointModule
+	(adjointModule,LieAlgebra)
+    Headline
+        The adjoint module of a Lie algebra
+    Description
+        Text
+	    Returns the module corresponding to the adjoint representation of a Lie algebra.
+        Example
+	    g=simpleLieAlgebra("A",2)
+	    adjointModule g
+	    adjointModule (g++g)
+///
+
+TEST ///
+    g=simpleLieAlgebra("A",2);
+    M=irreducibleLieAlgebraModule({2,1},g);
+    assert(M ** trivialModule g === M)
+    assert(M ** zeroModule g === zeroModule g)
+    assert(dim adjointModule(g++g)==2*dim adjointModule g)
+///
+
+
+
+-- Missing documentation: standardModule
+
+
 
 doc ///
     Key
@@ -430,7 +493,9 @@ doc ///
 TEST ///
     assert(irreducibleLieAlgebraModule({1,1},simpleLieAlgebra("A",2)) === new LieAlgebraModule from (simpleLieAlgebra("A",2),{{1,1}=>1} ))
 ///	
-		
+
+
+
 doc ///
     Key 
 	(multiplicity,List,LieAlgebraModule)
@@ -461,6 +526,8 @@ TEST ///
     assert(multiplicity({-1,1},irreducibleLieAlgebraModule({2,1},simpleLieAlgebra("A",2))) === 2)
 ///
 
+
+
 doc ///
     Key
 	(dim,LieAlgebraModule)
@@ -485,6 +552,203 @@ TEST ///
     W=irreducibleLieAlgebraModule({5,2},g)
     assert(dim W == sum values weightDiagram W)
 ///
+
+
+
+-- Missing documentation: cartanMatrix
+
+
+
+doc ///
+    Key
+        killingForm
+	(killingForm,LieAlgebra,List,List)
+	(killingForm,LieAlgebra,Vector,Vector)
+    Headline 
+        computes the scaled Killing form applied to two weights
+    Usage 
+        killingForm(g,v,w)
+    Inputs 
+        g:LieAlgebra
+	v:List
+	w:List
+    Description
+        Text
+	    Let $\mathbf{g}$ be a Lie algebra.  The Killing form on $\mathbf{g}$ is the symmetric bilinear form given by $(x,y) = Tr(\mathrm{ad}_x \mathrm{ad}_y)$.  It can restricted to a Cartan subalgebra $\mathbf{h}$ and transferred to $\mathbf{h}^*$, yielding a symmetric bilinear form on weights.  One popular convention is to scale the Killing form so that $(\theta,\theta) =2$, where $\theta$ is the highest root.
+	    
+        Example
+            g=simpleLieAlgebra("A",2)
+	    killingForm(g,{1,0},{0,1})
+///
+
+TEST ///
+    g=simpleLieAlgebra("A",2)
+    assert(killingForm(g,{1,0},{0,1}) === 1/3)
+    assert(lift(matrix table(simpleRoots g,simpleRoots g,(v,w)->killingForm(g,v,w)),ZZ) == cartanMatrix g) -- true for all simply laced
+///
+
+
+
+doc ///
+    Key
+        weylAlcove
+	(weylAlcove,String,ZZ,ZZ)
+	(weylAlcove,LieAlgebra,ZZ)
+	(weylAlcove,ZZ,LieAlgebra)
+    Headline 
+        the dominant integral weights of level less than or equal to l
+    Usage 
+        weylAlcove(g,l)
+    Inputs 
+        g:LieAlgebra
+        l:ZZ
+    Description
+        Text
+            Let $\mathbf{g}$ be a Lie algebra, and let $l$ be a nonnegative integer.
+	    Choose a Cartan subalgebra $\mathbf{h}$ and a base $\Delta= \{ \alpha_1,\ldots,\alpha_n\}$ of simple roots of $\mathbf{g}$.
+	    These choices determine a highest root $\theta$. (See @TO highestRoot@).
+	    Let $\mathbf{h}_{\mathbf{R}}^*$ be the real span of $\Delta$, and let $(,)$ denote the Killing form, normalized so that $(\theta,\theta)=2$.
+	    The fundamental Weyl chamber is $C^{+} = \{ \lambda \in \mathbf{h}_{\mathbf{R}}^*  : (\lambda,\alpha_i) \ge 0, i=1,\ldots,n \}$.
+	    The fundamental Weyl alcove is the subset of the fundamental Weyl chamber such that $(\lambda,\theta) \leq l$.
+	    This function computes the set of integral weights in the fundamental Weyl alcove.
+	    
+        Text
+            In the example below, we see that the Weyl alcove of $sl_3$ at level 3 contains 10 integral weights.
+	    
+	Example 
+	    g=simpleLieAlgebra("A",2)
+	    weylAlcove(g,3)
+///
+
+TEST ///
+    g=simpleLieAlgebra("A",2)
+    assert(set(weylAlcove(g,3)) === set {{0, 0}, {1, 0}, {0, 1}, {1, 1}, {2, 0}, {2, 1}, {0, 2}, {1, 2}, {3, 0}, {0, 3}}) 
+///
+
+
+
+doc ///
+    Key
+        casimirScalar
+	(casimirScalar,LieAlgebraModule)
+    Headline
+        computes the scalar by which the Casimir operator acts on an irreducible Lie algebra module
+    Usage
+        casimirScalar(V)
+    Inputs 
+        V:LieAlgebraModule
+    Outputs
+        k:QQ
+    Description
+        Text
+	    The Casimir operator is an element of the universal enveloping algebra that acts by a scalar on each irreducible Lie algebra module.  One has $c(\mu) = (\mu,\mu) + 2(\mu,\rho)$, where $\rho$ is half the sum of the positive weights and (,) is the Killing form scaled so that $(\theta,\theta)=2$, where $\theta$ is the highest root.  See Di Francesco, Mathieu, and Senechal, {\it Conformal Field Theory}, Springer Graduate Texts in Theoretical Physics, (13.127) p. 512, and (13.46) p. 499.
+	    
+	Text     
+            In the example below, we see that the Casimir operator acts as multiplication by 8/3 on the standard representation of $sl_3$.  
+         
+	Example
+	    g=simpleLieAlgebra("A",2)
+	    V=irreducibleLieAlgebraModule({1,0},g)
+	    casimirScalar(V)
+///
+
+TEST ///
+    g=simpleLieAlgebra("A",2)
+    V=irreducibleLieAlgebraModule({1,0},g)
+    assert(casimirScalar(V) === 8/3)
+///
+
+
+
+doc ///
+    Key
+        simpleRoots
+	(simpleRoots,String,ZZ)
+	(simpleRoots,LieAlgebra)
+    Headline
+        returns the simple roots of a simple Lie algebra
+    Usage
+        simpleRoots(g), simpleRoots("A",2)
+    Inputs
+        g:LieAlgebra
+    Outputs
+        t:List
+///
+
+
+
+doc ///
+    Key
+        positiveRoots
+	(positiveRoots,LieAlgebra)
+        positiveCoroots
+	(positiveCoroots,LieAlgebra)
+    Headline
+        returns the positive (co)roots of a simple Lie algebra
+    Usage
+        positiveRoots(g), positiveCoroots(g)
+    Inputs
+        g:LieAlgebra
+    Outputs
+        t:List
+    Description
+        Text  
+            Let R be an irreducible root system of rank m, and choose a base of simple roots $\Delta = \{\alpha_1,...,\alpha_m\}$.
+	    This function returns all the roots that are nonnegative linear combinations of the simple roots (expressed in the basis of fundamental weights).
+	    The formulas implemented here are taken from the tables following Bourbaki's {\it Lie Groups and Lie Algebras} Chapter 6.
+	    
+	Text       
+	    In the example below, we see that for $sl_3$, the positive roots are $\alpha_1$, $\alpha_2$, and $\alpha_1+\alpha_2$.
+
+	Text
+	    Each positive root may be written $\alpha = \sum n_i \alpha_i$, where the coefficients $n_i$ are nonnegative integers. The sum $\sum n_i$
+	    is called the level of $\alpha$. The positive roots are ordered first by the level, then lexicographically by their coefficients in the basis
+	    of simple roots. 
+	    
+	Example
+	    sl3=simpleLieAlgebra("A",2)
+	    positiveRoots(sl3)
+///
+
+TEST ///
+    assert(set positiveRoots(simpleLieAlgebra("A",2)) === set {{2, -1}, {-1, 2}, {1,1} })
+///	
+
+
+
+doc ///
+    Key
+        character
+	(character,LieAlgebraModule)
+	(character,LieAlgebra,List)
+	(character,LieAlgebra,Vector)
+	[character,Strategy]
+    Headline
+        Computes the character of a Lie algebra module
+    Usage
+        character V
+    Inputs
+        V:LieAlgebraModule
+    Outputs
+        C:RingElement
+    Description
+        Text
+	    An optional argument {\tt "Strategy"} allows to specify which algorithm to use:
+	    {\tt "Freudenthal"} for Freudenthal's recursive algorithm; see Humphreys, {\it Introduction to Lie Algebras and Representation Theory}, Section 22.3.
+	    {\tt "Weyl"} for Weyl's character formula (in classical types).
+	    {\tt "JacobiTrudi"} and {\tt "JacobiTrudi'"} for Jacobi-Trudi and dual Jacobi-Trudi formulae (in type A).
+    SeeAlso
+        weightDiagram
+///
+
+TEST ///
+    g=simpleLieAlgebra("D",4);
+    M=LL_(1,1,0,0) g;
+    N=LL_(1,0,0,1) g;
+    assert(character(M**N) == character M * character N)
+///
+
+
 
 doc ///
     Key
@@ -552,6 +816,8 @@ TEST ///
     assert(irreducibleLieAlgebraModule({2,1},simpleLieAlgebra("A",2)) ** irreducibleLieAlgebraModule({1,2},simpleLieAlgebra("A",2)) === new LieAlgebraModule from (simpleLieAlgebra("A",2), {{{1, 1}, 2}, {{3, 0}, 1}, {{1, 4}, 1}, {{3, 3}, 1}, {{0, 0}, 1}, {{0, 3}, 1}, {{2, 2}, 2}, {{4, 1}, 1}} ))
 ///
 
+
+
 doc ///
     Key
 	(symbol ++, LieAlgebraModule, LieAlgebraModule)
@@ -579,6 +845,8 @@ doc ///
 TEST ///
     assert(irreducibleLieAlgebraModule({2,1},simpleLieAlgebra("A",2)) ** irreducibleLieAlgebraModule({1,2},simpleLieAlgebra("A",2)) === new LieAlgebraModule from (simpleLieAlgebra("A",2), {{{1, 1}, 2}, {{3, 0}, 1}, {{1, 4}, 1}, {{3, 3}, 1}, {{0, 0}, 1}, {{0, 3}, 1}, {{2, 2}, 2}, {{4, 1}, 1}} ))
 ///
+
+
 
 doc ///
     Key
@@ -613,7 +881,6 @@ doc ///
     SeeAlso
         (symbol **, LieAlgebraModule, LieAlgebraModule)
 ///
-
 
 TEST ///
     g=simpleLieAlgebra("A",2);
@@ -677,6 +944,9 @@ doc ///
 	    T=weightDiagram M
             LieAlgebraModuleFromWeights(T,g)
 ///
+
+
+
 doc ///
     Key
         fusionProduct
@@ -718,59 +988,48 @@ TEST ///
 
 
 
-doc ///
-    Key
-        casimirScalar
-	(casimirScalar,LieAlgebraModule)
-    Headline
-        computes the scalar by which the Casimir operator acts on an irreducible Lie algebra module
-    Usage
-        casimirScalar(V)
-    Inputs 
-        V:LieAlgebraModule
-    Outputs
-        k:QQ
-    Description
-        Text
-	    The Casimir operator is an element of the universal enveloping algebra that acts by a scalar on each irreducible Lie algebra module.  One has $c(\mu) = (\mu,\mu) + 2(\mu,\rho)$, where $\rho$ is half the sum of the positive weights and (,) is the Killing form scaled so that $(\theta,\theta)=2$, where $\theta$ is the highest root.  See Di Francesco, Mathieu, and Senechal, {\it Conformal Field Theory}, Springer Graduate Texts in Theoretical Physics, (13.127) p. 512, and (13.46) p. 499.
-	    
-	Text     
-            In the example below, we see that the Casimir operator acts as multiplication by 8/3 on the standard representation of $sl_3$.  
-         
-	Example
-	    g=simpleLieAlgebra("A",2)
-	    V=irreducibleLieAlgebraModule({1,0},g)
-	    casimirScalar(V)
-///
-
-TEST ///
-    g=simpleLieAlgebra("A",2)
-    V=irreducibleLieAlgebraModule({1,0},g)
-    assert(casimirScalar(V) === 8/3)
-///
 
 
+-*
 doc ///
     Key
         isIsomorphic
-	(isIsomorphic,LieAlgebra,LieAlgebra)
+	(isIsomorphic,LieAlgebraModule,LieAlgebraModule)
     Headline
-        tests whether two Lie algebra are isomorphic
+        tests whether two Lie algebra modules are isomorphic
     Usage
-        isIsomorphic(g,h)
+        isIsomorphic(V,W)
     Inputs
-        g:LieAlgebra
-	h:LieAlgebra
+        V:LieAlgebraModule
+	W:LieAlgebraModule
     Outputs
         b:Boolean
     Description
+        Text
+	    To test whether two Lie algebra modules are isomorphic, we first test whether they are modules over the same Lie algebra, and if so, then test whether they have the same decomposition into irreducible Lie algebra modules.
+        
 	Example
-	    g=simpleLieAlgebra("D",4)
-	    h=subLieAlgebra(g,{2,{1,0,1,1}})
-	    isIsomorphic(h,simpleLieAlgebra("G",2))
+	    g=simpleLieAlgebra("A",2)
+	    M=irreducibleLieAlgebraModule({2,1},g)
+	    N=irreducibleLieAlgebraModule({1,2},g)
+	    Z=irreducibleLieAlgebraModule({0,0},g)
+	    isIsomorphic(M,N)
+	    isIsomorphic(M,M)
+	    isIsomorphic(M,M**Z)
+	    isIsomorphic(M**N,N**M)
 ///
 
--*
+TEST ///
+    g=simpleLieAlgebra("A",2);
+    M=irreducibleLieAlgebraModule({2,1},g);
+    N=irreducibleLieAlgebraModule({1,2},g);
+    Z=irreducibleLieAlgebraModule({0,0},g);
+    assert(isIsomorphic(M,N) === false)
+    assert(isIsomorphic(M,M) === true)
+    assert(isIsomorphic(M,M**Z) === true)
+    assert(isIsomorphic(M**N,N**M) ===true)
+///
+
 doc ///
     Key
         MaxWordLength
@@ -785,102 +1044,7 @@ doc ///
 ///
 *-
 
-doc ///
-    Key
-        character
-	(character,LieAlgebraModule)
-	(character,LieAlgebra,List)
-	(character,LieAlgebra,Vector)
-	[character,Strategy]
-    Headline
-        Computes the character of a Lie algebra module
-    Usage
-        character V
-    Inputs
-        V:LieAlgebraModule
-    Outputs
-        C:RingElement
-    Description
-        Text
-	    An optional argument {\tt "Strategy"} allows to specify which algorithm to use:
-	    {\tt "Freudenthal"} for Freudenthal's recursive algorithm; see Humphreys, {\it Introduction to Lie Algebras and Representation Theory}, Section 22.3.
-	    {\tt "Weyl"} for Weyl's character formula (in classical types).
-	    {\tt "JacobiTrudi"} and {\tt "JacobiTrudi'"} for Jacobi-Trudi and dual Jacobi-Trudi formulae (in type A).
-    SeeAlso
-        weightDiagram
-///
 
-TEST ///
-    g=simpleLieAlgebra("D",4);
-    M=LL_(1,1,0,0) g;
-    N=LL_(1,0,0,1) g;
-    assert(character(M**N) == character M * character N)
-///
-
-doc ///
-    Key
-        isIrreducible
-	(isIrreducible,LieAlgebraModule)
-    Headline
-        Whether a Lie algebra module is irreducible or not
-    Description
-        Example
-	    g=simpleLieAlgebra("A",2)
-	    M=irreducibleLieAlgebraModule({2,1},g)
-	    isIrreducible M
-	    isIrreducible(M++M)
-	    isIrreducible(M**M)
-///	
-
-TEST ///
-    g=simpleLieAlgebra("A",2);
-    assert(isIrreducible irreducibleLieAlgebraModule({2,1},g))
-///
-
-doc ///
-    Key
-        trivialModule
-	(trivialModule,LieAlgebra)
-    Headline
-        The trivial module of a Lie algebra
-    Description
-        Text
-	    Returns the one-dimensional module with zero highest weight.
-///
-
-doc ///
-    Key
-        zeroModule
-	(zeroModule,LieAlgebra)
-    Headline
-        The zero module of a Lie algebra
-    Description
-        Text
-	    Returns the zero-dimensional module.
-///
-
-doc ///
-    Key
-        adjointModule
-	(adjointModule,LieAlgebra)
-    Headline
-        The adjoint module of a Lie algebra
-    Description
-        Text
-	    Returns the module corresponding to the adjoint representation of a Lie algebra.
-        Example
-	    g=simpleLieAlgebra("A",2)
-	    adjointModule g
-	    adjointModule (g++g)
-///
-
-TEST ///
-    g=simpleLieAlgebra("A",2);
-    M=irreducibleLieAlgebraModule({2,1},g);
-    assert(M ** trivialModule g === M)
-    assert(M ** zeroModule g === zeroModule g)
-    assert(dim adjointModule(g++g)==2*dim adjointModule g)
-///
 
 doc ///
     Key
@@ -896,6 +1060,8 @@ doc ///
     Outputs
         M':LieAlgebraModule
 ///
+
+
 
 doc ///
     Key
@@ -921,6 +1087,8 @@ TEST ///
     scan(1..5, i -> assert(symmetricPower(i,M) === irreducibleLieAlgebraModule({i,0,0},g)));
 ///
 
+
+
 doc ///
     Key
 	(symbol ^**,LieAlgebraModule,ZZ)
@@ -941,6 +1109,8 @@ TEST ///
     c=character M;
     scan(1..4, n -> assert(character(M^**n) == c^n))
 ///
+
+
 
 doc ///
     Key
@@ -980,6 +1150,8 @@ TEST ///
     assert(qdim(L,3) * qdim(M,3) == qdim(fusionProduct(L,M,3),3))
 ///
 
+
+
 doc ///
     Key
     	dynkinDiagram
@@ -991,6 +1163,8 @@ doc ///
 	    g=simpleLieAlgebra("F",4)
 	    dynkinDiagram g
 ///
+
+
 
 doc ///
     Key
@@ -1008,61 +1182,7 @@ TEST ///
     assert(cartanMatrix simpleLieAlgebra("B",2) == matrix {{2,-2},{-1,2}})
 ///
 
-doc ///
-    Key
-    	subLieAlgebra
-	(subLieAlgebra,LieAlgebra,List)
-	(subLieAlgebra,LieAlgebra,Matrix)
-	(subLieAlgebra,LieAlgebra,String)
-    Headline
-        Define a sub-Lie algebra of an existing one
-    Usage
-       subLieAlgebra(g,S)
-    Inputs
-        g:LieAlgebra
-	S:{List,Matrix,String}
-    Outputs
-        h:LieAlgebra
-    Description
-        Text
-	   For the purposes of this function, a sub-Lie algebra means an embedding of a Lie algebra into another up to linear equivalence.
-	   According to Dynkin's theory, this means that it is determined by the restriction of the embedding to the Cartan subalgebra,
-	   and that is the data provided by @TT "S"@.
-	   Specifically, @TT "S"@ must be either a subset of vertices of the Dynkin diagram of @TT "g"@ (as labelled by @TO dynkinDiagram@):
-	Example
-	   g=𝔢_8; dynkinDiagram g
-	   subLieAlgebra(g,{1,2,3,4,5,8})
-	Text
-	   The vertices are labelled from 1 to the rank of g; because we frequently want to consider the lowest root, it is labelled 0:
-	Example
-	   h=𝔣_4; dynkinDiagram h
-	   subLieAlgebra(h,{0,1,2,3})
-	Text
-	   Or @TT "S"@ must be a matrix whose columns are the simple coroots of the subalgebra expanded in the basis of simple coroots of @TT "g"@:
-	Example
-	   g=𝔢_6
-	   h=subLieAlgebra(g,{2,4,{0,0,1,0,1,0},{1,0,0,0,0,1}}); describe h
-	   branchingRule(adjointModule g,h)
-	Text
-	  Or @TT "S"@ is the string @TT "principal"@, which is currently the only predefined subalgebra:
-	Example
-	   g=𝔞_2; h=subLieAlgebra(g,"principal"); describe h
-	   V=LL_(2,4) g; qdim V
-	   W=branchingRule(V,h); describe W
-	   character W
-	Text
-	  In simply laced types, principal specialisation (character of principal subalgebra) and q-dimension agree.
-    Caveat
-        If @TT "S"@ is a matrix, does not check if the map of Cartan subalgebras leads to a valid Lie algebra embedding.
-///
 
-TEST ///
-g = simpleLieAlgebra("E",8)
-h = subLieAlgebra(g,{2,3,4,5})
-assert ( h#"LieAlgebraRank" === 4 and h#"RootSystemType" === "D" )
-k = subLieAlgebra(h,{1,3,4})
-assert ( k#"LieAlgebraRank" === (1,1,1) and k#"RootSystemType" === ("A","A","A") )
-///
 
 doc ///
     Key
@@ -1092,12 +1212,14 @@ doc ///
 ///
 
 TEST ///
-g=simpleLieAlgebra("A",2);
-M=LL_(4,2) g;
-assert(dim branchingRule(M,{1}) == dim M)
-h=subLieAlgebra(g,matrix vector {2,2})
-assert(branchingRule(LL_(1,0)(g),h) === LL_2(h))
+    g=simpleLieAlgebra("A",2);
+    M=LL_(4,2) g;
+    assert(dim branchingRule(M,{1}) == dim M)
+    h=subLieAlgebra(g,matrix vector {2,2})
+    assert(branchingRule(LL_(1,0)(g),h) === LL_2(h))
 ///
+
+
 
 doc ///
     Key
@@ -1147,7 +1269,7 @@ k=g++h
 A=LL_(1,2) g
 B=LL_(2,1) h
 M=LL_(1,2,2,1) k;
-assert ( M === A @ B )
+assert ( M == A @ B )
 assert(character(M,Strategy=>"Weyl")==character(M,Strategy=>"Freudenthal"))
 ///
 
@@ -1207,7 +1329,15 @@ doc ///
 	   oo_*
 ///
 
+
+
+
+
 -- New documention after LieTypes version 0.9
+
+
+
+
 
 -- From lieAlgebraBasis.m2
 doc ///
@@ -1223,10 +1353,13 @@ doc ///
 	Text    
 	    Currently only implemented for for simple Lie algebras of type A, B, C, and D.
         Example
-	    CB=lieAlgebraBasis("A",2)
-	    peek CB
+	    LAB=lieAlgebraBasis("A",2)
+	    peek LAB
 
 ///
+
+
+
 
 
 doc ///
@@ -1242,28 +1375,178 @@ doc ///
         t:String
 	m:ZZ
     Outputs
-        CB:LieAlgebraBasis
+        LAB:LieAlgebraBasis
     Description
         Text
 	    Currently only implemented for simple Lie algebras of types A, B, C, and D.
 	Text
 	    The user may either input the type and rank, or the simple Lie algebra.
 	Example
-	    CB=lieAlgebraBasis("A",2);
-	    peek CB
+	    LAB=lieAlgebraBasis("A",2);
+	    peek LAB
 	    sl3=simpleLieAlgebra("A",2);
-	    lieAlgebraBasis(sl3)===CB
+	    lieAlgebraBasis(sl3)===LAB
 ///
 
 TEST ///
-CB=lieAlgebraBasis("A",2);
-assert(sort keys(CB)=={"BasisElements","Bracket","DualBasis","FundamentalDominantWeightValues","Labels","LieAlgebra","LoweringOperatorIndices","RaisingOperatorIndices","Weights","WriteInBasis"})
-assert(CB#"LieAlgebra"#"RootSystemType"=="A")
-assert(CB#"LieAlgebra"#"LieAlgebraRank"==2)
-assert(CB#"LoweringOperatorIndices"=={5, 6, 7})
-assert(CB#"DualBasis"=={map(QQ^3,QQ^3,{{2/3, 0, 0}, {0, -1/3, 0}, {0, 0, -1/3}}),map(QQ^3,QQ^3,{{1/3, 0, 0}, {0, 1/3, 0}, {0, 0, -2/3}}),map(QQ^3,QQ^3,{{0, 0, 0}, {1, 0, 0}, {0, 0, 0}}),map(QQ^3,QQ^3,{{0, 0, 0}, {0, 0, 0}, {0, 1, 0}}),map(QQ^3,QQ^3,{{0, 0, 0}, {0, 0, 0}, {1, 0, 0}}),map(QQ^3,QQ^3,{{0, 1, 0}, {0, 0, 0}, {0, 0, 0}}),map(QQ^3,QQ^3,{{0, 0, 0}, {0, 0, 1}, {0, 0, 0}}),map(QQ^3,QQ^3,{{0, 0, 1}, {0, 0, 0}, {0, 0, 0}})})
-assert(CB#"BasisElements"=={map(QQ^3,QQ^3,{{1, 0, 0}, {0, -1, 0}, {0, 0, 0}}),map(QQ^3,QQ^3,{{0, 0, 0}, {0, 1, 0}, {0, 0, -1}}),map(QQ^3,QQ^3,{{0, 1, 0}, {0, 0, 0}, {0, 0, 0}}),map(QQ^3,QQ^3,{{0, 0, 0}, {0, 0, 1}, {0, 0, 0}}),map(QQ^3,QQ^3,{{0, 0, 1}, {0, 0, 0}, {0, 0, 0}}),map(QQ^3,QQ^3,{{0, 0, 0}, {1, 0, 0}, {0, 0, 0}}),map(QQ^3,QQ^3,{{0, 0, 0}, {0, 0, 0}, {0, 1, 0}}),map(QQ^3,QQ^3,{{0, 0, 0}, {0, 0, 0}, {1, 0, 0}})})
+    LAB=lieAlgebraBasis("A",2);
+    assert(sort keys(LAB)=={"BasisElements","Bracket","DualBasis","FundamentalDominantWeightValues","Labels","LieAlgebra","LoweringOperatorIndices","RaisingOperatorIndices","Weights","WriteInBasis"})
+    assert(LAB#"LieAlgebra"#"RootSystemType"=="A")
+    assert(LAB#"LieAlgebra"#"LieAlgebraRank"==2)
+    assert(LAB#"LoweringOperatorIndices"=={5, 6, 7})
+    assert(LAB#"DualBasis"=={map(QQ^3,QQ^3,{{2/3, 0, 0}, {0, -1/3, 0}, {0, 0, -1/3}}),map(QQ^3,QQ^3,{{1/3, 0, 0}, {0, 1/3, 0}, {0, 0, -2/3}}),map(QQ^3,QQ^3,{{0, 0, 0}, {1, 0, 0}, {0, 0, 0}}),map(QQ^3,QQ^3,{{0, 0, 0}, {0, 0, 0}, {0, 1, 0}}),map(QQ^3,QQ^3,{{0, 0, 0}, {0, 0, 0}, {1, 0, 0}}),map(QQ^3,QQ^3,{{0, 1, 0}, {0, 0, 0}, {0, 0, 0}}),map(QQ^3,QQ^3,{{0, 0, 0}, {0, 0, 1}, {0, 0, 0}}),map(QQ^3,QQ^3,{{0, 0, 1}, {0, 0, 0}, {0, 0, 0}})})
+    assert(LAB#"BasisElements"=={map(QQ^3,QQ^3,{{1, 0, 0}, {0, -1, 0}, {0, 0, 0}}),map(QQ^3,QQ^3,{{0, 0, 0}, {0, 1, 0}, {0, 0, -1}}),map(QQ^3,QQ^3,{{0, 1, 0}, {0, 0, 0}, {0, 0, 0}}),map(QQ^3,QQ^3,{{0, 0, 0}, {0, 0, 1}, {0, 0, 0}}),map(QQ^3,QQ^3,{{0, 0, 1}, {0, 0, 0}, {0, 0, 0}}),map(QQ^3,QQ^3,{{0, 0, 0}, {1, 0, 0}, {0, 0, 0}}),map(QQ^3,QQ^3,{{0, 0, 0}, {0, 0, 0}, {0, 1, 0}}),map(QQ^3,QQ^3,{{0, 0, 0}, {0, 0, 0}, {1, 0, 0}})})
 ///
+
+
+
+
+doc ///
+    Key
+        universalEnvelopingAlgebra
+	(universalEnvelopingAlgebra,LieAlgebraBasis)
+	(universalEnvelopingAlgebra,LieAlgebra)
+    Headline
+        computes the universal enveloping algebra of a Lie algebra
+    Usage
+        universalEnvelopingAlgebra(g)
+    Inputs 
+        LAB:LieAlgebraBasis
+    Outputs
+        S:(Sequence)
+    Description
+        Text
+            Let $\mathfrak{g}$ be a Lie algebra. Let $T(\mathfrak{g})$ be the tensor algebra on $\mathfrak{g}$. The universal enveloping algebra $U(\mathfrak{g})$ is the quotient of $T(\mathfrak{g})$ by the two-sided ideal generated by all relations of the form $X_1 X_2 - X_2 X_1 - [X_1,X_2]$.
+
+	Text
+	    We construct $T(\mathfrak{g})$ and $U(\mathfrak{g})$ using the @TO "AssociativeAlgebras"@ package. The generators of $T(\mathfrak{g})$ are the elements of a Lie algebra basis of $\mathfrak{g}$. Let $h_1,\ldots,H_n$ be the Cartan subalgebra basis elements, $x_1,\ldots,x_l$ the positive root vectors, and $y_1,\ldots,y_n$ the negative root vectors. Then the term order on $T(\mathfrak{g})$ we use is degree lex with the variables ordered $x_l,\ldots,x_1,h_n,\ldots,h_1,y_l,\ldots,y_1$, so that the basis used for the quotient $U(\mathfrak{g})$ consists of monomials of the form $y_1^{a_1}\cdots y_l^{a_l} h_1^{b_1}\cdots h_n^{b_n} x_1^{c_1} \cdots x_n^{c_n}$.
+
+
+	Text
+            The function @TT "universalEnvelopingAlgebra"@ returns a sequence consisting of the universal enveloping algebra, the permutation $\sigma$ matching elements of the Lie algebra basis to the generators of the tensor algebra $T(\mathfrak{g})$, and the inverse permutation $\sigma^{-1}$. 
+
+        Text 
+            In the following example, we express the monomial $x_1 y_2 y_3$ in $U(sl_3)$. We have $x_1 = E_{(1,2)}$, $y_2 = E_{(3,2)}$ and $y_3 = E_{(3,1)}$. Thus $x_1y_2 = y_2x_1$ and $x_1 y_3 = y_3 x_1 - y_2$, so that $x_1 y_2 y_3 = y_2 y_3 x_1-y_2^2$.
+	    
+	Example
+	    sl3 = simpleLieAlgebra("A",2)
+	    S = universalEnvelopingAlgebra(sl3)
+	    U = first S
+	    x_1*y_2*y_3
+///
+
+TEST ///
+    sl3 = simpleLieAlgebra("A",2)
+    U = first universalEnvelopingAlgebra(sl3)
+    assert(x_1*y_2*y_3==y_2*y_3*x_1-y_2^2)
+///
+
+
+
+doc ///
+    Key
+        uNminus
+	(uNminus,LieAlgebraBasis)
+	(uNminus,LieAlgebra)
+    Headline
+        computes the universal enveloping algebra of the Lie algebra $N^{-}$
+    Usage
+        uNminus(g)
+    Inputs 
+        LAB:LieAlgebraBasis
+    Outputs
+        UNMinus:FreeAlgebraQuotient
+    Description
+        Text
+	    See also @TO (universalEnvelopingAlgebra,LieAlgebraBasis)@.
+    
+        Text
+            Let $\mathfrak{g}$ be a Lie algebra, let $\Phi^{+}$ be a set of positive roots, and let $N^{-}$ be the subalgebra spanned by the negative root vectors $\mathfrak{g}_{-\alpha}$. Let $T(N^{-})$ be the tensor algebra on $N^{-}$. The universal enveloping algebra $U(N^{-1})$ is the quotient of $T(N^{-})$ by the two-sided ideal generated by all relations of the form $Y_1 Y_2 - Y_2 Y_1 - [Y_1,Y_2]$.
+
+	Text
+	    We construct $T(N^{-})$ and $U(N^{-})$ using the @TO "AssociativeAlgebras"@ package. The generators of $T(N^{-})$ are the negative root vectors in a Lie algebra basis of $\mathfrak{g}$. Let $Y_1,\ldots,Y_n$ the negative root vectors. Then the term order on $T(N^{-})$ we use is degree lex with the variables ordered $Y_l,\ldots,Y_1$, so that the basis used for the quotient $U(N^{-})$ consists of monomials of the form $Y_1^{a_1}\cdots Y_l^{a_l}$.
+
+
+        Text 
+            In the following example, we express the monomial $Y_3 Y_2 Y_1$ in $U(N^{-})$ for $\mathfrak{g} = sl_3$. We have $Y_1 = E_{(2,1)}$, $Y_2 = E_{(3,2)}$ and $Y_3 = E_{(3,1)}$. Thus $Y_2 Y_1 = Y_1 Y_2+Y_3$ and $Y_3 Y_1 = Y_1 Y_3$, so that $Y_3 Y_2 Y_1 = Y_1 Y_2 Y_3+Y_3^2$.
+	    
+	Example
+	    sl3 = simpleLieAlgebra("A",2)
+	    S = uNminus(sl3)
+	    U = first S
+	    Y_3 Y_2 Y_1
+///
+
+TEST ///
+    sl3 = simpleLieAlgebra("A",2)
+    UNminus = uNminus(sl3)
+    assert(Y_3*Y_2*Y_1==Y_1*Y_2*Y_3+Y_3^2)
+///
+
+
+
+
+-- From representationsCasimirReynolds.m2
+doc ///
+    Key
+       LieAlgebraRepresentation
+    Headline
+        class for a Lie algebra representation
+    Description
+        Text
+    	    Let $\rho: \mathfrak{g} \rightarrow \mathfrak{gl}(V)$ be a Lie algebra representation. We implement this in the @TT "LieAlgebraRepresentation"@ class as follows.
+
+	Text
+	    The user should input: the character of $\rho$, a @TT "LieAlgebraBasis"@ of $\mathfrak{g}$, and the list of images $\rho(B_i)$ for each basis element $B_i$ in the @TT "LieAlgebraBasis"@.
+
+        Text
+	    As a first example, we create the standard representation of $sl_2$ from scratch. (This can be done automatically with the @TO (standardRepresentation,LieAlgebra)@ command.)  It has highest weight $\omega_1$. 
+	    
+        Example
+	    sl2 = simpleLieAlgebra("A",1)
+	    V = irreducibleLieAlgebraModule({1},sl2)
+	    LAB=lieAlgebraBasis("A",1)
+	    L = {matrix {{1, 0}, {0, -1/1}}, matrix {{0, 1}, {0, 0/1}}, matrix {{0, 0}, {1, 0/1}}}
+	    rho = lieAlgebraRepresentation(V,LAB,L)
+
+///
+
+doc ///
+    Key
+        lieAlgebraRepresentation
+	(lieAlgebraRepresentation,LieAlgebraModule,LieAlgebraBasis,List)
+    Headline
+        create a LieAlgebraRepresentation
+    Usage
+        lieAlgebraRepresentation(V,LAB,L)
+    Inputs 
+        V:LieAlgebraModule
+	LAB:LieAlgebraBasis
+	L:List
+    Outputs
+    Description
+        Text
+            Let $\{B_i\}$ be a basis of $\mathfrak{g}$, and $\rho: \mathfrak{g} \rightarrow \mathfrak{gl}(V)$ be a Lie algebra representation with character $V$. 
+
+	Text
+	    To construct $\rho$, we require a basis @TT "LAB"@ of $\mathfrak{g}$, and a list @TT "L"@ of matrices that are the images $\rho(B_i) \in \mathfrak{gl}(V)$.
+	    
+        Text	    
+	    First, we build the standard representation for $sl_3$. The list of matrices we need is already contained in the @TT "LieAlgebraBasis"@.
+	Example
+	    sl3=simpleLieAlgebra("A",2);
+	    V=irreducibleLieAlgebraModule({1,0},sl3);
+            LAB = lieAlgebraBasis("A",2);
+	    LAB#"BasisElements"
+	    rho=lieAlgebraRepresentation(V,LAB,LAB#"BasisElements")
+	Text
+	    Next, we make an irreducible representation with highest weight $(2,0)$. This time, we create the list of matrices using the command @TO GTrepresentationMatrices@.
+        Example
+	    V=irreducibleLieAlgebraModule({2,0},sl3);
+            L = GTrepresentationMatrices(V)
+            lieAlgebraRepresentation(V,LAB,L)
+///
+
 
 
 doc ///
@@ -1275,9 +1558,9 @@ doc ///
     Headline
         creates the trivial representation of a Lie algebra
     Usage
-        trivialRepresentation(CB)
+        trivialRepresentation(LAB)
     Inputs 
-        CB:LieAlgebraBasis
+        LAB:LieAlgebraBasis
     Outputs
         V:LieAlgebraRepresentation
     Description
@@ -1294,11 +1577,11 @@ doc ///
 ///
 
 TEST ///
-rho0 = trivialRepresentation("A",2);
-V0 = rho0#"Module"
-assert(dim V0 == 1)
-assert(V0#"DecompositionIntoIrreducibles" === new VirtualTally from {{0, 0} => 1})
-assert(rho0#"RepresentationMatrices"==apply(8, i -> matrix {{0/1}}))
+    rho0 = trivialRepresentation("A",2);
+    V0 = rho0#"Module"
+    assert(dim V0 == 1)
+    assert(V0#"DecompositionIntoIrreducibles" === new VirtualTally from {{0, 0} => 1})
+    assert(rho0#"RepresentationMatrices"==apply(8, i -> matrix {{0/1}}))
 ///
 
 
@@ -1312,9 +1595,9 @@ doc ///
     Headline
         creates the standard representation of a matrix Lie algebra
     Usage
-        standardRepresentation(CB)
+        standardRepresentation(LAB)
     Inputs 
-        CB:LieAlgebraBasis
+        LAB:LieAlgebraBasis
     Outputs
         V:LieAlgebraRepresentation
     Description
@@ -1328,16 +1611,16 @@ doc ///
 	    standardRepresentation("A",2)
 	    sl4=simpleLieAlgebra("A",3)
 	    standardRepresentation(sl4)
-	    CB=lieAlgebraBasis("C",2)
-	    standardRepresentation(CB)
+	    LAB=lieAlgebraBasis("C",2)
+	    standardRepresentation(LAB)
 ///
 
 TEST ///
 rho = standardRepresentation("A",2);
-CB = lieAlgebraBasis("A",2)
+LAB = lieAlgebraBasis("A",2)
 assert(dim(rho#"Module") == 3)
-assert(rho#"Basis"===CB)
-assert(rho#"RepresentationMatrices"==CB#"BasisElements")
+assert(rho#"Basis"===LAB)
+assert(rho#"RepresentationMatrices"==LAB#"BasisElements")
 ///
 
 
@@ -1350,14 +1633,14 @@ doc ///
     Headline
         creates the adjoint representation of a Lie algebra
     Usage
-        adjointRepresentation(CB)
+        adjointRepresentation(LAB)
     Inputs 
-        CB:LieAlgebraBasis
+        LAB:LieAlgebraBasis
     Outputs
         V:LieAlgebraRepresentation
     Description
 	Text
-            Let $\mathfrak{g}$ be a Lie algebra with basis @TT "CB"@. The basis records a basis $B$ of $\mathfrak{g}$, the bracket for $\mathfrak{g}$, and a way to write elements of $\mathfrak{g} in the basis $B$. With these tools, we may write the matrix for the linear transformation $\operatorname{ad}(B_i)$ with respect to the basis $B$ for each $B_i$. This is the adjoint representation. 
+            Let $\mathfrak{g}$ be a Lie algebra with basis @TT "LAB"@. The basis records a basis $B$ of $\mathfrak{g}$, the bracket for $\mathfrak{g}$, and a way to write elements of $\mathfrak{g} in the basis $B$. With these tools, we may write the matrix for the linear transformation $\operatorname{ad}(B_i)$ with respect to the basis $B$ for each $B_i$. This is the adjoint representation. 
 	    
         Text
 	    The user may either input the Lie algebra basis, or the type and rank, or the simple Lie algebra.
@@ -1366,13 +1649,13 @@ doc ///
 	    adjointRepresentation("A",2)
 	    sl4=simpleLieAlgebra("A",3)
 	    adjointRepresentation(sl4)
-	    CB=lieAlgebraBasis("C",2)
-	    adjointRepresentation(CB)
+	    LAB=lieAlgebraBasis("C",2)
+	    adjointRepresentation(LAB)
 ///
 
 TEST ///
 rho = adjointRepresentation("A",2);
-CB = lieAlgebraBasis("A",2)
+LAB = lieAlgebraBasis("A",2)
 V=rho#"Module"
 assert(dim V == 8)
 assert(V#"DecompositionIntoIrreducibles"=== new VirtualTally from {{{1,1},1}})
@@ -1381,8 +1664,468 @@ assert(casimirOperator(rho)===6*I)
 ///
 
 
--- From gelfandTsetlinTypeA.m2
 
+
+doc ///
+    Key
+        representationWeights
+	(representationWeights,LieAlgebraRepresentation)
+    Headline
+        computes the weights of the basis of a Lie algebra module from an explicit representation
+    Usage
+        representationWeights(rho)
+    Inputs 
+        rho:LieAlgebraRepresentation
+    Outputs
+        L:List
+    Description
+        Text
+	    Let $\rho: \mathfrak{g} \rightarrow \mathfrak{gl}(V)$ be a Lie algebra representation. 
+
+	Text
+            This function first checks that for the Cartan subalgebra elements $H_i$ in the basis of $\mathfrak{g}$, the image $\rho(H_i)$ is a diagonal matrix. If not, this function returns an error that the basis of $V$ in use is not an eigenbasis for the Cartan subalgebra. Otherwise, this function returns the list of weights of these basis elements, which are obtained from the diagonal entries of the matrices $\rho(H_i)$.
+
+	Text
+	    In the example below, we compute the weights of the Gelfand-Tsetlin basis for the adjoint representation of $sl_3$.
+	    
+	Example
+            sl3 = simpleLieAlgebra("A",2);
+	    V=irreducibleLieAlgebraModule({1,1},sl3);
+            LAB = lieAlgebraBasis("A",2);
+            L1 = GTrepresentationMatrices(V);
+            rho = lieAlgebraRepresentation(V,LAB,L1);
+            L2 = representationWeights(rho)
+	    
+        Text
+            We can check that this agrees with the weight of the Gelfand-Tsetlin pattern labelling each basis element.
+
+	Example
+	    dynkinToPartition({1,1})
+	    L3 = gtPatterns({2,1,0})
+	    
+        Text
+	    Right now, the entries of L2 are just lists. We turn them into objects of type GTPattern, and then get their weights.
+
+	Example
+	    L3 = apply(L3, x -> (gtPatternFromEntries(x))#"weight")
+	    L2==L3
+
+	Text
+	    Finally, we check that this agrees with the weight diagram of V.
+
+	Example
+	    tally(L3)
+	    weightDiagram(V)
+	    weightDiagram(V) === new VirtualTally from tally(L3)
+///
+
+-*
+-- TO DO: Check this result by hand
+TEST ///
+    sl3 = simpleLieAlgebra("A",2);
+    LAB = lieAlgebraBasis("A",2);
+    V=irreducibleLieAlgebraModule({1,1},sl3);
+    installRepresentation(V,LAB,GTrepresentationMatrices(V));
+    L = basisWordsFromMatrixGenerators(V)
+    assert(apply(L,w -> w#"Terms") == {{{{}, 1}}, {{{0}, 1}}, {{{2}, 1}}, {{{0, 2}, 1}}, {{{0, 1}, -2}}, {{{1}, 2}, {{0, 2}, 1}}, {{{1, 2}, 3}}, {{{1, 1}, -3/2}}});
+///
+*-
+
+doc ///
+    Key
+        casimirOperator
+	(casimirOperator,LieAlgebraRepresentation)
+    Headline
+        computes the Casimir operator associated to a representation
+    Usage
+        casimirOperator(rho)
+    Inputs 
+        rho:LieAlgebraRepresentation
+    Outputs
+        M:Matrix
+    Description
+        Text
+	    Let $\rho: \mathfrak{g} \rightarrow \mathfrak{gl}(V)$ be a Lie algebra representation. 
+	    
+	Text
+            Let $\{B_i\}$ be a basis of $\mathfrak{g}$, and let $\{B_i^{*}\}$ be the dual basis with respect to the Killing form. The Casimir operator is
+	    
+        Text
+	    $\operatorname{Cas} = \sum_{i} \rho(B_i^*) \rho(B_i)$.
+
+	Text
+	    Recall that in creating a @TT "LieAlgebraBasis"@, we compute the dual basis $\{B_i^{*}\}$. This makes it straightforward to compute the Casimir operator.
+
+	Text
+	    If $V$ is irreducible with highest weight $\lambda$, then $\operatorname{Cas} = c(\lambda) \operatorname{Id}$, where $c(\lambda)$ is the scalar computed by @TO (casimirScalar,LieAlgebraModule)@.
+
+        Text
+	    We compute the Casimir operator for the symmetric square of the standard representation of $sl_3$. Since this is an irreducible representation, we get a scalar multiple of the identity.
+	    
+	Example
+	    sl3 = simpleLieAlgebra("A",2)
+	    V = standardRepresentation(sl3)
+	    S2V=symmetricPower(2,V);
+	    casimirScalar(S2V#"Module")
+	    CasS2V = casimirOperator(S2V)
+	    
+        Text
+            Next, we compute the Casimir operator for $\operatorname{Sym^2} \operatorname{Sym^2} \mathbb{C}^3$. It has two distinct eigenvalues. The eigenvalues match the Casimir scalars of the irreducible submodules appearing in the decomposition of $\operatorname{Sym^2} \operatorname{Sym^2} \mathbb{C}^3$, and the multiplicities of the eigenvalues match the dimensions of these submodules. 
+
+	Example
+	    S2S2V=symmetricPower(2,S2V);
+	    CasS2S2V = casimirOperator(S2S2V)
+	    tally eigenvalues CasS2S2V
+	    peek S2S2V
+	    V40 = irreducibleLieAlgebraModule({4,0},sl3);
+	    dim V40
+	    casimirScalar(V40)
+	    V02 = irreducibleLieAlgebraModule({0,2},sl3);
+	    dim V02
+	    casimirScalar(V02)
+
+///
+
+-- TO DO: Check this result by hand
+TEST ///
+    V=standardRepresentation("A",2);
+    S2V=symmetricPower(2,V);
+    CasS2V = casimirOperator(S2V);
+    assert(CasS2V == map(QQ^6,QQ^6,{{20/3, 0, 0, 0, 0, 0}, {0, 20/3, 0, 0, 0, 0}, {0, 0, 20/3, 0, 0, 0}, {0, 0, 0, 20/3, 0, 0}, {0, 0, 0, 0, 20/3, 0}, {0, 0, 0, 0, 0, 20/3}}))
+    S2S2V=symmetricPower(2,S2V);
+    CasS2S2V = casimirOperator(S2S2V);
+    assert(CasS2S2V == map(QQ^21,QQ^21,{{56/3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 56/3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 56/3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 32/3, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 32/3, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 32/3, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 8, 0, 0, 44/3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 8, 0, 0, 44/3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 56/3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 44/3, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32/3, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 44/3, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 32/3, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 44/3, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 56/3, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 56/3, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 56/3, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32/3, 4, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 44/3, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 56/3, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 56/3}}))
+///
+
+
+doc ///
+    Key
+        casimirSpectrum
+	(casimirSpectrum,LieAlgebraModule)
+    Headline
+        computes the eigenvalues of the Casimir operator associated to a representation
+    Usage
+        casimirOperator(V)
+    Inputs 
+        V:LieAlgebraModule
+    Outputs
+        M:Matrix
+    Description
+        Text
+	    Let @TT "V"@ be a LieAlgebraModule, and recall the definition of the Casimir operator from @TO (casimirOperator,LieAlgebraRepresentation)@.
+	    
+	Text
+	    If $V$ corresponds to an irreducible $\mathfrak{g}$-module with highest weight $\lambda$, then $\operatorname{Cas} = c(\lambda) \operatorname{Id}$, where $c(\lambda)$ is the scalar computed by @TO (casimirScalar,LieAlgebraModule)@.
+
+        Text
+	    This function returns a nonredundant list of eigenvalues of $\operatorname{Cas}$ by computing the scalars $c(\lambda)$ for each irreducible summand in $V$, and then removing any duplicates.
+	    
+	Example
+	    sl3 = simpleLieAlgebra("A",2);
+	    V=standardModule(sl3);
+            S3V=symmetricPower(3,V);
+            S4S3V=symmetricPower(4,S3V);
+	    casimirSpectrum(S4S3V)
+
+///
+
+-- TO DO: Check this result by hand
+TEST ///
+    sl3 = simpleLieAlgebra("A",2);
+    V=standardModule(sl3);
+    S3V=symmetricPower(3,V);
+    S4S3V=symmetricPower(4,S3V);
+    assert(casimirSpectrum(S4S3V) == {0, 16, 24, 30, 36, 48, 60, 76, 120})
+///
+
+
+doc ///
+    Key
+        casimirProjection
+	(casimirProjection,LieAlgebraRepresentation,QQ)
+    Headline
+        projection operator to a specified eigenspace of the Casimir operator
+    Usage
+        casimirProjection(rho,z)
+    Inputs 
+        rho:LieAlgebraRepresentation
+	z:QQ
+    Outputs
+        M:Matrix
+    Description
+        Text
+	    Let $\rho$ be a LieAlgebraRepresentation, and recall the definition of the Casimir operator from @TO (casimirOperator,LieAlgebraRepresentation)@.
+
+        Text
+	    This function returns the projection matrix to the eigenspace of the Casimir operator for the input eigenvalue @TT "z"@.  This matrix is computed as the product of factors $\operatorname{Cas}-x I$ over all eigenvalues $x \neq z$. 
+	    
+	Example
+	    V=standardRepresentation("A",2);
+            S2V=symmetricPower(2,V);
+            S3S2V=symmetricPower(3,S2V);
+	    casimirProjection(S3S2V,16)
+
+///
+
+-- TO DO: Check this result by hand
+TEST ///
+    V=standardRepresentation("A",2);
+    S2V=symmetricPower(2,V);
+    S3S2V=symmetricPower(3,S2V);
+    assert(casimirProjection(S3S2V,16)==dense sparseMatrix(56,56,QQ, new HashTable from {(40,31) => 64/1, (36,36) => -192/1, (32,41) => 64/1, (5,5) => -256/1, (44,35) => 256/1, (5,11) => 64/1, (40,40) => -256/1, (9,9) => -192/1, (9,12) => 128/1, (13,10) => 128/1, (44,44) => -64/1, (13,13) => -192/1, (21,8) => 128/1, (9,22) => 128/1, (48,48) => -256/1, (48,49) => 64/1, (17,17) => -192/1, (17,18) => -32/1, (52,50) => 128/1, (13,26) => 128/1, (52,52) => -192/1, (17,25) => -32/1, (21,21) => -192/1, (25,17) => -64/1, (25,18) => 96/1, (17,28) => 48/1, (29,19) => 128/1, (25,25) => -224/1, (25,28) => 16/1, (37,17) => -64/1, (17,37) => -32/1, (37,18) => 96/1, (29,29) => -192/1, (37,25) => 96/1, (25,37) => 96/1, (37,28) => 16/1, (33,32) => 128/1, (33,33) => -192/1, (29,38) => 128/1, (6,3) => 256/1, (41,32) => 128/1, (33,41) => 128/1, (37,37) => -224/1, (41,33) => 128/1, (6,6) => -64/1, (41,41) => -192/1, (10,10) => -256/1, (10,13) => 64/1, (14,14) => -128/1, (22,9) => 128/1, (49,48) => 256/1, (49,49) => -64/1, (22,12) => 128/1, (18,17) => -64/1, (18,18) => -224/1, (10,26) => 64/1, (26,10) => 128/1, (26,13) => 128/1, (53,51) => 256/1, (53,53) => -64/1, (18,25) => 96/1, (22,22) => -192/1, (18,28) => 16/1, (14,36) => 192/1, (26,26) => -192/1, (18,37) => 96/1, (38,19) => 128/1, (38,29) => 128/1, (34,34) => -192/1, (3,3) => -256/1, (3,6) => 64/1, (7,4) => 256/1, (42,34) => 64/1, (38,38) => -192/1, (34,42) => 128/1, (34,43) => 128/1, (7,7) => -64/1, (11,5) => 256/1, (42,42) => -256/1, (42,43) => 64/1, (11,11) => -64/1, (15,15) => -256/1, (50,50) => -128/1, (50,52) => 192/1, (19,19) => -256/1, (15,23) => 64/1, (23,15) => 256/1, (27,16) => 128/1, (23,23) => -64/1, (19,29) => 64/1, (27,24) => 128/1, (27,27) => -192/1, (19,38) => 64/1, (39,20) => 256/1, (31,31) => -64/1, (35,35) => -256/1, (31,40) => 256/1, (4,4) => -256/1, (4,7) => 64/1, (43,34) => 128/1, (39,39) => -64/1, (35,44) => 64/1, (8,8) => -128/1, (12,9) => 64/1, (43,42) => 128/1, (43,43) => -192/1, (12,12) => -256/1, (8,21) => 192/1, (16,16) => -256/1, (12,22) => 64/1, (51,51) => -256/1, (24,16) => 128/1, (16,24) => 64/1, (20,20) => -256/1, (51,53) => 64/1, (16,27) => 64/1, (28,17) => 384/1, (28,18) => 64/1, (24,24) => -192/1, (36,14) => 128/1, (24,27) => 128/1, (28,25) => 64/1, (28,28) => -96/1, (20,39) => 64/1, (32,32) => -256/1, (32,33) => 64/1, (28,37) => 64/1}))
+///
+
+
+doc ///
+    Key
+        reynoldsOperator
+	(reynoldsOperator,LieAlgebraRepresentation)
+    Headline
+        computes the projection to the sum of the trivial submodules in $V$
+    Usage
+        reynoldsOperator(V)
+    Inputs 
+        V:LieAlgebraRepresentation
+    Outputs
+        M:Matrix
+    Description
+        Text
+	    Let $\rho$ be a LieAlgebraRepresentation. Suppose that the trivial module $V_0$ occurs with multiplicity $m_0 \geq 1$ in $V$. This function returns a matrix for the projection $V \rightarrow V_0^{\oplus m_0}$. 
+	    
+	Text
+	    This is a special case of the function @TO (casimirProjection,LieAlgebraRepresentation,QQ)@ where the input eigenvalue is $z=0$.
+	    
+	Example
+	    V=standardRepresentation("A",2);
+	    S2V=symmetricPower(2,V)
+	    S3S2V=symmetricPower(3,S2V)
+	    reynoldsOperator(S3S2V)
+            
+///
+-- TO DO: Check this result by hand
+TEST ///
+    V=standardRepresentation("A",2);
+    S2V=symmetricPower(2,V);
+    S3S2V=symmetricPower(3,S2V);
+    assert(reynoldsOperator(S3S2V)==dense sparseMatrix(56,56,QQ, new HashTable from {(37,37) => 96/1, (17,17) => 192/1, (17,18) => -96/1, (18,17) => -192/1, (18,18) => 96/1, (17,25) => -96/1, (25,17) => -192/1, (18,25) => 96/1, (25,18) => 96/1, (28,17) => 384/1, (17,28) => 48/1, (18,28) => -48/1, (28,18) => -192/1, (25,25) => 96/1, (25,28) => -48/1, (28,25) => -192/1, (17,37) => -96/1, (37,17) => -192/1, (18,37) => 96/1, (37,18) => 96/1, (28,28) => 96/1, (25,37) => 96/1, (37,25) => 96/1, (37,28) => -48/1, (28,37) => -192/1}))
+///
+
+
+
+-- From basesAsWords.m2
+
+doc ///
+    Key
+        basisWordsFromMatrixGenerators
+	(basisWordsFromMatrixGenerators,LieAlgebraRepresentation)
+    Headline
+        express each basis element of $V(\lambda)$ as a linear combination of words in the lowering operators applied to the highest weight vector
+    Usage
+        basisWordsFromMatrixGenerators(V)
+    Inputs 
+        V:LieAlgebraRepresentation
+    Outputs
+        L:List
+    Description
+        Text
+	    Irreducible Lie algebra modules are cyclic modules. That is, it is possible to write each element of $V(\lambda)$ as a linear combination of words in the lowering operators applied to the highest weight vector. In particular, we can do this for elements of the basis of $V(\lambda)$ that is used to write the matrix generators of the representation $\rho$.
+        Text
+	    The output may be parsed as follows. Suppose that we order the lowering operators of $\mathfrak{g}$ as $Y_0,\ldots,Y_k$. Then if the output indicates that $v$ is represented by a word with terms {{{1}, 2}, {{0, 2}, 1}}, this means $v = 2 Y_1.v_\lambda + Y_0.Y_2.v_\lambda$, where $v_\lambda$ represents the highest weight vector.
+	Text
+	    In the example below, we compute the words that yield the Gelfand-Tsetlin basis for the adjoint representation of $sl_3$.
+	    
+	Example
+            sl3 = simpleLieAlgebra("A",2);
+            LAB = lieAlgebraBasis("A",2);
+            V=irreducibleLieAlgebraModule({1,1},sl3);
+            rho=lieAlgebraRepresentation(V,LAB,GTrepresentationMatrices(V));
+            basisWordsFromMatrixGenerators(rho)
+///
+
+-- TO DO: Check this result by hand
+TEST ///
+    sl3 = simpleLieAlgebra("A",2);
+    LAB = lieAlgebraBasis("A",2);
+    V=irreducibleLieAlgebraModule({1,1},sl3);
+    rho=lieAlgebraRepresentation(V,LAB,GTrepresentationMatrices(V));
+    L = basisWordsFromMatrixGenerators(rho)
+    assert(apply(L,w -> w#"Terms") == {{{{}, 1}}, {{{0}, 1}}, {{{1}, 1}}, {{{0, 1}, 1}}, {{{0, 2}, -2}}, {{{2}, 2}, {{0, 1}, 1}}, {{{1, 2}, 3}}, {{{2, 2}, -3/2}}})
+///
+
+
+
+doc ///
+    Key
+        isomorphismOfRepresentations
+	(isomorphismOfRepresentations,LieAlgebraRepresentation,LieAlgebraRepresentation)
+    Headline
+        compute an explicit isomorphism between two Lie algebra representations
+    Usage
+        isomorphismOfRepresentations(rho1,rho2)
+    Inputs 
+        rho1:LieAlgebraRepresentation
+	rho2:LieAlgebraRepresentation
+    Outputs
+        M:Matrix
+    Description
+        Text
+            Let $\rho_1: \mathfrak{g} \rightarrow \mathfrak{gl}(V_1)$ and $\rho_2: \mathfrak{g} \rightarrow \mathfrak{gl}(V_2)$ be two representations, and suppose that $\rho_1 \cong \rho_2$. Then this function returns matrix $P$ such that $\rho_2(X) = P^{-1}*rho_1(X)*P$ for each $X \in \mathfrak{g}$. 
+        Text
+	    To find $P$, we first express the basis of $V_2$ as words in the lowering operators using @TO (basisWordsFromMatrixGenerators,LieAlgebraRepresentation)@. We then evaluate these words using the matrix generators for $\rho_1$ to construct the matrix $P$.
+	Text
+	    In the example below, we compute an isomorphism between the adjoint representation of $sl_3$ (built using the textbook basis of $sl_3$) and the Gelfand-Tsetlin basis for the adjoint representation of $sl_3$.
+	    
+	Example
+            sl3 = simpleLieAlgebra("A",2);
+	    rho1 = adjointRepresentation(sl3);
+            V=irreducibleLieAlgebraModule({1,1},sl3);	    
+            LAB = lieAlgebraBasis(sl3);	    
+            rho2=lieAlgebraRepresentation(V,LAB,GTrepresentationMatrices(V));
+            P = isomorphismOfRepresentations(rho1,rho2)
+	    
+	Text
+            We check that the matrix $P$ has the property that $\rho_2(X) = P^{-1}*rho_1(X)*P$ for each $X \in \mathfrak{g}$. (The function @TT "isomorphismOfRepresentations"@ performs this check automatically before returning the matrix $P$.)
+	    
+	Example
+	    Pinv := inverse P;
+            L1:=rho1#"RepresentationMatrices";
+            L2:=rho2#"RepresentationMatrices";
+            all(#L1, i -> dense(L2_i) == Pinv*(dense(L1_i))*P)
+///
+
+-- TO DO: Check this result by hand
+TEST ///
+    sl3 = simpleLieAlgebra("A",2);
+    rho1 = adjointRepresentation(sl3);
+    V=irreducibleLieAlgebraModule({1,1},sl3);	    
+    LAB = lieAlgebraBasis(sl3);	    
+    rho2=lieAlgebraRepresentation(V,LAB,GTrepresentationMatrices(V));
+    P = isomorphismOfRepresentations(rho1,rho2)
+    assert(P==map(QQ^8,QQ^8,{{0, 0, 0, 1, 0, -1, 0, 0}, {0, 0, 0, 0, 0, -2, 0, 0}, {0, 0, -1, 0, 0, 0, 0, 0}, {0, 1, 0, 0, 0, 0, 0, 0}, {1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 2, 0, 0, 0}, {0, 0, 0, 0, 0, 0, -3, 0}, {0, 0, 0, 0, 0, 0, 0, 3}}))
+///
+
+
+-- From deGraafAlgorithm.m2
+
+doc ///
+    Key
+        deGraafBases
+	(deGraafBases,List,LieAlgebra)
+    Headline
+        compute the bases produced by de Graaf's algorithm
+    Usage
+        deGraafBasis(lambda,g)
+    Inputs 
+        lambda:List
+	g:LieAlgebra
+    Outputs
+        S:Sequence
+    Description
+        Text
+            Let $V$ be an irreducible $\mathfrak{g}$-module with highest weight $\lamdba$. Then $V$ may be constructed as the quotient of the algebra $U(N^{-})$ (see @TO "uNminus"@) by a left ideal $I$. de Graaf's algorithm produces a Grobner basis of the ideal $I$, and a basis of the quotient $U(N^{-})/I$.
+	    
+	Example
+            g = simpleLieAlgebra("A",2);
+	    lambda = {1,1}
+	    deGraafBases(lambda,g)
+
+	    
+///
+
+-- See tests after deGraafRepresentationMatrices
+
+doc ///
+    Key
+        deGraafRepresentation
+	(deGraafRepresentation,List,LieAlgebra)
+    Headline
+        compute the representation with the specified highest weight using de Graaf's algorithm
+    Usage
+        deGraafRepresentation(lambda,g)
+    Inputs 
+        lambda:List
+	g:LieAlgebra
+    Outputs
+        rho:LieAlgebraRepresentation
+    Description
+        Text
+            Let $V$ be an irreducible $\mathfrak{g}$-module with highest weight $\lamdba$. Then $V$ may be constructed as follows. Let $U(\mathfrak{g})$ be the universal enveloping algebra of $\mathfrak{g}$ (see @TO (universalEnvelopingAlgebra,LieAlgebraBasis)@. Let $A(\lambda)$ be the (infinite-dimensional) Verma module $U(\mathfrak{g})/J$, where $J$ is the left ideal $\{ x_1,\ldots,x_l,h_1-\lambda(H_1),\ldots,h_n-\lambda(H_n)\rangle$.  Then $V \cong A(\lambda)/I$, and the action of $X \in \mathfrak{g}$ on elements of the basis of $U(N^{-})/I$ is left multiplication.
+        Text
+	    We cannot implement the algorithm outlined above in a naive way because the AssociativeAlgebras package does not currently support quotients of quotients of free algebras. Instead, we proceed as follows.
+	Text
+	    $\quad$ 1. We create $U(\mathfrak{g})$ and $U(N^{-})$ (see @TO (uNminus,LieAlgebraBasis)@)
+	Text    
+	    $\quad$ 2. We compute the Grobner basis $G$ of $I$, and a basis of the quotient $U(N^{-})/I$
+        Text 
+	    $\quad$ 3. For each $X$ in a basis of $\mathfrak{g}$, and each $B_i$ in de Graaf's basis of $V$,
+	Text    
+	    $\quad$$\quad$ a. Multiply $X.B_i$ in $U(\mathfrak{g})$
+	Text
+	    $\quad$$\quad$ b. Map this to $U(N^{-})$ under the map sending $x_i \mapsto 0$ and $h_i \mapsto h_i-\lambda(h_i)$
+        Text
+	    $\quad$$\quad$ c. At top level, we reduce by $I$ in $U(N^{-}).
+        Text
+	    $\quad$ This gives the action of $X$ on de Graaf's basis. We extract the coefficients to build the matrix.
+	    
+	Example    
+            g = simpleLieAlgebra("A",2);
+	    lambda = {1,1}
+	    deGraafRepresentation(lambda,g)
+
+	    
+///
+
+TEST ///
+    g = simpleLieAlgebra("A",1);
+    lambda = {1};
+    assert(deGraafBases(lambda,g)==({{Y_1^2, {-3}, Y_1^2}},{1, Y_1}))
+    rho1 = standardRepresentation(g);
+    rho2 = deGraafRepresentation(lambda,g);
+    assert(rho1===rho2)
+///
+
+TEST ///
+    g = simpleLieAlgebra("A",1);
+    lambda = {2};
+    Std = standardRepresentation(g);
+    rho1 = symmetricPower(2,Std);
+    rho2 = deGraafRepresentation(lambda,g);
+    assert(isLieAlgebraRepresentation(rho2#"Basis",rho2#"RepresentationMatrices"))
+    P = isomorphismOfRepresentations(rho1,rho2);
+    assert(P==map(QQ^3,QQ^3,{{1, 0, 0}, {0, 2, 0}, {0, 0, 2}}))
+///
+
+TEST ///
+    g = simpleLieAlgebra("A",2);
+    lambda = {1,0};
+    rho1 = standardRepresentation(g);
+    rho2 = deGraafRepresentation(lambda,g);
+    assert(rho1===rho2)
+///
+
+TEST ///
+    g = simpleLieAlgebra("A",2);
+    lambda = {1,1};
+    (G,B) = deGraafBases(lambda,g);
+    assert(apply(G, i -> last i)=={Y_1^2, Y_2^2, Y_1*Y_2*Y_3+(1/2)*Y_3^2, Y_1*Y_3^2, Y_2*Y_3^2, Y_3^3})
+    assert(B=={1, Y_1, Y_2, Y_3, Y_1*Y_2, Y_1*Y_3, Y_2*Y_3, Y_3^2})
+    rho1 = adjointRepresentation(g);
+    rho2 = deGraafRepresentation(lambda,g);
+    P = isomorphismOfRepresentations(rho1,rho2);
+    assert(P==map(QQ^8,QQ^8,{{0, 0, 0, -1, 1, 0, 0, 0}, {0, 0, 0, -1, 0, 0, 0, 0}, {0, 0, -1, 0, 0, 0, 0, 0}, {0, 1, 0, 0, 0, 0, 0, 0}, {1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, -1, 0, 0}, {0, 0, 0, 0, 0, 0, -1, 0}, {0, 0, 0, 0, 0, 0, 0, -2}}))    
+///
+
+TEST ///
+    g = simpleLieAlgebra("B",3);
+    lambda = {1,0,0};
+    rho2 = deGraafRepresentation(lambda,g);
+    rho1 = standardRepresentation(g);
+    rho1 = lieAlgebraRepresentation(rho1#"Module",rho2#"Basis",rho1#"RepresentationMatrices");
+    P = isomorphismOfRepresentations(rho1,rho2)
+    assert(P==map(QQ^7,QQ^7,{{1, 0, 0, 0, 0, 0, 0}, {0, 1, 0, 0, 0, 0, 0}, {0, 0, 1, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, -1}, {0, 0, 0, 0, 0, 1, 0}, {0, 0, 0, 0, 1, 0, 0}, {0, 0, 0, -1, 0, 0, 0}}))
+///
+
+-- From gelfandTsetlinTypeA.m2
 
 doc ///
     Key
@@ -1555,8 +2298,6 @@ TEST ///
 
 
 
-
-
 doc ///
     Key
         GTrepresentationMatrices
@@ -1576,7 +2317,7 @@ doc ///
             Let $\rho: sl_n \rightarrow \mathfrak{gl}(V)$ be a representation where $V$ is irreducible of highest weight $\lambda$. Let $\{B_i\}$ be a basis for $sl_n$. This function creates the list of matrices $\{M_i\}$, where $M_i$ is the matrix of the endomorphism $\rho(B_i)$ with respect to the Gelfand-Tsetlin basis on $V$. See Molev, "Gelfand-Tsetlin bases for classical Lie algebras", 2018 for additional details about the Gelfand-Tsetlin basis.
 	    
         Text
-	    The output is a list of matrices that may in turn be installed as a representation.
+	    The output is a list of matrices that may in turn be used to create a representation with (e.g. with @TO"lieAlgebraRepresentation"@).
 
 	Text
 	    We create matrix generators for the adjoint representation of $sl_3$ with respect to the Gelfand-Tsetlin basis of $sl_3$, and then install it to the character $V$. This yields a representation that is isomorphic to, but not equal to, the representation created by @TO (adjointRepresentation,LieAlgebraBasis)@.
@@ -1585,8 +2326,8 @@ doc ///
 	    sl3=simpleLieAlgebra("A",2)
 	    V=irreducibleLieAlgebraModule({1,1},sl3)
 	    L=GTrepresentationMatrices(V)
-	    CB=lieAlgebraBasis(sl3)
-	    lieAlgebraRepresentation(V,CB,L)
+	    LAB=lieAlgebraBasis(sl3)
+	    lieAlgebraRepresentation(V,LAB,L)
 ///
 
 TEST ///
@@ -1595,16 +2336,18 @@ TEST ///
     assert(GTrepresentationMatrices(V) ===  {map(QQ^8,QQ^8,{{1, 0, 0, 0, 0, 0, 0, 0}, {0, -1, 0, 0, 0, 0, 0, 0}, {0, 0, 2, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, -2, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 1, 0}, {0, 0, 0, 0, 0, 0, 0, -1}}),map(QQ^8,QQ^8,{{1, 0, 0, 0, 0, 0, 0, 0}, {0, 2, 0, 0, 0, 0, 0, 0}, {0, 0, -1, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 1, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, -2, 0}, {0, 0, 0, 0, 0, 0, 0, -1}}),map(QQ^8,QQ^8,{{0, 1, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 2, 0, 0, 0, 0}, {0, 0, 0, 0, 2, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 1}, {0, 0, 0, 0, 0, 0, 0, 0}}),map(QQ^8,QQ^8,{{0, 0, 1, 0, 0, 0, 0, 0}, {0, 0, 0, 1, 0, 3, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 3/2, 0}, {0, 0, 0, 0, 0, 0, 0, 3/2}, {0, 0, 0, 0, 0, 0, 3/2, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}}),map(QQ^8,QQ^8,{{0, 0, 0, -1, 0, 3, 0, 0}, {0, 0, 0, 0, -2, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 3, 0}, {0, 0, 0, 0, 0, 0, 0, 3/2}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, -3/2}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}}),map(QQ^8,QQ^8,{{0, 0, 0, 0, 0, 0, 0, 0}, {1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 1, 0, 0, 0, 0, 0}, {0, 0, 0, 1, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 1, 0}}),map(QQ^8,QQ^8,{{0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {1, 0, 0, 0, 0, 0, 0, 0}, {0, 1/2, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 1/2, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 1/3, 0, 1, 0, 0}, {0, 0, 0, 0, 2/3, 0, 0, 0}}),map(QQ^8,QQ^8,{{0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {-1/2, 0, 0, 0, 0, 0, 0, 0}, {0, -1/2, 0, 0, 0, 0, 0, 0}, {1/2, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 1/3, 0, 0, 0, 0, 0}, {0, 0, 0, 1/3, 0, -1, 0, 0}})})
 ///
 
+
+
 -- From symWedgeTensor.m2
 
 doc ///
     Key
-        symmetricPowerRepresentation
-	(symmetricPowerRepresentation,ZZ,LieAlgebraRepresentation)
+        --symmetricPower
+	(symmetricPower,ZZ,LieAlgebraRepresentation)
     Headline
         computes the explicit action on $\operatorname{Sym}^d V$ for a $\mathfrak{g}$-module $V$
     Usage
-        symmetricPowerRepresentation(d,V)
+        symmetricPower(d,V)
     Inputs
         d:ZZ
         V:LieAlgebraRepresentation
@@ -1619,24 +2362,27 @@ doc ///
          
 	Example
 	    V = standardRepresentation("A",1);
-	    W = symmetricPowerRepresentation(2,V)
+	    W = symmetricPower(2,V)
+
+    SeeAlso
+	(symmetricPower,ZZ,LieAlgebraModule)
 ///
 
 TEST ///
     V = standardRepresentation("A",1);
-    W = symmetricPowerRepresentation(2,V);
+    W = symmetricPower(2,V);
     assert( W#"RepresentationMatrices" == {sparseMatrix(3,3,QQ,new HashTable from {(0,0) => 2, (2,2) => -2}),sparseMatrix(3,3,QQ,new HashTable from {(0,1) => 1, (1,2) => 2}),sparseMatrix(3,3,QQ,new HashTable from {(1,0) => 2, (2,1) => 1})})
 ///
 
 
+
 doc ///
     Key
-        exteriorPowerRepresentation
-	(exteriorPowerRepresentation,ZZ,LieAlgebraRepresentation)
+	(exteriorPower,ZZ,LieAlgebraRepresentation)
     Headline
         computes the explicit action on $\bigwedge^k V$ for a $\mathfrak{g}$-module $V$
     Usage
-        exteriorPowerRepresentation(k,V)
+        exteriorPower(k,V)
     Inputs
         k:ZZ
         V:LieAlgebraRepresentation
@@ -1651,34 +2397,39 @@ doc ///
          
 	Example
 	    V = standardRepresentation("A",2);
-	    W = exteriorPowerRepresentation(2,V)
+	    W = exteriorPower(2,V)
+
+    SeeAlso
+        (exteriorPower,ZZ,LieAlgebraModule)
 	    
 ///
 
 -- TO DO: Check this result by hand
 TEST ///
     V = standardRepresentation("A",2);
-    W = exteriorPowerRepresentation(2,V);
+    W = exteriorPower(2,V);
     assert(W#"RepresentationMatrices"=={new SparseMatrix from {"Entries" => new HashTable from {(2,2) => -1/1, (1,1) => 1/1}, "NumberOfRows" => 3, "BaseRing" => QQ, "NumberOfColumns" => 3},new SparseMatrix from {"Entries" => new HashTable from {(0,0) => 1/1, (1,1) => -1/1}, "NumberOfRows" => 3, "BaseRing" => QQ, "NumberOfColumns" => 3},new SparseMatrix from {"Entries" => new HashTable from {(1,2) => 1/1}, "NumberOfRows" => 3, "BaseRing" => QQ, "NumberOfColumns" => 3},new SparseMatrix from {"Entries" => new HashTable from {(0,1) => 1/1}, "NumberOfRows" => 3, "BaseRing" => QQ, "NumberOfColumns" => 3},new SparseMatrix from {"Entries" => new HashTable from {(0,2) => -1/1}, "NumberOfRows" => 3, "BaseRing" => QQ, "NumberOfColumns" => 3},new SparseMatrix from {"Entries" => new HashTable from {(2,1) => 1/1}, "NumberOfRows" => 3, "BaseRing" => QQ, "NumberOfColumns" => 3},new SparseMatrix from {"Entries" => new HashTable from {(1,0) => 1/1}, "NumberOfRows" => 3, "BaseRing" => QQ, "NumberOfColumns" => 3},new SparseMatrix from {"Entries" => new HashTable from {(2,0) => -1/1}, "NumberOfRows" => 3, "BaseRing" => QQ, "NumberOfColumns" => 3}})
 ///
 
 
+
 doc ///
     Key
-        tensorProductRepresentation
-	(tensorProductRepresentation,LieAlgebraRepresentation,LieAlgebraRepresentation)
+        (symbol **, LieAlgebraRepresentation, LieAlgebraRepresentation)
+	(tensor,LieAlgebraRepresentation,LieAlgebraRepresentation)
+
     Headline
-        computes the explicit action on $V \otimes W$ given $\mathfrak{g}$-characters $V$ and $W$
+        computes the explicit action on $V \otimes W$ given $\mathfrak{g}$-representations $V$ and $W$
     Usage
-        tensorProductRepresentation(V,W)
+        V**W
     Inputs
-        V:LieAlgebraModule
-        W:LieAlgebraModule
+        V:LieAlgebraRepresentation
+        W:LieAlgebraRepresentation
     Outputs
-        Y:LieAlgebraModule
+        U:LieAlgebraRepresentation
     Description
         Text
-	    Let $V$ and $W$ be LieAlgebraModules with representations installed. Then this function computes the action of $\mathfrak{g}$ on $U = V \otimes V$, and caches the result in U.cache#representation.
+	    Let $V$ and $W$ be LieAlgebraRepresentations. Then this function computes the action of $\mathfrak{g}$ on $U = V \otimes V$.
 	    
 	Text     
             In the example below, we compute $V \otimes W$, where $V$ is the adjoint represention of $sl_3$, and $W$ is the standard representation of $sl_3$.
@@ -1686,7 +2437,7 @@ doc ///
         Example
             V = adjointRepresentation("A",2);
 	    W = standardRepresentation("A",2);
-	    U = tensorProductRepresentation(V,W);
+	    U = V**W;
 	    first(U#"RepresentationMatrices")
 ///
 
@@ -1694,9 +2445,10 @@ doc ///
 TEST ///
     V = adjointRepresentation("A",2);
     W = standardRepresentation("A",2);
-    U = tensorProductRepresentation(V,W);
+    U = V**W;
     assert(first(U#"RepresentationMatrices")==sparseMatrix(24,24,QQ,new HashTable from {(20,20) => 1/1, (4,4) => -1/1, (6,6) => 3/1, (22,22) => -2/1, (7,7) => 1/1, (23,23) => -1/1, (8,8) => 2/1, (10,10) => -2/1, (11,11) => -1/1, (12,12) => 2/1, (14,14) => 1/1, (15,15) => -1/1, (0,0) => 1/1, (16,16) => -3/1, (1,1) => -1/1, (17,17) => -2/1, (18,18) => 2/1, (3,3) => 1/1}))
 ///
+
 
 
 doc ///
@@ -1706,400 +2458,52 @@ doc ///
     Headline
         checks whether a list of matrices defines a Lie algebra representation
     Usage
-        isLieAlgebraRepresentation(CB,L)
+        isLieAlgebraRepresentation(LAB,L)
     Inputs 
-        CB:LieAlgebraBasis
+        LAB:LieAlgebraBasis
 	L:List
     Outputs
         b:Boolean
     Description
         Text
-	    Let CB be a basis of $\mathfrak{g}$, and let $L$ be a list of $n \times n$ matrices with $\#L = \#CB$.  Let $\rho: \mathfrak{g} \rightarrow \mathfrak{gl}_n$ be the linear transformation defined by mapping $B_i$ in CB to $L_i$. This function checks whether $\rho$ preserves the Lie bracket; that is, for each pair of indices $i,j$, if $[B_i,B_j] = \sum c_{ijk} B_k$, then is $[\rho(B_i),\rho(B_j)] = \sum c_{ijk} \rho(B_k)$?
+	    Let LAB be a basis of $\mathfrak{g}$, and let $L$ be a list of $n \times n$ matrices with $\#L = \#LAB$.  Let $\rho: \mathfrak{g} \rightarrow \mathfrak{gl}_n$ be the linear transformation defined by mapping $B_i$ in LAB to $L_i$. This function checks whether $\rho$ preserves the Lie bracket; that is, for each pair of indices $i,j$, if $[B_i,B_j] = \sum c_{ijk} B_k$, then is $[\rho(B_i),\rho(B_j)] = \sum c_{ijk} \rho(B_k)$?
 	     
 	Text
 	    In the example below, we compute the adjoint representation of $sl_3$ directly, and check that the list of matrices we obtain defines a Lie algebra representation.
 	    
 	Example
             sl3 = simpleLieAlgebra("A",2);
-            CB = lieAlgebraBasis("A",2);
-	    br = CB#"Bracket";
-	    writeInBasis = CB#"WriteInBasis";
-	    B = CB#"BasisElements"
+            LAB = lieAlgebraBasis("A",2);
+	    br = LAB#"Bracket";
+	    writeInBasis = LAB#"WriteInBasis";
+	    B = LAB#"BasisElements"
 	    ad = X -> transpose matrix apply(B, Y -> writeInBasis br(X,Y))
             L1 = apply(B, X -> ad X)
-	    isLieAlgebraRepresentation(CB,L1)
+	    isLieAlgebraRepresentation(LAB,L1)
 	    
         Text
             Next, we present an example where the linear transformation $\rho: sl_3 \rightarrow \mathfrak{gl}(\mathbb{C}^8)$ does not preserve the Lie bracket.
 
 	Example
 	    L2 = apply(#L1, i -> if i==6 then -2*L1_i else L1_i)
-	    isLieAlgebraRepresentation(CB,L2)
-	    
+	    isLieAlgebraRepresentation(LAB,L2)
 
 ///
 
 -- TO DO: Check this result by hand
 TEST ///
     sl3 = simpleLieAlgebra("A",2);
-    CB = lieAlgebraBasis("A",2);
-    br = CB#"Bracket";
-    writeInBasis = CB#"WriteInBasis";
-    B = CB#"BasisElements";
+    LAB = lieAlgebraBasis("A",2);
+    br = LAB#"Bracket";
+    writeInBasis = LAB#"WriteInBasis";
+    B = LAB#"BasisElements";
     ad = X -> transpose matrix apply(B, Y -> writeInBasis br(X,Y));
     L1 = apply(B, X -> ad X);
-    assert(isLieAlgebraRepresentation(CB,L1))
+    assert(isLieAlgebraRepresentation(LAB,L1))
     L2 = apply(#L1, i -> if i==6 then -2*L1_i else L1_i);
-    assert(not isLieAlgebraRepresentation(CB,L2))
+    assert(not isLieAlgebraRepresentation(LAB,L2))
 ///
 
-
--- From representationsCasimirReynolds.m2
-doc ///
-    Key
-       LieAlgebraRepresentation
-    Headline
-        class for a Lie algebra representation
-    Description
-        Text
-    	    Let $\rho: \mathfrak{g} \rightarrow \mathfrak{gl}(V)$ be a Lie algebra representation. We implement this in the @TT "LieAlgebraRepresentation"@ class as follows.
-
-	Text
-	    The user should input: the character of $\rho$, a @TT "LieAlgebraBasis"@ of $\mathfrak{g}$, and the list of images $\rho(B_i)$ for each basis element $B_i$ in the @TT "LieAlgebraBasis"@.
-
-        Text
-	    As a first example, we create the standard representation of $sl_2$ from scratch. (This can be done automatically with the @TO (standardRepresentation,LieAlgebra)@ command.)  It has highest weight $\omega_1$. 
-	    
-        Example
-	    sl2 = simpleLieAlgebra("A",1)
-	    V = irreducibleLieAlgebraModule({1},sl2)
-	    LAB=lieAlgebraBasis("A",1)
-	    L = {matrix {{1, 0}, {0, -1/1}}, matrix {{0, 1}, {0, 0/1}}, matrix {{0, 0}, {1, 0/1}}}
-	    rho = lieAlgebraRepresentation(V,LAB,L)
-
-///
-
-doc ///
-    Key
-        lieAlgebraRepresentation
-	(lieAlgebraRepresentation,LieAlgebraModule,LieAlgebraBasis,List)
-    Headline
-        create a LieAlgebraRepresentation
-    Usage
-        lieAlgebraRepresentation(V,CB,L)
-    Inputs 
-        V:LieAlgebraModule
-	CB:LieAlgebraBasis
-	L:List
-    Outputs
-    Description
-        Text
-            Let $\{B_i\}$ be a basis of $\mathfrak{g}$, and $\rho: \mathfrak{g} \rightarrow \mathfrak{gl}(V)$ be a Lie algebra representation with character $V$. 
-
-	Text
-	    To construct $\rho$, we require a basis @TT "CB"@ of $\mathfrak{g}$, and a list @TT "L"@ of matrices that are the images $\rho(B_i) \in \mathfrak{gl}(V)$.
-	    
-        Text	    
-	    First, we build the standard representation for $sl_3$. The list of matrices we need is already contained in the @TT "LieAlgebraBasis"@.
-	Example
-	    sl3=simpleLieAlgebra("A",2);
-	    V=irreducibleLieAlgebraModule({1,0},sl3);
-            CB = lieAlgebraBasis("A",2);
-	    CB#"BasisElements"
-	    rho=lieAlgebraRepresentation(V,CB,CB#"BasisElements")
-	Text
-	    Next, we make an irreducible representation with highest weight $(2,0)$. This time, we create the list of matrices using the command @TO GTrepresentationMatrices@.
-        Example
-	    V=irreducibleLieAlgebraModule({2,0},sl3);
-            L = GTrepresentationMatrices(V)
-            lieAlgebraRepresentation(V,CB,L)
-///
-
-
-doc ///
-    Key
-        representationWeights
-	(representationWeights,LieAlgebraRepresentation)
-    Headline
-        computes the weights of the basis of a Lie algebra module from an explicit representation
-    Usage
-        representationWeights(rho)
-    Inputs 
-        rho:LieAlgebraRepresentation
-    Outputs
-        L:List
-    Description
-        Text
-	    Let $\rho: \mathfrak{g} \rightarrow \mathfrak{gl}(V)$ be a Lie algebra representation. 
-
-	Text
-            This function first checks that for the Cartan subalgebra elements $H_i$ in the basis of $\mathfrak{g}$, the image $\rho(H_i)$ is a diagonal matrix. If not, this function returns an error that the basis of $V$ in use is not an eigenbasis for the Cartan subalgebra. Otherwise, this function returns the list of weights of these basis elements, which are obtained from the diagonal entries of the matrices $\rho(H_i)$.
-
-	Text
-	    In the example below, we compute the weights of the Gelfand-Tsetlin basis for the adjoint representation of $sl_3$.
-	    
-	Example
-            sl3 = simpleLieAlgebra("A",2);
-	    V=irreducibleLieAlgebraModule({1,1},sl3);
-            CB = lieAlgebraBasis("A",2);
-            L1 = GTrepresentationMatrices(V);
-            rho = lieAlgebraRepresentation(V,CB,L1);
-            L2 = representationWeights(rho)
-	    
-        Text
-            We can check that this agrees with the weight of the Gelfand-Tsetlin pattern labelling each basis element.
-
-	Example
-	    dynkinToPartition({1,1})
-	    L3 = gtPatterns({2,1,0})
-	    
-        Text
-	    Right now, the entries of L2 are just lists. We turn them into objects of type GTPattern, and then get their weights.
-
-	Example
-	    L3 = apply(L3, x -> (gtPatternFromEntries(x))#"weight")
-	    L2==L3
-
-	Text
-	    Finally, we check that this agrees with the weight diagram of V.
-
-	Example
-	    tally(L3)
-	    weightDiagram(V)
-	    weightDiagram(V) === new VirtualTally from tally(L3)
-///
-
--*
--- TO DO: Check this result by hand
-TEST ///
-    sl3 = simpleLieAlgebra("A",2);
-    CB = lieAlgebraBasis("A",2);
-    V=irreducibleLieAlgebraModule({1,1},sl3);
-    installRepresentation(V,CB,GTrepresentationMatrices(V));
-    L = basisWordsFromMatrixGenerators(V)
-    assert(apply(L,w -> w#"Terms") == {{{{}, 1}}, {{{0}, 1}}, {{{2}, 1}}, {{{0, 2}, 1}}, {{{0, 1}, -2}}, {{{1}, 2}, {{0, 2}, 1}}, {{{1, 2}, 3}}, {{{1, 1}, -3/2}}});
-///
-*-
-
-doc ///
-    Key
-        casimirOperator
-	(casimirOperator,LieAlgebraRepresentation)
-    Headline
-        computes the Casimir operator associated to a representation
-    Usage
-        casimirOperator(rho)
-    Inputs 
-        rho:LieAlgebraRepresentation
-    Outputs
-        M:Matrix
-    Description
-        Text
-	    Let $\rho: \mathfrak{g} \rightarrow \mathfrak{gl}(V)$ be a Lie algebra representation. 
-	    
-	Text
-            Let $\{B_i\}$ be a basis of $\mathfrak{g}$, and let $\{B_i^{*}\}$ be the dual basis with respect to the Killing form. The Casimir operator is
-	    
-        Text
-	    $\operatorname{Cas} = \sum_{i} \rho(B_i^*) \rho(B_i)$.
-
-	Text
-	    Recall that in creating a @TT "LieAlgebraBasis"@, we compute the dual basis $\{B_i^{*}\}$. This makes it straightforward to compute the Casimir operator.
-
-	Text
-	    If $V$ is irreducible with highest weight $\lambda$, then $\operatorname{Cas} = c(\lambda) \operatorname{Id}$, where $c(\lambda)$ is the scalar computed by @TO (casimirScalar,LieAlgebraModule)@.
-
-        Text
-	    We compute the Casimir operator for the symmetric square of the standard representation of $sl_3$. Since this is an irreducible representation, we get a scalar multiple of the identity.
-	    
-	Example
-	    sl3 = simpleLieAlgebra("A",2)
-	    V = standardRepresentation(sl3)
-	    S2V=symmetricPowerRepresentation(2,V);
-	    casimirScalar(S2V#"Module")
-	    CasS2V = casimirOperator(S2V)
-	    
-        Text
-            Next, we compute the Casimir operator for $\operatorname{Sym^2} \operatorname{Sym^2} \mathbb{C}^3$. It has two distinct eigenvalues. The eigenvalues match the Casimir scalars of the irreducible submodules appearing in the decomposition of $\operatorname{Sym^2} \operatorname{Sym^2} \mathbb{C}^3$, and the multiplicities of the eigenvalues match the dimensions of these submodules. 
-
-	Example
-	    S2S2V=symmetricPowerRepresentation(2,S2V);
-	    CasS2S2V = casimirOperator(S2S2V)
-	    tally eigenvalues CasS2S2V
-	    peek S2S2V
-	    V40 = irreducibleLieAlgebraModule({4,0},sl3);
-	    dim V40
-	    casimirScalar(V40)
-	    V02 = irreducibleLieAlgebraModule({0,2},sl3);
-	    dim V02
-	    casimirScalar(V02)
-
-///
-
--- TO DO: Check this result by hand
-TEST ///
-    V=standardRepresentation("A",2);
-    S2V=symmetricPowerRepresentation(2,V);
-    CasS2V = casimirOperator(S2V);
-    assert(CasS2V == map(QQ^6,QQ^6,{{20/3, 0, 0, 0, 0, 0}, {0, 20/3, 0, 0, 0, 0}, {0, 0, 20/3, 0, 0, 0}, {0, 0, 0, 20/3, 0, 0}, {0, 0, 0, 0, 20/3, 0}, {0, 0, 0, 0, 0, 20/3}}))
-    S2S2V=symmetricPowerRepresentation(2,S2V);
-    CasS2S2V = casimirOperator(S2S2V);
-    assert(CasS2S2V == map(QQ^21,QQ^21,{{56/3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 56/3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 56/3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 32/3, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 32/3, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 32/3, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 8, 0, 0, 44/3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 8, 0, 0, 44/3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 56/3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 44/3, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32/3, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 44/3, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 32/3, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 44/3, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 56/3, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 56/3, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 56/3, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32/3, 4, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 44/3, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 56/3, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 56/3}}))
-///
-
-
-doc ///
-    Key
-        casimirSpectrum
-	(casimirSpectrum,LieAlgebraModule)
-    Headline
-        computes the eigenvalues of the Casimir operator associated to a representation
-    Usage
-        casimirOperator(V)
-    Inputs 
-        V:LieAlgebraModule
-    Outputs
-        M:Matrix
-    Description
-        Text
-	    Let @TT "V"@ be a LieAlgebraModule, and recall the definition of the Casimir operator from @TO (casimirOperator,LieAlgebraRepresentation)@.
-	    
-	Text
-	    If $V$ corresponds to an irreducible $\mathfrak{g}$-module with highest weight $\lambda$, then $\operatorname{Cas} = c(\lambda) \operatorname{Id}$, where $c(\lambda)$ is the scalar computed by @TO (casimirScalar,LieAlgebraModule)@.
-
-        Text
-	    This function returns a nonredundant list of eigenvalues of $\operatorname{Cas}$ by computing the scalars $c(\lambda)$ for each irreducible summand in $V$, and then removing any duplicates.
-	    
-	Example
-	    sl3 = simpleLieAlgebra("A",2);
-	    V=standardModule(sl3);
-            S3V=symmetricPower(3,V);
-            S4S3V=symmetricPower(4,S3V);
-	    casimirSpectrum(S4S3V)
-
-///
-
--- TO DO: Check this result by hand
-TEST ///
-    sl3 = simpleLieAlgebra("A",2);
-    V=standardModule(sl3);
-    S3V=symmetricPower(3,V);
-    S4S3V=symmetricPower(4,S3V);
-    assert(casimirSpectrum(S4S3V) == {0, 16, 24, 30, 36, 48, 60, 76, 120})
-///
-
-
-doc ///
-    Key
-        casimirProjection
-	(casimirProjection,LieAlgebraRepresentation,QQ)
-    Headline
-        projection operator to a specified eigenspace of the Casimir operator
-    Usage
-        casimirProjection(rho,z)
-    Inputs 
-        rho:LieAlgebraRepresentation
-	z:QQ
-    Outputs
-        M:Matrix
-    Description
-        Text
-	    Let $\rho$ be a LieAlgebraRepresentation, and recall the definition of the Casimir operator from @TO (casimirOperator,LieAlgebraRepresentation)@.
-
-        Text
-	    This function returns the projection matrix to the eigenspace of the Casimir operator for the input eigenvalue @TT "z"@.  This matrix is computed as the product of factors $\operatorname{Cas}-x I$ over all eigenvalues $x \neq z$. 
-	    
-	Example
-	    V=standardRepresentation("A",2);
-            S2V=symmetricPowerRepresentation(2,V);
-            S3S2V=symmetricPowerRepresentation(3,S2V);
-	    casimirProjection(S3S2V,16)
-
-///
-
--- TO DO: Check this result by hand
-TEST ///
-    V=standardRepresentation("A",2);
-    S2V=symmetricPowerRepresentation(2,V);
-    S3S2V=symmetricPowerRepresentation(3,S2V);
-    assert(casimirProjection(S3S2V,16)==dense sparseMatrix(56,56,QQ, new HashTable from {(40,31) => 64/1, (36,36) => -192/1, (32,41) => 64/1, (5,5) => -256/1, (44,35) => 256/1, (5,11) => 64/1, (40,40) => -256/1, (9,9) => -192/1, (9,12) => 128/1, (13,10) => 128/1, (44,44) => -64/1, (13,13) => -192/1, (21,8) => 128/1, (9,22) => 128/1, (48,48) => -256/1, (48,49) => 64/1, (17,17) => -192/1, (17,18) => -32/1, (52,50) => 128/1, (13,26) => 128/1, (52,52) => -192/1, (17,25) => -32/1, (21,21) => -192/1, (25,17) => -64/1, (25,18) => 96/1, (17,28) => 48/1, (29,19) => 128/1, (25,25) => -224/1, (25,28) => 16/1, (37,17) => -64/1, (17,37) => -32/1, (37,18) => 96/1, (29,29) => -192/1, (37,25) => 96/1, (25,37) => 96/1, (37,28) => 16/1, (33,32) => 128/1, (33,33) => -192/1, (29,38) => 128/1, (6,3) => 256/1, (41,32) => 128/1, (33,41) => 128/1, (37,37) => -224/1, (41,33) => 128/1, (6,6) => -64/1, (41,41) => -192/1, (10,10) => -256/1, (10,13) => 64/1, (14,14) => -128/1, (22,9) => 128/1, (49,48) => 256/1, (49,49) => -64/1, (22,12) => 128/1, (18,17) => -64/1, (18,18) => -224/1, (10,26) => 64/1, (26,10) => 128/1, (26,13) => 128/1, (53,51) => 256/1, (53,53) => -64/1, (18,25) => 96/1, (22,22) => -192/1, (18,28) => 16/1, (14,36) => 192/1, (26,26) => -192/1, (18,37) => 96/1, (38,19) => 128/1, (38,29) => 128/1, (34,34) => -192/1, (3,3) => -256/1, (3,6) => 64/1, (7,4) => 256/1, (42,34) => 64/1, (38,38) => -192/1, (34,42) => 128/1, (34,43) => 128/1, (7,7) => -64/1, (11,5) => 256/1, (42,42) => -256/1, (42,43) => 64/1, (11,11) => -64/1, (15,15) => -256/1, (50,50) => -128/1, (50,52) => 192/1, (19,19) => -256/1, (15,23) => 64/1, (23,15) => 256/1, (27,16) => 128/1, (23,23) => -64/1, (19,29) => 64/1, (27,24) => 128/1, (27,27) => -192/1, (19,38) => 64/1, (39,20) => 256/1, (31,31) => -64/1, (35,35) => -256/1, (31,40) => 256/1, (4,4) => -256/1, (4,7) => 64/1, (43,34) => 128/1, (39,39) => -64/1, (35,44) => 64/1, (8,8) => -128/1, (12,9) => 64/1, (43,42) => 128/1, (43,43) => -192/1, (12,12) => -256/1, (8,21) => 192/1, (16,16) => -256/1, (12,22) => 64/1, (51,51) => -256/1, (24,16) => 128/1, (16,24) => 64/1, (20,20) => -256/1, (51,53) => 64/1, (16,27) => 64/1, (28,17) => 384/1, (28,18) => 64/1, (24,24) => -192/1, (36,14) => 128/1, (24,27) => 128/1, (28,25) => 64/1, (28,28) => -96/1, (20,39) => 64/1, (32,32) => -256/1, (32,33) => 64/1, (28,37) => 64/1}))
-///
-
-
-doc ///
-    Key
-        reynoldsOperator
-	(reynoldsOperator,LieAlgebraRepresentation)
-    Headline
-        computes the projection to the sum of the trivial submodules in $V$
-    Usage
-        reynoldsOperator(V)
-    Inputs 
-        V:LieAlgebraRepresentation
-    Outputs
-        M:Matrix
-    Description
-        Text
-	    Let $\rho$ be a LieAlgebraRepresentation. Suppose that the trivial module $V_0$ occurs with multiplicity $m_0 \geq 1$ in $V$. This function returns a matrix for the projection $V \rightarrow V_0^{\oplus m_0}$. 
-	    
-	Text
-	    This is a special case of the function @TO (casimirProjection,LieAlgebraRepresentation,QQ)@ where the input eigenvalue is $z=0$.
-	    
-	Example
-	    V=standardRepresentation("A",2);
-	    S2V=symmetricPowerRepresentation(2,V)
-	    S3S2V=symmetricPowerRepresentation(3,S2V)
-	    reynoldsOperator(S3S2V)
-            
-///
--- TO DO: Check this result by hand
-TEST ///
-    V=standardRepresentation("A",2);
-    S2V=symmetricPowerRepresentation(2,V);
-    S3S2V=symmetricPowerRepresentation(3,S2V);
-    assert(reynoldsOperator(S3S2V)==dense sparseMatrix(56,56,QQ, new HashTable from {(37,37) => 96/1, (17,17) => 192/1, (17,18) => -96/1, (18,17) => -192/1, (18,18) => 96/1, (17,25) => -96/1, (25,17) => -192/1, (18,25) => 96/1, (25,18) => 96/1, (28,17) => 384/1, (17,28) => 48/1, (18,28) => -48/1, (28,18) => -192/1, (25,25) => 96/1, (25,28) => -48/1, (28,25) => -192/1, (17,37) => -96/1, (37,17) => -192/1, (18,37) => 96/1, (37,18) => 96/1, (28,28) => 96/1, (25,37) => 96/1, (37,25) => 96/1, (37,28) => -48/1, (28,37) => -192/1}))
-///
-
-    
--- From basesAsWords.m2
-
-doc ///
-    Key
-        basisWordsFromMatrixGenerators
-	(basisWordsFromMatrixGenerators,LieAlgebraRepresentation)
-    Headline
-        express each basis element of $V(\lambda)$ as a linear combination of words in the lowering operators applied to the highest weight vector
-    Usage
-        basisWordsFromMatrixGenerators(V)
-    Inputs 
-        V:LieAlgebraRepresentation
-    Outputs
-        L:List
-    Description
-        Text
-	    Irreducible Lie algebra modules are cyclic modules. That is, it is possible to write each element of $V(\lambda)$ as a linear combination of words in the lowering operators applied to the highest weight vector. In particular, we can do this for elements of the basis of $V(\lambda)$ that is used to write the matrix generators of the representation $\rho$.
-        Text
-	    The output may be parsed as follows. Suppose that we order the lowering operators of $\mathfrak{g}$ as $Y_0,\ldots,Y_k$. Then if the output indicates that $v$ is represented by a word with terms {{{1}, 2}, {{0, 2}, 1}}, this means $v = 2 Y_1.v_\lambda + Y_0.Y_2.v_\lambda$, where $v_\lambda$ represents the highest weight vector.
-	Text
-	    In the example below, we compute the words that yield the Gelfand-Tsetlin basis for the adjoint representation of $sl_3$.
-	    
-	Example
-            sl3 = simpleLieAlgebra("A",2);
-            CB = lieAlgebraBasis("A",2);
-            V=irreducibleLieAlgebraModule({1,1},sl3);
-            rho=lieAlgebraRepresentation(V,CB,GTrepresentationMatrices(V));
-            basisWordsFromMatrixGenerators(rho)
-///
-
--- TO DO: Check this result by hand
-TEST ///
-    sl3 = simpleLieAlgebra("A",2);
-    CB = lieAlgebraBasis("A",2);
-    V=irreducibleLieAlgebraModule({1,1},sl3);
-    rho=lieAlgebraRepresentation(V,CB,GTrepresentationMatrices(V));
-    L = basisWordsFromMatrixGenerators(rho)
-    assert(apply(L,w -> w#"Terms") == {{{{}, 1}}, {{{0}, 1}}, {{{1}, 1}}, {{{0, 1}, 1}}, {{{0, 2}, -2}}, {{{2}, 2}, {{0, 1}, 1}}, {{{1, 2}, 3}}, {{{2, 2}, -3/2}}})
-///
 
 
 -- From highestWeightVectorsAndSubcharacters.m2
@@ -2128,10 +2532,10 @@ doc ///
 	Example
 	    sl3=simpleLieAlgebra("A",2)
 	    V=irreducibleLieAlgebraModule({1,1},sl3)
-	    CB = lieAlgebraBasis("A",2);
+	    LAB = lieAlgebraBasis("A",2);
 	    L = GTrepresentationMatrices(V);
-	    V=lieAlgebraRepresentation(V,CB,L);
-	    W = tensorProductRepresentation(V,V);
+	    V=lieAlgebraRepresentation(V,LAB,L);
+	    W = V**V;
 	    weightMuHighestWeightVectorsInW({1,1},W)
 
 ///
@@ -2139,15 +2543,12 @@ doc ///
 TEST ///
     sl3=simpleLieAlgebra("A",2)
     V=irreducibleLieAlgebraModule({1,1},sl3)
-    CB = lieAlgebraBasis("A",2);
+    LAB = lieAlgebraBasis("A",2);
     L = GTrepresentationMatrices(V);
-    V=lieAlgebraRepresentation(V,CB,L);
-    W = tensorProductRepresentation(V,V);
+    V=lieAlgebraRepresentation(V,LAB,L);
+    W = V**V;
     assert(weightMuHighestWeightVectorsInW({1,1},W)==map(QQ^64,QQ^2,{{0, 0}, {0, 0}, {0, 0}, {1/2, 3/2}, {0, 0}, {1/2, -1/2}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {-1, -3}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {-2, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {1, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 1}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}}))
 ///
-
-
-
 
 
 
@@ -2175,8 +2576,8 @@ doc ///
 	Example
 	    sl3=simpleLieAlgebra("A",2)
 	    V=standardRepresentation(sl3);
-	    S3V = symmetricPowerRepresentation(3,V);
-	    S4S3V = symmetricPowerRepresentation(4,S3V);
+	    S3V = symmetricPower(3,V);
+	    S4S3V = symmetricPower(4,S3V);
 	    hwv = weightMuHighestWeightVectorsInW({0,0},S4S3V); 
 	    V0=trivialRepresentation(sl3);
 	    L = VInSymdW(V0,4,S3V,hwv)
@@ -2188,16 +2589,13 @@ doc ///
 TEST ///
     sl3=simpleLieAlgebra("A",2)
     V=standardRepresentation(sl3);
-    S3V = symmetricPowerRepresentation(3,V);
-    S4S3V = symmetricPowerRepresentation(4,S3V);
+    S3V = symmetricPower(3,V);
+    S4S3V = symmetricPower(4,S3V);
     hwv = weightMuHighestWeightVectorsInW({0,0},S4S3V); 
     V0=trivialRepresentation(sl3);
     L = VInSymdW(V0,4,S3V,hwv);
     assert(L=={B_0*B_3*B_7*B_9-B_0*B_3*B_8^2-B_0*B_4*B_6*B_9+B_0*B_4*B_7*B_8+B_0*B_5*B_6*B_8-B_0*B_5*B_7^2-B_1^2*B_7*B_9+B_1^2*B_8^2+B_1*B_2*B_6*B_9-B_1*B_2*B_7*B_8+B_1*B_3*B_4*B_9-B_1*B_3*B_5*B_8-2*B_1*B_4^2*B_8+3*B_1*B_4*B_5*B_7-B_1*B_5^2*B_6-B_2^2*B_6*B_8+B_2^2*B_7^2-B_2*B_3^2*B_9+3*B_2*B_3*B_4*B_8-B_2*B_3*B_5*B_7-2*B_2*B_4^2*B_7+B_2*B_4*B_5*B_6+B_3^2*B_5^2-2*B_3*B_4^2*B_5+B_4^4})
 ///
-
-
-
 
 
 
@@ -2226,27 +2624,28 @@ doc ///
 	Example
 	    sl4=simpleLieAlgebra("A",3);
 	    U= standardRepresentation(sl4);
-	    W2U = exteriorPowerRepresentation(2,U);
-	    W3W2U = exteriorPowerRepresentation(3,W2U);
+	    W2U = exteriorPower(2,U);
+	    W3W2U = exteriorPower(3,W2U);
 	    hwv = weightMuHighestWeightVectorsInW({2,0,0},W3W2U)
 	    V=irreducibleLieAlgebraModule({2,0,0},sl4);
-	    CB = lieAlgebraBasis(sl4);
-	    V = lieAlgebraRepresentation(V,CB,GTrepresentationMatrices(V));
+	    LAB = lieAlgebraBasis(sl4);
+	    V = lieAlgebraRepresentation(V,LAB,GTrepresentationMatrices(V));
 	    L = VInWedgekW(V,3,W2U,hwv)
 ///
 
 TEST ///
     sl4=simpleLieAlgebra("A",3);
     U= standardRepresentation(sl4);
-    W2U = exteriorPowerRepresentation(2,U);
-    W3W2U = exteriorPowerRepresentation(3,W2U);
+    W2U = exteriorPower(2,U);
+    W3W2U = exteriorPower(3,W2U);
     hwv = weightMuHighestWeightVectorsInW({2,0,0},W3W2U)
     V=irreducibleLieAlgebraModule({2,0,0},sl4);
-    CB = lieAlgebraBasis(sl4);
-    V=lieAlgebraRepresentation(V,CB,GTrepresentationMatrices(V));
+    LAB = lieAlgebraBasis(sl4);
+    V=lieAlgebraRepresentation(V,LAB,GTrepresentationMatrices(V));
     L = VInWedgekW(V,3,W2U,hwv)
     assert(L=={p_{0, 1, 3}, p_{0, 2, 3}+p_{0, 1, 4}, 2*p_{0, 2, 4}, 3*p_{1, 2, 3}+3*p_{0, 1, 5}, 3*p_{1, 2, 4}+3*p_{0, 2, 5}, 12*p_{1, 2, 5}, -12*p_{1, 3, 4}+12*p_{0, 3, 5}, -12*p_{2, 3, 4}+12*p_{0, 4, 5}, -24*p_{2, 3, 5}+24*p_{1, 4, 5}, 144*p_{3, 4, 5} })
 ///
+
 
 
 doc ///
@@ -2275,11 +2674,11 @@ doc ///
 	    sl3 = simpleLieAlgebra("A",2)
 	    V = adjointRepresentation(sl3);
 	    W = standardRepresentation(sl3);
-	    T = tensorProductRepresentation(V,W);
+	    T = V**W;
 	    hwv = weightMuHighestWeightVectorsInW({0,2},T)
 	    Umod = irreducibleLieAlgebraModule({0,2},sl3);
-	    CB = lieAlgebraBasis(sl3);
-	    U = lieAlgebraRepresentation(Umod,CB,GTrepresentationMatrices(Umod));
+	    LAB = lieAlgebraBasis(sl3);
+	    U = lieAlgebraRepresentation(Umod,LAB,GTrepresentationMatrices(Umod));
 	    L = UInVtensorW(U,V,W,hwv)
 ///
 
@@ -2288,15 +2687,14 @@ TEST ///
     sl3 = simpleLieAlgebra("A",2)
     V = adjointRepresentation(sl3);
     W = standardRepresentation(sl3);
-    T = tensorProductRepresentation(V,W);
+    T = V**W;
     hwv = weightMuHighestWeightVectorsInW({0,2},T)
     Umod = irreducibleLieAlgebraModule({0,2},sl3);
-    CB = lieAlgebraBasis(sl3);
-    U = lieAlgebraRepresentation(Umod,CB,GTrepresentationMatrices(Umod));
+    LAB = lieAlgebraBasis(sl3);
+    U = lieAlgebraRepresentation(Umod,LAB,GTrepresentationMatrices(Umod));
     L = UInVtensorW(U,V,W,hwv)
     assert(L == {-A_3*B_0+A_4*B_1, A_1*B_0-A_2*B_1+A_4*B_2, A_0*B_1+A_1*B_1+A_3*B_2-A_5*B_0, -2*A_2*B_2+2*A_6*B_0, 2*A_0*B_2+2*A_6*B_1-2*A_7*B_0, 4*A_5*B_2-4*A_7*B_1})
 ///
-
 
 
 

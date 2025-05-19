@@ -102,12 +102,13 @@ XactionOnSymd = (d,X) -> (
     return sparseMatrix(N,N,Xsparse#"BaseRing",new HashTable from M)
 );
 
-
+-*
 symmetricPowerRepresentation = method(
     TypicalValue=>LieAlgebraRepresentation
 );
+*-
 
-symmetricPowerRepresentation(ZZ,LieAlgebraRepresentation) := (d,rho) -> (
+symmetricPower(ZZ,LieAlgebraRepresentation) := (d,rho) -> (
     xiV:=rho#"Module";
     CB:=rho#"Basis";
     rhoB:=rho#"RepresentationMatrices";
@@ -196,13 +197,13 @@ XactionOnWedgek = (k,X) -> (
     return sparseMatrix(N,N,Xsparse#"BaseRing",new HashTable from M)
 );
 
-
-exteriorPowerRepresentation = method(
+-*
+exteriorPower = method(
     TypicalValue=>LieAlgebraRepresentation
 );
+*-
 
-
-exteriorPowerRepresentation(ZZ,LieAlgebraRepresentation) := (k,rho) -> (
+exteriorPower(ZZ,LieAlgebraRepresentation) := o -> (k,rho) -> (
     V:=rho#"Module";
     CB:=rho#"Basis";
     rhoB:=rho#"RepresentationMatrices";
@@ -259,11 +260,9 @@ XactionOnTensorProduct = (rho1X,rho2X) -> (
 );
 
 
-tensorProductRepresentation = method(
-    TypicalValue=>LieAlgebraRepresentation
-);
 
-tensorProductRepresentation(LieAlgebraRepresentation,LieAlgebraRepresentation) := (rhoV,rhoW) -> (
+
+tensor(LieAlgebraRepresentation,LieAlgebraRepresentation) := (rhoV,rhoW) -> (
     V:=rhoV#"Module";
     W:=rhoW#"Module";
     CBV:=rhoV#"Basis";
@@ -278,7 +277,7 @@ tensorProductRepresentation(LieAlgebraRepresentation,LieAlgebraRepresentation) :
     lieAlgebraRepresentation(U,CBV,apply(#(CBV#"BasisElements"), i -> XactionOnTensorProduct(sparse(LV_i),sparse(LW_i))))
 );
 
-LieAlgebraRepresentation ** LieAlgebraRepresentation := (V,W) -> tensorProductRepresentation(V,W)
+LieAlgebraRepresentation ** LieAlgebraRepresentation := (V,W) -> tensor(V,W)
 
 
 
@@ -379,7 +378,7 @@ installRepresentation(V,CB,CB#"BasisElements");
 
 
 -- Now form the symmetric power
-W = exteriorPowerRepresentation(2,V)
+W = exteriorPower(2,V)
 peek W
 -- Look at the representation
 wedge2rho = W.cache#representation

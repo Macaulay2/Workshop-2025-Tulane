@@ -9,28 +9,6 @@ typeDYijn = (i,j,n) -> ( Eijm(i,n+j,2*n)-Eijm(j,n+i,2*n));
 typeDZijn = (i,j,n) -> ( Eijm(n+i,j,2*n)-Eijm(n+j,i,2*n));
 
 
-so2nBasisElements = (n) -> (
-    B:={};
-    Hbasis := apply(n, i -> typeDHin(i,n));
-    Xbasis := flatten apply(n, i -> delete(null,apply(n, j -> if j!=i then typeDXijn(i,j,n))));   
-    Ybasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then typeDYijn(i,j,n)))); 
-    Zbasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then typeDZijn(j,i,n)))); 
-    flatten {Hbasis, Xbasis, Ybasis, Zbasis}
-);
-
-
-
-so2nDualBasis = (n) -> (
-    B:={};
-    Hbasis := apply(n, i -> typeDHin(i,n));
-    Xbasis := flatten apply(n, i -> delete(null,apply(n, j -> if j!=i then typeDXijn(j,i,n))));   
-    Zbasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then typeDZijn(j,i,n)))); 
-    Ybasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then typeDYijn(i,j,n))));
-    flatten {Hbasis, Xbasis, Zbasis, Ybasis}
-);
-
-
-
 
 -- Want to change between Dynkin basis of the weight lattice and L_i basis
 -- Use the formula for type D in [FH, ??]
@@ -57,7 +35,7 @@ LtoDTypeD = (v) -> (
 
 
 
-so2nBasisWeights = (n) -> (
+unorderedso2nBasisWeights = (n) -> (
     -- First make the weights in the Li basis
     -- Cartan subalgebra: weight 0
     Hweights := apply(n, i -> apply(n, i -> 0));
@@ -73,33 +51,78 @@ so2nBasisWeights = (n) -> (
 
 
 
+so2nBasisWeights = (n) -> (
+    PhiPlus:=positiveRoots("D",n);
+    l:=#PhiPlus;
+    flatten {apply(n, i -> apply(n, j -> 0)), PhiPlus, apply(PhiPlus, v -> -v)}
+);
+
+
+-- Permutation to take the basis in the order we originally programmed
+-- to the lex level order by positive roots
+so2nPermutation = memoize((n) -> (
+    unorderedBasisWeights:=unorderedso2nBasisWeights(n);
+    Hperm:=apply(n, i -> i);
+    PhiPlus:=positiveRoots("D",n);
+    positiveRootPerm:=apply(#PhiPlus, i -> first delete(null,apply(#unorderedBasisWeights, j -> if unorderedBasisWeights_j==PhiPlus_i then j)));
+    negativeRootPerm:=apply(#PhiPlus, i -> first delete(null,apply(#unorderedBasisWeights, j -> if unorderedBasisWeights_j==-(PhiPlus_i) then j)));
+    flatten {Hperm,positiveRootPerm,negativeRootPerm}
+));
+
+
+
+so2nBasisElements = (n) -> (
+    -- Create the basis elements
+    Hbasis := apply(n, i -> typeDHin(i,n));
+    Xbasis := flatten apply(n, i -> delete(null,apply(n, j -> if j!=i then typeDXijn(i,j,n))));   
+    Ybasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then typeDYijn(i,j,n)))); 
+    Zbasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then typeDZijn(j,i,n)))); 
+    unorderedBasis:=flatten {Hbasis, Xbasis, Ybasis, Zbasis};
+    -- Put them in the order of the positive roots
+    sigma:=so2nPermutation(n);
+    apply(sigma, i -> unorderedBasis_i)
+);
+
+
+
+so2nDualBasis = (n) -> (
+    -- Create the basis elements
+    Hbasis := apply(n, i -> typeDHin(i,n));
+    Xbasis := flatten apply(n, i -> delete(null,apply(n, j -> if j!=i then typeDXijn(j,i,n))));   
+    Zbasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then typeDZijn(j,i,n)))); 
+    Ybasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then typeDYijn(i,j,n))));
+    unorderedDualBasis:=flatten {Hbasis, Xbasis, Zbasis, Ybasis};
+    -- Put them in the order of the positive roots
+    sigma:=so2nPermutation(n);
+    apply(sigma, i -> unorderedDualBasis_i)
+);
 
 
 
 so2nBasisLabels = (n) -> (
-    B:={};
+    -- Create the basis elements
     Hbasis := apply(n, i -> "H_"|toString(i));
     Xbasis := flatten apply(n, i -> delete(null,apply(n, j -> if j!=i then "X_"|toString(i,j) )));   
     Ybasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then "Y_"|toString(i,j) ))); 
     Zbasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then "Z_"|toString(j,i) ))); 
-    flatten {Hbasis, Xbasis, Ybasis, Zbasis}
+    unorderedLabels:=flatten {Hbasis, Xbasis, Ybasis, Zbasis};
+    -- Put them in the order of the positive roots
+    sigma:=so2nPermutation(n);
+    apply(sigma, i -> unorderedLabels_i)
 );
 
 
 
 so2nRaisingOperatorIndices = (n) -> (
-    XRaisingOperators := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then typeDXijn(i,j,n))));   
-    YRaisingOperators := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then typeDYijn(i,j,n)))); 
-    so2nRaisingOperators:=flatten {XRaisingOperators, YRaisingOperators};
-    B:=so2nBasisElements(n);
-    select(#B, i -> member(B_i,so2nRaisingOperators))
+    l:=#(positiveRoots("D",n));
+    apply(l, i -> n+i)
 );
 
 
+
 so2nLoweringOperatorIndices = (n) -> (
-    L:=so2nRaisingOperatorIndices(n);
-    B:=so2nBasisElements(n);
-    select(#B, i -> i>=n and not member(i,L))
+    l:=#(positiveRoots("D",n));
+    apply(l, i -> n+l+i)
 );
 
 
@@ -109,7 +132,10 @@ writeInso2nBasis = (M) -> (
     Xcoeffs:= flatten apply(n, i -> delete(null,apply(n, j -> if j!=i then M_(i,j)))); 
     Ycoeffs := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then M_(i,n+j)))); 
     Zcoeffs := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then M_(n+j,i))));
-    return flatten {Hcoeffs, Xcoeffs, Ycoeffs, Zcoeffs}
+    unorderedCoefficients:= flatten {Hcoeffs, Xcoeffs, Ycoeffs, Zcoeffs};
+    -- Put them in the order of the positive roots
+    sigma:=so2nPermutation(n);
+    apply(sigma, i -> unorderedCoefficients_i)
 );
 
 
