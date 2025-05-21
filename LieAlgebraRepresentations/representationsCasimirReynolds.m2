@@ -24,19 +24,19 @@ trivialRepresentation = method(
     )
 
 trivialRepresentation(String,ZZ) := (type,m) -> (
-    CB:=lieAlgebraBasis(type,m);
-    trivialRepresentation(CB)
+    LAB:=lieAlgebraBasis(type,m);
+    trivialRepresentation(LAB)
 );
 
 trivialRepresentation(LieAlgebra) := (g) -> (
-    CB:=lieAlgebraBasis(g);
-    trivialRepresentation(CB)
+    LAB:=lieAlgebraBasis(g);
+    trivialRepresentation(LAB)
 );
 
-trivialRepresentation(LieAlgebraBasis) := CB -> (   
-    L := apply(#(CB#"BasisElements"), i -> matrix {{0/1}});
-    V := trivialModule(CB#"LieAlgebra");
-    lieAlgebraRepresentation(V,CB,L)
+trivialRepresentation(LieAlgebraBasis) := LAB -> (   
+    L := apply(#(LAB#"BasisElements"), i -> matrix {{0/1}});
+    V := trivialModule(LAB#"LieAlgebra");
+    lieAlgebraRepresentation(V,LAB,L)
 );
 
 
@@ -45,18 +45,20 @@ standardRepresentation = method(
     )
 
 standardRepresentation(String,ZZ) := (type,m) -> (
-    CB:=lieAlgebraBasis(type,m);
-    standardRepresentation(CB)
+    LAB:=lieAlgebraBasis(type,m);
+    standardRepresentation(LAB)
 );
 
 standardRepresentation(LieAlgebra) := g -> (
-    CB:=lieAlgebraBasis(g);
-    standardRepresentation(CB)
+    LAB:=lieAlgebraBasis(g);
+    standardRepresentation(LAB)
 );
 
-standardRepresentation(LieAlgebraBasis) := CB -> (
-    V := standardModule(CB#"LieAlgebra");
-    lieAlgebraRepresentation(V,CB,CB#"BasisElements")
+standardRepresentation(LieAlgebraBasis) := LAB -> (
+    g:=LAB#"LieAlgebra";
+    if not member(g#"RootSystemType",{"A","B","C","D"}) then error "Only implemented for types A,B,C,D" << endl;
+    V := standardModule(LAB#"LieAlgebra");
+    lieAlgebraRepresentation(V,LAB,LAB#"BasisElements")
 );
 
 
@@ -65,23 +67,23 @@ adjointRepresentation = method(
     )
 
 adjointRepresentation(String,ZZ) := (type,m) -> (
-    CB:=lieAlgebraBasis(type,m);
-    adjointRepresentation(CB)
+    LAB:=lieAlgebraBasis(type,m);
+    adjointRepresentation(LAB)
 );
 
 adjointRepresentation(LieAlgebra) := (g) -> (
-    CB:=lieAlgebraBasis(g);
-    adjointRepresentation(CB)
+    LAB:=lieAlgebraBasis(g);
+    adjointRepresentation(LAB)
 );
 
-adjointRepresentation(LieAlgebraBasis) := CB -> (
-    br := CB#"Bracket";
-    writeInBasis := CB#"WriteInBasis";
-    B := CB#"BasisElements";
+adjointRepresentation(LieAlgebraBasis) := LAB -> (
+    br := LAB#"Bracket";
+    writeInBasis := LAB#"WriteInBasis";
+    B := LAB#"BasisElements";
     ad := X -> transpose matrix apply(B, Y -> writeInBasis br(X,Y));
     L := apply(B, X -> ad X);
-    V := adjointModule(CB#"LieAlgebra");
-    lieAlgebraRepresentation(V,CB,L)
+    V := adjointModule(LAB#"LieAlgebra");
+    lieAlgebraRepresentation(V,LAB,L)
 );
 
 
@@ -95,18 +97,13 @@ representationWeights = method(
 
 representationWeights(LieAlgebraRepresentation) := memoize((rho) -> (
     W:=rho#"Module";
-    CB:=rho#"Basis";
+    LAB:=rho#"Basis";
     L:=rho#"RepresentationMatrices";
-    sparseGenerators:=instance(L_0,SparseMatrix); 
+ 
     Wweights:={};
-    m:=CB#"LieAlgebra"#"LieAlgebraRank";
-    L1:={};
-    if not sparseGenerators then (
-	 L1=apply(dim W, i -> apply(m, j -> (L_j)_(i,i)))
-    ) else (
-         L1=apply(dim W, i -> apply(m, j -> if ((L_j)#"Entries")#?(i,i) then ((L_j)#"Entries")#(i,i) else 0))
-    );
-    M:=CB#"FundamentalDominantWeightValues";
+    m:=LAB#"LieAlgebra"#"LieAlgebraRank";
+    L1:=apply(dim W, i -> apply(m, j -> (L_j)_(i,i)));
+    M:=LAB#"FundamentalDominantWeightValues";
     L2:=apply(L1, v -> flatten entries(M*(transpose matrix {v})));
     apply(L2, v -> apply(v, i -> lift(i,ZZ)))
 ));
@@ -123,14 +120,13 @@ casimirOperator = method(
 
 casimirOperator(LieAlgebraRepresentation) := (rho) -> (
     W:=rho#"Module";
-    CB:=rho#"Basis";
-    L:=rho#"RepresentationMatrices";
-    rhoB:=apply(L, M->dense M);
+    LAB:=rho#"Basis";
+    rhoB:=rho#"RepresentationMatrices";
     M:={};
     c:={};
     rhoBstar:=for i from 0 to #rhoB-1 list (
-        M=(CB#"DualBasis")_i;
-	c=(CB#"WriteInBasis")(M);
+        M=(LAB#"DualBasis")_i;
+	c=(LAB#"WriteInBasis")(M);
 	sum apply(#rhoB, j -> c_j*rhoB_j)
     );
     sum apply(#rhoB, i -> (rhoBstar_i)*(rhoB_i))
@@ -161,12 +157,7 @@ casimirProjection(LieAlgebraRepresentation,QQ) := (rho,z) -> (
     W:=rho#"Module";
     L:=delete(1/1*z,casimirSpectrum(W));
     N:=dim W;
-    I:={};
-    if instance(Cas,Matrix) then (
-	I = matrix apply(N, i -> apply(N, j -> if i==j then 1_(ring Cas) else 0))
-    ) else (
-        I = sparseMatrix(N,N,Cas#"BaseRing",new HashTable from apply(N, i -> {(i,i),1_(Cas#"BaseRing")}))
-    );
+    I:=matrix apply(N, i -> apply(N, j -> if i==j then 1_(ring Cas) else 0));
     product apply(L, x -> (Cas-x*I))
 );
 

@@ -327,7 +327,7 @@ simpleRoots(String,ZZ) := memoize((type,m) -> (
     entries cartanMatrix(type,m)
 ))
 
-simpleRoots(LieAlgebra):=(g) -> entries cartanMatrix g
+simpleRoots(LieAlgebra):= memoize((g) -> entries cartanMatrix g)
 
 
 -- Implement formula from de Graaf, page 96
@@ -410,7 +410,7 @@ positiveRoots(String,ZZ):= (type,m) -> (
 
 positiveRoots(Sequence,Sequence):=memoize((type,m)->flatten toList apply(#m, i -> apply(positiveRoots(type#i,m#i),v->unsplit(v,m,i))))
 
-positiveRoots(LieAlgebra):=(g) -> positiveRoots(g#"RootSystemType",g#"LieAlgebraRank")
+positiveRoots(LieAlgebra):=memoize((g) -> positiveRoots(g#"RootSystemType",g#"LieAlgebraRank"))
 
 positiveCoroots = method(
     TypicalValue => List

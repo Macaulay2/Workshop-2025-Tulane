@@ -18,7 +18,7 @@ newPackage(
 	  },
     Keywords => {"Lie Groups and Lie Algebras"},
     PackageImports => {"ReesAlgebra"},
-    PackageExports => {"SparseMatrices","SpechtModule","Polyhedra","Isomorphism","AssociativeAlgebras"},
+    PackageExports => {"SpechtModule","Polyhedra","Isomorphism","AssociativeAlgebras"},
     DebuggingMode => true
     )
 

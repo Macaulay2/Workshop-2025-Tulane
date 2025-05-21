@@ -124,7 +124,7 @@ basisWordsFromMatrixGenerators = method(
 
 basisWordsFromMatrixGenerators(LieAlgebraRepresentation) := (rho) -> (
     V:=rho#"Module";
-    CB:=rho#"Basis";
+    LAB:=rho#"Basis";
     rhoB:=rho#"RepresentationMatrices";
     Vlambdaweights :=representationWeights(rho);
     WD := weightDiagram(V);
@@ -133,7 +133,7 @@ basisWordsFromMatrixGenerators(LieAlgebraRepresentation) := (rho) -> (
     if #wts!=1 then error "V must have exactly one highest weight";
     if mults!={1} then error "V is not irreducible";
     lambdaDynkin:=first wts;
-    LoweringOperators1:=apply(CB#"LoweringOperatorIndices", i -> rhoB_i);
+    LoweringOperators1:=apply(LAB#"LoweringOperatorIndices", i -> rhoB_i);
     v1 := weightMuHighestWeightVectorsInW(lambdaDynkin,rho);
     Words:=new MutableHashTable from {};
     WordsAndVectorsByWeight1 := new MutableHashTable from apply(keys(WD), k -> k=>{});
@@ -223,7 +223,7 @@ isomorphismOfRepresentations(LieAlgebraRepresentation,LieAlgebraRepresentation) 
     if rho2#"Basis"=!=LAB then error "Not implemented yet when the representations have different Lie algebra bases" << endl;
     lambda:=first keys(V#"DecompositionIntoIrreducibles");
     vlambda:=weightMuHighestWeightVectorsInW(lambda,rho1);
-    LOMaps:=apply(LAB#"LoweringOperatorIndices", i -> dense((rho1#"RepresentationMatrices")_i));
+    LOMaps:=apply(LAB#"LoweringOperatorIndices", i -> (rho1#"RepresentationMatrices")_i);
     basisWords:=basisWordsFromMatrixGenerators(rho2);
     act:=(X,f) -> X*f;
     P:=matrixFromColumns(apply(basisWords, w -> applyWord(w,vlambda,act,LOMaps)));
@@ -232,7 +232,7 @@ isomorphismOfRepresentations(LieAlgebraRepresentation,LieAlgebraRepresentation) 
     L1:=rho1#"RepresentationMatrices";
     L2:=rho2#"RepresentationMatrices";
     g:=LAB#"LieAlgebra";
-    if not all(dim g, i -> dense(L2_i) == Pinv*(dense(L1_i))*P) then error "Isomorphism not found" << endl;
+    if not all(dim g, i -> L2_i == Pinv*(L1_i)*P) then error "Isomorphism not found" << endl;
     P
 );
 
@@ -246,11 +246,11 @@ end
 -- Toy example
 
 g = simpleLieAlgebra("A",3);
-CB = lieAlgebraBasis("A",3);
+LAB = lieAlgebraBasis("A",3);
 lambda = {2,0,0};
 V=irreducibleLieAlgebraModule(lambda,g);
 matrixGens = GTrepresentationMatrices(V,lambda);
-installRepresentation(V,CB,matrixGens)
+installRepresentation(V,LAB,matrixGens)
 basisWordsFromMatrixGenerators(V)
 
 

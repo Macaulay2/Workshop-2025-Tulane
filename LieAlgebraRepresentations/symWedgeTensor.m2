@@ -4,6 +4,14 @@
 -- compute the action on V otimes W
 
 
+-- A quick auxiliary function
+
+sparseEntries = M -> (
+    delete(null,flatten apply(numRows(M), i -> apply(numColumns(M), j -> if M_(i,j)!=0 then (i,j)=>M_(i,j))))
+)
+
+
+
 ----------------------
 ----------------------
 -- Sym^d W
@@ -18,7 +26,7 @@
 -- E to Z: the integer label of an exponent vector
 
 
--- Let X be a sparse matrix recording the action of a basis element
+-- Let X be a matrix recording the action of a basis element
 -- Suppose X acts in the variable j
 -- Get the coefficient and the monomials of the answer
 
@@ -81,12 +89,11 @@ exponentVectors = (n,d) -> (
 
 
 XactionOnSymd = (d,X) -> (
-    Xsparse:=sparse X;
-    n:=Xsparse#"NumberOfRows";
+    n:=numrows X;
     Bd := exponentVectors(n,d);
     ZtoE := new HashTable from apply(#Bd, i -> {i,Bd_i});
     EtoZ := new HashTable from apply(#Bd, i -> {Bd_i,i});
-    Xhash:=pairs(Xsparse#"Entries");
+    Xhash:=sparseEntries(X);
     N:=#keys(ZtoE);
     -- Build the matrix column-by-column
     M:={};
@@ -99,21 +106,18 @@ XactionOnSymd = (d,X) -> (
         M = append(M, (i,j)=> p_1)  
       )
     );
-    return sparseMatrix(N,N,Xsparse#"BaseRing",new HashTable from M)
+    R:=ring(X);
+    map(R^N,R^N,M)
 );
 
--*
-symmetricPowerRepresentation = method(
-    TypicalValue=>LieAlgebraRepresentation
-);
-*-
+
 
 symmetricPower(ZZ,LieAlgebraRepresentation) := (d,rho) -> (
-    xiV:=rho#"Module";
-    CB:=rho#"Basis";
+    V:=rho#"Module";
+    LAB:=rho#"Basis";
     rhoB:=rho#"RepresentationMatrices";
-    xiW:=symmetricPower(d,xiV);
-    lieAlgebraRepresentation(xiW,CB,apply(rhoB, M -> XactionOnSymd(d,M)))
+    W:=symmetricPower(d,V);
+    lieAlgebraRepresentation(W,LAB,apply(rhoB, M -> XactionOnSymd(d,M)))
 );
 
 
@@ -176,12 +180,11 @@ XactionOnWedge = (Xhash,wedge) -> (
 
 
 XactionOnWedgek = (k,X) -> (
-    Xsparse:= sparse X;
-    n:=Xsparse#"NumberOfRows";
+    n:=numrows X;
     Bk := subsets(apply(n, i -> i),k);
     ZtoW := new HashTable from apply(#Bk, i -> {i,Bk_i});
     WtoZ := new HashTable from apply(#Bk, i -> {Bk_i,i});
-    Xhash:=pairs(Xsparse#"Entries");
+    Xhash:=sparseEntries(X);
     N:=#keys(ZtoW);
     -- Build the matrix column-by-column
     M:={};
@@ -194,21 +197,18 @@ XactionOnWedgek = (k,X) -> (
         M = append(M, (i,j)=> p_1)  
       )
     );
-    return sparseMatrix(N,N,Xsparse#"BaseRing",new HashTable from M)
+    R:=ring(X);
+    map(R^N,R^N,M)
 );
 
--*
-exteriorPower = method(
-    TypicalValue=>LieAlgebraRepresentation
-);
-*-
+
 
 exteriorPower(ZZ,LieAlgebraRepresentation) := o -> (k,rho) -> (
     V:=rho#"Module";
-    CB:=rho#"Basis";
+    LAB:=rho#"Basis";
     rhoB:=rho#"RepresentationMatrices";
     W:=exteriorPower(k,V);
-    lieAlgebraRepresentation(W,CB,apply(rhoB, M -> XactionOnWedgek(k,M)))
+    lieAlgebraRepresentation(W,LAB,apply(rhoB, M -> XactionOnWedgek(k,M)))
 );
 
 
@@ -239,9 +239,9 @@ XactionOnPair = (rho1Xhash,rho2Xhash,i,j) -> (
 
 
 XactionOnTensorProduct = (rho1X,rho2X) -> (
-    if rho1X#"BaseRing" =!= rho2X#"BaseRing" then error "The matrices do not have the same base ring" << endl;
-    m1:=rho1X#"NumberOfRows";
-    m2:=rho2X#"NumberOfRows";
+    if ring(rho1X) =!= ring(rho2X) then error "The matrices do not have the same base ring" << endl;
+    m1:=numrows rho1X;
+    m2:=numrows rho2X;
     domainPairs:=flatten apply(m1, i -> apply(m2, j -> {i,j}));
     codomainPairs:=domainPairs;
     L:={};
@@ -250,13 +250,14 @@ XactionOnTensorProduct = (rho1X,rho2X) -> (
     q:={};
     for k from 0 to #domainPairs-1 do (
         p = domainPairs_k;
-	Xp=new HashTable from XactionOnPair(pairs(rho1X#"Entries"),pairs(rho2X#"Entries"),p_0,p_1);
+	Xp=new HashTable from XactionOnPair(sparseEntries(rho1X),sparseEntries(rho2X),p_0,p_1);
 	for l from 0 to #codomainPairs-1 do (
 	    q = codomainPairs_l;
-            if Xp#?q and Xp#q != 0 then L = append(L,{(k,l),Xp#q})
+            if Xp#?q and Xp#q != 0 then L = append(L,(k,l)=>Xp#q)
 	)
     );
-    return transpose sparseMatrix(m1*m2,m1*m2,rho1X#"BaseRing",new HashTable from L)
+    R:=ring(rho1X);
+    transpose map(R^(m1*m2),R^(m1*m2),L)
 );
 
 
@@ -265,16 +266,16 @@ XactionOnTensorProduct = (rho1X,rho2X) -> (
 tensor(LieAlgebraRepresentation,LieAlgebraRepresentation) := (rhoV,rhoW) -> (
     V:=rhoV#"Module";
     W:=rhoW#"Module";
-    CBV:=rhoV#"Basis";
-    CBW:=rhoW#"Basis";
+    LABV:=rhoV#"Basis";
+    LABW:=rhoW#"Basis";
     LV:=rhoV#"RepresentationMatrices";
     LW:=rhoW#"RepresentationMatrices";
     U:=V**W;
-    if CBV =!= CBW then error "The representations do not have the same basis" << endl;
-    R1:=(sparse(LV_0))#"BaseRing";
-    R2:=(sparse(LW_0))#"BaseRing";
+    if LABV =!= LABW then error "The representations do not have the same basis" << endl;
+    R1:=ring(LV_0);
+    R2:=ring(LW_0);
     if R1 =!= R2 then error "The representations do not have the same base ring" << endl;
-    lieAlgebraRepresentation(U,CBV,apply(#(CBV#"BasisElements"), i -> XactionOnTensorProduct(sparse(LV_i),sparse(LW_i))))
+    lieAlgebraRepresentation(U,LABV,apply(#(LABV#"BasisElements"), i -> XactionOnTensorProduct(LV_i,LW_i)))
 );
 
 LieAlgebraRepresentation ** LieAlgebraRepresentation := (V,W) -> tensor(V,W)
@@ -290,11 +291,11 @@ LieAlgebraRepresentation ** LieAlgebraRepresentation := (V,W) -> tensor(V,W)
 --------------------------------------------
 
 
-checkLieAlgRepOnPair = (CB, rhoB, i, j) -> (
-    B:=CB#"BasisElements";
-    gbracket := (CB#"Bracket")(B_i,B_j);    
+checkLieAlgRepOnPair = (LAB, rhoB, i, j) -> (
+    B:=LAB#"BasisElements";
+    gbracket := (LAB#"Bracket")(B_i,B_j);    
     Wbracket := (rhoB_i)*(rhoB_j)-(rhoB_j)*(rhoB_i);
-    c := (CB#"WriteInBasis")(gbracket);
+    c := (LAB#"WriteInBasis")(gbracket);
     Wbracket == sum apply(#rhoB, i -> c_i*rhoB_i)
 );
 
@@ -303,10 +304,10 @@ checkLieAlgRepOnPair = (CB, rhoB, i, j) -> (
 isLieAlgebraRepresentation = method(
     TypicalValue=>Boolean
 );
-isLieAlgebraRepresentation(LieAlgebraBasis,List) := (CB, rhoB) -> (
-    for i from 0 to #(CB#"BasisElements")-2 do (
-        for j from i+1 to #(CB#"BasisElements")-1 do (
-	    if not checkLieAlgRepOnPair(CB,rhoB,i,j) then (
+isLieAlgebraRepresentation(LieAlgebraBasis,List) := (LAB, rhoB) -> (
+    for i from 0 to #(LAB#"BasisElements")-2 do (
+        for j from i+1 to #(LAB#"BasisElements")-1 do (
+	    if not checkLieAlgRepOnPair(LAB,rhoB,i,j) then (
 	        print concatenate("Brackets not compatible on basis elements ",toString({i,j})) << endl;
 		return false
 	    )
@@ -329,82 +330,6 @@ evToMonomial = (ev,R) -> (
 
 
 
-
-
-
-
-
-end
-
-
---------------------------------------------------
---------------------------------------------------
--- Example 1: sl2, Sym^2 Std 
---------------------------------------------------
---------------------------------------------------
-
-sl2=simpleLieAlgebra("A",1);
-V = standardModule(sl2);
-peek V
--- So V only has character information
--- Add the data of the standard representation
-CB = lieAlgebraBasis("A",1);
-installRepresentation(V,CB,CB#"BasisElements");
-
--- Now form the symmetric power
-W = symmetricPowerRepresentation(2,0,V)
-peek W
--- Look at the representation
-sym2rho = (W.cache#representations)_0
-
--- Check against calculation by hand
-sym2rho_1 == {sparseMatrix(3,3,QQ,new HashTable from {(0,0) => 2, (2,2) => -2}),sparseMatrix(3,3,QQ,new HashTable from {(0,1) => 1, (1,2) => 2}),sparseMatrix(3,3,QQ,new HashTable from {(1,0) => 2, (2,1) => 1})}
-
-
-
-------------------------------------------------------------
-------------------------------------------------------------
--- Example 2: Wedge^2 Std for sl3
-------------------------------------------------------------
-------------------------------------------------------------
-
-sl3=simpleLieAlgebra("A",2);
-V = standardModule(sl3);
-peek V
--- So V only has character information
--- Add the data of the standard representation
-CB = lieAlgebraBasis("A",2);
-installRepresentation(V,CB,CB#"BasisElements");
-
-
--- Now form the symmetric power
-W = exteriorPower(2,V)
-peek W
--- Look at the representation
-wedge2rho = W.cache#representation
-
--- Check against calculation by hand
-
-
-------------------------------------------------------------
-------------------------------------------------------------
--- Example 3: V11 otimes V10 for sl3
-------------------------------------------------------------
-------------------------------------------------------------
-
-sl3=simpleLieAlgebra("A",2);
-V = irreducibleLieAlgebraModule({1,1},sl3);
-CB = lieAlgebraBasis("A",2);
-installRepresentation(V,CB,GTrepresentationMatrices(V,{1,1}));
-W = irreducibleLieAlgebraModule({1,0},sl3);
-installRepresentation(W,CB,GTrepresentationMatrices(W,{1,0}));
-
-U = tensorProductRepresentation(0,V,0,W);
-Ymats = ((U.cache#representations)_0)_1;
-
--- Check against calculation by previous code
-load "Xmats.m2"
-Xmats==Ymats
 
 
 
