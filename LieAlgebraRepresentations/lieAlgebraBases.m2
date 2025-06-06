@@ -47,6 +47,11 @@ lieAlgebraBasis(LieAlgebra) := (g) -> (
 );
 
 
+makeDualBasisFunction = (LAB) -> (
+    w:=LAB#"WriteInBasis";
+    dualBasisCoefficients:=apply(LAB#"DualBasis", M -> w(M));
+    B -> apply(dualBasisCoefficients, c -> sum apply(#c, i -> c_i*B_i))
+);
 
 
 -- level moved to lieAlgebraModules.m2

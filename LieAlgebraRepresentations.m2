@@ -32,7 +32,7 @@ needs "./LieAlgebraRepresentations/lieAlgebraBases.m2"
 needs "./LieAlgebraRepresentations/representationsCasimirReynolds.m2"
 needs "./LieAlgebraRepresentations/basesAsWords.m2"
 needs "./LieAlgebraRepresentations/deGraafAlgorithm.m2"
-needs "./LieAlgebraRepresentations/gelfandTsetlinTypeA.m2"
+needs "./LieAlgebraRepresentations/gelfandTsetlin.m2"
 needs "./LieAlgebraRepresentations/symWedgeTensor.m2"
 needs "./LieAlgebraRepresentations/highestWeightVectorsAndSubmodules.m2"
 

@@ -234,12 +234,22 @@ deGraafRepresentation(List,LieAlgebra) := (lambda,g) -> (
     f:=map(UNminus,U,flatten {fx,fh,fy});
     finv:=map(U,UNminus,apply(l, i -> U_(m+l+i)));
     BVlift:=apply(BV, t -> finv(t));
+    BVtoZ := new HashTable from apply(#BV, i -> {BV_i,i});
+    mons:={};
+    c:={};
+    redf:=0;
+    Lk:={};
     L:=for k from 0 to (dim(g)-1) list (
 	print concatenate("Compute rho(B_",toString(k),")") << endl;
-	transpose matrix apply(#BV, i -> apply(#BV, j -> ncCoefficient(BV_j, reduceByG(f((U_(sigmainverse_k))*BVlift_i),Ilambda)) )));
-    -- To avoid using lift and the alert it generates, we use value toString entries instead
-    L = apply(L, M -> map(QQ^(numrows M),QQ^(numrows M),value toString entries M));
-    -- Check before returning
+        Lk=for i from 0 to #BV-1 list (
+	    redf=reduceByG(f((U_(sigmainverse_k))*BVlift_i),Ilambda);
+	    if redf==0 then continue;
+            (mons,c)=coefficients redf;
+	    -- To avoid using lift and the alert it generates, we use value toString entries instead
+            apply(numColumns mons, t -> (BVtoZ#(mons_(0,t)),i)=>value toString(c_(t,0)))
+        );
+        map(QQ^(#BV),QQ^(#BV),flatten Lk)
+    );
     if not isLieAlgebraRepresentation(LAB,L) then error "The list of matrices computed does not define a representation" << endl;
     lieAlgebraRepresentation(V,LAB,L)
 );

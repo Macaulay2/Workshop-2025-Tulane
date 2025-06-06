@@ -1701,14 +1701,14 @@ doc ///
             We can check that this agrees with the weight of the Gelfand-Tsetlin pattern labelling each basis element.
 
 	Example
-	    dynkinToPartition({1,1})
-	    L3 = gtPatterns({2,1,0})
+	    dynkinToPartition("A",{1,1})
+	    L3 = gtPatterns("A",{2,1,0})
 	    
         Text
-	    Right now, the entries of L2 are just lists. We turn them into objects of type GTPattern, and then get their weights.
+	    Right now, the entries of L3 are just lists. We turn them into objects of type GTPattern, and then get their weights.
 
 	Example
-	    L3 = apply(L3, x -> (gtPatternFromEntries(x))#"weight")
+	    L3 = apply(L3, x -> (gtPatternFromEntries("A",x))#"weight")
 	    L2==L3
 
 	Text
@@ -2146,11 +2146,11 @@ TEST ///
 doc ///
     Key
         dynkinToPartition
-	(dynkinToPartition,List)
+	(dynkinToPartition,String,List)
     Headline
         converts a highest weight written in the basis of fundamental dominant weights for type A into a partition
     Usage
-        dynkinToPartition(lambda)
+        dynkinToPartition("A",lambda)
     Inputs 
         lambda:List
     Outputs
@@ -2164,11 +2164,11 @@ doc ///
 	    
 	Example
 	    lambda = {1,2,0,0,1}
-	    dynkinToPartition(lambda)
+	    dynkinToPartition("A",lambda)
 ///
 
 TEST ///
-    assert(dynkinToPartition({1,2,0,0,1}) === {4,3,1,1,1,0})
+    assert(dynkinToPartition("A",{1,2,0,0,1}) === {4,3,1,1,1,0})
 ///
 
 
@@ -2204,11 +2204,11 @@ doc ///
 doc ///
     Key
         gtPolytope
-	(gtPolytope,List)
+	(gtPolytope,String,List)
     Headline
         the polytope defined by the inequalities and equations appearing in the definition of Gelfand-Tsetlin patterns
     Usage
-        gtPolytope(lambda)
+        gtPolytope("A",lambda)
     Inputs 
         lambda:List
     Outputs
@@ -2227,7 +2227,7 @@ doc ///
 	    This function outputs the polytope defined by these inequalities and equations.
 	    
 	Example
-	    P=gtPolytope({2,0,0})
+	    P=gtPolytope("A",{2,0,0})
 	    dim P
 	    halfspaces(P)
 	    hyperplanes(P)
@@ -2236,7 +2236,7 @@ doc ///
 ///
 
 TEST ///
-    P=gtPolytope({2,0,0})
+    P=gtPolytope("A",{2,0,0})
     assert(dim P === 2)
     assert(sort transpose entries vertices(P) === {{2/1,0/1,0/1,0/1,0/1,0/1},{2/1,0/1,0/1,2/1,0/1,0/1},{2/1,0/1,0/1,2/1,0/1,2/1}})
 ///
@@ -2245,7 +2245,7 @@ TEST ///
 doc ///
     Key
         gtPatterns
-	(gtPatterns,List)
+	(gtPatterns,String,List)
     Headline
         a list of Gelfand-Tsetlin patterns of shape lambda
     Usage
@@ -2262,29 +2262,29 @@ doc ///
 	    
 	    
 	Example
-	    gtPatterns({2,0,0})
+	    gtPatterns("A",{2,0,0})
 
 	Text
 	    We compare this to the lattice points of the Gelfand-Tsetlin polytope for this shape.
 	    
 	Example
-            P = gtPolytope({2,0,0})
+            P = gtPolytope("A",{2,0,0})
 	    latticePoints(P)
 ///
 
 TEST ///
-    assert(gtPatterns({2,0,0}) === {{2, 0, 0, 2, 0, 2}, {2, 0, 0, 2, 0, 1}, {2, 0, 0, 2, 0, 0}, {2, 0, 0, 1, 0, 1}, {2, 0, 0, 1, 0, 0}, {2, 0, 0, 0, 0, 0}})
+    assert(gtPatterns("A",{2,0,0}) === {{2, 0, 0, 2, 0, 2}, {2, 0, 0, 2, 0, 1}, {2, 0, 0, 2, 0, 0}, {2, 0, 0, 1, 0, 1}, {2, 0, 0, 1, 0, 0}, {2, 0, 0, 0, 0, 0}})
 ///
 
 
 doc ///
     Key
         gtPatternFromEntries
-	(gtPatternFromEntries,List)
+	(gtPatternFromEntries,String,List)
     Headline
         creates an object of type GTPattern from a list of entries
     Usage
-        gtPatternFromEntries(L)
+        gtPatternFromEntries("A",L)
     Inputs 
         L:List
     Outputs
@@ -2297,15 +2297,15 @@ doc ///
 	    
 	    
 	Example
-	    x = gtPatternFromEntries({2, 0, 0, 2, 0, 2})
+	    x = gtPatternFromEntries("A",{2, 0, 0, 2, 0, 2})
             peek x
 	    x#(2,2)
 
 ///
 
 TEST ///
-    x = gtPatternFromEntries({2, 0, 0, 2, 0, 2})
-    assert(keys(x) === {"entries","shape","weight","content",(1,1),(2,1),(2,2),(3,1),(3,2),(3,3)})
+    x = gtPatternFromEntries("A",{2, 0, 0, 2, 0, 2})
+    assert(set(keys(x)) === set({"entries","shape","weight","content","type",(1,1),(2,1),(2,2),(3,1),(3,2),(3,3)}))
     assert(x#"entries"==={2, 0, 0, 2, 0, 2})
     assert(x#"shape"==={2,0,0})
     assert(x#"weight"==={2,0})
@@ -2541,6 +2541,7 @@ doc ///
         V:LieAlgebraRepresentation
     Outputs
         M:Matrix
+
     Description
         Text
 	    A highest weight vector is one that is killed by all the raising operators. We compute the intersection of the kernels of the raising operators restricted to the weight $\mu$ subspace in $W$.
@@ -2558,6 +2559,12 @@ doc ///
 	    W = V**V;
 	    weightMuHighestWeightVectorsInW({1,1},W)
 
+	Text
+	    This function works for any representation $W$. There are also specialized functions for the cases where $W$ has the form $\operatorname{Sym}^d W$ or $V \otimes W$.
+	    
+    SeeAlso
+        weightMuHighestWeightVectorsInSymdW
+	weightNuHighestWeightVectorsInVtensorW
 ///
 
 TEST ///
@@ -2570,6 +2577,51 @@ TEST ///
     assert(weightMuHighestWeightVectorsInW({1,1},W)==map(QQ^64,QQ^2,{{0, 0}, {0, 0}, {0, 0}, {1/2, 3/2}, {0, 0}, {1/2, -1/2}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {-1, -3}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {-2, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {1, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 1}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}}))
 ///
 
+
+
+doc ///
+    Key
+        weightMuHighestWeightVectorsInSymdW
+	(weightMuHighestWeightVectorsInSymdW,List,ZZ,LieAlgebraRepresentation)
+    Headline
+        computes the highest weight vectors of weight mu in $\operatorname{Sym}^d W$
+    Usage
+        weightMuHighestWeightVectorsInSymdW(mu,d,rhoW)
+    Inputs
+        mu:List
+        rhoW:LieAlgebraRepresentation
+    Outputs
+        L:List
+    Description
+        Text
+	    A highest weight vector is one that is killed by all the raising operators. The more general function @TO "weightMuHighestWeightVectorsInW"@ can compute highest weight vectors for any representation by computing the intersection of the kernels of the raising operators restricted to the weight $\mu$ subspace. However, for large representations, this strategy will be slow. In the special case that W is of the form $\operatorname{Sym}^d W$, we want a strategy that allows us to work in the weight mu space of $\operatorname{Sym}^d W$ without fully computing $\operatorname{Sym}^d W$. 
+	    
+	Text    
+	    Here is our alternative approach.  A highest weight vector $v_{\mu}$ of weight $\mu$ will generate an irreducible submodule $V(\mu) \subset \operatorname{Sym}^d W$. Therefore, the Casimir operator will act on $V(\mu)$ by a known scalar $c(\mu)$; see @TO "casimirScalar"@.  Moreover, the spectrum of the Casimir operator is known. Thus, we can find the weight $\mu$ vectors with eigenvalue $c(\mu)$ by starting with a monomial basis of $\operatorname{Sym}^d W$ and iteratively projecting away the components that correspond to the other Casimir scalars.    
+	    
+	Text     
+            Let $W$ be the irreducible representation of $sl_4$ with highest weight $\omega_1 + \omega_2$, and let $V(2,0,1)$ be the irreducible representation with highest weight $2\omega_1 + \omega_3$.  The  multiplicity of $V(2,0,1)$ in $\operatorname{Sym}^3 W$ is 2. In the example below, we compute two highest weight vectors of weight $(2,0,1)$ in $\operatorname{Sym}^3 W$. We work with the Gelfand-Tsetlin basis in these calculations.
+	    
+         
+	Example
+            sl4 = simpleLieAlgebra("A",3);
+            LAB=lieAlgebraBasis(sl4);
+            W=irreducibleLieAlgebraModule({1,1,0},sl4);
+            L = GTrepresentationMatrices(W);
+            rhoW = lieAlgebraRepresentation(W,LAB,L);
+            weightMuHighestWeightVectorsInSymdW({2,0,1},3,rhoW)
+
+///
+
+TEST ///
+    sl4 = simpleLieAlgebra("A",3);
+    LAB=lieAlgebraBasis(sl4);
+    W=irreducibleLieAlgebraModule({1,1,0},sl4);
+    L = GTrepresentationMatrices(W);
+    rhoW = lieAlgebraRepresentation(W,LAB,L);
+    hwvs = weightMuHighestWeightVectorsInSymdW({2,0,1},3,rhoW);
+    assert(hwvs=={-34*B_0^2*B_13+136*B_0*B_2*B_12-82*B_0*B_3*B_11+27*B_0*B_3*B_15+18*B_0*B_5*B_11+9*B_0*B_5*B_15+28*B_0*B_6*B_9-18*B_0*B_6*B_14-136*B_0*B_7*B_8+28*B_1*B_2*B_11-54*B_1*B_2*B_15+80*B_1*B_6*B_8-204*B_2^2*B_10+204*B_2*B_3*B_9+204*B_2*B_4*B_8-96*B_2*B_5*B_9+18*B_2*B_5*B_14-204*B_3^2*B_8+96*B_3*B_5*B_8-36*B_5^2*B_8, -(2520/17)*B_0*B_3*B_11-(1260/17)*B_0*B_3*B_15-(840/17)*B_0*B_5*B_11-(420/17)*B_0*B_5*B_15+(5040/17)*B_0*B_6*B_9+(840/17)*B_0*B_6*B_14+(5040/17)*B_1*B_2*B_11+(2520/17)*B_1*B_2*B_15-(10080/17)*B_1*B_6*B_8-(5040/17)*B_2*B_5*B_9-(840/17)*B_2*B_5*B_14+(5040/17)*B_3*B_5*B_8+(1680/17)*B_5^2*B_8})
+///
 
 
 doc ///
@@ -2589,7 +2641,7 @@ doc ///
         L:List
     Description
         Text
-	    Suppose that an irreducible module $V$ appears in the decomposition of $\operatorname{Sym}^d W$ with multiplicity at least one. Then we can find a highest weight vector using @TO "weightMuHighestWeightVectorsInW"@, and then compute a basis of a submodule in $\operatorname{Sym}^d W$ isomorphic to $V$. The basis elements are expressed as polynomials in the basis of $W$ used to define the matrix generators of the representation on $W$.
+	    Suppose that an irreducible module $V$ appears in the decomposition of $\operatorname{Sym}^d W$ with multiplicity at least one. Then we can find a highest weight vector using @TO "weightMuHighestWeightVectorsInSymdW"@, and then compute a basis of a submodule in $\operatorname{Sym}^d W$ isomorphic to $V$. The basis elements are expressed as polynomials in the basis of $W$ used to define the matrix generators of the representation on $W$.
 	    
 	Text     
             We compute the degree four invariant for plane cubics by finding a trivial submodule in $  \operatorname{Sym}^4 \operatorname{Sym}^3 \mathbb{C}^3$.  
@@ -2597,10 +2649,9 @@ doc ///
 	    sl3=simpleLieAlgebra("A",2)
 	    V=standardRepresentation(sl3);
 	    S3V = symmetricPower(3,V);
-	    S4S3V = symmetricPower(4,S3V);
-	    hwv = weightMuHighestWeightVectorsInW({0,0},S4S3V); 
+	    hwv = weightMuHighestWeightVectorsInSymdW({0,0},4,S3V); 
 	    V0=trivialRepresentation(sl3);
-	    L = VInSymdW(V0,4,S3V,hwv)
+	    L = VInSymdW(V0,4,S3V,hwv_0)
         Text
 	    Note: this polynomial appears as early as 1856 in work of Cayley, who attributes it to Salmon. See Cayley, "A third memoir upon quantics", tables 62 and 63. 
 ///
@@ -2610,10 +2661,9 @@ TEST ///
     sl3=simpleLieAlgebra("A",2)
     V=standardRepresentation(sl3);
     S3V = symmetricPower(3,V);
-    S4S3V = symmetricPower(4,S3V);
-    hwv = weightMuHighestWeightVectorsInW({0,0},S4S3V); 
+    hwv = weightMuHighestWeightVectorsInSymdW({0,0},4,S3V);  
     V0=trivialRepresentation(sl3);
-    L = VInSymdW(V0,4,S3V,hwv);
+    L = VInSymdW(V0,4,S3V,hwv_0);
     assert(L=={B_0*B_3*B_7*B_9-B_0*B_3*B_8^2-B_0*B_4*B_6*B_9+B_0*B_4*B_7*B_8+B_0*B_5*B_6*B_8-B_0*B_5*B_7^2-B_1^2*B_7*B_9+B_1^2*B_8^2+B_1*B_2*B_6*B_9-B_1*B_2*B_7*B_8+B_1*B_3*B_4*B_9-B_1*B_3*B_5*B_8-2*B_1*B_4^2*B_8+3*B_1*B_4*B_5*B_7-B_1*B_5^2*B_6-B_2^2*B_6*B_8+B_2^2*B_7^2-B_2*B_3^2*B_9+3*B_2*B_3*B_4*B_8-B_2*B_3*B_5*B_7-2*B_2*B_4^2*B_7+B_2*B_4*B_5*B_6+B_3^2*B_5^2-2*B_3*B_4^2*B_5+B_4^4})
 ///
 
@@ -2667,6 +2717,58 @@ TEST ///
 ///
 
 
+doc ///
+    Key
+        weightNuHighestWeightVectorsInVtensorW
+	(weightNuHighestWeightVectorsInVtensorW,List,LieAlgebraRepresentation,LieAlgebraRepresentation)
+    Headline
+        computes the highest weight vectors of weight nu in $V \otimes W$
+    Usage
+        weightNuHighestWeightVectorsInVtensorW(nu,rhoV,rhoW)
+    Inputs
+        nu:List
+	rhoV:LieAlgebraRepresentation
+        rhoW:LieAlgebraRepresentation
+    Outputs
+        L:List
+    Description
+        Text
+	    A highest weight vector is one that is killed by all the raising operators. The more general function @TO "weightMuHighestWeightVectorsInW"@ can compute highest weight vectors for any representation by computing the intersection of the kernels of the raising operators restricted to the weight $\mu$ subspace. However, for large representations, this strategy will be slow. In the special case that W is of the form $V \otimesW$, we want a strategy that allows us to work in the weight mu space of $V \otimes W$ without fully computing $V \otimes W$. 
+	    
+	Text    
+	    Here is our alternative approach.  A highest weight vector $v_{\mu}$ of weight $\mu$ will generate an irreducible submodule $V(\mu) \subset V \otimes W$. Therefore, the Casimir operator will act on $V(\mu)$ by a known scalar $c(\mu)$; see @TO "casimirScalar"@.  Moreover, the spectrum of the Casimir operator is known. Thus, we can find the weight $\mu$ vectors with eigenvalue $c(\mu)$ by starting with a basis of $V \otimes W$ and iteratively projecting away the components that correspond to the other Casimir scalars.    
+	    
+	Text     
+            Let $V$ be the irreducible representation of $sl_4$ with highest weight $\omega_1 + \omega_2$, let $W$ be the irreducible representation wiht highest weight $\omega_2+\omega_3$, and let $U$ be the irreducible representation with highest weight $\omega_1 + \omega_3$.  The  multiplicity of $U$ in $V \otimes W$ is 2. In the example below, we compute two highest weight vectors of weight $(1,0,1)$ in $V \otimes W$. We work with the Gelfand-Tsetlin basis in these calculations.
+	    
+         
+	Example
+            sl4 = simpleLieAlgebra("A",3);
+            LAB=lieAlgebraBasis(sl4);
+	    V=irreducibleLieAlgebraModule({1,1,0},sl4);
+	    L = GTrepresentationMatrices(V);
+	    rhoV = lieAlgebraRepresentation(V,LAB,L);
+            W=irreducibleLieAlgebraModule({0,1,1},sl4);
+            L = GTrepresentationMatrices(W);
+            rhoW = lieAlgebraRepresentation(W,LAB,L);
+            weightNuHighestWeightVectorsInVtensorW({1,0,1},rhoV,rhoW)
+
+///
+
+TEST ///
+    sl4 = simpleLieAlgebra("A",3);
+    LAB=lieAlgebraBasis(sl4);
+    V=irreducibleLieAlgebraModule({1,1,0},sl4);
+    L = GTrepresentationMatrices(V);
+    rhoV = lieAlgebraRepresentation(V,LAB,L);
+    W=irreducibleLieAlgebraModule({0,1,1},sl4);
+    L = GTrepresentationMatrices(W);
+    rhoW = lieAlgebraRepresentation(W,LAB,L);
+    hwvs = weightNuHighestWeightVectorsInVtensorW({1,0,1},rhoV,rhoW);
+    assert(hwvs=={111*A_0*B_7-9*A_0*B_11-222*A_1*B_6-222*A_2*B_5+18*A_2*B_10+111*A_3*B_4-9*A_3*B_9+111*A_5*B_4+3*A_5*B_9-148*A_6*B_3+84*A_8*B_2-42*A_9*B_1+14*A_11*B_0-30*A_14*B_1+30*A_15*B_0, (768/37)*A_0*B_11-(1536/37)*A_2*B_10+(768/37)*A_3*B_9-(256/37)*A_5*B_9+(2304/37)*A_8*B_2-(1152/37)*A_9*B_1+(384/37)*A_11*B_0+(192/37)*A_14*B_1-(192/37)*A_15*B_0})
+///
+
+
 
 doc ///
     Key
@@ -2685,7 +2787,7 @@ doc ///
         L:List
     Description
         Text
-	    Suppose that an irreducible module $U$ appears in the decomposition of $V \otimes W$ with multiplicity at least one. Then we can find a highest weight vector using @TO "weightMuHighestWeightVectorsInW"@, and then compute a basis of a submodule in $V \otimes W$ isomorphic to $U$. The basis elements are expressed as polynomials in two sets of variables corresponding to bases of $V$ and $W$, respectively.
+	    Suppose that an irreducible module $U$ appears in the decomposition of $V \otimes W$ with multiplicity at least one. Then we can find a highest weight vector using @TO "weightMuHighestWeightVectorsInVtensorW"@, and then compute a basis of a submodule in $V \otimes W$ isomorphic to $U$. The basis elements are expressed as polynomials in two sets of variables corresponding to bases of $V$ and $W$, respectively.
 	    
 	Text     
             Let $V$ be the adjoint representation of $sl_3$, and let $W$ be the standard representation. Then $V \otimes W$ contains a submodule with highest weight $(0,2)$. We compute an explicit basis for this submodule. 
@@ -2733,6 +2835,6 @@ undocumented ( {
     (killingForm,String,ZZ,List,List),(killingForm,Sequence,Sequence,List,List),
     (starInvolution,List,LieAlgebra),(starInvolution,Vector,LieAlgebra),(starInvolution,LieAlgebra,List),(starInvolution,LieAlgebra,Vector),(starInvolution,String,ZZ,List),(starInvolution,Sequence,Sequence,List),
     (casimirScalar,String,ZZ,List),(casimirScalar,Sequence,Sequence,List),
-    (highestRoot,String,ZZ),(highestRoot,Sequence,Sequence)
+     (highestRoot,String,ZZ),(highestRoot,Sequence,Sequence)
     })
 

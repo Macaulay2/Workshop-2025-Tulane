@@ -111,7 +111,10 @@ export {
 
 -- From highestWeightVectorsAndSubmoduless.m2
 export {"weightMuHighestWeightVectorsInW",
-    "VInWedgekW",
+    --"casimirMatrixForWtMuSpaceInSymdW",  -- leave this unexported for now
+    "weightMuHighestWeightVectorsInSymdW",
     "VInSymdW",
+    "VInWedgekW",
+    "weightNuHighestWeightVectorsInVtensorW",
     "UInVtensorW"
     }

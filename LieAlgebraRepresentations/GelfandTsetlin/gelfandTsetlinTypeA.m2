@@ -1,27 +1,5 @@
 
 
-dynkinToPartition = method(
-    TypicalValue=>List
-);
-
-dynkinToPartition(List) := v -> (
-    n:=#v;
-    append(apply(n, i -> sum apply(n-i, j -> v_(n-1-j))),0)
-);
-
----------------------------------
--- 1. Define the GTPattern type
----------------------------------
-
-GTPattern = new Type of HashTable 
-
--- Lighten the return output
-net GTPattern := G -> net(G#"entries")
-
-
-gtIndices = (n) -> (
-    flatten apply(n, i -> apply(n-i,j -> (n-i,j+1)))
-);
 
 
 
@@ -31,11 +9,11 @@ gtIndices = (n) -> (
 ---------------------------------
 
 -- This is for a list of entries
-isValidEntryList = (L) -> (
+isValidEntryListA = (L) -> (
     n:=1;
     while n*(n+1)/2<#L do n=n+1;
     if #L!=n*(n+1)/2 then error "#L is not a triangular number";
-    gtI:=gtIndices(n);
+    gtI:=gtIndices("A",n);
     -- Check the inequalities I*x <= v
     -- -l_(k,i) + l_(k-1,i) <= 0 for i=1,...,k-1;, k=2,...,n
     -- -l_(k-1,i) + l_(k,i+1) <= 0 for i=1,...,k-1; k=2,...,n
@@ -50,15 +28,17 @@ isValidEntryList = (L) -> (
 );
 
 
-gtContent = (n,H) -> (
+
+gtContentA = (n,H) -> (
     sums:=apply(toList(1..n), i -> sum apply(toList(1..i), j -> H#(i,j)));
     sums=prepend(0,sums);
     apply(n, i->sums_(i+1)-sums_i)
 );
 
 
-gtWeight = (n,H) -> (
-    mu:=gtContent(n,H);
+
+gtWeightA = (n,H) -> (
+    mu:=gtContent("A",n,H);
     mu=prepend(0,mu);
     apply(toList(1..(n-1)),i -> mu_i-mu_(i+1))
 );
@@ -66,25 +46,18 @@ gtWeight = (n,H) -> (
 
 
 -- Construct a GTPattern from a list of entries
-gtp = (L) -> (
-    if not isValidEntryList(L) then error "Invalid entries" << endl;
+gtpA = (L) -> (
+    if not isValidEntryList("A",L) then error "Invalid entries" << endl;
     n:=0;
     while n*(n+1)/2<#L do n=n+1;
     if n*(n+1)/2!=#L then error "#L is not a triangular number" << endl;
     lambda:=apply(n, i -> L_i);
-    gtI:=gtIndices(n);
+    gtI:=gtIndices("A",n);
     H:=new HashTable from apply(#gtI, t -> gtI_t => L_t);
-    mu:=gtContent(n,H);
-    nu:=gtWeight(n,H);
-    new GTPattern from join({"shape"=>lambda,"entries"=>L,"content"=>mu,"weight"=>nu},apply(#gtI, t -> gtI_t => L_t))
+    mu:=gtContent("A",n,H);
+    nu:=gtWeight("A",n,H);
+    new GTPattern from join({"type"=>"A","shape"=>lambda,"entries"=>L,"content"=>mu,"weight"=>nu},apply(#gtI, t -> gtI_t => L_t))
 );
-
-gtPatternFromEntries = method(
-    TypicalValue=>List
-);
-
-gtPatternFromEntries(List) := L -> gtp(L)
-
 
 
 
@@ -103,7 +76,6 @@ peek GTP0
 -- 3. List the GTPatterns of shape lambda
 --------------------------------------
 
-
 -- First, create the Gelfand-Tsetlin polytope
 -- Its lattice points give the patterns
 
@@ -112,13 +84,11 @@ peek GTP0
 
 -- Following Molev 2018 pages 8-9
 
-gtPolytope = method(
-    TypicalValue=>List
-);
 
-gtPolytope(List) := (lambda) -> (
+
+gtPolytopeA = (lambda) -> (
     n:=#lambda;
-    gtI:=gtIndices(n);
+    gtI:=gtIndices("A",n);
     gtItoZ:=new HashTable from apply(#gtI, t -> {gtI_t,t});
     -- Step 1: Create the inequalities I*x <= v
     -- -l_(k,i) + l_(k-1,i) <= 0 for i=1,...,k-1;, k=2,...,n
@@ -140,17 +110,13 @@ gtPolytope(List) := (lambda) -> (
 );
 
 
+
 -- This returns a list of the entries
-
-gtPatterns = method(
-    TypicalValue=>List
-);
-
-gtPatterns(List) := memoize((lambda) -> (
-    P:=gtPolytope(lambda);
+gtPatternsA = (lambda) -> (
+    P:=gtPolytope("A",lambda);
     lp:=latticePoints(P);
     reverse sort apply(lp, M -> flatten entries M)
-));
+);
 
 
 
@@ -184,18 +150,14 @@ GTP: [[2, 1, 0], [2, 1], [2]], SSYT: [[1, 1], [2]], Wt: (2, 1, 0)
 
 
 
+-----------------------------------------------
+-- 5. Raising and lowering operators for type A
+-----------------------------------------------
 
-
----------------------------------
--- 5. Raising and lowering operators
----------------------------------
-
-
-
-
+-- This function is only for type A
 gtpPMDeltakiEntries = (GTP,pm,k,i) -> (
     n:=#(GTP#"shape");
-    gtI:=gtIndices(n);
+    gtI:=gtIndices("A",n);
     apply(gtI, p -> if p==(k,i) then GTP#(k,i)+pm else GTP#p)
 );
 
@@ -217,8 +179,8 @@ Xk = (V, GTP, k) -> (
     GTPPlusDeltaki:={};
     for i from 1 to k do (
 	GTPPlusDeltakiEntries:=gtpPMDeltakiEntries(GTP,1,k,i);
-	if not isValidEntryList(GTPPlusDeltakiEntries) then continue;
-	GTPPlusDeltaki=gtp(GTPPlusDeltakiEntries);
+	if not isValidEntryList("A",GTPPlusDeltakiEntries) then continue;
+	GTPPlusDeltaki=gtpA(GTPPlusDeltakiEntries);
 	num = product apply(toList(1..(k+1)), j -> (GTP#(k,i)-i+1)-(GTP#(k+1,j)-j+1));
 	denom = product apply(toList(1..k), j -> if j==i then 1 else (GTP#(k,i)-i+1)-(GTP#(k,j)-j+1));
 	L = append(L,{GTPPlusDeltaki,-num/denom})
@@ -236,8 +198,8 @@ Yk = (V, GTP, k) -> (
     GTPMinusDeltaki:={};
     for i from 1 to k do (
 	GTPMinusDeltakiEntries:=gtpPMDeltakiEntries(GTP,-1,k,i);
-	if not isValidEntryList(GTPMinusDeltakiEntries) then continue;
-	GTPMinusDeltaki=gtp(GTPMinusDeltakiEntries);
+	if not isValidEntryList("A",GTPMinusDeltakiEntries) then continue;
+	GTPMinusDeltaki=gtpA(GTPMinusDeltakiEntries);
 	num = product apply(toList(1..(k-1)), j -> (GTP#(k,i)-i+1)-(GTP#(k-1,j)-j+1));
 	denom = product apply(toList(1..k), j -> if j==i then 1 else (GTP#(k,i)-i+1)-(GTP#(k,j)-j+1));
 	L = append(L,{GTPMinusDeltaki,num/denom})
@@ -245,37 +207,33 @@ Yk = (V, GTP, k) -> (
     lieAlgebraModuleElement(V,L)
 );
 
-writeInGTBasis = (f,BGT) -> (
+writeInGTBasisA = (f,BGT) -> (
     T:=f#"Terms";
     apply(BGT, p -> sum apply(T, t -> if (t_0)#"entries"==p then t_1 else 0))
 );
 
 
 HkrepresentationMatrix = (V,k,BGT) -> (
-    (1/1)*(transpose matrix apply(BGT, p -> writeInGTBasis(Ekk(V,gtp(p),k)-Ekk(V,gtp(p),k+1),BGT)))
+    (1/1)*(transpose matrix apply(BGT, p -> writeInGTBasisA(Ekk(V,gtpA(p),k)-Ekk(V,gtpA(p),k+1),BGT)))
 );
 
 
 XkrepresentationMatrix = (V,k,BGT) -> (
-    (1/1)*(transpose matrix apply(BGT, p -> writeInGTBasis(Xk(V,gtp(p),k),BGT)))
+    (1/1)*(transpose matrix apply(BGT, p -> writeInGTBasisA(Xk(V,gtpA(p),k),BGT)))
 );
 
 
 YkrepresentationMatrix = (V,k,BGT) -> (
-    (1/1)*(transpose matrix apply(BGT, p -> writeInGTBasis(Yk(V,gtp(p),k),BGT)))
+    (1/1)*(transpose matrix apply(BGT, p -> writeInGTBasisA(Yk(V,gtpA(p),k),BGT)))
 );
 
 
-GTrepresentationMatrices = method(
-    TypicalValue=>List
-);
 
-GTrepresentationMatrices(LieAlgebraModule) := (V) -> (
-    if not isIrreducible(V) then error "Not implemented for reducible modules yet" << endl;
+GTrepresentationMatricesA = (V) -> (
     lambda:=first keys(V#"DecompositionIntoIrreducibles");
-    lambdaPartition:=dynkinToPartition(lambda);
+    lambdaPartition:=dynkinToPartition("A",lambda);
     n:=#lambdaPartition;
-    BGT:=gtPatterns(lambdaPartition);
+    BGT:=gtPatterns("A",lambdaPartition);
     Xlabels:=apply(slnBasisSubscripts(n), p ->  (p_0+1,p_1+1));
     Ylabels:=apply(slnBasisSubscripts(n), p ->  (p_1+1,p_0+1));
     -- Create the representation matrices in order of |i-j|
@@ -296,6 +254,8 @@ GTrepresentationMatrices(LieAlgebraModule) := (V) -> (
     Ymatrices:=apply(Ylabels, p -> M#p);
     flatten {Hmatrices,Xmatrices,Ymatrices}
 );
+
+
 
 
 -* Tests
