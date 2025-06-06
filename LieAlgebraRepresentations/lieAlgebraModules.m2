@@ -264,11 +264,11 @@ killingForm = method(
     )
 killingForm(Sequence,Sequence,List,List) :=
 killingForm(String,ZZ,List,List) := memoize((type, m, v,w) -> (
-    (matrix{v}*quadraticFormMatrix(type,m)*matrix transpose{w})_(0,0)
+    (matrix(QQ, {v})*quadraticFormMatrix(type,m)*matrix(QQ, transpose{w}))_(0,0)
 ))
 --killingForm(String,ZZ,Vector,Vector) := (type,m,v,w) -> (transpose matrix v *quadraticFormMatrix(type,m)*w)_0
-killingForm(LieAlgebra,List,List) := (g,v,w) -> (matrix{v}*quadraticFormMatrix g*matrix transpose{w})_(0,0)
-killingForm(LieAlgebra,Vector,Vector) := (g,v,w) -> (transpose matrix v *quadraticFormMatrix g*w)_0
+killingForm(LieAlgebra,List,List) := (g,v,w) -> (matrix(QQ, {v})*quadraticFormMatrix g*matrix (QQ, transpose{w}))_(0,0)
+killingForm(LieAlgebra,Vector,Vector) := (g,v,w) -> (transpose matrix(QQ, v) *quadraticFormMatrix g*w)_0
 
 
 --This function returns the weights in the Weyl alcove
@@ -770,6 +770,7 @@ isIdentity = (type,m,l,w) -> (
 *-
 
 LieAlgebraModule ** LieAlgebraModule := (V,W) -> ( -- cf Humpheys' intro to LA & RT sec 24 exercise 9
+    if V === W and V.cache#?(symbol ^**, 2) then return V.cache#(symbol ^**, 2);
     g:=V#"LieAlgebra";
     if g != W#"LieAlgebra" then error "V and W must be modules over the same Lie algebra";
     if V =!= W and dim W < dim V then (V,W)=(W,V); -- maybe should first test if characters already computed?
@@ -790,7 +791,9 @@ LieAlgebraModule ** LieAlgebraModule := (V,W) -> ( -- cf Humpheys' intro to LA &
 	    	    );
 		if i === null then add(u-rho,t);
 		)));
-    new LieAlgebraModule from (g,ans)
+    M := new LieAlgebraModule from (g,ans);
+    if V === W then V.cache#(symbol ^**, 2) = M;
+    M
     )
 
 tensorCoefficient = method(
