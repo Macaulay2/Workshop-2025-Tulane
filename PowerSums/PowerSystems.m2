@@ -76,7 +76,7 @@ solvePowerSystem = method()
 -- Returns values for the elementary symmetric polynomials e_i evaluated at the roots of the system.
 solvePowerSystem(Matrix, List, Ring) := List => (A, m, R) -> (
     if numColumns A != numColumns A then error "Matrix A is not square";
-    if rank A != numRows A then error "Matrix A is not full rank";
+    --if rank A != numRows A then error "Matrix A is not full rank"; This slows down computation a lot!
     solvedEs := getSymmetricPolynomialEvals(A, m, R);
     y := local y;
     use RR[y];
@@ -98,7 +98,7 @@ solvePowerSystem(List) := List => m -> (
 getSymmetricPolynomialEvals = method()
 getSymmetricPolynomialEvals(Matrix, List, Ring) := List => (A, m, R) -> (
     if numColumns A != numColumns A then error "Matrix A is not square";
-    if rank A != numRows A then error "Matrix A is not full rank";
+    --if rank A != numRows A then error "Matrix A is not full rank"; This slows down computation a lot!
     use R;
     n := numRows A;
     solvedPs := solve(A**RR,(transpose matrix {m})**RR, MaximalRank => true);

@@ -108,6 +108,8 @@ doc ///
     Example
       m = {1,2,3,4,5};
       solvePowerSystem(A,m)
+  Caveat
+    In order to speed up computation, we do not check that the input matrix is full rank.
   SeeAlso
 ///
 
