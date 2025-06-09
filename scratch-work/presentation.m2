@@ -1,19 +1,19 @@
--- I am a statistician, and I observe four moments of a distribution coming from a mixture of four gaussians in the wild. 
+-- You are a statistician, and you observe four moments of a distribution coming from 
+-- a mixture of four gaussians in the wild. 
 
 -- the following data comes from comes from 4 gaussians, means 3/5, 2/9, 8/3, 30/14, variance 1, 1, 1, 1
 moments =  matrix {{1.40794}, {3.02808}, {11.4812}, {36.1147}} 
-A = matrix {{1/4, 0, 0, 0}, {0, 1/4, 0, 0}, {3/4, 0, 1/4, 0}, {0, 3/2, 0, 1/4}} -- determined by the variance only!
+A = matrix {{1/4, 0, 0, 0}, {0, 1/4, 0, 0}, {3/4, 0, 1/4, 0}, {0, 3/2, 0, 1/4}} -- determined by the variances only!
+-- Together, they describe the moment equations
+matrix{getPowerSystem(A, flatten entries moments)} 
 
--- Together, they are the moment equations
-matrix{getPowerSystem(A, flatten entries moments)} -- the problem we are solving. x's are parameters.
-
---up to permutation, the solution is unique
-parameters = time solvePowerSystem(A,flatten entries moments)
+-- Up to permutation, the solution is unique
+solvedParameters = time solvePowerSystem(A,flatten entries moments)
 
 -- The algorithm works by turning the problem into finding the roots of a single univariate polynomial
 -- in this case, the polynomial is
 use RR[y]; p = y^4-5.63176*y^3+9.8022*y^2-5.33983*y+.761911
--- given any general moments m = (m_1, m_2, m_3, m_4) with this particular A, the polynomial is
+-- given general moments m = (m_1, m_2, m_3, m_4) with this particular A, the polynomial is
 use RR[y, m_1, m_2, m_3, m_4];
 generalP = y^4-4*m_1*y^3+(8*m_1^2-2*m_2)*y^2+(-(32/3)*m_1^3+8*m_1*m_2+4*m_1-(4/3)*m_3)*y+(32/3)*m_1^4-16*m_1^2*m_2-16*m_1^2+2*m_2^2+(16/3)*m_1*m_3+6*m_2-m_4
 
@@ -21,7 +21,7 @@ generalP = y^4-4*m_1*y^3+(8*m_1^2-2*m_2)*y^2+(-(32/3)*m_1^3+8*m_1*m_2+4*m_1-(4/3
 needsPackage "NumericalAlgebraicGeometry"
 
 (B,m) = (random(ZZ^4, ZZ^4), random(ZZ^4, ZZ^1))
-time solveSystem(getPowerSystem(B, flatten entries m));
+time solveSystem(getPowerSystem(B, flatten entries m)); -- a 5x5 matrix takes about 25 seconds
 time solvePowerSystem(B, flatten entries m);
 
 -- Realistically, our observations of the moments contain noise.
@@ -88,4 +88,5 @@ hC = hillClimber(lossFunction, stopCondition, flatten entries(noisyMoments))
 nextStep(hC) -- one step
 
 track(hC) -- go until stopping condition is met
+solvePowerSystem(A,hC#CurrentPoint)
 flatten entries moments 
