@@ -22,6 +22,9 @@ produceMomentSystemMatrices (ZZ,QQ) := (k,variance) -> (
 	);
     ((1/k)*((matrix M)_{1..(numColumns M - 1)}),(matrix M)_{0})
     )
+produceMomentSystemMatrices(ZZ,ZZ) := (k, variance) -> (
+    produceMomentSystemMatrices(k, promote(variance,QQ))
+)
 
 shiftingRow = method()
 shiftingRow Matrix := M -> (
