@@ -1,3 +1,68 @@
+-- ***** form the Omega matrix ****
+
+zVarsMatrix
+
+cayleyDet = det zVarsMatrix
+
+diff(cayleyDet, random(3, R))
+
+--******** omega constant c_p,n*************
+
+cayleyConstant = (p,n) -> (
+    RRRR = QQ[x_(1,1)..x_(n,n)];
+    M = genericMatrix(RRRR, x_(1,1), n, n);
+    detM = det M;
+    cpn = detM^p;
+    
+    for i from 1 to p do (
+        cpn = diff(detM, cpn)
+    );
+    cpn
+)
+
+cayleyConstant(2,3)
+
+--******** reynolds GLn (4.5.27)*************
+
+n = 3
+p = 2
+R = QQ[x_(1,1)..x_(n,n)];
+M = genericMatrix(R, x_(1,1), n, n)
+detM = det M
+f = random (p*n, R)
+f / det M
+omegaf = f
+for i from 1 to p do (
+    omegaf = diff(detM, omegaf)
+);
+cpn = cayleyConstant(p,n)
+
+omegaf / 144
+
+
+--******** reynolds SLn (4.5.28)*************
+
+n = 3
+r = 2
+R = QQ[x_(1,1)..x_(n,n)];
+M = genericMatrix(R, x_(1,1), n, n)
+detM = det M
+f = random (r*n, R)
+-- f / det M
+omegaf = f
+for i from 1 to r do (
+    omegaf = diff(detM, omegaf)
+);
+crn = cayleyConstant(r,n)
+
+p = 1
+phi = map(ring omegaf,R, gens(ring omegaf))
+
+phi(detM^(r-p)) * omegaf / phi(crn)
+
+
+--******** SL2 invariants of Sym2 (4.5.31)*************
+
 n = 2 --SLn
 d = 2 --Sym^d
 
@@ -44,86 +109,17 @@ SLnLinearChangeofVars = map(R,R, aVarsMatrix | matrix mutableMatrix(R, 1, n^2) |
 
 transformeddForm = SLnLinearChangeofVars(universaldForm)
 
-coefficient(X_1*X_2,fromRtoR'(transformeddForm))
+a0image = coefficient(X_1^2,fromRtoR'(transformeddForm)) -- see page 197
+a1image = coefficient(X_1*X_2,fromRtoR'(transformeddForm))
+a2image = coefficient(X_2^2,fromRtoR'(transformeddForm))
 
+-- ** computing R(a1^2)
 
--- ***** form the Omega matrix ****
+a1sqimage = a1image^2
 
-zVarsMatrix
-
-cayleyDet = det zVarsMatrix
-
-diff(cayleyDet, random(3, R))
-
-
--- cayleyOmega = n -> (
---     xVars = x_(1,1)..x_(n,n);
-
---     R = QQ[xVars];
-
---     omega = F -> (
---       sum apply(permutations splice {1..n}, sigma -> (
---         sgn = sign permutation sigma;
---         --print(sigma);
---         -- start from F and differentiate one variable at a time:
---         G = fold((g,i) -> (
---                  j   = sigma#(i-1);
---                  --print(diff(x_(i,j), g));
---                  diff(x_(i,j), g)
---                ), F, toList(1..n));
---         --print(sgn * G);
---         sgn * G
---       ))
---     );
---     omega
--- )
-
--- C2 = cayleyOmega 2;
--- R2 = QQ[x_(1,1)..x_(2,2)]
--- M = genericMatrix(R2, x_(1,1), 2, 2)
--- detM = det M
--- C2 (detM)
-
-
---******** omega constant c_p,n*************
-
--- C3 = cayleyOmega 3;
--- R3 = QQ[x_(1,1)..x_(3,3)];
--- M3 = genericMatrix(R3, x_(1,1), 3, 3)
--- detM3 = det M3
--- C3 C3 (detM3)
-
-cayleyConstant = (p,n) -> (
-    RRRR = QQ[x_(1,1)..x_(n,n)];
-    M = genericMatrix(RRRR, x_(1,1), n, n);
-    detM = det M;
-    cpn = detM^p;
-    
-    for i from 1 to p do (
-        cpn = diff(detM, cpn)
-    );
-    cpn
-)
-
-cayleyConstant(2,3)
-
---******** reynolds GLn (4.5.27)*************
-
-n = 3
-p = 2
-R = QQ[x_(1,1)..x_(n,n)];
-M = genericMatrix(R, x_(1,1), n, n)
-detM = det M
-f = random (p*n, R)
-f / det M
-omegaf = f
-for i from 1 to p do (
-    omegaf = diff(detM, omegaf)
+omegaf = a1sqimage
+for i from 1 to 2 do (
+    omegaf = diff(zVarsMatrix, omegaf)
 );
-cpn = cayleyConstant(p,n)
 
-omegaf / 144
-
-
-
-
+-- need the map from R to QQ[...]
