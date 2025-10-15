@@ -40,6 +40,7 @@ fabricateMoments List := mu -> (
     A*(transpose matrix({powerSumList}))+B
 )
 
+-*
 newtonIdentitySums = method()
 -- newtonIdentitySums takes in an integer k and n and returns list of the 1,2,,...,kth sum of powers in n variables in terms of the
 -- elementary symmmetric polynomials and sum of powers of degrees (k-1) and lower.
@@ -55,7 +56,7 @@ newtonIdentitySums(ZZ) := List => k -> (
     e := local e;
     p := local p;
     newtonIdentitySums(k, QQ[e_0..e_k, p_0..p_k])
-)
+)*-
 
 newtonIdentitySymmetry = method()
 -- newtonIdentitySymmetry takes in an integer k and n and returns list of the 1,2,,...,kth elementary symmetric polynomials in n variables in terms of the
