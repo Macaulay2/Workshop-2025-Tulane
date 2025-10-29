@@ -2,8 +2,8 @@
 -- licensed under GPL v2 or any later version
 newPackage(
     "LieAlgebraRepresentations",
-    Version => "0.97",
-    Date => "May 18, 2025",
+    Version => "1.0",
+    Date => "October 29, 2025",
     AuxiliaryFiles=>true,
     Headline => "Lie algebra representations and characters",
     Authors => {
@@ -34,6 +34,7 @@ needs "./LieAlgebraRepresentations/basesAsWords.m2"
 needs "./LieAlgebraRepresentations/deGraafAlgorithm.m2"
 needs "./LieAlgebraRepresentations/gelfandTsetlin.m2"
 needs "./LieAlgebraRepresentations/symWedgeTensor.m2"
+needs "./LieAlgebraRepresentations/spinRepresentations.m2"
 needs "./LieAlgebraRepresentations/highestWeightVectorsAndSubmodules.m2"
 
 beginDocumentation()
