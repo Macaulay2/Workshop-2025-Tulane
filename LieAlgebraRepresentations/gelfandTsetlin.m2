@@ -1,5 +1,5 @@
 needs "./GelfandTsetlin/gelfandTsetlinTypeA.m2"
-
+needs "./GelfandTsetlin/gelfandTsetlinInvariant.m2"
 
 
 dynkinToPartition = method(

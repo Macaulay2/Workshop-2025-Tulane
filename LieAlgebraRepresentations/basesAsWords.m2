@@ -219,11 +219,12 @@ isomorphismOfRepresentations(LieAlgebraRepresentation,LieAlgebraRepresentation) 
     V:=rho1#"Module";
     if rho2#"Module"!=V then error "The representations are not isomorphic" << endl;
     if not isIrreducible(V) then error "Not implemented yet for reducible representations"<<endl;
-    LAB:=rho1#"Basis";
-    if rho2#"Basis"=!=LAB then error "Not implemented yet when the representations have different Lie algebra bases" << endl;
+    LAB1:=rho1#"Basis";
+    LAB2:=rho2#"Basis";
+    if LAB1#"BasisElements"!=LAB2#"BasisElements" then error "Not implemented yet when the representations have different Lie algebra bases" << endl;
     lambda:=first keys(V#"DecompositionIntoIrreducibles");
     vlambda:=weightMuHighestWeightVectorsInW(lambda,rho1);
-    LOMaps:=apply(LAB#"LoweringOperatorIndices", i -> (rho1#"RepresentationMatrices")_i);
+    LOMaps:=apply(LAB1#"LoweringOperatorIndices", i -> (rho1#"RepresentationMatrices")_i);
     basisWords:=basisWordsFromMatrixGenerators(rho2);
     act:=(X,f) -> X*f;
     P:=matrixFromColumns(apply(basisWords, w -> applyWord(w,vlambda,act,LOMaps)));
@@ -231,7 +232,7 @@ isomorphismOfRepresentations(LieAlgebraRepresentation,LieAlgebraRepresentation) 
     Pinv := inverse P;
     L1:=rho1#"RepresentationMatrices";
     L2:=rho2#"RepresentationMatrices";
-    g:=LAB#"LieAlgebra";
+    g:=LAB1#"LieAlgebra";
     if not all(dim g, i -> L2_i == Pinv*(L1_i)*P) then error "Isomorphism not found" << endl;
     P
 );

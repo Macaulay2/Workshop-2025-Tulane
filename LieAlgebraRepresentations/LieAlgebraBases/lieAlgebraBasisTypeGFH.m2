@@ -101,8 +101,8 @@ G2DualBasis = {2/3*G2ring_0+G2ring_1,G2ring_0+2*G2ring_1,1/3*G2ring_8,G2ring_9,1
 -- LoweringOperatorIndices
 -- WriteInBasis
 
-g2Basis = m -> (
-    if m!=2 then error "Only implemented for m=2" << endl;
+g2BasisFH = () -> (
+    --if m!=2 then error "Only implemented for m=2" << endl;
     new LieAlgebraBasis from {
 	"LieAlgebra"=>simpleLieAlgebra("G",2),
         "BasisElements"=>gens G2ring,
@@ -112,8 +112,7 @@ g2Basis = m -> (
 	"Labels"=>{"H_1","H_2","X_1","X_2","X_3","X_4","X_5","X_6","Y_1","Y_2","Y_3","Y_4","Y_5","Y_6"},
 	"RaisingOperatorIndices"=>toList(2..7),
 	"LoweringOperatorIndices"=>toList(8..13),
-	"WriteInBasis"=>writeIng2Basis,
-	"FundamentalDominantWeightValues"=> matrix {{1,0},{0,1/1}}
+	"WriteInBasis"=>writeIng2Basis
     }
 )
 

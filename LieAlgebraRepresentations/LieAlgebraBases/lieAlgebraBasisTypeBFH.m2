@@ -81,7 +81,8 @@ so2n1Permutation = memoize((n) -> (
 
 so2n1BasisElements = (n) -> (
     -- Create the basis elements
-    Hbasis := apply(n, i -> typeBHin(i,n));
+    Hbasis := apply(n-1, i -> typeBHin(i,n)-typeBHin(i+1,n));
+    Hbasis = append(Hbasis,2*typeBHin(n-1,n));
     Xbasis := flatten apply(n, i -> delete(null,apply(n, j -> if j!=i then typeBXijn(i,j,n))));   
     Ybasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then typeBYijn(i,j,n)))); 
     Zbasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then typeBZijn(j,i,n))));
@@ -94,10 +95,11 @@ so2n1BasisElements = (n) -> (
 );
 
 
-
+-*
 so2n1DualBasis = (n) -> (
     -- Create the basis elements
-    Hbasis := apply(n, i -> typeBHin(i,n));
+    Hbasis := apply(n-1, i -> typeBHin(i,n)-typeBHin(i+1,n));
+    Hbasis = append(Hbasis,typeBHin(n-1,n));
     Xbasis := flatten apply(n, i -> delete(null,apply(n, j -> if j!=i then typeBXijn(j,i,n))));   
     Zbasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then typeBZijn(j,i,n)))); 
     Ybasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then typeBYijn(i,j,n))));
@@ -108,12 +110,12 @@ so2n1DualBasis = (n) -> (
     sigma:=so2n1Permutation(n);
     apply(sigma, i -> unorderedDualBasis_i)
 );
-
+*-
 
 
 so2n1BasisLabels = (n) -> (
     -- Create the labels
-    Hbasis := apply(n, i -> "H_"|toString(i));
+    Hbasis := apply(n, i -> "H_a_"|toString(i));
     Xbasis := flatten apply(n, i -> delete(null,apply(n, j -> if j!=i then "X_"|toString(i+1,j+1) )));   
     Ybasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then "Y_"|toString(i+1,j+1) ))); 
     Zbasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then "Z_"|toString(j+1,i+1) ))); 
@@ -146,7 +148,8 @@ so2n1LoweringOperatorIndices = (n) -> (
 writeInso2n1Basis = (M) -> (
     -- Get the coefficients in the original order
     n:=lift((numrows(M)-1)/2,ZZ);
-    Hcoeffs:= apply(n, i -> M_(i,i));
+    Hcoeffs:= apply(n-1, i -> sum apply(i+1, j -> M_(j,j)));
+    Hcoeffs= append(Hcoeffs, 1/2*(M_(n-1,n-1)+last Hcoeffs));
     Xcoeffs:= flatten apply(n, i -> delete(null,apply(n, j -> if j!=i then M_(i,j)))); 
     Ycoeffs := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then M_(i,n+j)))); 
     Zcoeffs := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then M_(n+j,i))));
@@ -169,18 +172,26 @@ writeInso2n1Basis = (M) -> (
 -- LoweringOperatorIndices
 -- WriteInBasis
 
-so2n1Basis = (n) -> (
+so2n1BasisFH = (n) -> (
     B:=so2n1BasisElements(n);
+    writeInBasis := writeInso2n1Basis;
+    br := (A,B) -> A*B-B*A;
+    ad := X -> transpose matrix apply(B, Y -> writeInBasis br(X,Y));
+    L := apply(B, X -> ad X);
+    kappa := matrix apply(L, i-> apply(L, j -> trace(i*j)));
+    so2n1:=simpleLieAlgebra("B",n);
+    cs := casimirScalar irreducibleLieAlgebraModule(highestRoot(so2n1),so2n1);
+    cstar := entries transpose(cs*(inverse kappa));
+    Bstar := apply(#B, i -> sum apply(#B, j -> ((cstar_i)_j*B_j)));
     new LieAlgebraBasis from {
 	"LieAlgebra"=>simpleLieAlgebra("B",n),
         "BasisElements"=>B,
 	"Bracket"=> (A,B) -> A*B-B*A,
-	"DualBasis"=> so2n1DualBasis(n),
+	"DualBasis"=> Bstar,
         "Weights"=>so2n1BasisWeights(n),
 	"Labels"=>so2n1BasisLabels(n),
 	"RaisingOperatorIndices"=>so2n1RaisingOperatorIndices(n),
 	"LoweringOperatorIndices"=>so2n1LoweringOperatorIndices(n),
-	"WriteInBasis"=>writeInso2n1Basis,
-	"FundamentalDominantWeightValues"=>inverse(DtoLMatrixTypeB(n))
+	"WriteInBasis"=>writeInso2n1Basis
     }
 );

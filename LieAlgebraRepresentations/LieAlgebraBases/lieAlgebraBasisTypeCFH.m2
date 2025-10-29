@@ -35,7 +35,7 @@ unorderedsp2nBasisWeights = (n) -> (
     -- Xij has weight Li-Lj
     Xweights := flatten apply(n, i -> delete(null,apply(n, j -> if j!=i then apply(n, k -> if k==i then 1 else if k==j then -1 else 0/1) )));
     -- Yij has weight Li+Lj
-    Yweights := flatten apply(n, i -> delete(null,apply(n, j -> if j<i then apply(n, k -> if k==i then 1 else if k==j then 1 else 0/1) )));
+    Yweights := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then apply(n, k -> if k==i then 1 else if k==j then 1 else 0/1) )));
     -- Zij has weight -Li-Lj
     Zweights := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then apply(n, k -> if k==i then -1 else if k==j then -1 else 0/1))));
     -- Uij has weight 2Li
@@ -64,14 +64,16 @@ sp2nPermutation = memoize((n) -> (
     PhiPlus:=positiveRoots("C",n);
     positiveRootPerm:=apply(#PhiPlus, i -> first delete(null,apply(#unorderedBasisWeights, j -> if unorderedBasisWeights_j==PhiPlus_i then j)));
     negativeRootPerm:=apply(#PhiPlus, i -> first delete(null,apply(#unorderedBasisWeights, j -> if unorderedBasisWeights_j==-(PhiPlus_i) then j)));
-    flatten {Hperm,positiveRootPerm,negativeRootPerm}
+    sigma:=flatten {Hperm,positiveRootPerm,negativeRootPerm};
+    sigma
 ));
 
 
 
 
 sp2nBasisElements = (n) -> (
-    Hbasis := apply(n, i -> typeCHin(i,n));
+    Hbasis := apply(n-1, i -> typeCHin(i,n)-typeCHin(i+1,n));
+    Hbasis = append(Hbasis, typeCHin(n-1,n));
     Xbasis := flatten apply(n, i -> delete(null,apply(n, j -> if j!=i then typeCXijn(i,j,n))));   
     Ybasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then typeCYijn(i,j,n)))); 
     Zbasis := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then typeCZijn(i,j,n))));
@@ -131,7 +133,7 @@ sp2nLoweringOperatorIndices = (n) -> (
 
 writeInsp2nBasis = (M) -> (
     n:=lift(numrows(M)/2,ZZ);
-    Hcoeffs:= apply(n, i -> M_(i,i));
+    Hcoeffs:= apply(n, i -> sum apply(i+1, j -> M_(j,j)));
     Xcoeffs:= flatten apply(n, i -> delete(null,apply(n, j -> if j!=i then M_(i,j)))); 
     Ycoeffs := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then M_(i,n+j)))); 
     Zcoeffs := flatten apply(n, i -> delete(null,apply(n, j -> if i<j then M_(n+j,i))));
@@ -154,19 +156,28 @@ writeInsp2nBasis = (M) -> (
 -- LoweringOperatorIndices
 -- WriteInBasis
 
-sp2nBasis = (n) -> (
+sp2nBasisFH = (n) -> (
     B:=sp2nBasisElements(n);
+    writeInBasis := writeInsp2nBasis;
+    br := (A,B) -> A*B-B*A;
+    ad := X -> transpose matrix apply(B, Y -> writeInBasis br(X,Y));
+    L := apply(B, X -> ad X);
+    kappa := matrix apply(L, i-> apply(L, j -> trace(i*j)));
+    sp2n:=simpleLieAlgebra("C",n);
+    cs := casimirScalar irreducibleLieAlgebraModule(highestRoot(sp2n),sp2n);
+    cstar := entries transpose(cs*(inverse kappa));
+    Bstar := apply(#B, i -> sum apply(#B, j -> ((cstar_i)_j*B_j)));
     new LieAlgebraBasis from {
 	"LieAlgebra"=>simpleLieAlgebra("C",n),
         "BasisElements"=>B,
 	"Bracket"=> (A,B) -> A*B-B*A,
-	"DualBasis"=> sp2nDualBasis(n),
+	--"DualBasis"=> sp2nDualBasis(n),
+	"DualBasis"=>Bstar,
         "Weights"=>sp2nBasisWeights(n),
 	"Labels"=>sp2nBasisLabels(n),
 	"RaisingOperatorIndices"=>sp2nRaisingOperatorIndices(n),
 	"LoweringOperatorIndices"=>sp2nLoweringOperatorIndices(n),
-	"WriteInBasis"=>writeInsp2nBasis,
-	"FundamentalDominantWeightValues"=>inverse(DtoLMatrixTypeC(n))
+	"WriteInBasis"=>writeInsp2nBasis
     }
 );
 

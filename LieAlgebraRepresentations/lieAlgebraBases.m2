@@ -1,8 +1,9 @@
-needs "./LieAlgebraBases/lieAlgebraBasisTypeA.m2"
-needs "./LieAlgebraBases/lieAlgebraBasisTypeB.m2"
-needs "./LieAlgebraBases/lieAlgebraBasisTypeC.m2"
-needs "./LieAlgebraBases/lieAlgebraBasisTypeD.m2"
-needs "./LieAlgebraBases/lieAlgebraBasisTypeG.m2"
+needs "./LieAlgebraBases/LusztigCanonicalBasis.m2"
+needs "./LieAlgebraBases/lieAlgebraBasisTypeAFH.m2"
+needs "./LieAlgebraBases/lieAlgebraBasisTypeBFH.m2"
+needs "./LieAlgebraBases/lieAlgebraBasisTypeCFH.m2"
+needs "./LieAlgebraBases/lieAlgebraBasisTypeDFH.m2"
+needs "./LieAlgebraBases/lieAlgebraBasisTypeGFH.m2"
 
 LieAlgebraBasis = new Type of HashTable  
 -- Keys:
@@ -14,36 +15,124 @@ LieAlgebraBasis = new Type of HashTable
 -- RaisingOperatorIndices
 -- LoweringOperatorIndices
 -- WriteInBasis
--- FundamentalDominantWeightValues
+-- FundamentalDominantWeightValues -- need this if using a basis of h that is not {H_(alpha_i)}
 
 net(LieAlgebraBasis) := LAB -> net "Enhanced basis of"expression(LAB#"LieAlgebra")
 
+isDiagonal = (M) -> (
+    for i from 0 to numrows(M)-1 do (
+	for j from 0 to numColumns(M)-1 do (
+	    if i!=j and M_(i,j)!=0 then return false
+	)
+    );
+    true
+);
 
 
 
+checkLieAlgebraBasis = (LAB) -> (
+    -- Check the dimension
+    B:=LAB#"BasisElements";
+    g:=LAB#"LieAlgebra";
+    m:=g#"LieAlgebraRank";
+    if #B != dim(g) then (
+	return (false,"The basis does not have the correct number of elements")
+    );
+    -- Check the Jacobi identity
+    br := LAB#"Bracket";    
+    for i from 0 to #B-1 do (
+        for j from 0 to #B-1 do (
+            for k from 0 to #B-1 do (
+                if br(B_i,br(B_j,B_k))+br(B_j,br(B_k,B_i))+br(B_k,br(B_i,B_j))!=0 then (
+		    return (false,concatenate("The Jacobi identity is not satisfied on basis elements ",toString({i,j,k})))
+		 )
+	     )
+	 )
+     );
+    -- Check the writeInBasis function
+    c := apply(#(LAB#"BasisElements"), i -> random(-1000,1000));
+    M := sum(#c, i -> c_i*B_i);
+    writeInBasis := LAB#"WriteInBasis";
+    v := writeInBasis(M);
+    if v!=c then (
+	return (false,"WriteInBasis function failed")
+    );
+    -- Check the weights of the adjoint representation
+    ad := X -> transpose matrix apply(B, Y -> writeInBasis br(X,Y));
+    L := apply(B, X -> ad X);
+    if not all(m, i -> isDiagonal(L_i)) then (
+	return (false,"Not all basis elements are eigenvectors")
+    );
+    L1:=apply(#B, i -> apply(m, j -> (L_j)_(i,i)));
+    repWts:=apply(L1, v -> apply(v, i -> lift(i,ZZ)));
+    WD := weightDiagram irreducibleLieAlgebraModule(highestRoot(g),g);
+    if sort(pairs(WD))!=sort(pairs(tally(repWts))) then (
+	return (false,"The set of weights is incorrect")
+    );
+    if repWts != LAB#"Weights" then (
+        return (false,"The weights are incorrect")
+    );
+    -- Check that the Killing form is nondegenerate
+    kappa := matrix apply(L, i-> apply(L, j -> trace(i*j)));
+    if rank kappa != #B then (
+	return (false,"The Killing form is degenerate")
+    );
+    -- Check the dual basis
+    Lstar := apply(LAB#"DualBasis", X -> ad X);
+    cs:=casimirScalar irreducibleLieAlgebraModule(highestRoot(g),g);
+    if matrix apply(L, i-> apply(Lstar, j -> trace(i*j)))!=matrix apply(#L, i -> apply(#L, j -> if i==j then cs/1 else 0/1)) then (
+	return (false,"The dual basis is incorrect")
+    );	
+    -- Check the Cartan matrix
+    CM := cartanMatrix(g);
+    if CM != matrix apply(m, k -> (LAB#"Weights")_(m+k)) then (
+	return (false, "The Cartan matrix is incorrect")
+    );
+    return (true,"")
+)
+
+
+-- Available methods:
+-- "Lusztig" -- the Lusztig canonical basis as described by Geck-Lang
+-- "FH" -- the basis described by Fulton Harris with a Chevalley basis on the Cartan subalgebra \mathfrak{h}
+-- "FH2" -- the basis described by Fulton Harris for each $\mathfrak{g}_{\alpha}$ along with a naive basis of the Cartan subalgebra \mathfrak{h}
 
 lieAlgebraBasis = method(
+    Options=>{"Check"=>true,"Method"=>"FH"},
     TypicalValue => LieAlgebraBasis
     )
 
-lieAlgebraBasis(String,ZZ) := (type,m) -> (
-    if not member(type,{"A","B","C","D","G"}) then error "Not implemented yet" << endl;
-    if type=="A" then return slnBasis(m+1);
-    if type=="B" then return so2n1Basis(m);
-    if type=="C" then return sp2nBasis(m);
-    if type=="D" then return so2nBasis(m);
-    if type=="G" and m==2 then return g2Basis(m);
+lieAlgebraBasis(String,ZZ) := o -> (type,m) -> (
+    LAB:={};
+    if o#"Method"=="Lusztig" then LAB=lusztigBasis(simpleLieAlgebra(type,m));    
+    if type=="A" then LAB=slnBasisFH(m+1);
+    if type=="B" then LAB=so2n1BasisFH(m);
+    if type=="C" then LAB=sp2nBasisFH(m);
+    if type=="D" then LAB=so2nBasisFH(m);
+    if type=="G" and m==2 then LAB=g2BasisFH();
+    if o#"Check" then (
+	(b,errorString):=checkLieAlgebraBasis(LAB);
+	if not b then error errorString << endl;
+    );
+    LAB
 );
 
 Eijm = (i0,j0,m) -> ( matrix apply(m, i -> apply(m, j -> if i==i0 and j==j0 then 1/1 else 0/1)) );
 
-lieAlgebraBasis(LieAlgebra) := (g) -> (
-    if isSimple(g) and g#"RootSystemType"=="A" then return slnBasis(g#"LieAlgebraRank"+1);
-    if isSimple(g) and g#"RootSystemType"=="B" then return so2n1Basis(g#"LieAlgebraRank");
-    if isSimple(g) and g#"RootSystemType"=="C" then return sp2nBasis(g#"LieAlgebraRank");
-    if isSimple(g) and g#"RootSystemType"=="D" then return so2nBasis(g#"LieAlgebraRank");
-    if g==simpleLieAlgebra("G",2) then return g2Basis(2);
-    error "Not implemented yet"
+lieAlgebraBasis(LieAlgebra) := o -> (g) -> (
+    if not isSimple(g) then error "Lie algebra bases are only implemented for simple Lie algebras so far" << endl;
+    LAB:={};
+    if o#"Method"=="Lusztig" and isSimple(g) then LAB = lusztigBasis(g);
+    if o#"Method"=="FH" and isSimple(g) and g#"RootSystemType"=="A" then LAB = slnBasisFH(g#"LieAlgebraRank"+1);
+    if o#"Method"=="FH" and isSimple(g) and g#"RootSystemType"=="B" then LAB = so2n1BasisFH(g#"LieAlgebraRank");
+    if o#"Method"=="FH" and isSimple(g) and g#"RootSystemType"=="C" then LAB = sp2nBasisFH(g#"LieAlgebraRank");
+    if o#"Method"=="FH" and isSimple(g) and g#"RootSystemType"=="D" then LAB = so2nBasisFH(g#"LieAlgebraRank");
+    if o#"Method"=="FH" and g==simpleLieAlgebra("G",2) then LAB = g2BasisFH();
+    if o#"Check" then (
+	(b,errorString):=checkLieAlgebraBasis(LAB);
+	if not b then error errorString << endl;
+    );
+    LAB    
 );
 
 

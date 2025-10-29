@@ -162,19 +162,27 @@ br = (A,B) -> A*B-B*A
 -- LoweringOperatorIndices
 -- WriteInBasis
 
-slnBasis = (n) -> (
+slnBasisFH = (n) -> (
     B:=slnBasisElements(n);
+    writeInBasis := writeInslnBasis;
+    br := (A,B) -> A*B-B*A;
+    ad := X -> transpose matrix apply(B, Y -> writeInBasis br(X,Y));
+    L := apply(B, X -> ad X);
+    kappa := matrix apply(L, i-> apply(L, j -> trace(i*j)));
+    sln:=simpleLieAlgebra("A",n-1);
+    cs := casimirScalar irreducibleLieAlgebraModule(highestRoot(sln),sln);
+    cstar := entries transpose(cs*(inverse kappa));
+    Bstar := apply(#B, i -> sum apply(#B, j -> ((cstar_i)_j*B_j)));
     new LieAlgebraBasis from {
 	"LieAlgebra"=>simpleLieAlgebra("A",n-1),
         "BasisElements"=>B,
 	"Bracket"=>br,
-	"DualBasis"=> slnDualBasis(n,B),
+	--"DualBasis"=> slnDualBasis(n,B),
+	"DualBasis"=> Bstar,
         "Weights"=>slnBasisWeights(n),
 	"Labels"=>slnBasisLabels(n),
 	"RaisingOperatorIndices"=>slnRaisingOperatorIndices(n),
 	"LoweringOperatorIndices"=>slnLoweringOperatorIndices(n),
-	"WriteInBasis"=>writeInslnBasis,
-	"FundamentalDominantWeightValues"=>matrix apply(n-1, i -> apply(n-1, j -> if i==j then 1 else 0/1))
-    }
+	"WriteInBasis"=>writeInslnBasis    }
 );
 

@@ -1,3 +1,35 @@
+-*
+saveListLineByLine = (L,Lstr) -> (
+    fn:=openOut concatenate(Lstr,".m2");
+    fn << concatenate(Lstr, " = {") << endl;
+    for i from 0 to #L-2 do (
+        fn << concatenate(toString(L_i),",") << endl
+    );
+    fn << toString(last L) << endl;
+    fn << "};" << endl;
+    close fn
+);
+R = ring(V20020inW8W2Std_0);
+S = QQ[P_0..P_6434];
+fRS = map(S,R,gens S);
+LS = apply(V20020inW8W2Std, g -> fRS(g));
+saveListLineByLine(LS,"V20020inW8W2Std");
+*-
+
+
+saveListAsFunction = (L,Lstr,argstr) -> (
+    fn:=openOut concatenate(Lstr,".m2");
+    fn << concatenate(Lstr, " = ",argstr," -> {") << endl;
+    for i from 0 to #L-2 do (
+        fn << concatenate(toString(L_i),",") << endl
+    );
+    fn << toString(last L) << endl;
+    fn << "};" << endl;
+    close fn
+);
+
+
+
 -- Restrict a sparse matrix to a subdomain and subcodomain
 
 restrictRaisingOperatoritoWtmuSpace = (rho,i,mu) -> (
@@ -168,7 +200,7 @@ writeInUTBasis = (f0,B) -> (
 
 weightMuHighestWeightVectorsInSymdW = method(
     TypicalValue=>RingElement
-);    
+);
 
 weightMuHighestWeightVectorsInSymdW(List,ZZ,LieAlgebraRepresentation):= (mu,d,rhoW) -> (
     LAB:=rhoW#"Basis";
@@ -224,6 +256,8 @@ weightMuHighestWeightVectorsInSymdW(List,ZZ,LieAlgebraRepresentation):= (mu,d,rh
 );
 
 
+
+
 -- Here are a bunch of internal functions that are used to evaluate words
 -- in the lowering operators on the highest weight vector
 
@@ -268,10 +302,13 @@ applyWord = (w,v,actInstance,LoweringOperators) -> (
 
 
 VInSymdW = method(
+    Options=>{"SaveAsFunction"=>""},
     TypicalValue=>List
 );
 
-VInSymdW(LieAlgebraRepresentation,ZZ,LieAlgebraRepresentation,Matrix) := (rhoV,d,rhoW,hwv) -> (
+
+
+VInSymdW(LieAlgebraRepresentation,ZZ,LieAlgebraRepresentation,Matrix) := o -> (rhoV,d,rhoW,hwv) -> (
     V:=rhoV#"Module";
     LABV:=rhoV#"Basis";
     LV:=rhoV#"RepresentationMatrices";
@@ -279,7 +316,7 @@ VInSymdW(LieAlgebraRepresentation,ZZ,LieAlgebraRepresentation,Matrix) := (rhoV,d
     LABW:=rhoW#"Basis";
     LW:=rhoW#"RepresentationMatrices";
     -- Check that they use the same basis of g
-    if LABV =!= LABW then error "V and W do not use the same basis" << endl;
+    if LABV#"BasisElements"!= LABW#"BasisElements" then error "V and W do not use the same basis" << endl;
     LAB:=LABV;
     n:=dim W;
     B:=getSymbol "B";
@@ -298,15 +335,19 @@ VInSymdW(LieAlgebraRepresentation,ZZ,LieAlgebraRepresentation,Matrix) := (rhoV,d
     hwvR := ( (basis(d,R))*(hwv) )_(0,0);
     --apply(basisWords, w -> applyWord(w,hwvR,act,LOMaps))
     w:={};
-    for i from 0 to #basisWords list (
+    returnValue:=for i from 0 to #basisWords-1 list (
 	w = basisWords_i;
 	print toString(i) << endl;
 	applyWord(w,hwvR,act,LOMaps)
-    )
+    );
+    if o#"SaveAsFunction"!="" then (
+         saveListAsFunction(returnValue,o#"SaveAsFunction","B")
+    );
+    returnValue
 )
 
 
-VInSymdW(LieAlgebraRepresentation,ZZ,LieAlgebraRepresentation,RingElement) := (rhoV,d,rhoW,hwv) -> (
+VInSymdW(LieAlgebraRepresentation,ZZ,LieAlgebraRepresentation,RingElement) := o -> (rhoV,d,rhoW,hwv) -> (
     V:=rhoV#"Module";
     CBV:=rhoV#"Basis";
     LV:=rhoV#"RepresentationMatrices";
@@ -314,7 +355,7 @@ VInSymdW(LieAlgebraRepresentation,ZZ,LieAlgebraRepresentation,RingElement) := (r
     CBW:=rhoW#"Basis";
     LW:=rhoW#"RepresentationMatrices";
     -- Check that they use the same basis of g
-    if CBV =!= CBW then error "V and W do not use the same basis" << endl;
+    if CBV#"BasisElements" != CBW#"BasisElements" then error "V and W do not use the same basis" << endl;
     CB:=CBV;
     n:=dim W;
     R:=ring(hwv);
@@ -327,22 +368,47 @@ VInSymdW(LieAlgebraRepresentation,ZZ,LieAlgebraRepresentation,RingElement) := (r
     basisWords:=basisWordsFromMatrixGenerators(rhoV);
     --apply(basisWords, w -> applyWord(w,hwv,act,LOMaps))
     w:={};
-    for i from 0 to #basisWords-1 list (
+    returnValue:=for i from 0 to #basisWords-1 list (
 	w = basisWords_i;
 	print toString(i) << endl;
 	applyWord(w,hwv,act,LOMaps)
-    )
+    );
+    if o#"SaveAsFunction"!="" then (
+         saveListAsFunction(returnValue,o#"SaveAsFunction","B")
+    );
+    returnValue
 )
 
 
 
+-*
+
+R = ring(V20020inW8W2Std_0);
+S = QQ[P_0..P_6434];
+fRS = map(S,R,gens S);
+LS = apply(V20020inW8W2Std, g -> fRS(g));
+saveListLineByLine(LS,"V20020inW8W2Std");
+
+
+saveListAsFunction = (L,Lstr,argstr) -> (
+    fn:=openOut concatenate(Lstr,".m2");
+    fn << concatenate(Lstr, " = ",argstr," -> {") << endl;
+    for i from 0 to #L-2 do (
+        fn << concatenate(toString(L_i),",") << endl
+    );
+    fn << toString(last L) << endl;
+    fn << "};" << endl;
+    close fn
+);
+*-
 
 
 VInWedgekW = method(
+    Options=>{"SaveAsFunction"=>""},
     TypicalValue=>List
 );    
 
-VInWedgekW(LieAlgebraRepresentation,ZZ,LieAlgebraRepresentation,Matrix) := (rhoV,k,rhoW,hwv) -> (
+VInWedgekW(LieAlgebraRepresentation,ZZ,LieAlgebraRepresentation,Matrix) := o -> (rhoV,k,rhoW,hwv) -> (
     V:=rhoV#"Module";
     LABV:=rhoV#"Basis";
     LV:=rhoV#"RepresentationMatrices";
@@ -350,7 +416,7 @@ VInWedgekW(LieAlgebraRepresentation,ZZ,LieAlgebraRepresentation,Matrix) := (rhoV
     LABW:=rhoW#"Basis";
     LW:=rhoW#"RepresentationMatrices";
     -- Check that they use the same basis of g
-    if LABV =!= LABW then error "V and W do not use the same basis" << endl;
+    if LABV#"BasisElements" != LABW#"BasisElements" then error "V and W do not use the same basis" << endl;
     LAB:=LABV;
     WedgekW:=exteriorPower(k,rhoW);
     n:=dim W;
@@ -365,7 +431,15 @@ VInWedgekW(LieAlgebraRepresentation,ZZ,LieAlgebraRepresentation,Matrix) := (rhoV
     LOMaps:=apply(LAB#"LoweringOperatorIndices", i -> map(R,R,LWedgekW_i));
     basisWords:=basisWordsFromMatrixGenerators(rhoV);
     hwvR := ( (vars R)*(hwv) )_(0,0);
-    apply(basisWords, w -> applyWord(w,hwvR,act,LOMaps))
+    returnValue:=apply(basisWords, w -> applyWord(w,hwvR,act,LOMaps));
+    if o#"SaveAsFunction"!="" then (
+	P := getSymbol "P";
+        S := QQ[apply(numgens R, i -> P_i)];
+        fRS := map(S,R,gens S);
+        LS := apply(returnValue, g -> fRS(g));
+        saveListAsFunction(LS,o#"SaveAsFunction","P")
+    );    
+    returnValue
 );
 
 
@@ -451,10 +525,11 @@ weightNuHighestWeightVectorsInVtensorW(List,LieAlgebraRepresentation,LieAlgebraR
 
 
 UInVtensorW = method(
+    Options=>{"SaveAsFunction"=>""},
     TypicalValue=>List
 );
 
-UInVtensorW(LieAlgebraRepresentation,LieAlgebraRepresentation,LieAlgebraRepresentation,Matrix) := (rhoU,rhoV,rhoW,hwv) -> (
+UInVtensorW(LieAlgebraRepresentation,LieAlgebraRepresentation,LieAlgebraRepresentation,Matrix) := o -> (rhoU,rhoV,rhoW,hwv) -> (
     U:=rhoU#"Module";
     LABU:=rhoU#"Basis";
     LU:=rhoU#"RepresentationMatrices";    
@@ -465,8 +540,8 @@ UInVtensorW(LieAlgebraRepresentation,LieAlgebraRepresentation,LieAlgebraRepresen
     LABW:=rhoW#"Basis";
     LW:=rhoW#"RepresentationMatrices";
     -- Check that they use the same basis of g
-    if LABU =!= LABV then error "U and V do not use the same basis" << endl;
-    if LABU =!= LABW then error "U and W do not use the same basis" << endl;
+    if LABU#"BasisElements"!= LABV#"BasisElements" then error "U and V do not use the same basis" << endl;
+    if LABU#"BasisElements" != LABW#"BasisElements" then error "U and W do not use the same basis" << endl;
     LAB:=LABU;
     n1:=dim V;
     n2:=dim W;
@@ -480,11 +555,15 @@ UInVtensorW(LieAlgebraRepresentation,LieAlgebraRepresentation,LieAlgebraRepresen
     R.cache = new CacheTable from {"Weights"=>join(Vweights,Wweights)};
     LOMaps:=apply(LAB#"LoweringOperatorIndices", i->  map(R,R,(LV_i)++(LW_i)));
     basisWords:=basisWordsFromMatrixGenerators(rhoU);
-    apply(basisWords, w -> applyWord(w,hwvR,act,LOMaps))
+    returnValue:=apply(basisWords, w -> applyWord(w,hwvR,act,LOMaps));
+    if o#"SaveAsFunction"!="" then (
+         saveListAsFunction(returnValue,o#"SaveAsFunction","(A,B)")
+    );
+    returnValue
 )
 
 
-UInVtensorW(LieAlgebraRepresentation,LieAlgebraRepresentation,LieAlgebraRepresentation,RingElement) := (rhoU,rhoV,rhoW,hwvR) -> (
+UInVtensorW(LieAlgebraRepresentation,LieAlgebraRepresentation,LieAlgebraRepresentation,RingElement) := o -> (rhoU,rhoV,rhoW,hwvR) -> (
     U:=rhoU#"Module";
     LABU:=rhoU#"Basis";
     LU:=rhoU#"RepresentationMatrices";    
@@ -495,15 +574,24 @@ UInVtensorW(LieAlgebraRepresentation,LieAlgebraRepresentation,LieAlgebraRepresen
     LABW:=rhoW#"Basis";
     LW:=rhoW#"RepresentationMatrices";
     -- Check that they use the same basis of g
-    if LABU =!= LABV then error "U and V do not use the same basis" << endl;
-    if LABU =!= LABW then error "U and W do not use the same basis" << endl;
+    if LABU#"BasisElements" != LABV#"BasisElements" then error "U and V do not use the same basis" << endl;
+    if LABU#"BasisElements" != LABW#"BasisElements" then error "U and W do not use the same basis" << endl;
     LAB:=LABU;
     n1:=dim V;
     n2:=dim W;
     R:=ring(hwvR);
     LOMaps:=apply(LAB#"LoweringOperatorIndices", i->  map(R,R,(LV_i)++(LW_i)));
     basisWords:=basisWordsFromMatrixGenerators(rhoU);
-    apply(basisWords, w -> applyWord(w,hwvR,act,LOMaps))
+    w:={};
+    returnValue:=for i from 0 to #basisWords-1 list (
+	w = basisWords_i;
+	print toString(i) << endl;
+	applyWord(w,hwvR,act,LOMaps)
+    );
+    if o#"SaveAsFunction"!="" then (
+         saveListAsFunction(returnValue,o#"SaveAsFunction","(A,B)")
+    );
+    returnValue
 )
 
 

@@ -271,7 +271,7 @@ tensor(LieAlgebraRepresentation,LieAlgebraRepresentation) := (rhoV,rhoW) -> (
     LV:=rhoV#"RepresentationMatrices";
     LW:=rhoW#"RepresentationMatrices";
     U:=V**W;
-    if LABV =!= LABW then error "The representations do not have the same basis" << endl;
+    if LABV#"BasisElements" != LABW#"BasisElements" then error "The representations do not have the same basis" << endl;
     R1:=ring(LV_0);
     R2:=ring(LW_0);
     if R1 =!= R2 then error "The representations do not have the same base ring" << endl;

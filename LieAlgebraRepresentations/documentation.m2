@@ -500,6 +500,13 @@ doc ///
     Key 
 	(multiplicity,List,LieAlgebraModule)
 	(multiplicity,Vector,LieAlgebraModule)
+	[multiplicity,BasisElementLimit]
+	[multiplicity,DegreeLimit]
+	[multiplicity,MinimalGenerators]
+	[multiplicity,PairLimit]
+	[multiplicity,Strategy]
+	[multiplicity,Variable]
+	
     Headline
         compute the multiplicity of a weight in a Lie algebra module
     Usage
@@ -1350,8 +1357,16 @@ doc ///
     	    This class represents a specific kind of basis of a Lie algebra. We assume that the basis is adapted to the decomposition of $\mathfrak{g}$ into its root spaces, i.e. $\mathfrak{g} = \mathfrak{h} \oplus \bigoplus_{\Phi^{+}} \mathfrak{g}_{\alpha} \oplus \bigoplus_{\Phi^{+}} \mathfrak{g}_{-\alpha}$.
         Text
 	    This class also stores additional information about the basis in addition to the basis elements themselves. For instance, it records the weights of the basis elements and their dual elements with respect to the Killing form.
-	Text    
-	    Currently this function is only implemented for simple Lie algebras of type A, B, C, D, and G.  For these Lie algebras, we implement the bases described by Fulton and Harris in {\it Representation Theory: A First Course}, though we order the basis elements differently. The basis of $sl_n$ is described in [FH, Section 15.1]. The basis of $sp(2n)$ is described in [FH, Section 16.1]. The basis of $so(m)$ is described in [FH, 18.1]. Finally, the basis of $g_2$ is described in [FH, Section 22.1].
+        Text
+	    Currently, the package computes three types of bases for simple Lie algebras.
+	Text
+	        1. the Lusztig canonical basis, as detailed in Geck and Lang, "Canonical structure constants for simple Lie algebras", arXiv:2404.07652v1. This basis is available for any simple Lie algebra.
+	Text
+	        2. natural bases of the matrix Lie algebras $sl_n$, $sp(2n), $so(m)$, as described by Fulton and Harris in {\it Representation Theory: A First Course}, Sections 15.1, 16.1, and 18.1, respectively.
+	Text
+	        3. the basis of $g_2$ described by Fulton and Harris in {\it Representation Theory: A First Course}, Section 22.1.
+	Text
+	    The default option is to return the Fulton-Harris basis in types A, B, C, D, and G.
 	    
         Example
 	    LAB=lieAlgebraBasis("A",2)
@@ -1375,11 +1390,17 @@ doc ///
     Inputs 
         t:String
 	m:ZZ
+	"Method"=> String
+	"Check"=> Boolean    
     Outputs
         LAB:LieAlgebraBasis
     Description
         Text
-	    Currently only implemented for simple Lie algebras of types A, B, C, D, and G. See @TO "LieAlgebraBasis"@ for more details.
+	    See @TO "LieAlgebraBasis"@ for more details and references.
+	Text
+            The optional argument "Method" may be set to "Lusztig" for the Lusztig canonical basis, or "FH" for the basis described in Fulton-Harris, {\it Representation Theory: A First Course. The default is "FH" for types A, B, C, D, and G.
+	Text	
+	    The optional argument "Check" (default: true) runs a suite of tests on the basis constructed. See the unexported function "checkLieAlgebraBasis" in the package code for more details. 
 	Text
 	    The user may either input the type and rank, or the simple Lie algebra.
 	Example
@@ -1387,16 +1408,33 @@ doc ///
 	    peek LAB
 	    sl3=simpleLieAlgebra("A",2);
 	    lieAlgebraBasis(sl3)===LAB
+	Text
+	    LAB#"BasisElements"
+	    LABLusztig = lieAlgebraBasis("A",2,"Method"=>Lusztig);
+	    LABLusztig#"BasisElements"
 ///
 
 TEST ///
     LAB=lieAlgebraBasis("A",2);
-    assert(sort keys(LAB)=={"BasisElements","Bracket","DualBasis","FundamentalDominantWeightValues","Labels","LieAlgebra","LoweringOperatorIndices","RaisingOperatorIndices","Weights","WriteInBasis"})
+    assert(sort keys(LAB)=={"BasisElements","Bracket","DualBasis","Labels","LieAlgebra","LoweringOperatorIndices","RaisingOperatorIndices","Weights","WriteInBasis"})
     assert(LAB#"LieAlgebra"#"RootSystemType"=="A")
     assert(LAB#"LieAlgebra"#"LieAlgebraRank"==2)
     assert(LAB#"LoweringOperatorIndices"=={5, 6, 7})
     assert(LAB#"DualBasis"=={map(QQ^3,QQ^3,{{2/3, 0, 0}, {0, -1/3, 0}, {0, 0, -1/3}}),map(QQ^3,QQ^3,{{1/3, 0, 0}, {0, 1/3, 0}, {0, 0, -2/3}}),map(QQ^3,QQ^3,{{0, 0, 0}, {1, 0, 0}, {0, 0, 0}}),map(QQ^3,QQ^3,{{0, 0, 0}, {0, 0, 0}, {0, 1, 0}}),map(QQ^3,QQ^3,{{0, 0, 0}, {0, 0, 0}, {1, 0, 0}}),map(QQ^3,QQ^3,{{0, 1, 0}, {0, 0, 0}, {0, 0, 0}}),map(QQ^3,QQ^3,{{0, 0, 0}, {0, 0, 1}, {0, 0, 0}}),map(QQ^3,QQ^3,{{0, 0, 1}, {0, 0, 0}, {0, 0, 0}})})
     assert(LAB#"BasisElements"=={map(QQ^3,QQ^3,{{1, 0, 0}, {0, -1, 0}, {0, 0, 0}}),map(QQ^3,QQ^3,{{0, 0, 0}, {0, 1, 0}, {0, 0, -1}}),map(QQ^3,QQ^3,{{0, 1, 0}, {0, 0, 0}, {0, 0, 0}}),map(QQ^3,QQ^3,{{0, 0, 0}, {0, 0, 1}, {0, 0, 0}}),map(QQ^3,QQ^3,{{0, 0, 1}, {0, 0, 0}, {0, 0, 0}}),map(QQ^3,QQ^3,{{0, 0, 0}, {1, 0, 0}, {0, 0, 0}}),map(QQ^3,QQ^3,{{0, 0, 0}, {0, 0, 0}, {0, 1, 0}}),map(QQ^3,QQ^3,{{0, 0, 0}, {0, 0, 0}, {1, 0, 0}})})
+///
+
+-- See the internal function checkLieAlgebraBasis in "lieAlgebraBases.m2" to see all the properties that are being checked
+TEST ///
+    LAB=lieAlgebraBasis("B",4,"Check"=>true);
+///
+
+TEST ///
+    LAB=lieAlgebraBasis("C",4,"Check"=>true);
+///
+
+TEST ///
+    LAB=lieAlgebraBasis("D",4,"Check"=>true);
 ///
 
 
@@ -1590,7 +1628,7 @@ TEST ///
 doc ///
     Key
         standardRepresentation
-	(standardRepresentation,LieAlgebraBasis)
+	--(standardRepresentation,LieAlgebraBasis)
 	(standardRepresentation,String,ZZ)
 	(standardRepresentation,LieAlgebra)
     Headline
@@ -1606,21 +1644,21 @@ doc ///
             For the matrix Lie algebras $sl_n$, $sp(2n)$, $so(m)$, the basis elements in the @TT "LieAlgebraBasis"@ are matrices. Thus we may use these matrices to define a representation $\rho: \mathfrak{g} \rightarrow \mathfrak{gl}(V)$.
 
         Text
-	    The user may either input the Lie algebra basis, or the type and rank, or the simple Lie algebra.
+	    The user may either input the type and rank, or the simple Lie algebra.
 
 	Example
 	    standardRepresentation("A",2)
 	    sl4=simpleLieAlgebra("A",3)
 	    standardRepresentation(sl4)
-	    LAB=lieAlgebraBasis("C",2)
-	    standardRepresentation(LAB)
+	    --LAB=lieAlgebraBasis("C",2)
+	    --standardRepresentation(LAB)
 ///
 
 TEST ///
 rho = standardRepresentation("A",2);
 LAB = lieAlgebraBasis("A",2)
 assert(dim(rho#"Module") == 3)
-assert(rho#"Basis"===LAB)
+assert((rho#"Basis")#"BasisElements"===LAB#"BasisElements")
 assert(rho#"RepresentationMatrices"==LAB#"BasisElements")
 ///
 
@@ -2087,7 +2125,7 @@ TEST ///
     assert(deGraafBases(lambda,g)==({{Y_1^2, {-3}, Y_1^2}},{1, Y_1}))
     rho1 = standardRepresentation(g);
     rho2 = deGraafRepresentation(lambda,g);
-    assert(rho1===rho2)
+    assert(rho1#"RepresentationMatrices"==rho2#"RepresentationMatrices")
 ///
 
 TEST ///
@@ -2106,7 +2144,7 @@ TEST ///
     lambda = {1,0};
     rho1 = standardRepresentation(g);
     rho2 = deGraafRepresentation(lambda,g);
-    assert(rho1===rho2)
+    assert(rho1#"RepresentationMatrices"==rho2#"RepresentationMatrices")
 ///
 
 TEST ///
@@ -2356,6 +2394,45 @@ TEST ///
 
 
 
+-- From gelfandTsetlinInvariant.m2
+
+doc ///
+    Key
+        gtInvariantInVtensorVdual
+	(gtInvariantInVtensorVdual,List)
+    Headline
+        computes an invariant in $(V \otimes V^*)$ in the type A Gelfand-Tsetlin basis
+    Usage
+        gtInvariantInVtensorVdual(lambda)
+    Inputs 
+        lambda:List
+    Outputs
+        f:RingElement
+    Description
+        Text
+            Currently only defined and implemented for $G = SL_n$.
+        Text
+            Let $\rho: SL_n \rightarrow GL(V)$ be a representation where $V$ is irreducible of highest weight $\lambda$.  Then $\dim (V \otimes V^{*})^{SL_n} = 1$. 
+	    
+        Text
+	    We have a conjectural combinatorial formula for this invariant polynomial in the Gelfand-Tsetlin basis of $V$.  See https://faculty.fordham.edu/dswinarski/InvariantPolynomialsAndMukaiModels/InvariantPolynomialConjecture.pdf.  
+
+
+        Text
+	    Here is an example for $SL_4$ and $V$ of highest weight $2\omega_1$.
+	    
+	Example
+	    gtInvariantInVtensorVdual({2,0,0})
+///
+
+
+TEST ///
+    assert(gtInvariantInVtensorVdual({2,0,0})==(1/8)*A_0*B_9-(1/8)*A_1*B_8+(1/8)*A_2*B_7+(1/12)*A_3*B_6-(1/12)*A_4*B_5+(1/24)*A_5*B_4-(1/24)*A_6*B_3+(1/24)*A_7*B_2-(1/48)*A_8*B_1+(1/144)*A_9*B_0)
+    assert(gtInvariantInVtensorVdual({2,1,0})==(1/128)*A_0*B_44-(1/128)*A_1*B_43+(1/128)*A_2*B_42-(1/96)*A_3*B_38+(1/96)*A_4*B_37-(1/96)*A_5*B_36+(1/96)*A_6*B_35+(1/192)*A_7*B_41-(1/192)*A_8*B_40-(1/128)*A_9*B_34+(1/128)*A_10*B_33-(1/128)*A_11*B_32+(1/384)*A_12*B_39-(1/192)*A_13*B_31+(1/192)*A_14*B_30+(1/144)*A_15*B_18-(1/144)*A_16*B_17+(1/144)*A_17*B_16-(1/144)*A_18*B_15+(1/192)*A_19*B_14-(1/192)*A_20*B_13+(1/192)*A_21*B_12+(1/288)*A_22*B_11-(1/288)*A_23*B_10+(1/576)*A_24*B_9-(1/360)*A_25*B_29+(1/360)*A_26*B_28+(1/240)*A_27*B_26-(1/240)*A_28*B_25+(1/240)*A_29*B_24-(1/720)*A_30*B_27+(1/360)*A_31*B_23-(1/360)*A_32*B_22-(1/320)*A_33*B_8+(1/320)*A_34*B_7-(1/320)*A_35*B_6-(1/480)*A_36*B_5+(1/480)*A_37*B_4-(1/960)*A_38*B_3+(1/1920)*A_39*B_21-(1/960)*A_40*B_20+(1/960)*A_41*B_19+(1/960)*A_42*B_2-(1/960)*A_43*B_1+(1/1920)*A_44*B_0)
+///
+
+
+
 -- From symWedgeTensor.m2
 
 doc ///
@@ -2397,6 +2474,7 @@ TEST ///
 doc ///
     Key
 	(exteriorPower,ZZ,LieAlgebraRepresentation)
+	[exteriorPower,Strategy]
     Headline
         computes the explicit action on $\bigwedge^k V$ for a $\mathfrak{g}$-module $V$
     Usage
@@ -2526,7 +2604,77 @@ TEST ///
 
 
 
--- From highestWeightVectorsAndSubcharacters.m2
+doc ///
+    Key
+        spinRepresentationMatrices
+	(spinRepresentationMatrices,ZZ)
+	[spinRepresentationMatrices,CoefficientRing]
+    Headline
+        matrix generators for the spin representation of $\mathfrak{so}(2n)$
+    Usage
+        spinRepresentationMatrices(n)
+    Inputs 
+        n:ZZ
+    Outputs
+        L:List
+    Description
+        Text
+	    See [FH] Lecture 20.
+	     
+	Text
+	    In the example below, we compute matrix generators for the spin representation of $so_6$.
+	    
+	Example
+            spinRepresentationMatrices(3)
+
+///
+
+
+TEST ///
+    assert(spinRepresentationMatrices(3)==
+{matrix {{-1/2, 0, 0, 0, 0, 0, 0, 0}, {0, 1/2, 0, 0, 0, 0, 0, 0}, {0, 0, 1/2, 0, 0, 0, 0, 0}, {0, 0, 0, -1/2, 0, 0, 0, 0}, {0, 0, 0, 0, 1/2, 0, 0, 0}, {0, 0, 0, 0, 0, -1/2, 0, 0}, {0, 0, 0, 0, 0, 0, -1/2, 0}, {0, 0, 0, 0, 0, 0, 0, 1/2}}, matrix {{-1/2, 0, 0, 0, 0, 0, 0, 0}, {0, 1/2, 0, 0, 0, 0, 0, 0}, {0, 0, -1/2, 0, 0, 0, 0, 0}, {0, 0, 0, 1/2, 0, 0, 0, 0}, {0, 0, 0, 0, -1/2, 0, 0, 0}, {0, 0, 0, 0, 0, 1/2, 0, 0}, {0, 0, 0, 0, 0, 0, -1/2, 0}, {0, 0, 0, 0, 0, 0, 0, 1/2}}, matrix {{-1/2, 0, 0, 0, 0, 0, 0, 0}, {0, -1/2, 0, 0, 0, 0, 0, 0}, {0, 0, 1/2, 0, 0, 0, 0, 0}, {0, 0, 0, 1/2, 0, 0, 0, 0}, {0, 0, 0, 0, -1/2, 0, 0, 0}, {0, 0, 0, 0, 0, -1/2, 0, 0}, {0, 0, 0, 0, 0, 0, 1/2, 0}, {0, 0, 0, 0, 0, 0, 0, 1/2}}, matrix {{0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 1, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 1, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0/1}}, matrix {{0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 1, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 1, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0/1}}, matrix {{0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 1, 0, 0, 0/1}}, matrix {{0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, -1, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 1, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0/1}}, matrix {{0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, -1, 0, 0/1}}, matrix {{0, 0, 0, 0, 0, 0, 0, 0}, {1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 1, 0/1}}, matrix {{0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 1, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 1, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0/1}}, matrix {{0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 1, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 1, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0/1}}, matrix {{0, 0, 0, 1, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 1}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0/1}}, matrix {{0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, -1, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 1, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0/1}}, matrix {{0, 0, 1, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, -1}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0/1}}, matrix {{0, 1, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 1}, {0, 0, 0, 0, 0, 0, 0, 0/1}}})
+///
+
+
+
+doc ///
+    Key
+        halfspinRepresentationMatrices
+	(halfspinRepresentationMatrices,ZZ,ZZ)
+	[halfspinRepresentationMatrices,CoefficientRing]
+    Headline
+        matrix generators for the halfspin representations of $\mathfrak{so}(2n)$
+    Usage
+        halfspinRepresentationMatrices(n,p)
+    Inputs 
+        n:ZZ
+	p:ZZ
+    Outputs
+        L:List
+    Description
+        Text
+	    See [FH] Lecture 20. The parity of the second input p determines which of the two half-spin representations is returned. For $S^{+}$, enter an even integer. For $S^{-}$, enter an odd integer.
+	     
+	Text
+	    In the example below, we compute matrix generators for the spin representation of $so_6$. Then we compute its half-spin representations. In the bases used by the package, this decomposes the spin representation into the upper left and lower right blocks.
+	    
+	Example
+	    spinRepresentationMatrices(3)
+            halfspinRepresentationMatrices(3,0)
+            halfspinRepresentationMatrices(3,1)
+
+
+///
+
+
+TEST ///
+    assert(halfspinRepresentationMatrices(3,0)=={map(QQ^4,QQ^4,{{-1/2, 0, 0, 0}, {0, 1/2, 0, 0}, {0, 0, 1/2, 0}, {0, 0, 0, -1/2}}),map(QQ^4,QQ^4,{{-1/2, 0, 0, 0}, {0, 1/2, 0, 0}, {0, 0, -1/2, 0}, {0, 0, 0, 1/2}}),map(QQ^4,QQ^4,{{-1/2, 0, 0, 0}, {0, -1/2, 0, 0}, {0, 0, 1/2, 0}, {0, 0, 0, 1/2}}),map(QQ^4,QQ^4,{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 1}, {0, 0, 0, 0}}),map(QQ^4,QQ^4,{{0, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}),map(QQ^4,QQ^4,{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {1, 0, 0, 0}}),map(QQ^4,QQ^4,{{0, 0, 0, 0}, {0, 0, 0, -1}, {0, 0, 0, 0}, {0, 0, 0, 0}}),map(QQ^4,QQ^4,{{0, 0, 0, 0}, {0, 0, 0, 0}, {1, 0, 0, 0}, {0, 0, 0, 0}}),map(QQ^4,QQ^4,{{0, 0, 0, 0}, {1, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}),map(QQ^4,QQ^4,{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 1, 0}}),map(QQ^4,QQ^4,{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 0, 0}}),map(QQ^4,QQ^4,{{0, 0, 0, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}),map(QQ^4,QQ^4,{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, -1, 0, 0}}),map(QQ^4,QQ^4,{{0, 0, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}),map(QQ^4,QQ^4,{{0, 1, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}})})
+    assert(halfspinRepresentationMatrices(3,1)=={map(QQ^4,QQ^4,{{1/2, 0, 0, 0}, {0, -1/2, 0, 0}, {0, 0, -1/2, 0}, {0, 0, 0, 1/2}}),map(QQ^4,QQ^4,{{-1/2, 0, 0, 0}, {0, 1/2, 0, 0}, {0, 0, -1/2, 0}, {0, 0, 0, 1/2}}),map(QQ^4,QQ^4,{{-1/2, 0, 0, 0}, {0, -1/2, 0, 0}, {0, 0, 1/2, 0}, {0, 0, 0, 1/2}}),map(QQ^4,QQ^4,{{0, 1, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}),map(QQ^4,QQ^4,{{0, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}),map(QQ^4,QQ^4,{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {1, 0, 0, 0}}),map(QQ^4,QQ^4,{{0, 0, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}),map(QQ^4,QQ^4,{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, -1, 0, 0}}),map(QQ^4,QQ^4,{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 1, 0}}),map(QQ^4,QQ^4,{{0, 0, 0, 0}, {1, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}),map(QQ^4,QQ^4,{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 0, 0}}),map(QQ^4,QQ^4,{{0, 0, 0, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}),map(QQ^4,QQ^4,{{0, 0, 0, 0}, {0, 0, 0, 0}, {1, 0, 0, 0}, {0, 0, 0, 0}}),map(QQ^4,QQ^4,{{0, 0, 0, 0}, {0, 0, 0, -1}, {0, 0, 0, 0}, {0, 0, 0, 0}}),map(QQ^4,QQ^4,{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 1}, {0, 0, 0, 0}})})
+///
+
+
+
+
 
 doc ///
     Key
@@ -2644,7 +2792,8 @@ doc ///
 	    Suppose that an irreducible module $V$ appears in the decomposition of $\operatorname{Sym}^d W$ with multiplicity at least one. Then we can find a highest weight vector using @TO "weightMuHighestWeightVectorsInSymdW"@, and then compute a basis of a submodule in $\operatorname{Sym}^d W$ isomorphic to $V$. The basis elements are expressed as polynomials in the basis of $W$ used to define the matrix generators of the representation on $W$.
 	    
 	Text     
-            We compute the degree four invariant for plane cubics by finding a trivial submodule in $  \operatorname{Sym}^4 \operatorname{Sym}^3 \mathbb{C}^3$.  
+            We compute the degree four invariant for plane cubics by finding a trivial submodule in $\operatorname{Sym}^4 \operatorname{Sym}^3 \mathbb{C}^3$.
+	    
 	Example
 	    sl3=simpleLieAlgebra("A",2)
 	    V=standardRepresentation(sl3);
@@ -2652,8 +2801,9 @@ doc ///
 	    hwv = weightMuHighestWeightVectorsInSymdW({0,0},4,S3V); 
 	    V0=trivialRepresentation(sl3);
 	    L = VInSymdW(V0,4,S3V,hwv_0)
+	    
         Text
-	    Note: this polynomial appears as early as 1856 in work of Cayley, who attributes it to Salmon. See Cayley, "A third memoir upon quantics", tables 62 and 63. 
+	    This polynomial appears as early as 1856 in work of Cayley, who attributes it to Salmon. See Cayley, "A third memoir upon quantics", tables 62 and 63. 
 ///
 
 
@@ -2787,7 +2937,7 @@ doc ///
         L:List
     Description
         Text
-	    Suppose that an irreducible module $U$ appears in the decomposition of $V \otimes W$ with multiplicity at least one. Then we can find a highest weight vector using @TO "weightMuHighestWeightVectorsInVtensorW"@, and then compute a basis of a submodule in $V \otimes W$ isomorphic to $U$. The basis elements are expressed as polynomials in two sets of variables corresponding to bases of $V$ and $W$, respectively.
+	    Suppose that an irreducible module $U$ appears in the decomposition of $V \otimes W$ with multiplicity at least one. Then we can find a highest weight vector using @TO "weightNuHighestWeightVectorsInVtensorW"@, and then compute a basis of a submodule in $V \otimes W$ isomorphic to $U$. The basis elements are expressed as polynomials in two sets of variables corresponding to bases of $V$ and $W$, respectively.
 	    
 	Text     
             Let $V$ be the adjoint representation of $sl_3$, and let $W$ be the standard representation. Then $V \otimes W$ contains a submodule with highest weight $(0,2)$. We compute an explicit basis for this submodule. 

@@ -102,9 +102,22 @@ export {"dynkinToPartition",
 
 
 
+-- From gelfandTsetlinInvariant.m2
+export {"gtInvariantInVtensorVdual"
+    }
+
+
+
 -- From symWedgeTensor.m2
 export {
     "isLieAlgebraRepresentation"    
+    }
+
+
+-- From spinRepresentations.m2
+export {
+    "spinRepresentationMatrices",
+    "halfspinRepresentationMatrices"
     }
 
 

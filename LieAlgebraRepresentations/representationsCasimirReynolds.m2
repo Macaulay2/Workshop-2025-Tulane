@@ -45,22 +45,28 @@ standardRepresentation = method(
     )
 
 standardRepresentation(String,ZZ) := (type,m) -> (
+    if not member(type,{"A","B","C","D"}) then error "Only implemented for types A,B,C,D" << endl;    
     LAB:=lieAlgebraBasis(type,m);
-    standardRepresentation(LAB)
+    V := standardModule(LAB#"LieAlgebra");
+    lieAlgebraRepresentation(V,LAB,LAB#"BasisElements")
+
 );
 
 standardRepresentation(LieAlgebra) := g -> (
+    if not member(g#"RootSystemType",{"A","B","C","D"}) then error "Only implemented for types A,B,C,D" << endl;
     LAB:=lieAlgebraBasis(g);
-    standardRepresentation(LAB)
+    V := standardModule(LAB#"LieAlgebra");
+    lieAlgebraRepresentation(V,LAB,LAB#"BasisElements")
 );
 
+-*
 standardRepresentation(LieAlgebraBasis) := LAB -> (
     g:=LAB#"LieAlgebra";
     if not member(g#"RootSystemType",{"A","B","C","D"}) then error "Only implemented for types A,B,C,D" << endl;
     V := standardModule(LAB#"LieAlgebra");
     lieAlgebraRepresentation(V,LAB,LAB#"BasisElements")
 );
-
+*-
 
 adjointRepresentation = method(
     TypicalValue => LieAlgebraRepresentation
@@ -99,13 +105,10 @@ representationWeights(LieAlgebraRepresentation) := memoize((rho) -> (
     W:=rho#"Module";
     LAB:=rho#"Basis";
     L:=rho#"RepresentationMatrices";
- 
     Wweights:={};
     m:=LAB#"LieAlgebra"#"LieAlgebraRank";
     L1:=apply(dim W, i -> apply(m, j -> (L_j)_(i,i)));
-    M:=LAB#"FundamentalDominantWeightValues";
-    L2:=apply(L1, v -> flatten entries(M*(transpose matrix {v})));
-    apply(L2, v -> apply(v, i -> lift(i,ZZ)))
+    apply(L1, v -> apply(v, i -> lift(i,ZZ)))
 ));
 
 
