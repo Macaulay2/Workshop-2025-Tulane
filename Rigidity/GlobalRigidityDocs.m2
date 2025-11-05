@@ -4,6 +4,7 @@ doc ///
         (getStressMatrix, ZZ, Graph)
         (getStressMatrix, ZZ, List)
         (getStressMatrix, ZZ, ZZ)
+	[getStressMatrix, Variable]
     Headline
         Constructs the symbolic stress matrix of a d-framework
     Usage
@@ -24,12 +25,14 @@ doc ///
             The stress matrix is the symmetric matrix consisting of the equilibrium stress of a d-framework.
             The diagonal elements are assigned such that all row sums and column sums are zero.
         Example
-            n = 4; d = 2;
+            (d,n) = (2,4)
             L = {{0,1}, {0,2}, {1,2}, {1,3}, {2,3}};
             getStressMatrix(d, L)
             getStressMatrix(d, n)
             G = completeGraph(n);
             getStressMatrix(d, G)
+	Text
+	    Pass any symbol as the optional argument @TO Variable@ (the default is `x`)  
 ///
 
 doc ///
