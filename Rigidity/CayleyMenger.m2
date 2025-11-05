@@ -38,8 +38,8 @@ getAllTrees(List) := List => L->(
     return toReturn;
 );
 getAllTrees(ZZ) := List => n->(
-    x := getSymbol "x";
-    R := QQ[x_1..x_n];
+    x := symbol x;
+    R := QQ(monoid[x_1..x_n]);
     return getAllTrees(gens R);
 )
 

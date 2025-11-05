@@ -9,8 +9,8 @@ getRigidityMatrix(ZZ, List) := Matrix => opts -> (d, E) -> (
     n := # givenVertices;
     changeVertices := e -> position(givenVertices, i -> i == e);
     edgeList := apply(E, givenEdge -> (toList givenEdge)/changeVertices);
-    R := QQ(monoid[crds_(1) .. crds_(d*n)]); -- Create a ring with d*n variables
-    M := genericMatrix(R, d, n); -- Return a generic d by n matrix over R
+    R := QQ(monoid[crds_(1,1) .. crds_(d,n)]); -- Create a ring with d*n variables
+    M := transpose genericMatrix(R, n, d); -- Return a generic d by n matrix over R
     -- Here is the polynomial we might want to switch in the future
     polynomialLists := apply(edgeList, pair -> transpose(M_{pair#0} - M_{pair#1}) * (M_{pair#0} - M_{pair#1}) ); 
     jacobianList := polynomialLists / jacobian;
