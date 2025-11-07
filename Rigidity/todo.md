@@ -1,7 +1,13 @@
-#To Do List:
+# To Do List:
 
-- Add doc to CayleyMenger file
-- Add doc:
+## Issues
+- Decide defult "null" variable name
+- Explanation for what we're doing in overleaf file
+- Understand what the command isSpanningInSkewSymmetricCompletionMatroid does, where it should live, is it finished, etc
+- move extra code out of Rigidity.m2
+- uniformize folders/organization (less important)
+  
+## Documentation
  * -- warning: missing node: getStressMatrix(...,Variable=>...) cited by getStressMatrix
  * -- warning: missing node: isGloballyRigid(...,FiniteField=>...) cited by isGloballyRigid
  * -- warning: missing node: isGloballyRigid(...,Iterations=>...) cited by isGloballyRigid
@@ -11,13 +17,6 @@
  * -- warning: missing node: isSpanningInSymmetricCompletionMatroid(...,FiniteField=>...) cited by FiniteField
  * -- warning: missing node: getSkewSymmetricCompletionMatrix(...,Variable=>...) cited by getSkewSymmetricCompletionMatrix
 
-## Issues
-- Decide defult "null" variable name
-- Explanation for what we're doing in overleaf file
-- Understand what the command isSpanningInSkewSymmetricCompletionMatroid does, where it should live, is it finished, etc
-- move extra code out of Rigidity.m2
-- uniformize folders/organization (less important)
-
 Documented:
 * getSkewSymmetricCompletionMatrix, 
 * getRigidityMatrix, 
@@ -25,6 +24,7 @@ Documented:
 * isLocallyRigid,
 * getStressMatrix,
 * isGloballyRigid, 
+* getAllTrees
 
 
 Need to document:
@@ -37,7 +37,8 @@ Need to document:
 * raysOfUltrametricCone, 
 * maximalTreePairs, ***
 * edgeListToIndices, ***
-* getAllTrees
 
 
-### Add Cayley-Menger Determinants (compare with stress matrices?)
+### Other possible additions/alterations
+* Cayley-Menger Determinants (compare with stress matrices?)
+* ring creation subroutine (shared by several methods)
