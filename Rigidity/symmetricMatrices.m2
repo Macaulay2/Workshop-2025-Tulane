@@ -25,6 +25,10 @@ getSymmetricCompletionMatrix(ZZ,ZZ) := Matrix => opts -> (r,n) -> (
     getSymmetricCompletionMatrix(r,n, subsets(toList(0..(n-1)), 2), opts)
 );
 
+getSymmetricCompletionMatrix(ZZ, Graph) := Matrix => opts -> (r, G) -> (
+    getSymmetricCompletionMatrix(r, length vertexSet G, edges G, opts)
+);
+
 isSpanningInSymmetricCompletionMatroid = method(Options => {Numerical => false, FiniteField => 0}, TypicalValue => Boolean);
 
 isSpanningInSymmetricCompletionMatroid(ZZ, ZZ, List) := Boolean => opts -> (r, n, E) -> (
@@ -70,4 +74,22 @@ isSpanningInSymmetricCompletionMatroid(ZZ, ZZ, List) := Boolean => opts -> (r, n
         )
     )
     else rank getSymmetricCompletionMatrix(r, n, E) == r*n - (r-1)*r/2
+);
+
+-- spanning test on the complete graph
+isSpanningInSymmetricCompletionMatroid(ZZ,ZZ) := Boolean => opts -> (r,n) -> (
+    isSpanningInSymmetricCompletionMatroid(r,n, subsets(toList(0..(n-1)), 2), Numerical => opts.Numerical)
+);
+
+
+-- spanning test taking in a Graph object
+isSpanningInSymmetricCompletionMatroid(ZZ, Graph) := Boolean => opts -> (r, G) -> (
+    isSpanningInSymmetricCompletionMatroid(r, length vertexSet G, edges G, opts)
+);
+
+
+-- spanning test taking in a Graph object but also specifying number of vertices
+isSpanningInSymmetricCompletionMatroid(ZZ, ZZ, Graph) := Boolean => opts -> (r, n, G) -> (
+    if n =!= length vertexSet G then error("Expected ", n, " to be the number of vertices in ",G);
+    isSpanningInSymmetricCompletionMatroid(r, n, edges G, opts)
 );
