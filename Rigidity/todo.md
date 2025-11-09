@@ -6,6 +6,7 @@
 - Understand what the command isSpanningInSkewSymmetricCompletionMatroid does, where it should live, is it finished, etc
 - move extra code out of Rigidity.m2
 - uniformize folders/organization (less important)
+- Testing: isGloballyRigid(2, G3) takes forever to run (in globallyRigidTests.m2), maybe problem with isGloballyRigid code?
   
 ## Documentation
  * -- warning: missing node: getStressMatrix(...,Variable=>...) cited by getStressMatrix
