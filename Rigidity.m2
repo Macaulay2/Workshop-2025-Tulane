@@ -267,6 +267,7 @@ load "./Rigidity/isSpanningInSkewtests.m2"
 load "./Rigidity/locallyRigidTests.m2"
 load "./Rigidity/CayleyMenger-tests.m2"
 load "./Rigidity/MatrixCompletionNonSymmetricTests.m2"
+load "./Rigidity/globallyRigidTests.m2"
 end
 
 restart

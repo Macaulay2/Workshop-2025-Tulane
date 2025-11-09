@@ -1,6 +1,3 @@
-"""
-Test for isGloballyRigid method 
-"""
 -- test for the method (ZZ, ZZ, List)
 TEST ///
     L1 = {{0,1}, {1,2}}
