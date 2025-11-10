@@ -7,12 +7,12 @@ doc ///
     Headline
         Constructs the skew-symmetric completion matrix for given parameters.
     Usage
-        getSkewSymmetricCompletionMatrix(d, G)
-        getRigidityMatrix(d, L)
-        getRigidityMatrix(d, n)
+        getSkewSymmetricCompletionMatrix(r, G)
+        getSkewSymmetricCompletionMatrix(r, n, L)
+        getSkewSymmetricCompletionMatrix(r, n)
     Inputs
-        d : ZZ
-            corresponding to the dimension of the embedding space
+        r : ZZ
+            corresponding to the rank
         n : ZZ
             corresponding to the number of vertices
         G : Graph
@@ -21,13 +21,14 @@ doc ///
     Description
     	Text
             Given rank r and graph G it constructs the completion matrix for G.
+            If the graph or edge set is not specified, defaults to the complete graph.
         Example
-            d=2;
+            r=2;
             G = completeGraph 4;
-            getSkewSymmetricCompletionMatrix(d, G)
-            d=2; n=3;
+            getSkewSymmetricCompletionMatrix(r, G)
+            r=2; n=3;
             L= {{0,1},{1,2},{2,0}}
-            getSkewSymmetricCompletionMatrix(d, n, L)
+            getSkewSymmetricCompletionMatrix(r, n, L)
 ///
 
 doc ///
@@ -39,25 +40,27 @@ doc ///
     Headline
         Tests whether a graph is spanning in the skew-symmetric completion matroid.
     Usage
-        isSpanningInSkewSymmetricCompletionMatroid(d, G)
-        isSpanningInSkewSymmetricCompletionMatroid(d, L)
+        isSpanningInSkewSymmetricCompletionMatroid(r, G)
+        isSpanningInSkewSymmetricCompletionMatroid(r, n, L)
+        isSpanningInSkewSymmetricCompletionMatroid(r, n)
     Inputs
-        d : ZZ
-            corresponding to the dimension of the embedding space
+        r : ZZ
+            corresponding to the rank
         G : Graph
         L : List
             of pairs of adjacent vertices
     Description
     	Text
             Tests whether a graph or edge set is spanning the skew-symmetric completion matroid.
-            Given an even integer r for rank and number of vertices n of graph, it returns whether the complete graph on n vertices is spanning.
+            Given an even integer r for rank and number of vertices n of graph, it returns whether the graph is spanning.
+            If the graph or edge set is not specified, defaults to the complete graph.
         Example
             G = completeMultipartiteGraph({3,3})
             isSpanningInSkewSymmetricCompletionMatroid(2, G)
             G = completeGraph 4
             isSpanningInSkewSymmetricCompletionMatroid(4, G)
             L= {{0,1},{1,2},{2,0}}
-            d=4, n=3
-            isSpanningInSkewSymmetricCompletionMatroid(d, n, L)
+            r=4, n=3
+            isSpanningInSkewSymmetricCompletionMatroid(r, n, L)
 ///
 

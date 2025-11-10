@@ -1,4 +1,4 @@
-getSkewSymmetricCompletionMatrix = method(Options => {Variable => null}, TypicalValue => Matrix);
+getSkewSymmetricCompletionMatrix = method(Options => {Variable => "x"}, TypicalValue => Matrix);
 
 getSkewSymmetricCompletionMatrix(ZZ, ZZ, List) := Matrix => opts -> (r, n, G) -> (
 

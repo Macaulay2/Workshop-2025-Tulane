@@ -3,18 +3,17 @@
 ## Issues
 - Decide defult "null" variable name
 - Explanation for what we're doing in overleaf file
-- Understand what the command isSpanningInSkewSymmetricCompletionMatroid does, where it should live, is it finished, etc
-- move extra code out of Rigidity.m2
+- Check documentation in SymmetricCompletionDocs.m2 and SkewSymmetricCompletionDocs.m2
 - uniformize folders/organization (less important)
 - Testing: isGloballyRigid(2, G3) takes forever to run (in globallyRigidTests.m2), maybe problem with isGloballyRigid code?
   
 ## Documentation
- * -- warning: missing node: getStressMatrix(...,Variable=>...) cited by getStressMatrix
  * -- warning: missing node: isGloballyRigid(...,FiniteField=>...) cited by isGloballyRigid
  * -- warning: missing node: isGloballyRigid(...,Iterations=>...) cited by isGloballyRigid
- * -- warning: missing node: isSpanningInSkewSymmetricCompletionMatroid(...,* Numerical=>...) cited by Numerical
+ * -- warning: missing node: isSpanningInSkewSymmetricCompletionMatroid(...,Numerical=>...) cited by Numerical
  * -- warning: missing node: isSpanningInSymmetricCompletionMatroid(...,Numerical=>...) cited by Numerical
  * -- warning: missing node: isSpanningInSkewSymmetricCompletionMatroid(...,FiniteField=>...) cited by isSpanningInSkewSymmetricCompletionMatroid
+ * -- warning: missing node: getSymmetricCompletionMatrix(...,Variable=>...) cited by getSymmetricCompletionMatrix
  * -- warning: missing node: isSpanningInSymmetricCompletionMatroid(...,FiniteField=>...) cited by FiniteField
  * -- warning: missing node: getSkewSymmetricCompletionMatrix(...,Variable=>...) cited by getSkewSymmetricCompletionMatrix
 

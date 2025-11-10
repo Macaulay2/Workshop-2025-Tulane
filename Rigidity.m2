@@ -95,6 +95,7 @@ doc ///
 
 load "./Rigidity/RigidityDocs.m2"
 load "./Rigidity/GlobalRigidityDocs.m2"
+load "./Rigidity/SymmetricCompletionDocs.m2"
 load "./Rigidity/SkewSymmetricCompletionDocs.m2"
 load "./Rigidity/CayleyMenger-docs.m2"
 
