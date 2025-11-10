@@ -1,12 +1,25 @@
 getSkewSymmetricCompletionMatrix = method(Options => {Variable => null}, TypicalValue => Matrix);
 
 getSkewSymmetricCompletionMatrix(ZZ, ZZ, List) := Matrix => opts -> (r, n, G) -> (
+
     if r % 2 =!= 0 then error("expected rank to be an even integer");
+
     crds := getSymbol toString(opts.Variable);
     R := QQ(monoid[crds_(1) .. crds_(r*n)]); -- Create a ring with r*n variables
+
     M := genericMatrix(R, r, n); -- Return a generic r by n matrix over R
+
+    -- convert sets to lists
+    Glist := G / (pair -> 
+        if #pair == 2 then toSequence sort toList pair
+        else toSequence (toList pair | toList pair));
+
+    -- This is the r*r skew matrix {{0, I}, {-I, 0}}
+    skewMatrix := matrix{{map(R^(r//2),R^(r//2),0),id_(R^(r//2))},{-id_(R^(r//2)),map(R^(r//2),R^(r//2),0)}};
+
     -- Here is the polynomial we might want to switch in the future
-    polynomialLists := apply(G, pair -> (transpose(M) * matrix{{map(R^(r//2),R^(r//2),0),id_(R^(r//2))},{-id_(R^(r//2)),map(R^(r//2),R^(r//2),0)}} * M)_(toSequence(sort(toList(pair))))); 
+    polynomialLists := apply(Glist, pair -> (transpose(M) * skewMatrix * M)_(pair)); 
+
     jacobianList := polynomialLists / jacobian;
     -- Folding horizontal concatenation of the jacobian of each polynomial (from each edge)
     transpose fold((a,b) -> a|b, jacobianList)
