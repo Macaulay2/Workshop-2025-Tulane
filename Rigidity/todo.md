@@ -24,8 +24,7 @@ Documented:
 * isLocallyRigid,
 * getStressMatrix,
 * isGloballyRigid, 
-* getAllTrees
-
+* 
 
 Need to document:
 * Iterations, Numerical, Field, FiniteField, 
@@ -33,12 +32,25 @@ Need to document:
 * isFinitelyCompletable, 
 * getFiniteCompletabilityMatrix, 
 * isSpanningInSymmetricCompletionMatroid, 
-* raysOfTreePairCone, ***
-* raysOfUltrametricCone, 
-* maximalTreePairs, ***
-* edgeListToIndices, ***
-
 
 ### Other possible additions/alterations
 * Cayley-Menger Determinants (compare with stress matrices?)
 * ring creation subroutine (shared by several methods)
+
+#### trop(CM)
+Do not export: 
+* getAllTrees
+* raysOfTreePairCone
+* raysOfUltrametricCone
+* maximalTreePairs
+* edgeListToIndices
+
+Export:
+* tropicalCayleyMenger n -- for ZZ (complete graph on n vertices)
+    - memoize this ...  
+    - ... or maximalTreePairs
+    - produce output as list of maximal Cones (type in "Polyhedra")
+* tropicalCayleyMenger G -- for graphs (given as list of edges)
+
+
+

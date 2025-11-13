@@ -40,7 +40,7 @@ newPackage(
     },
     Headline => "rigidity theory tools",
     Keywords => {},
-    PackageExports => {"Graphs", "NumericalLinearAlgebra"},
+    PackageExports => {"Graphs", "NumericalLinearAlgebra","Polyhedra"},
     PackageImports => {},
     AuxiliaryFiles => true,
     DebuggingMode => true
