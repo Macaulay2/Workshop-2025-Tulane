@@ -1,9 +1,5 @@
 export {
-    "getAllTrees",
-    "raysOfTreePairCone",
-    "raysOfUltrametricCone",
-    "maximalTreePairs",
-    "edgeListToIndices"
+    "tropicalCayleyMenger"
     }
 
 getAllTrees = method();
@@ -139,12 +135,12 @@ raysOfUltrametricCone=method();
 --which is spanned by the all-ones vector
 raysOfUltrametricCone(RingElement):=List=>T->(
     coordinates := subsets(gens ring T, 2);
-    toReturn := for m in terms T list(
-    	for c in coordinates list(
-	    if m%c_0==0 and m%c_1==0 then -1 else 0
-	)
+    raysMatrix := matrix for m in terms T list(
+	for c in coordinates list
+	if m%c_0==0 and m%c_1==0 then -1 else 0	    
     );
-    return toReturn;
+    linealityMatrix := matrix {toList(#coordinates:1)};
+    return coneFromVData(transpose raysMatrix, transpose linealityMatrix);
 )
 
 raysOfTreePairCone=method();
@@ -154,7 +150,7 @@ raysOfTreePairCone=method();
 --Does this modulo the lineality space, which is spanned
 --by the all-ones vector
 raysOfTreePairCone(RingElement,RingElement):=List=>(T1,T2)->(
-    T := T1+T2-product(gens ring T1);
+    T := T1 + T2; 
     return raysOfUltrametricCone(T);
 )
 
@@ -163,9 +159,24 @@ edgeListToIndices=method();
 --and returns the positions where they appear in the lexicographic order.
 --Assumes each edge is in increasing order
 edgeListToIndices(List,ZZ):=List=>(G,n)->(
-    allEdges := flatten for i from 1 to n-1 list for j from i+1 to n list {i,j};
-    for e in G list(
-    	position(allEdges,f->f==e)
-    )
+    allEdges := subsets(1..n,2);
+    for e in G list position(allEdges,f->f==e)
+)
+
+--Takes either an integer n or a graph G (as a list of edges)
+tropicalCayleyMenger = method()
+--If an integer n is given, returns the list of maximal Cones 
+tropicalCayleyMenger ZZ := List => n -> 
+    apply(maximalTreePairs n, p->raysOfTreePairCone(p_0,p_1))
+tropicalCayleyMenger List := List => G -> (
+    n := max flatten G;
+    T := tropicalCayleyMenger n;
+    GIndices := edgeListToIndices(G,n);
+    T' := apply(T, p->coneFromVData(
+        (rays p)^GIndices,
+        (linealitySpace p)^GIndices
+        ));
+    maxDim := T'/dim//max;
+    select(T', p->dim p == maxDim)
 )
 

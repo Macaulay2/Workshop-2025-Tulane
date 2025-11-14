@@ -1,32 +1,40 @@
 doc ///
 Node
   Key 
-    getAllTrees
-    (getAllTrees,ZZ)
-    (getAllTrees,List)
+    tropicalCayleyMenger
+    (tropicalCayleyMenger,ZZ)
+    (tropicalCayleyMenger,List)
   Headline 
-    Get all Cayley-Menger trees on n vertices
+    Get maximal cones of the tropicalization of Cayley-Menger variety
   Usage
-    L = getAllTrees n
-    L = getAllTrees variableNames
+    L = tropicalCayleyMenger n
+    L = tropicalCayleyMenger G
   Inputs
     n : ZZ 
       a positive integer
-    variableNames : List
-      the list of variables to use
+    G : List
+      the list of pairs of integers representing the edges of a graph on vertices 1 to n
   Outputs
     L :
-      a list of polynomials, each representing a rooted tree leaves given by the argument list
+      a list of @TO Cone@s 
   Description
     Text
-      This function generates all rooted trees on n leaves, 
-      represented as polynomials in which each monomial corresponds 
-      to a clade (a subset of leaves descending from a common internal node). 
-      The leaves are labeled by variables x_1 to x_n (or the ones provided explicitly).
+      This function generates all maximal cones of the tropicalization of the Cayley-Menger variety on n vertices. 
     Example
-      getAllTrees 3
-      QQ[a,b,c]
-      getAllTrees {a,b,c}   
+      T = tropicalCayleyMenger 4;
+      #T
+      C = first T;
+      rays C
+      linSpace C
+    Text 
+      If a graph G is provided, it generates the maximal cones of the tropicalization of the Cayley-Menger variety restricted to the edges of G.
+    Example
+      G = {{1,2},{2,3},{3,4},{1,4}};
+      T = tropicalCayleyMenger G;
+      #T
+      C = last T;
+      rays C
+      linSpace C  
   SeeAlso
-    maximalTreePairs 
+    "Working with cones"
 ///
