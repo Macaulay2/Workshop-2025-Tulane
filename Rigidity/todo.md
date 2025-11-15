@@ -1,50 +1,38 @@
 # To Do List:
 
+* Young people: Julian, Ryan, Griffin, Jianuo
+* Senior: Dan, Kalina, Anton
+
+## Other possible additions/alterations
+* Cayley-Menger Determinants --- Julian?
+
+## Paper
+Kalina is in charge.
+
 ## Issues
-- Decide defult "null" variable name
-- Explanation for what we're doing in overleaf file
 - Check documentation in SymmetricCompletionDocs.m2 and SkewSymmetricCompletionDocs.m2
 - uniformize folders/organization (less important)
 - Testing: isGloballyRigid(2, G3) takes forever to run (in globallyRigidTests.m2), maybe problem with isGloballyRigid code?
-  
-## Documentation
- * -- warning: missing node: isGloballyRigid(...,FiniteField=>...) cited by isGloballyRigid
- * -- warning: missing node: isGloballyRigid(...,Iterations=>...) cited by isGloballyRigid
- * -- warning: missing node: isSpanningInSkewSymmetricCompletionMatroid(...,Numerical=>...) cited by Numerical
- * -- warning: missing node: isSpanningInSymmetricCompletionMatroid(...,Numerical=>...) cited by Numerical
- * -- warning: missing node: isSpanningInSkewSymmetricCompletionMatroid(...,FiniteField=>...) cited by isSpanningInSkewSymmetricCompletionMatroid
- * -- warning: missing node: getSymmetricCompletionMatrix(...,Variable=>...) cited by getSymmetricCompletionMatrix
- * -- warning: missing node: isSpanningInSymmetricCompletionMatroid(...,FiniteField=>...) cited by FiniteField
- * -- warning: missing node: getSkewSymmetricCompletionMatrix(...,Variable=>...) cited by getSkewSymmetricCompletionMatrix
+- Fix (?) inconsistency in numbering (e.g. "completability" assumes vertices start from 0, and "Cayley-Menger" starts from 1)
 
-Documented:
-* getSkewSymmetricCompletionMatrix, 
-* getRigidityMatrix, 
-* isSpanningInSkewSymmetricCompletionMatroid, 
-* isLocallyRigid,
-* getStressMatrix,
-* isGloballyRigid, 
-* 
-
-Need to document:
+## Tests and documentation
+Need to document and or test:
 * Iterations, Numerical, Field, FiniteField, 
 * getSymmetricCompletionMatrix, 
 * isFinitelyCompletable, 
 * getFiniteCompletabilityMatrix, 
 * isSpanningInSymmetricCompletionMatroid, 
 
-### Other possible additions/alterations
-* Cayley-Menger Determinants (compare with stress matrices?)
-* ring creation subroutine (shared by several methods)
+Run `installPackage` to see what is still undocumented.
 
-#### trop(CM)
-Do not export: 
-* getAllTrees
-* raysOfTreePairCone
-* raysOfUltrametricCone
-* maximalTreePairs
-* edgeListToIndices
+## trop(CM)
+Go over documentation, perhaps a better name. --- Dan
 
+# Done!
+## No user variable names
+`Variable=>` option is no more.
+
+## trop(CM)
 Export:
 * tropicalCayleyMenger n -- for ZZ (complete graph on n vertices)
     - memoize this ...  

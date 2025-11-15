@@ -4,7 +4,6 @@ doc ///
         (getRigidityMatrix, ZZ, Graph)
         (getRigidityMatrix, ZZ, List)
         (getRigidityMatrix, ZZ, ZZ)
-        [getRigidityMatrix, Variable]
     Headline
         Constructs the rigidity matrix of a d-framework
     Usage
@@ -19,8 +18,6 @@ doc ///
         G : Graph
         L : List
             of pairs of adjacent vertices 
-        Variable => Symbol
-            that determines the symbol of the variables in the matrix
     Description
     	Text
             Computes the rigidity matrix for a d-framework (i.e. a graph G with an embedding map in R^d). 

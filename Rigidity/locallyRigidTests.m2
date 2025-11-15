@@ -1,11 +1,11 @@
 -- Test 0 : test getRigidityMatrix for /\ and triangle graph
 TEST ///
     L = {{0,1},{1,2}}
-    getRigidityMatrix(2,L, Variable => x)
+    getRigidityMatrix(2,L)
     assert(not isLocallyRigid(2,L))
     
     L2 = {{0,1},{1,2},{2,0}}
-    getRigidityMatrix(2,L2, Variable => x)
+    getRigidityMatrix(2,L2)
     assert(isLocallyRigid(2,L2))
     assert(isLocallyRigid(2,L2,Field => QQ))
     assert(isLocallyRigid(2,L2,Field => RR))

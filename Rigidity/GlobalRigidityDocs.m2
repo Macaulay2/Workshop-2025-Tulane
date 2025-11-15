@@ -1,11 +1,11 @@
+-* something is wrong with doc generation 
 doc ///
     Key
         getStressMatrix
         (getStressMatrix, ZZ, Graph)
         (getStressMatrix, ZZ, List)
         (getStressMatrix, ZZ, ZZ)
-	[getStressMatrix, Variable]
-    Headline
+	Headline
         Constructs the symbolic stress matrix of a d-framework
     Usage
         getStressMatrix(d, L)
@@ -31,9 +31,8 @@ doc ///
             getStressMatrix(d, n)
             G = completeGraph(n);
             getStressMatrix(d, G)
-	Text
-	    Pass any symbol as the optional argument @TO Variable@ (the default is `x`)  
 ///
+*-
 
 doc ///
     Key

@@ -1,11 +1,11 @@
-getStressMatrix = method(Options => {Variable => "x"}, TypicalValue => Matrix)
+getStressMatrix = method(TypicalValue => Matrix)
 
 -- Core function
-getStressMatrix(ZZ, List) := Matrix => opts -> (d, Gr) -> (
+getStressMatrix(ZZ, List) := Matrix => (d, Gr) -> (
     G := Gr/toList;
     n := # unique join(toSequence G);
     -- Left kernel of the rigidity matrix
-    tRigidityMatrix := transpose getRigidityMatrix(d, G, Variable => "x");
+    tRigidityMatrix := transpose getRigidityMatrix(d, G);
     R := ring tRigidityMatrix;
     tRigidityMatrixRational := sub(tRigidityMatrix, frac R);
     stressBasis := mingens ker tRigidityMatrixRational;
@@ -17,34 +17,28 @@ getStressMatrix(ZZ, List) := Matrix => opts -> (d, Gr) -> (
         matrix(stressMatrixZero)
     )
     else (
-        y := symbol y;
-        auxiliaryRing := frac(QQ[gens R, y_1..y_auxiliaryVarCount]);
+        y := getSymbol "y";
+        auxiliaryRing := frac(QQ[gens R, y_0..y_(auxiliaryVarCount-1)]);
+	y = drop(gens auxiliaryRing, numgens R);
         -- Symbolic linear combination of elements in the basis of the left kernel
-        stressBasisLinearSum := 0;
-        for i from 1 to auxiliaryVarCount do (
-            stressBasisLinearSum = stressBasisLinearSum + y_i * sub(submatrix(stressBasis, {i - 1}), auxiliaryRing);
-        );
+        stressBasisLinearSum := sum(auxiliaryVarCount, i -> y_i * sub(stressBasis_{i}, auxiliaryRing));
         -- Build the symbolic stress matrix from the symbolic linear combination
         stressMatrix := mutableMatrix(auxiliaryRing, n, n);
-        for i from 0 to (#G - 1) do (
+        scan(#G, i->(
             edge := G#i;
             stressMatrix_(edge#0, edge#1) = stressBasisLinearSum_(i, 0);
             stressMatrix_(edge#1, edge#0) = stressBasisLinearSum_(i, 0);
-        );
+        ));
         stressMatrixEntries := entries stressMatrix;
-        for i from 0 to (n - 1) do (
+        scan(n, i->(
             stressMatrix_(i, i) = -sum(stressMatrixEntries#i);
-        );
-        matrix(stressMatrix)
+        ));
+        matrix stressMatrix
     )
 );
 
 -- List of edges not given -> use complete graph
-getStressMatrix(ZZ, ZZ) := Matrix => opts -> (d, n) -> (
-    getStressMatrix(d, subsets(toList(0..(n-1)), 2), opts)
-);
+getStressMatrix(ZZ, ZZ) := Matrix => (d, n) -> getStressMatrix(d, subsets(n, 2))
 
 -- Input a Graph instead of edge set without number of vertices -> get number of vertices from graph
-getStressMatrix(ZZ, Graph) := Matrix => opts -> (d, G) -> (
-    getStressMatrix(d, edges G, opts)
-);
+getStressMatrix(ZZ, Graph) := Matrix => (d, G) -> getStressMatrix(d, edges G)

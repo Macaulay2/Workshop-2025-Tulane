@@ -1,10 +1,10 @@
 
-getRigidityMatrix = method(Options => {Variable => null}, TypicalValue => Matrix)
+getRigidityMatrix = method(TypicalValue => Matrix)
 
 
 -- Core function
-getRigidityMatrix(ZZ, List) := Matrix => opts -> (d, E) -> (
-    crds := getSymbol toString(opts.Variable);
+getRigidityMatrix(ZZ, List) := Matrix => (d, E) -> (
+    crds := getSymbol "x";
     givenVertices := unique join(toSequence E/toList);
     n := # givenVertices;
     changeVertices := e -> position(givenVertices, i -> i == e);
@@ -19,17 +19,17 @@ getRigidityMatrix(ZZ, List) := Matrix => opts -> (d, E) -> (
 );
 
 -- List of edges not given -> use complete graph
-getRigidityMatrix(ZZ,ZZ) := Matrix => opts -> (d,n) -> (
-    getRigidityMatrix(d, subsets(toList(0..(n-1)), 2), opts)
+getRigidityMatrix(ZZ,ZZ) := Matrix => (d,n) -> (
+    getRigidityMatrix(d, subsets(toList(0..(n-1)), 2))
 );
 
 -- Input a Graph instead of edge set without number of vertices -> get number of vertices from graph
-getRigidityMatrix(ZZ, Graph) := Matrix => opts -> (d, G) -> (
-    getRigidityMatrix(d, edges G, opts)
+getRigidityMatrix(ZZ, Graph) := Matrix => (d, G) -> (
+    getRigidityMatrix(d, edges G)
 );
 
 -*- Input a Graph instead of edge set with number of vertices -> check if number of vertices is correct
-getRigidityMatrix(ZZ, ZZ, Graph) := Matrix => opts -> (d, n, G) -> (
+getRigidityMatrix(ZZ, ZZ, Graph) := Matrix => (d, n, G) -> (
     if n =!= length vertexSet G then error("Expected ", n, " to be the number of vertices in ",G);
-    getRigidityMatrix(d, n, edges G, opts)
+    getRigidityMatrix(d, n, edges G)
 );*-

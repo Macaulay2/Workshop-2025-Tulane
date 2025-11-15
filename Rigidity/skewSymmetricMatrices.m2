@@ -1,10 +1,10 @@
-getSkewSymmetricCompletionMatrix = method(Options => {Variable => "x"}, TypicalValue => Matrix);
+getSkewSymmetricCompletionMatrix = method(TypicalValue => Matrix);
 
-getSkewSymmetricCompletionMatrix(ZZ, ZZ, List) := Matrix => opts -> (r, n, G) -> (
+getSkewSymmetricCompletionMatrix(ZZ, ZZ, List) := Matrix => (r, n, G) -> (
 
     if r % 2 =!= 0 then error("expected rank to be an even integer");
 
-    crds := getSymbol toString(opts.Variable);
+    crds := getSymbol "x";
     R := QQ(monoid[crds_(1) .. crds_(r*n)]); -- Create a ring with r*n variables
 
     M := genericMatrix(R, r, n); -- Return a generic r by n matrix over R
@@ -25,13 +25,11 @@ getSkewSymmetricCompletionMatrix(ZZ, ZZ, List) := Matrix => opts -> (r, n, G) ->
     transpose fold((a,b) -> a|b, jacobianList)
 );
 
-getSkewSymmetricCompletionMatrix(ZZ,ZZ) := Matrix => opts -> (r,n) -> (
-    getSkewSymmetricCompletionMatrix(r,n, subsets(toList(0..(n-1)), 2), opts)
-);
+getSkewSymmetricCompletionMatrix(ZZ,ZZ) := Matrix => (r,n) -> 
+    getSkewSymmetricCompletionMatrix(r,n, subsets(toList(0..(n-1)), 2))
 
-getSkewSymmetricCompletionMatrix(ZZ, Graph) := Matrix => opts -> (r, G) -> (
-    getSkewSymmetricCompletionMatrix(r, length vertexSet G, edges G, opts)
-);
+getSkewSymmetricCompletionMatrix(ZZ, Graph) := Matrix => (r, G) -> 
+    getSkewSymmetricCompletionMatrix(r, length vertexSet G, edges G)
 
 isSpanningInSkewSymmetricCompletionMatroid = method(Options => {Numerical => false, FiniteField => 0}, TypicalValue => Boolean);
 

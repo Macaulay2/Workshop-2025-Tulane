@@ -1,4 +1,5 @@
 TEST ///
+assert (rank getFiniteCompletabilityMatrix(2,5,4) == 2*(5 + 4 - 2))
 
 -- testing on the bipartite graph which consists of two copies of K(3, 3) glued together on the bottom edge
 
@@ -14,7 +15,7 @@ n = 5
 m = 5
 r = 1
 
-A = getFiniteCompletabilityMatrix(Variable => x, r, n, m, twoGlueK33)
+A = getFiniteCompletabilityMatrix(r, n, m, twoGlueK33)
 rank A
 condition = r*(n + m - r)
 
@@ -30,8 +31,7 @@ graph(twoGlueK33Edited)
 n = 5
 m = 5
 r = 1
-
-A = getFiniteCompletabilityMatrix(Variable => x, r, n, m, twoGlueK33Edited)
+A = getFiniteCompletabilityMatrix(r, n, m, twoGlueK33Edited)
 rank A
 condition = r*(n + m - r)
 ///

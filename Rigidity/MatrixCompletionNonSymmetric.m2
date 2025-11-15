@@ -1,16 +1,23 @@
 
-getFiniteCompletabilityMatrix = method(Options => {Variable => null}, TypicalValue => Matrix)
+getFiniteCompletabilityMatrix = method(TypicalValue => Matrix)
 
 isFinitelyCompletable = method(TypicalValue => Boolean)
 
-getFiniteCompletabilityMatrix(ZZ, ZZ, ZZ, List) := Matrix => opts -> (completionRank, rowDim, colDim, edgeList) -> (
-    crds := getSymbol toString(opts.Variable);
-    R := QQ(monoid[crds_(1) .. crds_((rowDim+colDim)*completionRank)]); -- Create a ring with (rowDim+colDim)*completionRank variables
-
-    -- Return a generic n by r matrix over R, fill with x_1 to x_(n*r)
-    A := genericMatrix(R, (gens R)_(0), rowDim, completionRank);
-    -- Return a generic r by m matrix over R, fill with x_(n*r+1) to x_(n*m)
-    B := genericMatrix(R, (gens R)_((rowDim*completionRank)), completionRank, colDim);
+getFiniteCompletabilityMatrix(ZZ, ZZ, ZZ) := Matrix => (completionRank, rowDim, colDim) ->
+getFiniteCompletabilityMatrix(
+    completionRank, rowDim, colDim,
+    flatten apply(rowDim,x->apply(colDim,y->{x,y}))
+    )
+getFiniteCompletabilityMatrix(ZZ, ZZ, ZZ, List) := Matrix => (completionRank, rowDim, colDim, edgeList) -> (
+    x := getSymbol "x";
+    y := getSymbol "y";
+    R := QQ(monoid[
+        x_(1,1)..x_(rowDim,completionRank),
+        y_(1,1)..y_(completionRank,colDim)
+    ]); -- Create a ring with (rowDim+colDim)*completionRank variables
+    
+    A := transpose genericMatrix(R, R_0, completionRank, rowDim);
+    B := transpose genericMatrix(R, R_(rowDim*completionRank), colDim, completionRank);
 
     -- polynomialLists obtained from A, B -> A*B
     polynomialLists := apply(edgeList / toList, pair -> (A * B)_(pair#0, pair#1));

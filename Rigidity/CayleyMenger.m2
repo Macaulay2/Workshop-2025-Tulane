@@ -89,7 +89,7 @@ oneNorm(Matrix):=RingElement=>v->(
 cayleyMengerMatrix=method();
 cayleyMengerMatrix(ZZ):=Matrix=>n->(
     d := getSymbol "d"; 
-    R := QQ[apply(sort subsets(toList(1..n),2),p->d_p)];
+    R := QQ(monoid[apply(sort subsets(toList(1..n),2),p->d_p)]);
     matrix for i from 1 to n+1 list(
     	for j from 1 to n+1 list(
 	    if i == j then 0

@@ -68,10 +68,8 @@ export {
 -- Code
 ------------------------------------------------------------------------------
 load "./Rigidity/CayleyMenger.m2"
-
 load "./Rigidity/getRigidityMatrix.m2"
 load "./Rigidity/getStressMatrix.m2"
-
 load "./Rigidity/isLocallyRigid.m2"
 load "./Rigidity/isGloballyRigid.m2"
 load "./Rigidity/MatrixCompletionNonSymmetric.m2"
