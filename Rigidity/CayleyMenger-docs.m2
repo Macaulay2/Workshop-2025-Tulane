@@ -45,5 +45,5 @@ Node
     not all of the cones returned by @TT "tropicalCayleyMenger G"@
     are guaranteed to be maximal.   
   SeeAlso
-    "Working with cones"
+    "Polyhedra :: Working with cones"
 ///
