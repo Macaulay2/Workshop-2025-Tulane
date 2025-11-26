@@ -4,6 +4,7 @@ Node
     tropicalCayleyMenger
     (tropicalCayleyMenger,ZZ)
     (tropicalCayleyMenger,List)
+    [tropicalCayleyMenger,Type]
   Headline 
     Get maximal cones of the tropicalization of Cayley-Menger variety
   Usage
@@ -34,7 +35,15 @@ Node
       #T
       C = last T;
       rays C
-      linSpace C  
+      linSpace C
+    Text
+      For faster operation, the optional argument
+      @TO [tropicalCayleyMenger, Type]@ can be set to @TO List@,
+      in which case the generators of the maximal cones are returned as lists of coordinates.  
+  Caveat
+    If @TT "Type===List"@ then
+    not all of the cones returned by @TT "tropicalCayleyMenger G"@
+    are guaranteed to be maximal.   
   SeeAlso
     "Working with cones"
 ///

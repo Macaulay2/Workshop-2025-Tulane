@@ -1,6 +1,4 @@
 TEST ///
-restart
-needsPackage "Rigidity"
 n=4;
 T = tropicalCayleyMenger n;
 assert(#T == 75);
@@ -13,6 +11,9 @@ assert(
     )% linSpace first T == 0
 )
 assert(#(T/dim//uniique)==1)
+
+T = tropicalCayleyMenger(n,Type=>List)
+assert all(T, R -> rank image transpose matrix R == 4)
 ///
 
 

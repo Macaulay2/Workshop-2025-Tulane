@@ -135,12 +135,10 @@ raysOfUltrametricCone=method();
 --which is spanned by the all-ones vector
 raysOfUltrametricCone(RingElement):=List=>T->(
     coordinates := subsets(gens ring T, 2);
-    raysMatrix := matrix for m in terms T list(
+    for m in terms T list(
 	for c in coordinates list
 	if m%c_0==0 and m%c_1==0 then -1 else 0	    
-    );
-    linealityMatrix := matrix {toList(#coordinates:1)};
-    return coneFromVData(transpose raysMatrix, transpose linealityMatrix);
+    )
 )
 
 raysOfTreePairCone=method();
@@ -150,7 +148,7 @@ raysOfTreePairCone=method();
 --Does this modulo the lineality space, which is spanned
 --by the all-ones vector
 raysOfTreePairCone(RingElement,RingElement):=List=>(T1,T2)->(
-    T := T1 + T2; 
+    T := T1 + T2 - 2*product(gens ring T1); -- remove the monomial whose exponent is 0 modulo lineality
     return raysOfUltrametricCone(T);
 )
 
@@ -164,19 +162,34 @@ edgeListToIndices(List,ZZ):=List=>(G,n)->(
 )
 
 --Takes either an integer n or a graph G (as a list of edges)
-tropicalCayleyMenger = method()
+tropicalCayleyMenger = method(Options=>{Type=>Cone})
 --If an integer n is given, returns the list of maximal Cones 
-tropicalCayleyMenger ZZ := List => n -> 
-    apply(maximalTreePairs n, p->raysOfTreePairCone(p_0,p_1))
-tropicalCayleyMenger List := List => G -> (
+tropicalCayleyMenger ZZ := List => o -> n -> (
+    linealityMatrix := transpose matrix {toList(binomial(n,2):1)};
+    apply(maximalTreePairs n, p->(
+	    raysList := raysOfTreePairCone(p_0,p_1);
+	    if o#Type===List
+	    then raysList else
+	    if o#Type===Cone
+	    then coneFromVData(
+		transpose matrix raysList,
+		linealityMatrix
+		) else error "unknown Type of output"
+	    ))
+    )
+tropicalCayleyMenger List := List => o -> G -> (
     n := max flatten G;
-    T := tropicalCayleyMenger n;
+    T := tropicalCayleyMenger(n,o);
     GIndices := edgeListToIndices(G,n);
-    T' := apply(T, p->coneFromVData(
-        (rays p)^GIndices,
-        (linealitySpace p)^GIndices
-        ));
-    maxDim := T'/dim//max;
-    select(T', p->dim p == maxDim)
+    if o#Type===Cone then (
+	T' := apply(T, p -> coneFromVData(
+		(rays p)^GIndices,
+		(linealitySpace p)^GIndices
+		));
+	maxDim := T'/dim//max;
+	select(T', p->dim p == maxDim)
+	) else if o#Type===List
+    then apply(T, p -> p_GIndices) else error "unknown Type of output"
+    -- Caveat: if Type===List then some of the cones may be not of max dimension
 )
 
