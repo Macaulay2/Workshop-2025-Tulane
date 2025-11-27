@@ -2,20 +2,13 @@ TEST ///
 n=4;
 T = tropicalCayleyMenger n;
 assert(#T == 75);
-G={{1,2},{2,3},{3,4},{1,4}};
+G={{1,2},{2,3},{1,3},{1,4},{2,4}};
 T = tropicalCayleyMenger G;
-assert(#T == 75 and numrows rays first T == 4);
-assert(
-    (
-    rays last T - matrix {{0, 0}, {-1, 0}, {0, 0}, {0, -1}}
-    )% linSpace first T == 0
-)
-assert(#(T/dim//uniique)==1)
+assert(#T == 33 and numrows rays first T == 5 and all(T, C->dim C==5));
 
 T = tropicalCayleyMenger(n,Type=>List)
-assert all(T, R -> rank image transpose matrix R == 4)
+assert(#T == 75 and all(T, R -> rank image transpose matrix R == 4))
 ///
-
 
 TEST ///
 permutationOfDoubleIndices = (p,G) -> apply(G, l->position(G,l' -> sort p_l' == l))
