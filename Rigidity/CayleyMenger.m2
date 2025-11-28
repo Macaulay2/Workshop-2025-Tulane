@@ -189,7 +189,7 @@ tropicalCayleyMenger List := List => o -> G -> (
 	maxDim := T'/dim//max;
 	select(T', p->dim p == maxDim)
 	) else if o#Type===List
-    then apply(T, p -> p_GIndices) else error "unknown Type of output"
+    then apply(T, rr->apply(rr, r->r_GIndices)) else error "unknown Type of output"
     -- Caveat: if Type===List then some of the cones may be not of max dimension
 )
 

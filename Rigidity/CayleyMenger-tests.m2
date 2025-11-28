@@ -8,6 +8,9 @@ assert(#T == 33 and numrows rays first T == 5 and all(T, C->dim C==5));
 
 T = tropicalCayleyMenger(n,Type=>List)
 assert(#T == 75 and all(T, R -> rank image transpose matrix R == 4))
+T = tropicalCayleyMenger(G,Type=>List)
+T4 = select(T, C->rank image transpose matrix(C | {toList(#G:1)})==5)
+assert(#T4 == 33)
 ///
 
 TEST ///
