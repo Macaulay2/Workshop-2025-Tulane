@@ -134,6 +134,16 @@ TEST ///
     -- The facts taken in this test are from https://www.symmetricfunctions.com/rsk.htm
     -- and https://en.wikipedia.org/wiki/Robinson%E2%80%93Schensted%E2%80%93Knuth_correspondence
 
+    -- Helper function to make sure bijection is well-defined for random matrix (see caveat).
+    trimZeros = (M) -> (
+        Mlist := entries M;
+        nonzeroRows := apply(Mlist, row -> any(row, r -> r != 0));
+        Mlist = Mlist_{0 .. position(nonzeroRows, identity, Reverse=>true)};
+
+        nonzeroColumns := apply(transpose Mlist, row -> any(row, r -> r != 0));
+        matrix transpose (transpose Mlist)_{0 .. position(nonzeroColumns, identity, Reverse=>true)}    
+    )
+
     -- Example taken from https://en.wikipedia.org/wiki/Robinson%E2%80%93Schensted%E2%80%93Knuth_correspondence
     A = matrix {{1,0,2},{0,2,0},{1,1,0}}
     actualP = youngTableau {{1,1,2,2},
@@ -164,11 +174,11 @@ TEST ///
                             {6,6},
                             {8}}
     assert((RSKCorrespondence A) === (actualP, actualQ))
-    -- assert((RSKCorrespondence(actualP, actualQ)) == A)
+    assert((RSKCorrespondence(actualP, actualQ)) == A)
 
     -- FACT: RSK is a bijection
-    M = random(ZZ^4, ZZ^5)
-    -- assert((RSKCorrespondence RSKCorrespondence M) == M)
+    M = trimZeros random(ZZ^4, ZZ^5)
+    assert((RSKCorrespondence RSKCorrespondence M) == M)
 
     -- FACT: For a matrix M, RSK(M) = (P,Q)   <=>   RSK(M^T) = (Q,P).
     (P, Q) = RSKCorrespondence M

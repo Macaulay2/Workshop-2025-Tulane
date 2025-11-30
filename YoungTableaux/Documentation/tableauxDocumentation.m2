@@ -436,6 +436,10 @@ doc ///
   Caveat
     This is only a correspondence between matrices with non-negative integer 
     entries and pairs of semi-standard Young tableaux.
+
+    Moreover, if $A$ has $0$-rows ($0$-columns) as its bottom-most rows (right-most columns),
+    then these are "forgotten" in the bijection. That is, this is only a bijection with matrices
+    up to padding by $0$-rows and $0$-columns on the bottom and right of the matrix.
   SeeAlso
     rowInsertion
     biword
