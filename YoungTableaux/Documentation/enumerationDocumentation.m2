@@ -33,9 +33,11 @@ doc ///
     youngsPoset
     (youngsPoset, ZZ)
     (youngsPoset, YoungDiagram, YoungDiagram)
-    (youngsPoset, YoungDiagram)
     (youngsPoset, Partition, Partition)
+    (youngsPoset, List, List)
+    (youngsPoset, YoungDiagram)
     (youngsPoset, Partition)
+    (youngsPoset, List)
   Headline
     generates a subposet of Young's lattice
   Usage
@@ -65,12 +67,12 @@ doc ///
       generates the closed interval between $\lambda$ and $\mu$, if $\lambda \leq \mu$.
       Otherwise, an error is thrown.
 
-      When only a single Young diagram $\lambda$ is passed, this is equivalent to
-      {\tt youngsPoset(lambda, youngDiagram {})}, so it will generate the closed
-      interval between the empty diagram and $\lambda$.
+      When only a single Young diagram $\lambda$ is passed, this is equivalent 
+      to {\tt youngsPoset(lambda, youngDiagram {})}, so it will generate the 
+      closed interval between the empty diagram and $\lambda$.
 
-      When {\tt Partition} instances are passed, these are treated the same as
-      Young diagrams.
+      When {\tt Partition} instances or {\tt List} instances are passed as 
+      arguments, these are treated the same as Young diagrams.
     Example
       lambda = youngDiagram {1,1}
       mu = youngDiagram {3,1}

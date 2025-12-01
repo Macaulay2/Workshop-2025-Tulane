@@ -22,6 +22,8 @@ youngsPoset (YoungDiagram, YoungDiagram) := Poset => (lambda, mu) -> (
     closedInterval(youngsPoset sum shape mu, lambda, mu)
 )
 youngsPoset YoungDiagram := Poset => (lambda) -> (youngsPoset(youngDiagram {}, lambda))
+youngsPoset (List, List) := Poset => (lambda, mu) -> (youngsPoset(youngDiagram lambda, youngDiagram mu))
+youngsPoset List := Poset => (lambda) -> (youngsPoset youngDiagram lambda)
 youngsPoset (Partition, Partition) := Poset => (lambda, mu) -> (youngsPoset(youngDiagram lambda, youngDiagram mu))
 youngsPoset Partition := Poset => (lambda) -> (youngsPoset youngDiagram lambda)
 
