@@ -21,7 +21,9 @@ youngsPoset (YoungDiagram, YoungDiagram) := Poset => (lambda, mu) -> (
     if lambda > mu then error(lambda, " is not smaller than ", mu, " in Young's lattice.");
     closedInterval(youngsPoset sum shape mu, lambda, mu)
 )
-youngsPoset YoungDiagram := Poset => (lambda) -> (youngsPoset(youngDiagram {}, lambda));
+youngsPoset YoungDiagram := Poset => (lambda) -> (youngsPoset(youngDiagram {}, lambda))
+youngsPoset (Partition, Partition) := Poset => (lambda, mu) -> (youngsPoset(youngDiagram lambda, youngDiagram mu))
+youngsPoset Partition := Poset => (lambda) -> (youngsPoset youngDiagram lambda)
 
 
 ---- Given a list (shape) of a diagram, find all the standard fillings
