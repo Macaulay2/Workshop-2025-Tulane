@@ -65,6 +65,7 @@ export {
     "isCorner",
     -- enumeration methods
     "numberStandardYoungTableaux",
+    "allStandardYoungTableaux",
     "youngsPoset",
     "getCandidateFillings",
     "filledSYT",

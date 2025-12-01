@@ -28,6 +28,34 @@ youngsPoset (Partition, Partition) := Poset => (lambda, mu) -> (youngsPoset(youn
 youngsPoset Partition := Poset => (lambda) -> (youngsPoset youngDiagram lambda)
 
 
+------------------------------------
+-- Listing out tableaux
+------------------------------------
+allStandardYoungTableaux = method()
+-- Fact: Standard Young tableaux are in bijection with saturated chains in 
+--       Young's lattice. At each step in the chain, a new box is added
+--       whose content will be the step number.
+-- Every maximal chain will have length n+1, so by looking at pairwise 
+-- differences between diagrams in the chain, we can construct the tableau.
+-- NOTE: This is almost certainly not the most efficient approach as there
+--       will be redundant computations across different chains.
+-- TODO: Re-implement this using some dynamic programming.
+allStandardYoungTableaux ZZ := List => (n) -> (
+    #flatten (allStandardYoungTableaux \ (youngDiagram \ partitions n))
+)
+allStandardYoungTableaux YoungDiagram := List => (lambda) -> (
+    diagramPoset := youngsPoset lambda;
+    diagramDifference := (d1, d2) -> (set keys d1 - set keys d2);
+    for C in maximalChains diagramPoset list (
+        newBoxByStep := apply(drop(C, 1), drop(C, -1), diagramDifference);
+        youngTableau new HashTable from apply(pairs newBoxByStep, idxBox -> (elements last idxBox)#0 => first idxBox +1)
+    )
+)
+allStandardYoungTableaux Partition := List => (lambda) -> (allStandardYoungTableaux youngDiagram lambda)
+allStandardYoungTableaux List := List => (lambda) -> (allStandardYoungTableaux youngDiagram lambda)
+
+
+
 ---- Given a list (shape) of a diagram, find all the standard fillings
 getCandidateFillings = method()
 getCandidateFillings(List,List) := List => (shape,nums) -> (

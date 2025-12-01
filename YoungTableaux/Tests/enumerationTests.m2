@@ -21,6 +21,19 @@ TEST ///
 ///
 
 TEST ///
+    -- allStandardYoungTableaux
+    -- The number of 2xn SYT is C_n, the n-th Catalan number.
+    for n in 1..5 do (
+        lambda = youngDiagram (n:2);
+        assert(#(allStandardYoungTableaux lambda) == binomaial(2*n, n) // (n+1))
+    )
+    
+    -- FACT: Let f(n) = |SYT(n)|. Then the following recurrence relation holds:
+    --       f(n) = f(n-1) + (n-1) * f(n-2).
+    assert(allStandardYoungTableaux 5 == allStandardYoungTableaux 4 + 4 * allStandardYoungTableaux 3)
+///
+
+TEST ///
     -- filledSYT
     for n in 1..5 do (
         partitionsList = (partitions n) / toList;

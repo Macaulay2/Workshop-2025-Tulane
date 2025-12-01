@@ -25,6 +25,7 @@ doc ///
       numberStandardYoungTableaux lambda
   SeeAlso
     isStandard
+    allStandardYoungTableaux
     filledSYT
 ///
 
@@ -77,6 +78,45 @@ doc ///
       lambda = youngDiagram {1,1}
       mu = youngDiagram {3,1}
       youngsPoset(lambda, mu)
+///
+
+doc ///
+  Key
+    allStandardYoungTableaux
+    (allStandardYoungTableaux, ZZ)
+    (allStandardYoungTableaux, YoungDiagram)
+    (allStandardYoungTableaux, Partition)
+    (allStandardYoungTableaux, List)
+  Headline
+    generates all of the standard Young tableaux of a given shape
+  Usage
+    allStandardYoungTableaux lambda
+  Inputs
+    n:ZZ
+    lambda:YoungDiagram
+  Outputs
+    :List
+  Description
+    Text
+      When an integer $n$ is passed as an argument, this method generates all
+      of the standard Young tableaux on $n$ boxes.
+    Example
+      allStandardYoungTableaux 4
+    Text
+      When a {\tt YoungDiagram}, {\tt Partition}, or {\tt List} is passed as an
+      argument, this method generates all of the standard Young tableaux of 
+      shape $\lambda$. To do this, the method exploits the fact that in Young's 
+      lattice, the maximal chains between the empty diagram and $\lambda$ are 
+      in bijection with the standard Young tableaux of shape $\lambda$. In this
+      bijection, for a fixed chain, the successive elements of the chain differ 
+      by one box; this box is then filled with the step number when it was added 
+      in the chain.
+    Example
+      lambda = youngDiagram {2,2,2}
+      allStandardYoungTableaux lambda
+  SeeAlso
+    isStandard
+    numberStandardYoungTableaux
 ///
 
 doc ///
