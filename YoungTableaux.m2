@@ -19,7 +19,8 @@ newPackage(
     },
     Headline => "functions for working with Young diagrams and tableaux",
     PackageExports => {
-        "Permutations"
+        "Permutations",
+        "Posets"
     }
 )
 
@@ -64,6 +65,7 @@ export {
     "isCorner",
     -- enumeration methods
     "numberStandardYoungTableaux",
+    "youngsPoset",
     "getCandidateFillings",
     "filledSYT",
     "filledSemiSYT",

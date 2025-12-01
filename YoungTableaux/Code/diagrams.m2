@@ -144,6 +144,8 @@ YoungDiagram == YoungDiagram := Boolean => (lambda, mu) -> (set keys lambda == s
 conjugate YoungDiagram := YoungDiagram => lambda -> (applyKeys(lambda, key -> reverse key))
 transpose YoungDiagram := YoungDiagram => lambda -> (conjugate lambda)
 
+YoungDiagram ? YoungDiagram := Boolean => (lambda, mu) -> (set keys lambda ? set keys mu)
+
 ------------------------------------
 -- Statistics on Young diagrams
 ------------------------------------

@@ -9,6 +9,21 @@ numberStandardYoungTableaux YoungDiagram := ZZ => lambda -> (
 numberStandardYoungTableaux List := ZZ => lambda -> numberStandardYoungTableaux youngDiagram lambda
 
 
+------------------------------------
+-- Young's lattice
+------------------------------------
+youngsPoset = method()
+youngsPoset ZZ := Poset => (n) -> (
+    diagrams := youngDiagram \ flatten for k in 0..n list partitions k;
+    poset(diagrams, (lambda, mu) -> lambda <= mu)
+)
+youngsPoset (YoungDiagram, YoungDiagram) := Poset => (lambda, mu) -> (
+    if lambda > mu then error(lambda, " is not smaller than ", mu, " in Young's lattice.");
+    closedInterval(youngsPoset sum shape mu, lambda, mu)
+)
+youngsPoset YoungDiagram := Poset => (lambda) -> (youngsPoset(youngDiagram {}, lambda));
+
+
 ---- Given a list (shape) of a diagram, find all the standard fillings
 getCandidateFillings = method()
 getCandidateFillings(List,List) := List => (shape,nums) -> (
