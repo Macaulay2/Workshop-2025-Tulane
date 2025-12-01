@@ -30,6 +30,55 @@ doc ///
 
 doc ///
   Key
+    youngsPoset
+    (youngsPoset, ZZ)
+    (youngsPoset, YoungDiagram, YoungDiagram)
+    (youngsPoset, YoungDiagram)
+    (youngsPoset, Partition, Partition)
+    (youngsPoset, Partition)
+  Headline
+    generates a subposet of Young's lattice
+  Usage
+    youngsPoset n
+    youngsPoset(lambda, mu)
+    youngsPoset lambda
+  Inputs
+    -- TODO: Figure out how to show that two types are allowable for the same argument.
+    n:ZZ
+    lambda:YoungDiagram
+    mu:YoungDiagram
+  Outputs
+    :Poset
+  Description
+    Text
+      Young's lattice is a lattice whose elements are Young diagrams with
+      relations given by inclusion of diagrams. See @HREF("https://en.wikipedia.org/wiki/Young's_lattice", "here")@
+      for an introduction to Young's lattice.
+
+      When an integer $n$ is passed as an argument, the poset generated consists
+      of the Young diagrams $\lambda = (\lambda_1,\dots,\lambda_k)$ with 
+      $\sum_{i=1}^k \lambda_i <= n$.
+    Example
+      youngsPoset 4
+    Text
+      When two Young diagrams $\lambda$ and $\mu$  are passed as arguments, this 
+      generates the closed interval between $\lambda$ and $\mu$, if $\lambda \leq \mu$.
+      Otherwise, an error is thrown.
+
+      When only a single Young diagram $\lambda$ is passed, this is equivalent to
+      {\tt youngsPoset(lambda, youngDiagram {})}, so it will generate the closed
+      interval between the empty diagram and $\lambda$.
+
+      When {\tt Partition} instances are passed, these are treated the same as
+      Young diagrams.
+    Example
+      lambda = youngDiagram {1,1}
+      mu = youngDiagram {3,1}
+      youngsPoset(lambda, mu)
+///
+
+doc ///
+  Key
     filledSYT
     (filledSYT, List)
   Headline
