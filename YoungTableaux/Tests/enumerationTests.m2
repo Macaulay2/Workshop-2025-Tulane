@@ -27,10 +27,15 @@ TEST ///
         lambda = youngDiagram (n:2);
         assert(#(allStandardYoungTableaux lambda) == binomaial(2*n, n) // (n+1))
     )
-    
+
     -- FACT: Let f(n) = |SYT(n)|. Then the following recurrence relation holds:
     --       f(n) = f(n-1) + (n-1) * f(n-2).
     assert(allStandardYoungTableaux 5 == allStandardYoungTableaux 4 + 4 * allStandardYoungTableaux 3)
+
+    -- The number of tableaux generated should agree with the hook-length
+    -- formualtion used in numberStandardYoungTableaux.
+    lambda = {4,3,1}
+    assert(#allStandardYoungTableaux lambda == numberStandardYoungTableaux lambda)
 ///
 
 TEST ///
