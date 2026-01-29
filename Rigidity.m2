@@ -60,7 +60,9 @@ export {
     "getFiniteCompletabilityMatrix",
     "isFinitelyCompletable",
     "Field",
-    "Iterations"
+    "Iterations",
+    "getCayleyMengerMatrix",
+    "cayleyMengerDeterminants"
 }
 
 
@@ -75,6 +77,8 @@ load "./Rigidity/isGloballyRigid.m2"
 load "./Rigidity/MatrixCompletionNonSymmetric.m2"
 load "./Rigidity/symmetricMatrices.m2"
 load "./Rigidity/skewSymmetricMatrices.m2"
+load "./Rigidity/getCayleyMengerMatrix.m2"
+load "./Rigidity/cayleyMengerDeterminants.m2"
 
 
 ------------------------------------------------------------------------------
@@ -109,6 +113,7 @@ load "./Rigidity/MatrixCompletionNonSymmetricTests.m2"
 load "./Rigidity/globallyRigidTests.m2"
 load "./Rigidity/symmetricMatricesTest.m2"
 load "./Rigidity/skewSymmetricMatricesTest.m2"
+load "./Rigidity/cayleyMengerDeterminantsTest.m2"
 end
 
 restart
