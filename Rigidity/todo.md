@@ -10,7 +10,7 @@
 Kalina is in charge.
 
 ## Issues
-- Check documentation in SymmetricCompletionDocs.m2 and SkewSymmetricCompletionDocs.m2
+- Check documentation in SymmetricCompletionDocs.m2 and SkewSymmetricCompletionDocs.m2 ✔️
 - uniformize folders/organization (less important)
 - Testing: isGloballyRigid(2, G3) takes forever to run (in globallyRigidTests.m2), maybe problem with isGloballyRigid code?
 - Fix (?) inconsistency in numbering (e.g. "completability" assumes vertices start from 0, and "Cayley-Menger" starts from 1)
