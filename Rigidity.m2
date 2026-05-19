@@ -32,10 +32,14 @@ newPackage(
             Name => "Mifron Fernandes",
             Email => "mfpvt@umsystem.edu"
         },
-	{
+		{
             Name => "Julian Huddell",
             Email => "jhuddell@tulane.edu"
-	}
+		},
+		{
+            Name => "Aolong Li",
+            Email => "lial0921.miu@gmail.com"
+		}
     
     },
     Headline => "rigidity theory tools",
