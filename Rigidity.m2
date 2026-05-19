@@ -39,7 +39,7 @@ newPackage(
     
     },
     Headline => "rigidity theory tools",
-    Keywords => {},
+    Keywords => {"Graph Theory"},
     PackageExports => {"Graphs", "NumericalLinearAlgebra","Polyhedra"},
     PackageImports => {},
     AuxiliaryFiles => true,
@@ -93,6 +93,9 @@ doc ///
     Description
       Text
     	Add package description
+	  Tree
+		:List of feaetured functions of type1
+		> isGloballyRigid
 ///
 
 load "./Rigidity/RigidityDocs.m2"
