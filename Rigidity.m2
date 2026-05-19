@@ -66,7 +66,7 @@ export {
     "Field",
     "Iterations",
     "getCayleyMengerMatrix",
-    "cayleyMengerDeterminants"
+    "cayleyMengerDeterminants",
 }
 
 
@@ -85,21 +85,25 @@ load "./Rigidity/getCayleyMengerMatrix.m2"
 load "./Rigidity/cayleyMengerDeterminants.m2"
 
 
+
 ------------------------------------------------------------------------------
 -- DOCUMENTATION
 ------------------------------------------------------------------------------
 beginDocumentation ()
 doc ///
+Node
     Key
         Rigidity
     Headline
         Add headline description
     Description
       Text
-    	Add package description
-	  Tree
-		:List of feaetured functions of type1
-		> isGloballyRigid
+        Add package description
+      Tree
+	:List of featured functions
+        "isLocallyRigid"
+        "isGloballyRigid"
+        "tropicalCayleyMenger"
 ///
 
 load "./Rigidity/RigidityDocs.m2"
@@ -107,6 +111,7 @@ load "./Rigidity/GlobalRigidityDocs.m2"
 load "./Rigidity/SymmetricCompletionDocs.m2"
 load "./Rigidity/SkewSymmetricCompletionDocs.m2"
 load "./Rigidity/CayleyMenger-docs.m2"
+load "./Rigidity/MatrixCompletionNonSymmetricDocs.m2"
 
 ------------------------------------------------------------------------------
 -- Tests
