@@ -1,7 +1,8 @@
-TEST ///
+TEST /// 
+-- This tests the completion of non-symmetric matrices associated to globally (?) rigid graphs
 assert (rank getFiniteCompletabilityMatrix(2,5,4) == 2*(5 + 4 - 2))
 
--- testing on the bipartite graph which consists of two copies of K(3, 3) glued together on the bottom edge
+-- Testing on the bipartite graph which consists of two copies of K(3, 3) glued together on the bottom edge
 
 twoGlueK33 = {
         {0, 0}, {0, 1}, {0, 2},
