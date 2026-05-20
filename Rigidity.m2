@@ -124,7 +124,11 @@ load "./Rigidity/cayleyMengerDeterminantsTest.m2"
 end
 
 restart
+uninstallPackage "Rigidity"
+restart
+installPackage "Rigidity"
+restart
 needsPackage "Rigidity"
 check "Rigidity"
-installPackage "Rigidity"
-uninstallAllPackages()
+
+

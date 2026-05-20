@@ -38,29 +38,29 @@ doc ///
         (isGloballyRigid, ZZ, Graph)
         (isGloballyRigid, ZZ, List)
         (isGloballyRigid, ZZ, ZZ)
+        [isGloballyRigid, FiniteField]
+        [isGloballyRigid, Iterations]
     Headline
         Returns a boolean indicating whether the given framework is globally rigid
     Usage
         isGloballyRigid(d, L)
         isGloballyRigid(d, G)
         isGloballyRigid(d, n)
-        isGloballyRigid(d, n, FiniteField => q)
-        isGloballyRigid(d, n, Iterations => k)
     Inputs
         d : ZZ
             corresponding to the dimension of the embedding space
-        n : ZZ
-            corresponding to the number of vertices
         G : Graph
         L : List
             of pairs of adjacent vertices 
-        q : ZZ
+        n : ZZ
+            corresponding to the number of vertices
+        FiniteField => ZZ
             The field that computation is done in. 
             If not 1, takes random values from the corresponding field and computes the rank of the numerical matrix, and repeats this for a certain number of iterations. If 1, computes the rank of the matrix with symbols. Defaults to 1.
             0 - Real numbers
             1 - Symbolic computation (slow)
             Prime power q - Finite field F_q
-        k : ZZ
+        Iterations => ZZ
             Number of iterations when computing numerically.
             If the resulting booleans are equal for each iteration, returns the boolean. Otherwise, shows an error message. When computing symbolically, this option is ignored. Defaults to 3.
     Description
