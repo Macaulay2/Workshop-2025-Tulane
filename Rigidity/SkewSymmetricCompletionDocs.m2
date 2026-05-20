@@ -42,6 +42,8 @@ doc ///
         (isSpanningInSkewSymmetricCompletionMatroid, ZZ, ZZ, List)
         (isSpanningInSkewSymmetricCompletionMatroid, ZZ, ZZ)
         (isSpanningInSkewSymmetricCompletionMatroid, ZZ, ZZ, Graph)
+        [isSpanningInSkewSymmetricCompletionMatroid, Numerical]
+        [isSpanningInSkewSymmetricCompletionMatroid, FiniteField]
     Headline
         Tests whether a graph is spanning in the skew-symmetric completion matroid.
     Usage

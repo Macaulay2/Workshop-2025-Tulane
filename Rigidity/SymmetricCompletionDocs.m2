@@ -4,6 +4,7 @@ doc ///
 	    (getSymmetricCompletionMatrix, ZZ, Graph)
         (getSymmetricCompletionMatrix, ZZ, ZZ, List)
         (getSymmetricCompletionMatrix, ZZ, ZZ)
+        [getSymmetricCompletionMatrix, Variable]
     Headline
         Constructs the symmetric completion matrix for given parameters.
     Usage
@@ -42,6 +43,8 @@ doc ///
         (isSpanningInSymmetricCompletionMatroid, ZZ, ZZ, List)
         (isSpanningInSymmetricCompletionMatroid, ZZ, ZZ)
         (isSpanningInSymmetricCompletionMatroid, ZZ, ZZ, Graph)
+        [isSpanningInSymmetricCompletionMatroid, Numerical]
+        [isSpanningInSymmetricCompletionMatroid, FiniteField]
     Headline
         Tests whether a graph is spanning in the symmetric completion matroid.
     Usage
