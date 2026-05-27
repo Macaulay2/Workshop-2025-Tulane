@@ -66,7 +66,7 @@ export {
     "Field",
     "Iterations",
     "getCayleyMengerMatrix",
-    "cayleyMengerDeterminants",
+    "cayleyMengerIdeal",
 }
 
 
@@ -82,7 +82,7 @@ load "./Rigidity/MatrixCompletionNonSymmetric.m2"
 load "./Rigidity/symmetricMatrices.m2"
 load "./Rigidity/skewSymmetricMatrices.m2"
 load "./Rigidity/getCayleyMengerMatrix.m2"
-load "./Rigidity/cayleyMengerDeterminants.m2"
+load "./Rigidity/cayleyMengerIdeal.m2"
 
 
 
@@ -112,6 +112,7 @@ load "./Rigidity/SymmetricCompletionDocs.m2"
 load "./Rigidity/SkewSymmetricCompletionDocs.m2"
 load "./Rigidity/CayleyMenger-docs.m2"
 load "./Rigidity/MatrixCompletionNonSymmetricDocs.m2"
+load "./Rigidity/cayleyMengerIdealDocs.m2"
 
 ------------------------------------------------------------------------------
 -- Tests
@@ -125,7 +126,7 @@ load "./Rigidity/MatrixCompletionNonSymmetricTests.m2"
 load "./Rigidity/globallyRigidTests.m2"
 load "./Rigidity/symmetricMatricesTest.m2"
 load "./Rigidity/skewSymmetricMatricesTest.m2"
-load "./Rigidity/cayleyMengerDeterminantsTest.m2"
+load "./Rigidity/cayleyMengerIdealTest.m2"
 end
 
 restart
