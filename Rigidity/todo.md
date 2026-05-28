@@ -15,7 +15,7 @@ Kalina is in charge.
 ## Issues - part2
 - isSpanningSkewTest is effectively empty
 - getStressMatrix has no tests
-- skewSymmetricMatrix has no tests
+- skewSymmetricMatrix has no tests -- Ryan 5/28
 - we lack corner cases - e.g. G is empty
 - RigidityTests and RigidityDocs should probably be removed - what is their purpose?
 - missing description and references in Rigidity.m2
@@ -24,9 +24,9 @@ Kalina is in charge.
 ## Tests and documentation
 Need to document and or test:
 * Iterations, Numerical, Field, FiniteField, 
-* getSymmetricCompletionMatrix, 
-* isFinitelyCompletable, 
-* getFiniteCompletabilityMatrix, 
+* getSymmetricCompletionMatrix -- Ryan 5/28, 
+* isFinitelyCompletable -- Ryan 5/28, 
+* getFiniteCompletabilityMatrix -- Ryan 5/28, 
 * isSpanningInSymmetricCompletionMatroid, 
 
 Run `installPackage` to see what is still undocumented.
