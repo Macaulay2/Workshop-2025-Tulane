@@ -1,11 +1,8 @@
 # To Do List:
 
-* Young people: Julian, Ryan, Griffin, Jianuo
+* Young people: Julian, Ryan, Griffin, Jianuo, Aolong
 * Senior: Dan, Kalina, Anton
-
-## Other possible additions/alterations
-* Cayley-Menger Determinants --- Julian?
-
+  
 ## Paper
 Kalina is in charge.
 
@@ -39,6 +36,7 @@ Go over documentation, perhaps a better name. --- Dan
 # Done!
 ## No user variable names
 `Variable=>` option is no more.
+* Cayley-Menger Determinants --- Julian
 
 ## trop(CM)
 Export:
