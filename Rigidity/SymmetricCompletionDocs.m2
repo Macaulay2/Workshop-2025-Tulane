@@ -73,7 +73,7 @@ doc ///
             G = completeMultipartiteGraph({3,3})
             isSpanningInSymmetricCompletionMatroid(2, G)
             G = completeGraph 4
-            isSpanningInSymmetricCompletionMatroid(4, G)
+            isSpanningInSymmetricCompletionMatroid(4, G, Numerical => true)
             L= {{0,1},{1,2},{2,0}}
             r=4; n=3
             isSpanningInSymmetricCompletionMatroid(r, n, L)
