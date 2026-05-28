@@ -15,10 +15,11 @@ Kalina is in charge.
 ## Issues - part2
 - isSpanningSkewTest is effectively empty
 - getStressMatrix has no tests
+- skewSymmetricMatrix has no tests
 - we lack corner cases - e.g. G is empty
 - RigidityTests and RigidityDocs should probably be removed - what is their purpose?
 - missing description and references in Rigidity.m2
-- what are the main functions? (should we add matrix completion, CM ideals and skewsymmetric matrix to the 3 we already have)
+- what are the main functions? (should we add matrix completion, CM ideals)
 
 ## Tests and documentation
 Need to document and or test:
