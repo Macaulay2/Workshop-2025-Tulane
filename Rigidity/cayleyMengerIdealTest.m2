@@ -1,5 +1,5 @@
 TEST ///
-    I = cayleyMengerDeterminants(5,2);
+    I = cayleyMengerIdeal(5,2);
     R2 = QQ[x1,y1,x2,y2,x3,y3,x4,y4,x5,y5];
     for p in first entries gens I do assert(sub(p, {
         d_(1,2) => (x1-x2)^2+(y1-y2)^2,
@@ -15,7 +15,7 @@ TEST ///
         ) == 0)
 ///
 TEST ///
-    I = cayleyMengerDeterminants(5,2);
+    I = cayleyMengerIdeal(5,2);
     R3 = QQ[x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,x5,y5,z5];
     for p in first entries gens I do assert(sub(p, {
         d_(1,2) => (x1-x2)^2+(y1-y2)^2+(z1-z2)^2,

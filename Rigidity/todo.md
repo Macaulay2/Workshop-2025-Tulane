@@ -1,11 +1,8 @@
 # To Do List:
 
-* Young people: Julian, Ryan, Griffin, Jianuo
+* Young people: Julian, Ryan, Griffin, Jianuo, Aolong
 * Senior: Dan, Kalina, Anton
-
-## Other possible additions/alterations
-* Cayley-Menger Determinants --- Julian?
-
+  
 ## Paper
 Kalina is in charge.
 
@@ -14,6 +11,14 @@ Kalina is in charge.
 - uniformize folders/organization (less important)
 - Testing: isGloballyRigid(2, G3) takes forever to run (in globallyRigidTests.m2), maybe problem with isGloballyRigid code?
 - Fix (?) inconsistency in numbering (e.g. "completability" assumes vertices start from 0, and "Cayley-Menger" starts from 1)
+
+## Issues - part2
+- isSpanningSkewTest is effectively empty
+- getStressMatrix has no tests
+- we lack corner cases - e.g. G is empty
+- RigidityTests and RigidityDocs should probably be removed - what is their purpose?
+- missing description and references in Rigidity.m2
+- what are the main functions? (should we add matrix completion, CM ideals and skewsymmetric matrix to the 3 we already have)
 
 ## Tests and documentation
 Need to document and or test:
@@ -31,6 +36,7 @@ Go over documentation, perhaps a better name. --- Dan
 # Done!
 ## No user variable names
 `Variable=>` option is no more.
+* Cayley-Menger Determinants --- Julian
 
 ## trop(CM)
 Export:
