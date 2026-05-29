@@ -26,3 +26,23 @@ TEST ///
 
 
 ///
+
+-- Test: matrix dimensions; K_4 does not span for r=2 (too few edges)
+TEST ///
+    r = 2; n = 4;
+    G = completeGraph n;
+    M = getSymmetricCompletionMatrix(r, G);
+    assert(numrows M == #edges G)
+    assert(numcols M == r*n)
+    assert(not isSpanningInSymmetricCompletionMatroid(r, G))
+///
+
+-- Test: complete graph default matches explicit edge list (same rank and dimensions)
+TEST ///
+    r = 3; n = 5;
+    M1 = getSymmetricCompletionMatrix(r, n);
+    M2 = getSymmetricCompletionMatrix(r, n, subsets(toList(0..(n-1)), 2));
+    assert(numrows M1 == numrows M2)
+    assert(numcols M1 == numcols M2)
+    assert(rank M1 == rank M2)
+///

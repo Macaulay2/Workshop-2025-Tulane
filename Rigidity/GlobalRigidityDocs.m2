@@ -38,6 +38,8 @@ doc ///
         (isGloballyRigid, ZZ, Graph)
         (isGloballyRigid, ZZ, List)
         (isGloballyRigid, ZZ, ZZ)
+        [isGloballyRigid, FiniteField]
+        [isGloballyRigid, Iterations]
     Headline
         Returns a boolean indicating whether the given framework is globally rigid
     Usage

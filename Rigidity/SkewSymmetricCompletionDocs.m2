@@ -18,6 +18,9 @@ doc ///
         G : Graph
         L : List
             of pairs of adjacent vertices
+    Outputs
+        : Matrix
+            the skew-symmetric completion matrix
     Description
     	Text
             Given an even rank r and graph G, constructs the skew-symmetric completion matrix.
@@ -42,6 +45,8 @@ doc ///
         (isSpanningInSkewSymmetricCompletionMatroid, ZZ, ZZ, List)
         (isSpanningInSkewSymmetricCompletionMatroid, ZZ, ZZ)
         (isSpanningInSkewSymmetricCompletionMatroid, ZZ, ZZ, Graph)
+        [isSpanningInSkewSymmetricCompletionMatroid, Numerical]
+        [isSpanningInSkewSymmetricCompletionMatroid, FiniteField]
     Headline
         Tests whether a graph is spanning in the skew-symmetric completion matroid.
     Usage
@@ -61,6 +66,9 @@ doc ///
             if true, evaluates at random rational values to compute rank numerically; defaults to false
         FiniteField => ZZ
             if nonzero, evaluates at random elements of GF(q) to compute rank; defaults to 0
+    Outputs
+        : Boolean
+            true if the graph spans the skew-symmetric completion matroid
     Description
     	Text
             Tests whether a graph or edge set spans the skew-symmetric completion matroid.

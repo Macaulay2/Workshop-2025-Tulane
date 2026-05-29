@@ -4,6 +4,7 @@ doc ///
 	    (getSymmetricCompletionMatrix, ZZ, Graph)
         (getSymmetricCompletionMatrix, ZZ, ZZ, List)
         (getSymmetricCompletionMatrix, ZZ, ZZ)
+        [getSymmetricCompletionMatrix, Variable]
     Headline
         Constructs the symmetric completion matrix for given parameters.
     Usage
@@ -20,6 +21,9 @@ doc ///
             of pairs of adjacent vertices
         Variable => Thing
             symbol to use for the ring variables; defaults to a generated symbol
+    Outputs
+        : Matrix
+            the symmetric completion matrix
     Description
     	Text
             Given rank r and graph G, constructs the symmetric completion matrix.
@@ -42,6 +46,8 @@ doc ///
         (isSpanningInSymmetricCompletionMatroid, ZZ, ZZ, List)
         (isSpanningInSymmetricCompletionMatroid, ZZ, ZZ)
         (isSpanningInSymmetricCompletionMatroid, ZZ, ZZ, Graph)
+        [isSpanningInSymmetricCompletionMatroid, Numerical]
+        [isSpanningInSymmetricCompletionMatroid, FiniteField]
     Headline
         Tests whether a graph is spanning in the symmetric completion matroid.
     Usage
@@ -61,6 +67,9 @@ doc ///
             if true, evaluates at random rational values to compute rank numerically; defaults to false
         FiniteField => ZZ
             if nonzero, evaluates at random elements of GF(q) to compute rank; defaults to 0
+    Outputs
+        : Boolean
+            true if the graph spans the symmetric completion matroid
     Description
     	Text
             Tests whether a graph or edge set spans the symmetric completion matroid.

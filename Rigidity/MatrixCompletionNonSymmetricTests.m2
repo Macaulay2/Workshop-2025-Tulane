@@ -1,38 +1,25 @@
-TEST /// 
--- This tests the completion of non-symmetric matrices associated to globally (?) rigid graphs
-assert (rank getFiniteCompletabilityMatrix(2,5,4) == 2*(5 + 4 - 2))
+-- Test: rank of full-observation matrix matches formula r*(n+m-r)
+TEST ///
+    assert(rank getFiniteCompletabilityMatrix(2, 5, 4) == 2*(5 + 4 - 2))
+    assert(rank getFiniteCompletabilityMatrix(1, 3, 3) == 1*(3 + 3 - 1))
+///
 
--- Testing on the bipartite graph which consists of two copies of K(3, 3) glued together on the bottom edge
+-- Test: twoGlueK33 is finitely completable for r=1
+TEST ///
+    twoGlueK33 = {
+        {0,0},{0,1},{0,2},
+        {1,0},{1,1},{1,2},
+        {2,0},{2,1},{2,3},{2,4},
+        {3,2},{3,3},{3,4},
+        {4,2},{4,3},{4,4}};
+    assert(isFinitelyCompletable(1, 5, 5, twoGlueK33) === true)
+///
 
-twoGlueK33 = {
-        {0, 0}, {0, 1}, {0, 2},
-        {1, 0}, {1, 1}, {1, 2},
-        {2, 0}, {2, 1}, {2, 3}, {2, 4},
-        {3, 2}, {3, 3}, {3, 4},
-        {4, 2}, {4, 3}, {4, 4}
-    }
-graph(twoGlueK33)
-n = 5
-m = 5
-r = 1
-
-A = getFiniteCompletabilityMatrix(r, n, m, twoGlueK33)
-rank A
-condition = r*(n + m - r)
-
-
-twoGlueK33Edited = {
-        {0, 0}, {0, 1}, {0, 2},
-        {1, 0}, {1, 1}, {1, 2},
-        {2, 0}, {2, 1}, {2, 3}, {2, 4},
-        {3, 2}, {3, 3}, {3, 4},
-        {4, 2}, {4, 3}
-    }
-graph(twoGlueK33Edited)
-n = 5
-m = 5
-r = 1
-A = getFiniteCompletabilityMatrix(r, n, m, twoGlueK33Edited)
-rank A
-condition = r*(n + m - r)
+-- Test: output matrix has correct dimensions
+TEST ///
+    E = {{0,0},{0,1},{1,0},{1,1}};
+    r = 1; n = 2; m = 2;
+    M = getFiniteCompletabilityMatrix(r, n, m, E);
+    assert(numrows M == #E)
+    assert(numcols M == r*(n + m))
 ///
