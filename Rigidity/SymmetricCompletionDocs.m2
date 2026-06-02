@@ -21,6 +21,9 @@ doc ///
             of pairs of adjacent vertices
         Variable => Thing
             symbol to use for the ring variables; defaults to a generated symbol
+    Outputs
+        : Matrix
+            the symmetric completion matrix
     Description
     	Text
             Given rank r and graph G, constructs the symmetric completion matrix.
@@ -64,6 +67,9 @@ doc ///
             if true, evaluates at random rational values to compute rank numerically; defaults to false
         FiniteField => ZZ
             if nonzero, evaluates at random elements of GF(q) to compute rank; defaults to 0
+    Outputs
+        : Boolean
+            true if the graph spans the symmetric completion matroid
     Description
     	Text
             Tests whether a graph or edge set spans the symmetric completion matroid.
