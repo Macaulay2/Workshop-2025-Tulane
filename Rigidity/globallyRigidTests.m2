@@ -1,3 +1,11 @@
+-- test for getStressMatrix function with trivial input
+TEST ///
+    assert(getStressMatrix(3, 2) == 0)
+///
+-- test the sum of every row getStressMatrix is 0
+TEST ///
+    assert(all(apply(entries getStressMatrix(2, 4), sum), v -> v == 0))
+///
 -- test for the method (ZZ, ZZ, List)
 TEST ///
     L1 = {{0,1}, {1,2}}
