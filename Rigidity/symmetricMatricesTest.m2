@@ -11,6 +11,7 @@ TEST ///
     M = getSymmetricCompletionMatrix(d, n, E, Variable => x);
     assert (rank M == 4)
     assert (isSpanningInSymmetricCompletionMatroid(d, n, E) == false)
+    assert (isSpanningInSymmetricCompletionMatroid(d, n, E, Numerical => true) == false)
 
     -- compare list and graph (expect same value)
     d = 1;

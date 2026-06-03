@@ -16,6 +16,7 @@ TEST ///
     -- K_4 with r=4 is spanning
     G = completeGraph 4;
     assert(isSpanningInSkewSymmetricCompletionMatroid(4, G) === true)
+    assert(isSpanningInSkewSymmetricCompletionMatroid(4, G, Numerical => true) === true)
 ///
 
 -- Test: odd rank throws an error
