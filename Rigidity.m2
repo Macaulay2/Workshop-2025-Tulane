@@ -95,10 +95,10 @@ Node
     Key
         Rigidity
     Headline
-        Add headline description
+        for computing local and global rigidity of graphs
     Description
       Text
-        Add package description
+        Rigidity is a Macaulay2 package that has the following functionality: decide generic local and global rigidity of graphs in any dimension; decide whether a set of observed entries spans the algebraic matroid of the variety of rectangular, symmetric, or skew-symmetric matrices of bounded rank; produce Cayley–Menger ideals; and compute the tropicalization of coordinate projections of the Cayley–Menger variety of points in the plane.
       Tree
 	:List of featured functions
         "isLocallyRigid"
@@ -133,6 +133,8 @@ restart
 uninstallPackage "Rigidity"
 restart
 installPackage "Rigidity"
+installPackage "TestAudit"
+uninstallAllPackages
 restart
 needsPackage "Rigidity"
 check "Rigidity"
