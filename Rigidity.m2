@@ -13,7 +13,8 @@ newPackage(
         },
         {
             Name => "Griffin Edwards",
-            Email => "griffinedwards@gatech.edu"
+            Email => "griffinedwards@gatech.edu",
+            HomePage => "griffin-has-questions.github.io"
         },
         {
             Name => "Jianuo Zhou",

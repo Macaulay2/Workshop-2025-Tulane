@@ -25,7 +25,7 @@ isGloballyRigid(ZZ, List) := Boolean => opts -> (d, Gr) -> (
                 else rank randomMap M == max(n - d - 1, 0)
             )
         );
-        any results
+        any(results, i -> i)
     )
 )
 
