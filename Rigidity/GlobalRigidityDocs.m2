@@ -49,7 +49,7 @@ doc ///
     Inputs
         d : ZZ
             corresponding to the dimension of the embedding space
-        G : Graph
+        G : Simple connected graph
         L : List
             of pairs of adjacent vertices 
         n : ZZ
@@ -64,7 +64,7 @@ doc ///
             runs the computation this many times and returns true if ever true; defaults to three
     Description
     	Text
-            Tests for global rigidity by checking the rank of the stress matrix. If the finite field is too small, it may error as it attempts to divide by zero. 
+            Tests for global rigidity by checking the rank of the stress matrix. If the finite field is too small, it may error as it attempts to divide by zero.
         Example
             n = 4; d = 2;
             L = {{0,1}, {0,2}, {1,2}, {1,3}, {2,3}};
