@@ -51,7 +51,7 @@ doc ///
             corresponding to the dimension of the embedding space
         G : Simple connected graph
         L : List
-            of pairs of adjacent vertices 
+            of pairs of adjacent vertices of a simple connected graph
         n : ZZ
             corresponding to the number of vertices
         FiniteField => ZZ
