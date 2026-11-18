@@ -48,6 +48,7 @@ doc ///
         (isSpanningInSymmetricCompletionMatroid, ZZ, ZZ, Graph)
         [isSpanningInSymmetricCompletionMatroid, Numerical]
         [isSpanningInSymmetricCompletionMatroid, FiniteField]
+        [isSpanningInSymmetricCompletionMatroid, Iterations]
     Headline
         Tests whether a graph is spanning in the symmetric completion matroid.
     Usage
@@ -67,6 +68,8 @@ doc ///
             if true, evaluates at random rational values to compute rank numerically; defaults to false
         FiniteField => ZZ
             if nonzero, evaluates at random elements of GF(q) to compute rank; defaults to 0
+        Iterations => ZZ
+            runs the computation this many times and returns true if ever true; defaults to three
     Outputs
         : Boolean
             true if the graph spans the symmetric completion matroid

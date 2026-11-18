@@ -65,7 +65,7 @@ doc ///
             If the resulting booleans are equal for each iteration, returns the boolean. Otherwise, shows an error message. When computing symbolically, this option is ignored. Defaults to 3.
     Description
     	Text
-            Tests for global rigidity by checking the rank of the stress matrix.
+            Tests for global rigidity by checking the rank of the stress matrix. If the finite field is too small, it may error as it attempts to divide by zero. 
         Example
             n = 4; d = 2;
             L = {{0,1}, {0,2}, {1,2}, {1,3}, {2,3}};

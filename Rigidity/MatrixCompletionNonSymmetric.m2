@@ -28,5 +28,7 @@ getFiniteCompletabilityMatrix(ZZ, ZZ, ZZ, List) := Matrix => (completionRank, ro
 );
 
 isFinitelyCompletable(ZZ, ZZ, ZZ, List) := Boolean => (completionRank, rowDim, colDim, edgeList) -> (
+    -- We expect the completion rank to be at most the minimum of the number of rows and columns
+    if completionRank > min(rowDim, colDim) then return false;
     rank getFiniteCompletabilityMatrix(completionRank, rowDim, colDim, edgeList) == completionRank*(rowDim + colDim - completionRank)
 );
