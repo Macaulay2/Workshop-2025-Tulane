@@ -61,8 +61,7 @@ doc ///
             1 - Symbolic computation (slow)
             Prime power q - Finite field F_q
         Iterations => ZZ
-            Number of iterations when computing numerically.
-            If the resulting booleans are equal for each iteration, returns the boolean. Otherwise, shows an error message. When computing symbolically, this option is ignored. Defaults to 3.
+            runs the computation this many times and returns true if ever true; defaults to three
     Description
     	Text
             Tests for global rigidity by checking the rank of the stress matrix. If the finite field is too small, it may error as it attempts to divide by zero. 

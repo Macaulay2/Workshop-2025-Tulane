@@ -31,59 +31,104 @@ getSkewSymmetricCompletionMatrix(ZZ,ZZ) := Matrix => (r,n) ->
 getSkewSymmetricCompletionMatrix(ZZ, Graph) := Matrix => (r, G) -> 
     getSkewSymmetricCompletionMatrix(r, length vertexSet G, edges G)
 
-isSpanningInSkewSymmetricCompletionMatroid = method(Options => {Numerical => false, FiniteField => 0}, TypicalValue => Boolean);
+-- dimension of Skew(n, r), the n x n skew-symmetric matrices of rank <= r (r even).
+-- Skew-symmetric matrices have even rank, so the effective rank is
+-- s = min(r, 2*floor(n/2)), and dim = sn - s(s+1)/2 (this is C(n,2) when s is maximal).
+skewSymmetricCompletionRank = (r, n) -> min(r, 2*(n//2));
+
+skewSymmetricCompletionDimension = (r, n) -> (
+    s := skewSymmetricCompletionRank(r, n);
+    s*n - s*(s+1)//2
+);
+
+isSpanningInSkewSymmetricCompletionMatroid = method(
+    Options => {Numerical => false, FiniteField => 0, Iterations => 3},
+    TypicalValue => Boolean
+);
 
 isSpanningInSkewSymmetricCompletionMatroid(ZZ, ZZ, List) := Boolean => opts -> (r, n, E) -> (
-    if n-1 < r then return length E == (n-1)*n/2;
-    M := getSkewSymmetricCompletionMatrix(r, n, E);
+    if r < 0 or r % 2 =!= 0 then error("expected rank to be a nonnegative even integer");
+    edges := E / toList;
+    if any(flatten edges, v -> v < 0 or v >= n)
+    then error("vertices must be labelled 0, ..., ", n-1);
+    if any(edges, e -> #e != 2 or e#0 == e#1)
+    then error("skew-symmetric matrices have zero diagonal, so entries must be pairs {i,j} with i != j");
+    target := skewSymmetricCompletionDimension(r, n);
+    if target == 0 then return true;
+    if #E < target then return false;   -- too few entries
+    -- ranks above 2*floor(n/2) give the same variety, so build the smaller matrix
+    M := getSkewSymmetricCompletionMatrix(skewSymmetricCompletionRank(r, n), n, E);
+    -- field for random evaluation; null means "compute the rank symbolically"
+    K := if opts.FiniteField =!= 0 then GF(opts.FiniteField)
+         else if opts.Numerical then QQ
+         else null;
+    if K === null then return rank M == target;
+    -- one trial reaching the target proves "true"; "false" is correct w.h.p.
     R := ring M;
-    C := coefficientRing R; -- evaluate over an arbitrary field (e.g. given as an option)?   
-    crds := gens R;
-    if opts.Numerical 
-    then (
-        listOfTruthValues := apply(
-            toList(0..1), -- number of confidence runs?
-            k -> (
-        		randomValues := random(C^1,C^(r*n));
-        		fromRtoC := map(C,R,randomValues);
-        		r*n - (r+1)*r/2 == rank fromRtoC M
-            ) 
-        );
-        if # set(listOfTruthValues) =!= 1 then error("Expected all the numerical attempts to give the same result. Try again.");
-        all listOfTruthValues
-    )
-    else if opts.FiniteField =!= 0
-    then (
-        listOfTruthValuesFiniteFields := apply(
-            toList(0..1),
-            n -> r*n - (r+1)*r/2 == rank(
-                a := symbol a; 
-                GF(opts.FiniteField, Variable => a);
-                sub(
-                    getSkewSymmetricCompletionMatrix(r, n, E), 
-                    apply(
-                        toList(1..r*n), 
-                        i -> crds_i => (
-                            randIndex := random(1,opts.FiniteField);
-                            if randIndex = opts.FiniteField
-                            then 0
-                            else a^randIndex
-                        )
-                    )
-                ) 
-            );
-            if # set(listOfTruthValuesFiniteFields) =!= 1 then error("Expected all the numerical attempts to give the same result. Try again.");
-            all listOfTruthValuesFiniteFields
-        )
-    )
-    else rank getSkewSymmetricCompletionMatrix(r, n, E) == r*n - (r+1)*r/2
+    any(opts.Iterations, i -> (
+        point := random(K^1, K^(numgens R));
+        rank (map(K, R, point)) M == target
+    ))
+);
+-- complete graph: forwards all options
+isSpanningInSkewSymmetricCompletionMatroid(ZZ, ZZ) := Boolean => opts -> (r, n) -> (
+    isSpanningInSkewSymmetricCompletionMatroid(r, n, subsets(toList(0..(n-1)), 2), opts)
 );
 
 
--- skew spanning test on the complete graph
-isSpanningInSkewSymmetricCompletionMatroid(ZZ,ZZ) := Boolean => opts -> (r,n) -> (
-    isSpanningInSkewSymmetricCompletionMatroid(r,n, subsets(toList(0..(n-1)), 2), Numerical => opts.Numerical)
-);
+-- isSpanningInSkewSymmetricCompletionMatroid = method(Options => {Numerical => false, FiniteField => 0}, TypicalValue => Boolean);
+
+-- isSpanningInSkewSymmetricCompletionMatroid(ZZ, ZZ, List) := Boolean => opts -> (r, n, E) -> (
+--     if n-1 < r then return length E == (n-1)*n/2;
+--     M := getSkewSymmetricCompletionMatrix(r, n, E);
+--     R := ring M;
+--     C := coefficientRing R; -- evaluate over an arbitrary field (e.g. given as an option)?   
+--     crds := gens R;
+--     if opts.Numerical 
+--     then (
+--         listOfTruthValues := apply(
+--             toList(0..1), -- number of confidence runs?
+--             k -> (
+--         		randomValues := random(C^1,C^(r*n));
+--         		fromRtoC := map(C,R,randomValues);
+--         		r*n - (r+1)*r/2 == rank fromRtoC M
+--             ) 
+--         );
+--         if # set(listOfTruthValues) =!= 1 then error("Expected all the numerical attempts to give the same result. Try again.");
+--         all listOfTruthValues
+--     )
+--     else if opts.FiniteField =!= 0
+--     then (
+--         listOfTruthValuesFiniteFields := apply(
+--             toList(0..1),
+--             n -> r*n - (r+1)*r/2 == rank(
+--                 a := symbol a; 
+--                 GF(opts.FiniteField, Variable => a);
+--                 sub(
+--                     getSkewSymmetricCompletionMatrix(r, n, E), 
+--                     apply(
+--                         toList(1..r*n), 
+--                         i -> crds_i => (
+--                             randIndex := random(1,opts.FiniteField);
+--                             if randIndex = opts.FiniteField
+--                             then 0
+--                             else a^randIndex
+--                         )
+--                     )
+--                 ) 
+--             );
+--             if # set(listOfTruthValuesFiniteFields) =!= 1 then error("Expected all the numerical attempts to give the same result. Try again.");
+--             all listOfTruthValuesFiniteFields
+--         )
+--     )
+--     else rank getSkewSymmetricCompletionMatrix(r, n, E) == r*n - (r+1)*r/2
+-- );
+
+
+-- -- skew spanning test on the complete graph
+-- isSpanningInSkewSymmetricCompletionMatroid(ZZ,ZZ) := Boolean => opts -> (r,n) -> (
+--     isSpanningInSkewSymmetricCompletionMatroid(r,n, subsets(toList(0..(n-1)), 2), Numerical => opts.Numerical)
+-- );
 
 
 -- skew spanning test taking in a Graph object
