@@ -21,7 +21,8 @@ isGloballyRigid(ZZ, List) := Boolean => opts -> (d, Gr) -> (
             (k) -> (
                 randomValues := random(F^1, F^variableNum);
                 randomMap := map(ring randomValues, ring M, randomValues);
-                rank randomMap M == max(n - d - 1, 0)
+                if opts.FiniteField == 0 then numericalRank randomMap M == max(n - d - 1, 0) 
+                else rank randomMap M == max(n - d - 1, 0)
             )
         );
         if #set(results) =!= 1 then error("Try again bro")

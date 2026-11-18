@@ -14,6 +14,7 @@ assert(#T4 == 33)
 ///
 
 TEST ///
+-- Example of K4 (this is the smallest interesting example)
 permutationOfDoubleIndices = (p,G) -> apply(G, l->position(G,l' -> sort p_l' == l))
 checkInvariance = perm -> (
     n := #perm;
