@@ -25,8 +25,7 @@ isGloballyRigid(ZZ, List) := Boolean => opts -> (d, Gr) -> (
                 else rank randomMap M == max(n - d - 1, 0)
             )
         );
-        if #set(results) =!= 1 then error("Try again bro")
-        else results#0
+        any results
     )
 )
 
