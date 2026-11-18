@@ -51,9 +51,9 @@ doc ///
             corresponding to the dimension of the embedding space
         n : ZZ
             corresponding to the number of vertices
-        G : Graph
+        G : Connected graph
         L : List
-            of pairs of adjacent vertices 
+            of pairs of adjacent vertices of connected graph
         Iterations => ZZ
             of iterations
         Field => Ring
