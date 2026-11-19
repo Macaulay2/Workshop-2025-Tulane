@@ -33,15 +33,18 @@ newPackage(
             Name => "Mifron Fernandes",
             Email => "mfpvt@umsystem.edu"
         },
-		{
+        {
             Name => "Julian Huddell",
             Email => "jhuddell@tulane.edu"
-		},
-		{
+        },
+        {
             Name => "Aolong Li",
             Email => "lial0921.miu@gmail.com"
-		}
-    
+        }
+        {
+            Name => "Dipendranath Mahato"
+            Email => "dmahato@tulane.edu"
+        }
     },
     Headline => "rigidity theory tools",
     Keywords => {"Graph Theory"},
