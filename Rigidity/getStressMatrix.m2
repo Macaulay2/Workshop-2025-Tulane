@@ -2,7 +2,11 @@ getStressMatrix = method(TypicalValue => Matrix)
 
 -- Core function
 getStressMatrix(ZZ, List) := Matrix => (d, Gr) -> (
-    G := Gr/toList;
+    originalEdges := Gr / toList;
+    labels := unique flatten originalEdges;
+    G := apply(originalEdges, e ->
+        apply(e, v -> position(labels, u -> u == v))
+    );
     n := # unique join(toSequence G);
     -- Left kernel of the rigidity matrix
     tRigidityMatrix := transpose getRigidityMatrix(d, G);

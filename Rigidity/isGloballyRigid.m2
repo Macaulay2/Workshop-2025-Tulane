@@ -7,7 +7,12 @@ isGloballyRigid(ZZ, List) := Boolean => opts -> (d, Gr) -> (
 -- Asimow and Roth proved that a generic framework in E^d of a graph G
 -- with d+1 or fewer vertices is globally rigid if G is a complete
 -- graph (i.e., a simplex), otherwise it is not even locally rigid
-    G := Gr/toList;
+    -- We need to relabel to avoid errors
+    originalEdges := Gr / toList;
+    labels := unique flatten originalEdges;
+    G := apply(originalEdges, e ->
+        apply(e, v -> position(labels, u -> u == v))
+    );
     n := # unique join(toSequence G);
 	if n <= d+1 then return # set G == n*(n-1)//2;
 	if not isLocallyRigid(d, G, opts) then return false;
