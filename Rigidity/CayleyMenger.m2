@@ -178,6 +178,7 @@ tropicalCayleyMenger ZZ := List => o -> n -> (
 	    ))
     )
 tropicalCayleyMenger List := List => o -> G -> (
+    G = apply(G, e -> sort toList e);
     n := max flatten G;
     T := tropicalCayleyMenger(n,o);
     GIndices := edgeListToIndices(G,n);
