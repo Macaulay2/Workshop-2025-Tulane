@@ -13,25 +13,25 @@ TEST ///
     
     L2 = {{0,1}, {1,2}, {2,0}} -- triangle
     assert(isGloballyRigid(2, L2))
-    assert(isGloballyRigid(2, L2, FiniteField => 0))	
-    assert(isGloballyRigid(2, L2, FiniteField => 1))
-    assert(isGloballyRigid(2, L2, FiniteField => 53))
-    assert(isGloballyRigid(2, L2, FiniteField => 0, Iterations => 5))
+    assert(isGloballyRigid(2, L2, Field => RR_100))	
+    assert(isGloballyRigid(2, L2, Field => ZZ))
+    assert(isGloballyRigid(2, L2, Field => GF(53)))
+    assert(isGloballyRigid(2, L2, Field => RR_100, Iterations => 5))
 
 	L3 = {{0,1}, {1,2}, {2,3}, {3,0}}  -- square
-	assert(not isGloballyRigid(2, L3, FiniteField => 53))
+	assert(not isGloballyRigid(2, L3, Field => GF(53)))
 
 	L31 = {{0,1}, {1,2}, {2,3}, {3,0}, {0,2}}  -- square with one diagonal
-	assert(not isGloballyRigid(2, L3, FiniteField => 53))
+	assert(not isGloballyRigid(2, L31, Field => GF(53)))
 	
 	L4 = {{0,1}, {0,2}} -- n <= d+1 non-complete graph
-	assert(not isGloballyRigid(3, L4, FiniteField => 2143))
+	assert(not isGloballyRigid(3, L4, Field => GF(2143)))
 
 	-- L5 = {{0,1}, {0,1}} -- n <= d+1 non-complete graph with duplicate edges 
 	-- assert(not isGloballyRigid(3, L5, FiniteField => 2143))
 
 	L6 = {{0,1}, {1,2}, {2,3}, {3,0}, {0,2}, {1,3}} -- n <= d+1 complete graph
-	assert(isGloballyRigid(3, L6, FiniteField => 2143))
+	assert(isGloballyRigid(3, L6, Field => GF(2143)))
 
 	-- L7 = {{0,1}, {1,2}, {2,3}, {3,0}, {0,2}, {1,3}, {0,1}, {1,2}} -- n <= d+1 complete graph with duplicate edges 
 	-- assert(not isGloballyRigid(3, L7, FiniteField => 2143))

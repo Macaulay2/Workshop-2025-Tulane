@@ -1,5 +1,5 @@
--- Option FiniteFields: 0 for numeric, 1 for symbolic, prime power for finite field
-isGloballyRigid = method(Options => {FiniteField => 1, Iterations => 3}, TypicalValue => Boolean)
+-- Old option FiniteFields: 0 for numeric, 1 for symbolic, prime power for finite field
+isGloballyRigid = method(Options => {Field => ZZ, Iterations => 3}, TypicalValue => Boolean)
 
 -- Core function
 isGloballyRigid(ZZ, List) := Boolean => opts -> (d, Gr) -> (
@@ -10,18 +10,18 @@ isGloballyRigid(ZZ, List) := Boolean => opts -> (d, Gr) -> (
     G := Gr/toList;
     n := # unique join(toSequence G);
 	if n <= d+1 then return # set G == n*(n-1)//2;
-	if not isLocallyRigid(d, G) then return false;
+	if not isLocallyRigid(d, G, opts) then return false;
     M := getStressMatrix(d, G);
-    if opts.FiniteField == 1 then rank M == max(n - d - 1, 0)
+    F := opts.Field;
+    if F === ZZ then rank M == max(n - d - 1, 0)
     else (
         variableNum := numgens ring M;
-        F := if opts.FiniteField == 0 then RR else GF(opts.FiniteField);
         results := apply(
             toList(1..opts.Iterations),
             (k) -> (
                 randomValues := random(F^1, F^variableNum);
                 randomMap := map(ring randomValues, ring M, randomValues);
-                if opts.FiniteField == 0 then numericalRank randomMap M == max(n - d - 1, 0) 
+                if F === RR then numericalRank randomMap M == max(n - d - 1, 0) 
                 else rank randomMap M == max(n - d - 1, 0)
             )
         );

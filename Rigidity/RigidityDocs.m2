@@ -51,13 +51,14 @@ doc ///
             corresponding to the dimension of the embedding space
         n : ZZ
             corresponding to the number of vertices
-        G : Connected graph
+        G : Graph
+            a simple connected graph
         L : List
             of pairs of adjacent vertices of connected graph
         Iterations => ZZ
             of iterations
         Field => Ring
-            that instantiates the variables 
+            computes the rank of the rigidity matrix numerically over this field. Defaults to ZZ, which computes the rank symbolically.
     Description
     	Text
             Tests for local rigidity by checking the rank of the rigidity matrix.

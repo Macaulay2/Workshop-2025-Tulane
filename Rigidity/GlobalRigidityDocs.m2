@@ -38,7 +38,7 @@ doc ///
         (isGloballyRigid, ZZ, Graph)
         (isGloballyRigid, ZZ, List)
         (isGloballyRigid, ZZ, ZZ)
-        [isGloballyRigid, FiniteField]
+        [isGloballyRigid, Field]
         [isGloballyRigid, Iterations]
     Headline
         Returns a boolean indicating whether the given framework is globally rigid
@@ -49,17 +49,14 @@ doc ///
     Inputs
         d : ZZ
             corresponding to the dimension of the embedding space
-        G : Simple connected graph
+        G : Graph
+            a simple connected graph
         L : List
             of pairs of adjacent vertices of a simple connected graph
         n : ZZ
             corresponding to the number of vertices
-        FiniteField => ZZ
-            The field that computation is done in. 
-            If not 1, takes random values from the corresponding field and computes the rank of the numerical matrix, and repeats this for a certain number of iterations. If 1, computes the rank of the matrix with symbols. Defaults to 1.
-            0 - Real numbers
-            1 - Symbolic computation (slow)
-            Prime power q - Finite field F_q
+        Field => Ring
+            computes the rank of the rigidity matrix numerically over this field. Defaults to ZZ, which computes the rank symbolically.
         Iterations => ZZ
             runs the computation this many times and returns true if ever true; defaults to three
     Description
@@ -72,5 +69,5 @@ doc ///
             isGloballyRigid(d, n)
             G = completeGraph(n);
             isGloballyRigid(d, G)
-            isGloballyRigid(d, G, FiniteField => 0)
+            isGloballyRigid(d, G, Field => RR_100)
 ///
