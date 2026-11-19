@@ -67,7 +67,7 @@ doc ///
         Numerical => Boolean
             if true, evaluates at random rational values to compute rank numerically; defaults to false
         FiniteField => ZZ
-            if nonzero, evaluates at random elements of GF(q) to compute rank; defaults to 0
+            if nonzero, evaluates at random elements of GF(q) to compute rank; defaults to 0. If 0, it computes symbollically
         Iterations => ZZ
             runs the computation this many times and returns true if ever true; defaults to three
     Outputs
@@ -78,6 +78,8 @@ doc ///
             Tests whether a graph or edge set spans the symmetric completion matroid.
             Equivalently, checks whether the symmetric completion matrix has full rank r*n - r*(r-1)/2.
             If the graph or edge set is not specified, defaults to the complete graph.
+
+            Warning: This does not work over fields of characteristic 2
         Example
             G = completeMultipartiteGraph({3,3})
             isSpanningInSymmetricCompletionMatroid(2, G)
