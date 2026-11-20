@@ -11,15 +11,14 @@ isLocallyRigid(ZZ, List) := Boolean => opts -> (d, E) -> (
     if C === ZZ then return rank M == d*n - (d+1)*d/2; 
 
     R := ring M;  
-    isExact := not instance(C, InexactField);
-    localRankFunction := if isExact then rank else numericalRank;
+    localRankFunction := if instance(C, InexactField) then numericalRank else rank ;
     checkFunction := (i) -> (
         randomValues := random(C^1,C^(d*n));
         fromRtoC := map(C,R,randomValues);
         d*n - (d+1)*d/2 == localRankFunction fromRtoC M
     );
     numOfTests := opts.Iterations;
-    if isExact then any(numOfTests, checkFunction)
+    if not instance(C, InexactField)  then any(numOfTests, checkFunction)
     else (
         truthList := apply(numOfTests, checkFunction);
         length (truthList -set{false})> length (truthList -set{true}) 

@@ -20,17 +20,16 @@ isGloballyRigid(ZZ, List) := Boolean => opts -> (d, Gr) -> (
     F := opts.Field;
     if F === ZZ then rank M == max(n - d - 1, 0)
     else (
+        localRankFunction := if instance(F, InexactField) then numericalRank else rank;
         variableNum := numgens ring M;
-        results := apply(
-            toList(1..opts.Iterations),
-            (k) -> (
+        any(
+            opts.Iterations,
+            k -> (
                 randomValues := random(F^1, F^variableNum);
                 randomMap := map(ring randomValues, ring M, randomValues);
-                if F === RR then numericalRank randomMap M == max(n - d - 1, 0) 
-                else rank randomMap M == max(n - d - 1, 0)
+                localRankFunction randomMap M == max(n - d - 1, 0)
             )
-        );
-        any(results, i -> i)
+        )
     )
 )
 
