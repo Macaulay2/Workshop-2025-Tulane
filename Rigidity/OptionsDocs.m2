@@ -8,7 +8,7 @@ doc ///
         selects the field for the local and global rigidity computation
     Usage
         isLocallyRigid(d, G, Field => K)
-        iisGloballyRigid(d, G, Field => K)
+        isGloballyRigid(d, G, Field => K)
     Inputs
         K : Ring
             a field, or ZZ to request symbolic computation
@@ -17,9 +17,9 @@ doc ///
             This option is used by @TO isLocallyRigid@ and @TO isGloballyRigid@. Its default value is @TO ZZ@, which requests a symbolic rank calculation over the rational coordinate ring. The value ZZ is a selector for this symbolic calculation; it does not request random integer coordinates.
 
             When a field such as @TO QQ@, @TO RR@, or a finite field is supplied,
-            the rigidity matrix is evaluated at random coordinates in that field.
-            Exact fields use exact rank computations. Inexact fields use
-            @TO numericalRank@. The number of trials is controlled by @TO Iterations@.
+            the rigidity matrix is evaluated at random coordinates in that field. Exact fields use exact rank computations. Inexact fields use @TO numericalRank@. The number of trials is controlled by @TO Iterations@.
+
+            The global rigidity evaluation may also encounter division by zero when a symbolic stress denominator specializes to zero.
         Example
             (options isLocallyRigid)#Field
             E = {{0,1},{0,2},{1,2}};
@@ -55,8 +55,7 @@ doc ///
         Use odd characteristic for symmetric completion: the Jacobian of the
         Gram parametrization degenerates in characteristic 2. Repeated trials
         in a fixed characteristic do not resolve rank loss caused by that
-        characteristic. The global rigidity evaluation may also encounter
-        division by zero when a symbolic stress denominator specializes to zero.
+        characteristic.
     SeeAlso
         isSpanningInSymmetricCompletionMatroid
         isSpanningInSkewSymmetricCompletionMatroid
