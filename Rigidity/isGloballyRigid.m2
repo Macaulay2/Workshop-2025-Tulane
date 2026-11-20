@@ -20,7 +20,8 @@ isGloballyRigid(ZZ, List) := Boolean => opts -> (d, Gr) -> (
     F := opts.Field;
     if F === ZZ then rank M == max(n - d - 1, 0)
     else (
-        localRankFunction := if instance(F, InexactField) then numericalRank else rank;
+        isInexact := instance(F, InexactField) or instance(F, InexactFieldFamily);
+        localRankFunction := if isInexact then numericalRank else rank;
         variableNum := numgens ring M;
         any(
             opts.Iterations,
