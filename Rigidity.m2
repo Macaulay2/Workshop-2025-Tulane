@@ -40,9 +40,9 @@ newPackage(
         {
             Name => "Aolong Li",
             Email => "lial0921.miu@gmail.com"
-        }
+        },
         {
-            Name => "Dipendranath Mahato"
+            Name => "Dipendranath Mahato",
             Email => "dmahato@tulane.edu"
         }
     },
@@ -117,6 +117,7 @@ load "./Rigidity/SkewSymmetricCompletionDocs.m2"
 load "./Rigidity/CayleyMenger-docs.m2"
 load "./Rigidity/MatrixCompletionNonSymmetricDocs.m2"
 load "./Rigidity/cayleyMengerIdealDocs.m2"
+load "./Rigidity/OptionsDocs.m2"
 
 ------------------------------------------------------------------------------
 -- Tests
